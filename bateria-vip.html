@@ -2,171 +2,122 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área VIP - Bateria | Exercícios da Apostila em Áudio (.wav)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Área VIP - Bateria | C. Richless</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
-        body { background: #121212; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #34d399;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 15px; -webkit-overflow-scrolling: touch; }
         
-        /* Sidebar da Playlist */
-        .sidebar { width: 380px; background: #1e1e1e; display: flex; flex-direction: column; border-right: 1px solid #333; }
-        .sidebar-header { padding: 20px; background: #252525; font-size: 16px; font-weight: bold; border-bottom: 1px solid #333; }
-        .playlist { overflow-y: auto; flex: 1; }
-        .playlist-item { padding: 15px 20px; border-bottom: 1px solid #2a2a2a; cursor: pointer; font-size: 13px; transition: background 0.2s; }
-        .playlist-item:hover { background: #2a2a2a; }
-        .playlist-item.active { background: #007bff; color: #fff; font-weight: bold; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .top-bar h1 { color: var(--success); font-size: 1.6rem; }
+        
+        .btn-voltar { background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: background 0.2s; font-size: 0.9rem; }
+        .btn-voltar:hover { background: #475569; }
 
-        /* Área Principal do Player */
-        .main-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; position: relative; }
-        .player-container { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .vip-section { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .vip-section h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.2rem; border-left: 4px solid var(--accent); padding-left: 10px; }
+
+        .ebook-container { 
+            width: 100%; 
+            height: 650px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            overflow-y: scroll !important; 
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff; 
+            position: relative;
+        }
+        .ebook-container iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
         
-        /* Camada de Proteção Inteligente (Bloqueia clique direito fora do player, mas deixa o iframe livre para o Play) */
-        .block-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 60px; z-index: 10; background: transparent; pointer-events: auto; }
-        
-        iframe { width: 100%; height: 100%; border: none; }
-        .lesson-title { margin-top: 20px; font-size: 18px; font-weight: bold; text-align: center; color: #e0e0e0; }
+        .block-overlay-pdf {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 50px;
+            z-index: 10;
+            background: transparent;
+        }
+
+        .folder-box-iframe { 
+            width: 100%; 
+            height: 600px; 
+            background: #ffffff; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            overflow: hidden;
+        }
+        .folder-box-iframe iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .ebook-container { height: 500px; }
+            .folder-box-iframe { height: 500px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="sidebar-header">Exercícios da Apostila em Áudio (.wav)</div>
-        <div class="playlist" id="playlist"></div>
-    </div>
-
-    <div class="main-content">
-        <div class="player-container">
-            <!-- Barra superior bloqueadora de menu de contexto, liberando o player abaixo -->
-            <div class="block-overlay" oncontextmenu="return false;"></div>
-            <iframe id="videoPlayer" src="" allow="autoplay" allowfullscreen></iframe>
+    <div class="container">
+        <div class="top-bar">
+            <h1>🔓 Área VIP - Módulo Bateria</h1>
+            <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
         </div>
-        <div class="lesson-title" id="lessonTitle">Selecione um áudio ao lado</div>
+
+        <!-- 1. Apostila em Cima -->
+        <div class="vip-section">
+            <h3>📖 Apostila Completa (Leitura Interativa)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Deslize para cima e para baixo para navegar entre as páginas:</p>
+            
+            <div class="ebook-container">
+                <div class="block-overlay-pdf"></div>
+                <iframe src="https://drive.google.com/file/d/1kjHmBqoZFrofljWOoRWCb_WjIirdiokN/preview?usp=sharing" title="Apostila de Bateria"></iframe>
+            </div>
+        </div>
+
+        <!-- 2. Vídeos Explicativos no Meio (Com miniaturas / grade) -->
+        <div class="vip-section">
+            <h3>🎬 Vídeos Explicativos das Aulas</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Escolha o vídeo através das miniaturas:</p>
+            
+            <div class="folder-box-iframe">
+                <iframe src="https://drive.google.com/embeddedfolderview?id=1VpAyIZRy5g_0qvbuN3PsbRjSrPP2SiJv&rm=grid" title="Pasta de Vídeos"></iframe>
+            </div>
+        </div>
+
+        <!-- 3. Áudios Embaixo (Com o link correto da sua pasta de áudios) -->
+        <div class="vip-section">
+            <h3>🎧 Exercícios da Apostila em Áudio (.wav)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Role a barra vertical para escolher o exercício:</p>
+            
+            <div class="folder-box-iframe">
+                <iframe src="https://drive.google.com/embeddedfolderview?id=1wpTw_TM7RN5z_9xOLfZ3H0jBAnM_eKo5#list" title="Pasta de Áudios"></iframe>
+            </div>
+        </div>
+
     </div>
 
-    <script>
-        // Lista completa gerada da planilha com links corrigidos para carregamento rápido
-        const aulasOriginal = [
-            { titulo: "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/10if5kTCvIZbLMW26NVse-lJwStjsUFSY/preview" },
-            { titulo: "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/10r8pAQ7zu48DxFlVvCc_tqVeEFEFdQQf/preview" },
-            { titulo: "98 - OUTRAS LEVADAS SHUFFLE.wav", url: "https://drive.google.com/file/d/12-GbmGahpUsPIQwi729rBMrnWcEydLtB/preview" },
-            { titulo: "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/12qfuNL6EAttA1WLR_i9scrlYvuJ1EokN/preview" },
-            { titulo: "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/12tXJ1ONPwPlUMK8hKlSZVKVP6wiQS_Cm/preview" },
-            { titulo: "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/131hhlBDPKTC5VLWUM37WNDjxNresH25f/preview" },
-            { titulo: "18 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/13q_q0-_UgCkT14q07Z1egoYfeONAgu-O/preview" },
-            { titulo: "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/14EVfrGHkxozPLSYEmzVZFoBE6umMcLia/preview" },
-            { titulo: "16 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/14JWYHvLVAn0c4jRG14oOq4gnQU3FMNZ9/preview" },
-            { titulo: "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/15c81zobsFxrq3q72PzYXl-U2EnxF4JdL/preview" },
-            { titulo: "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav", url: "https://drive.google.com/file/d/15m02Nwe0lL44pubA7vF6C6ph_VKwXNX6/preview" },
-            { titulo: "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/16MTUK1Ejv_TpZxhKYuJVYm0vm0_ucMri/preview" },
-            { titulo: "17 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/16bSI3ECnxKpaDBEQm_w5yJUDYEFTwcgp/preview" },
-            { titulo: "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav", url: "https://drive.google.com/file/d/18UTqSZsuCkl7-UChCc8XtPpRnDTd_SuB/preview" },
-            { titulo: "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/19EXUyP0xBrQH_HZ_UPkjflw2V19-ZT3N/preview" },
-            { titulo: "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/19uUq8ctClbHJGQlgR7iYWKK95WcY7SJe/preview" },
-            { titulo: "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1C2dJSmaaBIQh3bIC9IKaA6d2_LfBhZLq/preview" },
-            { titulo: "11 - LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/1DTDqS1HuKgos72nS17qsR7fupG9IE_6A/preview" },
-            { titulo: "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1Ds0LYpOcaEdE6AXTpM49z09J53rfj4MH/preview" },
-            { titulo: "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1EO2WArtO0sVGM_b7-kSQSf__H6AVGpII/preview" },
-            { titulo: "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/1FPn9Z9MAP30pCGiOI-CrEm7vjGUTXxA7/preview" },
-            { titulo: "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1FTR3pIjiFr1mtfQFcywvJ7Q8FtLslgou/preview" },
-            { titulo: "93 - ADICIONANDO ELEMENTOS.wav", url: "https://drive.google.com/file/d/1GWfmpq4INAyzNVpnxi94cLGag2UnSR5l/preview" },
-            { titulo: "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/1H19jmy5cU4qjZYK2-a3qi-_zLGbYxgYH/preview" },
-            { titulo: "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1HuXr3dAgU8GuRPhmCVd1S2mbh_SdRT-p/preview" },
-            { titulo: "67 -  VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav", url: "https://drive.google.com/file/d/1IWcHdbIFpvT2ch_TrfNwiNv7knkz0H8N/preview" },
-            { titulo: "92 - ADICIONANDO ELEMENTOS.wav", url: "https://drive.google.com/file/d/1J3D7TYJBOTtYarKxXEkuzJimypbwbeYt/preview" },
-            { titulo: "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1JXU8r7sLcf0s3JZ089RlUb4A9psjDOuz/preview" },
-            { titulo: "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav", url: "https://drive.google.com/file/d/1KB_3uis99uoijuGanfZVSx31cZac9-Bv/preview" },
-            { titulo: "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1K_r6AWsQmoWVdIba4qF29Vap4Hdvuesj/preview" },
-            { titulo: "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/1LBNXG2t6uR_btE8etWkJ38pvUUzTmoqe/preview" },
-            { titulo: "90 - SUGESTÕES DE VIRADAS.wav", url: "https://drive.google.com/file/d/1LRbIKhcWoG5l8paWarJY_RctM53Jln_c/preview" },
-            { titulo: "19 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/1LoKZXFlsmoTO8cvRJ9y-hpZjgWaylBjO/preview" },
-            { titulo: "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/1NEJ19I8jakAp4Rd0AfalKIx47Ap8B1en/preview" },
-            { titulo: "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/1NyWCFT3DrxddBnRxTH-U7INc7hveuqUe/preview" },
-            { titulo: "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/1ODBMJBIiNzgp118ItOw4wmRMllvg9CwO/preview" },
-            { titulo: "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/1PDhb32jpskm3YcdK9fZhma4qQTo18i26/preview" },
-            { titulo: "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1RFISr_K5bLVuLpEkWsyZ5VsZ7aYVcjkt/preview" },
-            { titulo: "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/1SUSS3ECyEdvcMXaLVfu5oJyOqz-TxEem/preview" },
-            { titulo: "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav", url: "https://drive.google.com/file/d/1TgxV1O5JBusf2WeoVzG-YWc3HrXTZ9kZ/preview" },
-            { titulo: "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/1VHfKMZAtLH0sdgP64L00x0QZWoRfwKHj/preview" },
-            { titulo: "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav", url: "https://drive.google.com/file/d/1Xdealt9mBGHNgadq1HiKOUuzlhlLSXVn/preview" },
-            { titulo: "100 - OUTRAS LEVADAS 6 POR 9.wav", url: "https://drive.google.com/file/d/1YUy0pv2gxGDKBQyEWgDHgnneDP6hyzrg/preview" },
-            { titulo: "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1YsQTYaN4NmBAXgDDDnH1avjaG8rsvow5/preview" },
-            { titulo: "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", url: "https://drive.google.com/file/d/1a_3jLdAwcnmSxcsA06JLRJ3GIUXmER4G/preview" },
-            { titulo: "73 - LEVADAS BONUS HI-HAT ABERTO.wav", url: "https://drive.google.com/file/d/1b4VIlan6xufyjJZ4e-NueGI5GTjX60A8/preview" },
-            { titulo: "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/1bGBHSkWeHzCWSO53K6gczlE5E7Cqe0rO/preview" },
-            { titulo: "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav", url: "https://drive.google.com/file/d/1bZLC1mZJKUaBuBdRIPjP0cXkSjcCLX66/preview" },
-            { titulo: "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/1blIayc_KbDnZsS_zI-HwMzVH-HfRd1eI/preview" },
-            { titulo: "72 - LEVADAS BONUS COLCHEIA.wav", url: "https://drive.google.com/file/d/1c4ZFTQRR4OjjUPx2KG5tPbuo4dgeomPs/preview" },
-            { titulo: "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/1cJOnix9EocYnwdM6hpSaTjvYKBeJyxJu/preview" },
-            { titulo: "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/1czap4Ox-LYZXnFe80S1ZjZxmOT-ZZ_ZD/preview" },
-            { titulo: "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav", url: "https://drive.google.com/file/d/1dVRq8n6dJycCyy7g86NZXUoEJDvMVaLj/preview" },
-            { titulo: "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/1dm4WcI1Ass2EgCgJTdIp3BdcpePjRLYF/preview" },
-            { titulo: "14 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/1eoROjLOSfUkKwr9feegnlpTeF1okVwNw/preview" },
-            { titulo: "97 - OUTRAS LEVADAS.wav", url: "https://drive.google.com/file/d/1fNFujtaFhArsELnNtfJOb8xxWBsAq7xP/preview" },
-            { titulo: "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/1feWQ5cS2Bk4D0pMXG8AL-BlUJvEJkpsm/preview" },
-            { titulo: "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav", url: "https://drive.google.com/file/d/1gfvQtofunwBC4_w_2M-Bf5Qes8McSyEt/preview" },
-            { titulo: "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1hfmwRmBMLcDXAggyPeQwS_OpKCrPcmlc/preview" },
-            { titulo: "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/1iZxcLqYcR8RRsWLM14y1nGpeZrCppeai/preview" },
-            { titulo: "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1ijFIEXRJdfPmkJyjVsqQs_ShMEFY8J38/preview" },
-            { titulo: "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav", url: "https://drive.google.com/file/d/1k_1wSM9c6Yc4Ok31tya46NyF1zM1SwhF/preview" },
-            { titulo: "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", url: "https://drive.google.com/file/d/1kaZiBI0FYLlCPMMPe6WyDSZFhRgX-uXG/preview" },
-            { titulo: "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/1kwB0PqGbAP_NcBvOIalOXkbX3uPsZ94T/preview" },
-            { titulo: "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", url: "https://drive.google.com/file/d/1l0TRYeIYt2UTG9nnE7glbsbOSP2o7B_f/preview" },
-            { titulo: "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/1ng7YXt5e3xAFajRC01YPUMI5TOj8dSUl/preview" },
-            { titulo: "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://drive.google.com/file/d/1pJBJm_MrKWEwZc33AcoODVPU8OR1wMcY/preview" },
-            { titulo: "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/1sHGVIJcvrYyn0HmjQLGuh4Fs4fUnhWXj/preview" },
-            { titulo: "20 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/1sLGwxniaTYZErDHBtpbLnnwRs34fqKDI/preview" },
-            { titulo: "10 - LEVADAS.wav", url: "https://drive.google.com/file/d/1sYd1YgG2W_nPpdlXT5-ikrw_GcKHSo8S/preview" },
-            { titulo: "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1uc9XkZ_M3lAfjbRGFGbKwOhsnXc5ceIb/preview" },
-            { titulo: "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav", url: "https://drive.google.com/file/d/1v-ATUdo0cwo0Ls3iao-YWKcCW7ZBFKhZ/preview" },
-            { titulo: "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/1vBfa69WzPcUFW_yKCib4_6bmruDwCrfN/preview" },
-            { titulo: "15 - VARIAÇÃO DE LEVADAS.wav", url: "https://drive.google.com/file/d/1vrjyHVcqyWQRc-jfPo7BbmGZoCm-I2b8/preview" },
-            { titulo: "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://drive.google.com/file/d/1wByoHmSQ9BHPZfSDfPyVVzO_QU0vIc0d/preview" },
-            { titulo: "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/1wW2a9FZ4cWs4y7ECThZyKEqIXrktflFL/preview" },
-            { titulo: "89 - SUGESTÕES DE VIRADAS.wav", url: "https://drive.google.com/file/d/1x2SbVXLqy3wrwT_16qTjeDahJ1CIzzeU/preview" },
-            { titulo: "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1x4qB76l_lGH-gegbdiIVu6-me1KOoXVV/preview" },
-            { titulo: "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://drive.google.com/file/d/1xaQBNbt1VgXBmeXMoivJSMkMdhsRGEhi/preview" },
-            { titulo: "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://drive.google.com/file/d/1yhaWOH_eKj45QO681EZGMtrCt1LoHjVX/preview" },
-            { titulo: "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", url: "https://drive.google.com/file/d/1yzwpmuUflF6NlolyE8vT_9wVqH9hNqnE/preview" },
-            { titulo: "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/1zYmHa6qEawy6xqIgE4B6B2jgAgAkGUTh/preview" },
-            { titulo: "71 - LEVADAS BONUS.wav", url: "https://drive.google.com/file/d/1zyq-ihZ0kcjZs1iEVWfN-1uLUZUNc0fL/preview" }
-        ];
-
-        // Ordenação numérica automática correta
-        const aulas = aulasOriginal.sort((a, b) => {
-            const numA = parseInt(a.titulo.match(/^\d+/)) || 0;
-            const numB = parseInt(b.titulo.match(/^\d+/)) || 0;
-            return numA - numB;
-        });
-
-        const playlistEl = document.getElementById('playlist');
-        const videoPlayer = document.getElementById('videoPlayer');
-        const lessonTitleEl = document.getElementById('lessonTitle');
-
-        function carregarAula(index) {
-            const aula = aulas[index];
-            videoPlayer.src = aula.url;
-            lessonTitleEl.textContent = aula.titulo;
-
-            document.querySelectorAll('.playlist-item').forEach((el, i) => {
-                if (i === index) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
-            });
-        }
-
-        aulas.forEach((aula, index) => {
-            const div = document.createElement('div');
-            div.className = 'playlist-item';
-            div.textContent = (index + 1) + ". " + aula.titulo;
-            div.onclick = () => carregarAula(index);
-            playlistEl.appendChild(div);
-        });
-
-        if (aulas.length > 0) {
-            carregarAula(0);
-        }
-    </script>
+    <footer>
+        <p>Projeto Academia de Música - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
+    </footer>
 </body>
 </html>
