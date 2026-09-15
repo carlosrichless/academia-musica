@@ -84,7 +84,7 @@
             <p>Utilize os controles do player para reproduzir, pausar, avançar ou ajustar a velocidade de cada exercício:</p>
             
             <div class="audio-list" id="audioList">
-                <!-- Injetado ordenado via script -->
+                <!-- Injetado ordenado e corrigido via script -->
             </div>
         </div>
     </div>
@@ -96,7 +96,7 @@
     <script>
         const audios = [
             { titulo: "10 - LEVADAS.wav", id: "1sYd1YgG2W_nPpdlXT5-ikrw_GcKHSo8S" },
-            { titulo: "10 - LEVADAS.wav", id: "10if5kTCvIZbLMW26NVse-lJwStjsUFSY" }, // caso seja outra versão, mantida na ordem
+            { titulo: "10 - LEVADAS.wav", id: "10if5kTCvIZbLMW26NVse-lJwStjsUFSY" },
             { titulo: "11 - LEVADAS COLCHEIA.wav", id: "1DTDqS1HuKgos72nS17qsR7fupG9IE_6A" },
             { titulo: "14 - VARIAÇÃO DE LEVADAS.wav", id: "1eoROjLOSfUkKwr9feegnlpTeF1okVwNw" },
             { titulo: "15 - VARIAÇÃO DE LEVADAS.wav", id: "1vrjyHVcqyWQRc-jfPo7BbmGZoCm-I2b8" },
@@ -184,14 +184,14 @@
         const listContainer = document.getElementById('audioList');
 
         audios.forEach(item => {
-            // Usando o endpoint de preview incorporado com stream direto
-            const streamUrl = `https://drive.google.com/file/d/${item.id}/preview`;
+            // URL de download direto do Google Drive (funciona no player nativo do navegador)
+            const directUrl = `https://docs.google.com/uc?export=download&id=${item.id}`;
             const div = document.createElement('div');
             div.className = 'audio-item';
             div.innerHTML = `
                 <div class="audio-title"><span>▶</span> ${item.titulo}</div>
                 <audio controls preload="none">
-                    <source src="${streamUrl}" type="audio/wav">
+                    <source src="${directUrl}" type="audio/wav">
                     Seu navegador não suporta a reprodução de áudio.
                 </audio>
             `;
