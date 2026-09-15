@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -53,25 +53,36 @@
             background: transparent;
         }
 
-        .folder-box-iframe { 
-            width: 100%; 
-            height: 600px; 
-            background: #ffffff; 
-            border: 1px solid var(--border); 
-            border-radius: 8px; 
+        /* Container seguro para pastas e vídeos com bloqueio de clique superior */
+        .folder-box-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
             overflow: hidden;
         }
-        .folder-box-iframe iframe {
+        .folder-box-container iframe {
             width: 100%;
             height: 100%;
             border: none;
+        }
+        .block-overlay-folder {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px; /* Cobre a área dos botões de menu do Google Drive no topo direito */
+            height: 50px;
+            z-index: 10;
+            background: transparent;
         }
 
         footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.85rem; }
 
         @media (max-width: 768px) {
             .ebook-container { height: 500px; }
-            .folder-box-iframe { height: 500px; }
+            .folder-box-container { height: 500px; }
         }
     </style>
 </head>
@@ -94,22 +105,24 @@
             </div>
         </div>
 
-        <!-- 2. Vídeos Explicativos no Meio (Com miniaturas / grade) -->
+        <!-- 2. Vídeos Explicativos no Meio (Protegido) -->
         <div class="vip-section">
             <h3>🎬 Vídeos Explicativos das Aulas</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Escolha o vídeo através das miniaturas:</p>
             
-            <div class="folder-box-iframe">
+            <div class="folder-box-container">
+                <div class="block-overlay-folder"></div>
                 <iframe src="https://drive.google.com/embeddedfolderview?id=1VpAyIZRy5g_0qvbuN3PsbRjSrPP2SiJv&rm=grid" title="Pasta de Vídeos"></iframe>
             </div>
         </div>
 
-        <!-- 3. Áudios Embaixo (Com o link correto da sua pasta de áudios) -->
+        <!-- 3. Áudios Embaixo (Protegido) -->
         <div class="vip-section">
             <h3>🎧 Exercícios da Apostila em Áudio (.wav)</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Role a barra vertical para escolher o exercício:</p>
             
-            <div class="folder-box-iframe">
+            <div class="folder-box-container">
+                <div class="block-overlay-folder"></div>
                 <iframe src="https://drive.google.com/embeddedfolderview?id=1wpTw_TM7RN5z_9xOLfZ3H0jBAnM_eKo5#list" title="Pasta de Áudios"></iframe>
             </div>
         </div>
