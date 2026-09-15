@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Projeto Academia de Música - C. Richless</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #34d399;
+            --danger: #f87171;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+        
+        #telaLoginGeral {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+        .login-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .login-box h2 { color: var(--accent); margin-bottom: 15px; font-size: 1.5rem; }
+        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .login-input:focus { outline: none; border-color: var(--accent); }
+        .btn-login {
+            width: 100%;
+            background: var(--success);
+            color: #0f172a;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none; }
+
+        #conteudoSite { display: none; }
+
+        .top-admin-link { text-align: right; margin-bottom: 15px; }
+        .top-admin-link a { color: var(--accent); font-size: 0.85rem; text-decoration: none; background: var(--card-bg); padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px; font-weight: bold; }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        .header h1 { color: var(--success); font-size: 2rem; margin-bottom: 5px; }
+        .header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .secao-mural {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .secao-mural h2 { color: var(--accent); font-size: 1.4rem; margin-bottom: 20px; }
+        
+        .mural-caixa-interna {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 25px;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .mural-titulo-aviso { color: var(--success); font-size: 1.2rem; font-weight: bold; margin-bottom: 8px; }
+        .mural-texto-aviso { color: var(--text-main); font-size: 1.05rem; }
+        .mural-legenda { color: var(--text-muted); font-size: 0.85rem; }
+
+        .modulos-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .modulo-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+        }
+        .modulo-box h3 { color: var(--success); margin-bottom: 10px; font-size: 1.3rem; }
+        .modulo-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+        
+        .input-senha {
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+        .input-senha:focus { outline: none; border-color: var(--accent); }
+
+        .btn-modulo {
+            display: inline-block;
+            background: var(--accent);
+            color: #0f172a;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .erro-senha-modulo { color: var(--danger); font-size: 0.8rem; margin-bottom: 10px; display: none; }
+
+        .lembretes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .lembrete-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .lembrete-card h3 { color: var(--accent); font-size: 0.95rem; margin-bottom: 12px; text-align: center; }
+        .lembrete-conteudo {
+            width: 100%;
+            height: 260px;
+            background: #0f172a;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        .lembrete-conteudo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .lembrete-conteudo video { width: 100%; height: 100%; object-fit: contain; }
+        .lembrete-conteudo audio { width: 100%; }
+
+        footer { text-align: center; margin-top: 35px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 900px) {
+            .lembretes-grid { grid-template-columns: 1fr; }
+            .modulos-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="telaLoginGeral" class="container">
+        <div class="login-box">
+            <h2>🎵 Academia de Música</h2>
+            <p>Digite a senha de acesso ao site:</p>
+            <input type="password" id="senhaSiteInput" class="login-input" placeholder="Senha...">
+            <button onclick="verificarSenhaSite()" class="btn-login">Entrar no Site</button>
+            <div id="erroSenhaSite" class="erro-msg">Senha incorreta!</div>
+        </div>
+    </div>
+
+    <div id="conteudoSite" class="container">
+        <div class="top-admin-link">
+            <a href="painel-admin.html">⚙️ Abrir Painel Administrativo</a>
+        </div>
+
+        <div class="header">
+            <p>Professor C. Richless - Área de Estudos e Prática</p>
+            <h1>Projeto Academia de Música</h1>
+        </div>
+
+        <!-- Mural Rotativo -->
+        <div class="secao-mural">
+            <h2>Mural de Avisos & Lembretes</h2>
+            <div class="mural-caixa-interna">
+                <div id="muralTitulo" class="mural-titulo-aviso">🎵 Bem-vindo ao Projeto!</div>
+                <div id="muralTexto" class="mural-texto-aviso">Carregando avisos...</div>
+            </div>
+            <div class="mural-legenda">Avisos em rotação automática.</div>
+        </div>
+
+        <!-- Módulos -->
+        <div class="modulos-grid">
+            <div class="modulo-box">
+                <h3>🥁 Módulo Bateria</h3>
+                <p>Acesse a Área VIP exclusiva com áudios, capas e videoaulas.</p>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Digite sua senha VIP:</div>
+                <input type="password" id="senhaBateriaInput" class="input-senha" placeholder="Senha da Bateria">
+                <div id="erroBateria" class="erro-senha-modulo">Senha incorreta ou excluída!</div>
+                <button onclick="acessarModulo('bateria')" class="btn-modulo">Acessar Área VIP</button>
+            </div>
+            
+            <div class="modulo-box">
+                <h3>🎸 Módulo Violão / Guitarra</h3>
+                <p>Acesse a Área VIP exclusiva com materiais e videoaulas práticas.</p>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Digite sua senha VIP:</div>
+                <input type="password" id="senhaViolaoInput" class="input-senha" placeholder="Senha do Violão">
+                <div id="erroViolao" class="erro-senha-modulo">Senha incorreta ou excluída!</div>
+                <button onclick="acessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Acessar Área VIP</button>
+            </div>
+        </div>
+
+        <!-- Lembretes Mídia Local -->
+        <div class="lembretes-grid">
+            <div class="lembrete-card">
+                <h3>🖼️ Lembretes em Imagem</h3>
+                <div class="lembrete-conteudo"><img id="midiaImg" src="" alt=""></div>
+            </div>
+            <div class="lembrete-card">
+                <h3>🎧 Lembretes em Áudio</h3>
+                <div class="lembrete-conteudo"><audio id="midiaAudio" controls></audio></div>
+            </div>
+            <div class="lembrete-card">
+                <h3>🎬 Lembretes em Vídeo</h3>
+                <div class="lembrete-conteudo"><video id="midiaVideo" controls></video></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Projeto Academia de Música - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function verificarSenhaSite() {
+            let senhaGeral = localStorage.getItem('senha_site_geral') || "123456";
+            if (document.getElementById('senhaSiteInput').value === senhaGeral) {
+                document.getElementById('telaLoginGeral').style.display = 'none';
+                document.getElementById('conteudoSite').style.display = 'block';
+                inicializarSite();
+            } else {
+                document.getElementById('erroSenhaSite').style.display = 'block';
+            }
+        }
+
+        document.getElementById('senhaSiteInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") verificarSenhaSite();
+        });
+
+        function acessarModulo(moduloAlvo) {
+            let inputId = moduloAlvo === 'bateria' ? 'senhaBateriaInput' : 'senhaViolaoInput';
+            let erroId = moduloAlvo === 'bateria' ? 'erroBateria' : 'erroViolao';
+            let paginaDestino = moduloAlvo === 'bateria' ? 'bateria-vip.html' : 'violao-vip.html';
+            
+            let digitada = document.getElementById(inputId).value;
+            
+            // Busca a lista de senhas cadastradas no painel
+            let senhasVipSalvas = localStorage.getItem('admin_senhas_vip');
+            let listaVip = senhasVipSalvas ? JSON.parse(senhasVipSalvas) : [
+                { senha: "bateria123", modulo: "bateria" },
+                { senha: "violao123", modulo: "violao" }
+            ];
+
+            // Verifica se a senha digitada bate com alguma ativa e se pertence ao módulo correto
+            let senhaValida = listaVip.some(item => item.senha === digitada && item.modulo === moduloAlvo);
+
+            if (senhaValida) {
+                window.location.href = paginaDestino;
+            } else {
+                document.getElementById(erroId).style.display = 'block';
+            }
+        }
+
+        function inicializarSite() {
+            let listaAvisosPadrao = [{ titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }];
+            let listaAvisos = localStorage.getItem('admin_avisos_custom') ? JSON.parse(localStorage.getItem('admin_avisos_custom')) : listaAvisosPadrao;
+            
+            let tempoSegundos = parseInt(localStorage.getItem('admin_tempo_mural')) || 4;
+            let indexAviso = 0;
+            const elTitulo = document.getElementById('muralTitulo');
+            const elTexto = document.getElementById('muralTexto');
+
+            function atualizarMural() {
+                if(listaAvisos.length > 0) {
+                    let item = listaAvisos[indexAviso];
+                    elTitulo.style.opacity = 0;
+                    elTexto.style.opacity = 0;
+                    setTimeout(() => {
+                        elTitulo.innerText = item.titulo || "";
+                        elTexto.innerText = item.texto || "";
+                        elTitulo.style.opacity = 1;
+                        elTexto.style.opacity = 1;
+                        indexAviso = (indexAviso + 1) % listaAvisos.length;
+                    }, 300);
+                }
+            }
+            elTitulo.style.transition = "opacity 0.3s ease";
+            elTexto.style.transition = "opacity 0.3s ease";
+            if(listaAvisos.length > 0) {
+                atualizarMural();
+                setInterval(atualizarMural, tempoSegundos * 1000);
+            }
+
+            document.getElementById('midiaImg').src = localStorage.getItem('admin_img') || "";
+            document.getElementById('midiaAudio').src = localStorage.getItem('admin_audio') || "";
+            document.getElementById('midiaVideo').src = localStorage.getItem('admin_video') || "";
+        }
+    </script>
+</body>
+</html>

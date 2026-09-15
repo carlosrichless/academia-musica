@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Área VIP - Bateria | C. Richless</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #34d399;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 15px; -webkit-overflow-scrolling: touch; }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .top-bar h1 { color: var(--success); font-size: 1.6rem; }
+        
+        .btn-voltar { background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: background 0.2s; font-size: 0.9rem; }
+        .btn-voltar:hover { background: #475569; }
+
+        .vip-section { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .vip-section h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.2rem; border-left: 4px solid var(--accent); padding-left: 10px; }
+
+        .ebook-container { 
+            width: 100%; 
+            height: 650px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            overflow-y: scroll !important; 
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff; 
+            position: relative;
+        }
+        .ebook-container iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
+        }
+        
+        .block-overlay-pdf {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 50px;
+            z-index: 10;
+            background: transparent;
+        }
+
+        .folder-box-iframe { 
+            width: 100%; 
+            height: 600px; 
+            background: #ffffff; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            overflow: hidden;
+        }
+        .folder-box-iframe iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .ebook-container { height: 500px; }
+            .folder-box-iframe { height: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="top-bar">
+            <h1>🔓 Área VIP - Módulo Bateria</h1>
+            <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+        </div>
+
+        <!-- 1. Apostila em Cima -->
+        <div class="vip-section">
+            <h3>📖 Apostila Completa (Leitura Interativa)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Deslize para cima e para baixo para navegar entre as páginas:</p>
+            
+            <div class="ebook-container">
+                <div class="block-overlay-pdf"></div>
+                <iframe src="https://drive.google.com/file/d/1kjHmBqoZFrofljWOoRWCb_WjIirdiokN/preview?usp=sharing" title="Apostila de Bateria"></iframe>
+            </div>
+        </div>
+
+        <!-- 2. Vídeos Explicativos no Meio (Com miniaturas / grade) -->
+        <div class="vip-section">
+            <h3>🎬 Vídeos Explicativos das Aulas</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Escolha o vídeo através das miniaturas:</p>
+            
+            <div class="folder-box-iframe">
+                <iframe src="https://drive.google.com/embeddedfolderview?id=1VpAyIZRy5g_0qvbuN3PsbRjSrPP2SiJv&rm=grid" title="Pasta de Vídeos"></iframe>
+            </div>
+        </div>
+
+        <!-- 3. Áudios Embaixo (Com o link correto da sua pasta de áudios) -->
+        <div class="vip-section">
+            <h3>🎧 Exercícios da Apostila em Áudio (.wav)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Role a barra vertical para escolher o exercício:</p>
+            
+            <div class="folder-box-iframe">
+                <iframe src="https://drive.google.com/embeddedfolderview?id=1wpTw_TM7RN5z_9xOLfZ3H0jBAnM_eKo5#list" title="Pasta de Áudios"></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Projeto Academia de Música - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
+    </footer>
+</body>
+</html>
