@@ -20,8 +20,8 @@
         .main-content { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; position: relative; }
         .player-container { width: 100%; max-width: 800px; aspect-ratio: 16/9; background: #000; position: relative; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
         
-        /* Camada de Proteção (Bloqueia clique direito e download) */
-        .block-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; background: transparent; }
+        /* Camada de Proteção Inteligente (Bloqueia clique direito fora do player, mas deixa o iframe livre para o Play) */
+        .block-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 60px; z-index: 10; background: transparent; pointer-events: auto; }
         
         iframe { width: 100%; height: 100%; border: none; }
         .lesson-title { margin-top: 20px; font-size: 18px; font-weight: bold; text-align: center; color: #e0e0e0; }
@@ -36,15 +36,15 @@
 
     <div class="main-content">
         <div class="player-container">
-            <!-- Camada invisível bloqueadora de cliques -->
+            <!-- Barra superior bloqueadora de menu de contexto, liberando o player abaixo -->
             <div class="block-overlay" oncontextmenu="return false;"></div>
-            <iframe id="videoPlayer" src="" allow="autoplay"></iframe>
+            <iframe id="videoPlayer" src="" allow="autoplay" allowfullscreen></iframe>
         </div>
         <div class="lesson-title" id="lessonTitle">Selecione um áudio ao lado</div>
     </div>
 
     <script>
-        // Lista completa gerada da planilha
+        // Lista completa gerada da planilha com links corrigidos para carregamento rápido
         const aulasOriginal = [
             { titulo: "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://drive.google.com/file/d/10if5kTCvIZbLMW26NVse-lJwStjsUFSY/preview" },
             { titulo: "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://drive.google.com/file/d/10r8pAQ7zu48DxFlVvCc_tqVeEFEFdQQf/preview" },
@@ -131,7 +131,7 @@
             { titulo: "71 - LEVADAS BONUS.wav", url: "https://drive.google.com/file/d/1zyq-ihZ0kcjZs1iEVWfN-1uLUZUNc0fL/preview" }
         ];
 
-        // Ordena automaticamente os áudios por ordem numérica extraída do início do título
+        // Ordenação numérica automática correta
         const aulas = aulasOriginal.sort((a, b) => {
             const numA = parseInt(a.titulo.match(/^\d+/)) || 0;
             const numB = parseInt(b.titulo.match(/^\d+/)) || 0;
