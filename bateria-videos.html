@@ -3,187 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vídeos Explicativos | C. Richless</title>
+    <title>Biblioteca de Vídeos VIP - Bateria</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #38bdf8;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --success: #34d399;
-            --hover-bg: #334155;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
-
-        .top-bar {
-            background-color: #1e293b;
-            border-bottom: 1px solid var(--border);
-            padding: 15px 25px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
         }
-        .top-title { color: var(--text-main); font-size: 1rem; font-weight: 600; }
-        .btn-voltar {
-            background: #2563eb;
+        header {
+            background-color: #1f1f1f;
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 1.2rem;
             color: #fff;
-            padding: 8px 16px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: background 0.2s;
         }
-        .btn-voltar:hover { background: #1d4ed8; }
-
         .container {
-            max-width: 1300px;
-            margin: 20px auto;
-            padding: 0 20px;
-            width: 100%;
-            flex-grow: 1;
+            display: flex;
+            flex: 1;
+            overflow: hidden;
         }
-        
-        .page-header {
-            margin-bottom: 20px;
-        }
-        .page-header h1 {
-            color: var(--success);
-            font-size: 1.5rem;
-        }
-
-        /* Layout Estilo Streaming: Player na Esquerda, Lista/Busca na Direita */
-        .streaming-layout {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 20px;
-            align-items: start;
-        }
-
-        @media (max-width: 900px) {
-            .streaming-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .player-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
+        .player-area {
+            flex: 2;
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            position: sticky;
-            top: 20px;
-        }
-        .player-section h3 {
-            color: var(--accent);
-            font-size: 1.1rem;
-            margin-bottom: 15px;
         }
         video {
             width: 100%;
-            border-radius: 6px;
+            max-height: 75vh;
             outline: none;
             background: #000;
-            max-height: 550px;
         }
-
-        .playlist-section {
+        .video-title {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            color: #fff;
+            text-align: center;
+        }
+        .playlist-area {
+            flex: 1;
+            background-color: #181818;
+            border-left: 1px solid #333;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            max-width: 400px;
         }
-
-        .search-box {
-            width: 100%;
-            padding: 12px 15px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 0.95rem;
-            outline: none;
+        .playlist-header {
+            padding: 15px;
+            background-color: #202020;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
         }
-        .search-box:focus { border-color: var(--accent); }
-
-        .lista-menu {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            max-height: 600px;
+        .playlist {
             overflow-y: auto;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            flex: 1;
         }
-        
-        /* Estilização da barra de rolagem da lista */
-        .lista-menu::-webkit-scrollbar { width: 8px; }
-        .lista-menu::-webkit-scrollbar-track { background: var(--card-bg); }
-        .lista-menu::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-        .item-video {
+        .playlist-item {
             padding: 12px 15px;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #222;
             cursor: pointer;
             transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             font-size: 0.9rem;
         }
-        .item-video:last-child { border-bottom: none; }
-        .item-video:hover { background-color: var(--hover-bg); color: var(--accent); }
-        .item-video.ativo { background-color: var(--hover-bg); border-left: 4px solid var(--accent); color: var(--accent); }
-        .item-video span { font-weight: 500; }
-        .item-video .icone-play { font-size: 1rem; color: var(--accent); }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            border-top: 1px solid var(--border);
-            margin-top: 40px;
+        .playlist-item:hover {
+            background-color: #2a2a2a;
+        }
+        .playlist-item.active {
+            background-color: #333;
+            border-left: 4px solid #1db954;
+            color: #fff;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .playlist-area {
+                max-width: 100%;
+                max-height: 40vh;
+            }
+            video {
+                max-height: 40vh;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="top-title">🎬 Vídeos Explicativos das Aulas</div>
-        <a href="bateria-vip.html" class="btn-voltar">← Voltar à Área VIP</a>
-    </div>
+    <header>
+        <h1>Biblioteca VIP - Carlos Richless</h1>
+    </header>
 
     <div class="container">
-        <div class="page-header">
-            <h1>Vídeos da Apostila</h1>
+        <!-- Área do Player -->
+        <div class="player-area">
+            <video id="videoPlayer" controls autoplay>
+                Seu navegador não suporta reprodução de vídeo.
+            </video>
+            <div class="video-title" id="videoTitle">Selecione um vídeo ao lado</div>
         </div>
 
-        <div class="streaming-layout">
-            <!-- Coluna da Esquerda: O Player de Vídeo Fixado/Destaque -->
-            <div class="player-section">
-                <h3 id="videoTitleActive">Selecione um vídeo ao lado</h3>
-                <video id="videoPlayer" controls controlsList="nodownload">
-                    Seu navegador não suporta vídeo.
-                </video>
-            </div>
-
-            <!-- Coluna da Direita: Busca e Lista estilo Streaming -->
-            <div class="playlist-section">
-                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar episódio (ex: 29, Bumbo...)" onkeyup="filtrarVideos()">
-                <div class="lista-menu" id="listaVideosMenu"></div>
+        <!-- Lista de Vídeos -->
+        <div class="playlist-area">
+            <div class="playlist-header">Aulas Disponíveis</div>
+            <div class="playlist" id="playlist">
+                <!-- Preenchido via JavaScript -->
             </div>
         </div>
     </div>
 
-    <footer>
-        Projeto Academia de Música - C. Richless &copy; 2026
-    </footer>
-
     <script>
-        const listaNomesVideos = [
+        // URL base do repositório no GitHub Pages
+        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-videovip/";
+
+        // Lista exata de arquivos fornecida
+        const videos = [
             "10 - LEVADAS.mp4",
             "100 - OUTRAS LEVADAS 6 POR 9.mp4",
             "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4",
@@ -209,56 +158,56 @@
             "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
             "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
             "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
+            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
+            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
+            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
+            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
+            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
+            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
+            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.mp4",
+            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
+            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
+            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
             "71 - LEVADAS BONUS.mp4",
             "72 - LEVADAS BONUS COLCHEIA.mp4",
             "73 - LEVADAS BONUS HI-HAT ABERTO.mp4",
             "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.mp4",
             "76 - CONDUZIR NO CONTRA DOS TEMPOS.mp4",
-            "77 - CONDUZIR NO CONTRA DOS TEMPOS COM A MAO ESQUERDA.mp4",
+            "77 - CONDUZIR NO CONTRA DOS TEMPOS.mp4",
             "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.mp4",
-            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS COM MAO ESQUERDA.mp4",
+            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.mp4",
             "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.mp4",
-            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA COM MAO ESQUERDA.mp4",
-            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COM PRATO ESQUERDO.mp4",
-            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA COM MAO ESQUERDA NO PRATO ESQUERDO.mp4",
-            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO.mp4",
-            "86 - VIRADA INTEGRADA NA MUDANÇA DE COMPASSO.mp4",
-            "87 - VIRADA INTEGRADA NA MUDANÇA DE COMPASSO.mp4",
+            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS PART B.mp4",
+            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.mp4",
+            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA PART B.mp4",
+            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.mp4",
+            "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.mp4",
+            "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.mp4",
             "89 - SUGESTÕES DE VIRADAS.mp4",
             "90 - SUGESTÕES DE VIRADAS.mp4",
             "92 - ADICIONANDO ELEMENTOS.mp4",
@@ -269,55 +218,51 @@
             "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE.mp4"
         ];
 
-        const containerMenu = document.getElementById('listaVideosMenu');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoTitle = document.getElementById('videoTitle');
+        const playlistContainer = document.getElementById('playlist');
 
-        function carregarLista() {
-            let html = '';
-            listaNomesVideos.forEach((nomeArquivo, index) => {
-                let tituloExibicao = nomeArquivo.replace('.mp4', '');
-                let urlArquivo = encodeURI(nomeArquivo);
+        function carregarPlaylist() {
+            playlistContainer.innerHTML = '';
+            videos.forEach((filename, index) => {
+                const item = document.createElement('div');
+                item.className = 'playlist-item';
+                // Remove a extensão .mp4 na exibição da lista para ficar mais limpo
+                item.textContent = filename.replace('.mp4', '');
+                
+                item.addEventListener('click', () => {
+                    trocarVideo(index, item);
+                });
 
-                html += `
-                    <div class="item-video" id="item-${index}" data-titulo="${tituloExibicao.toLowerCase()}" onclick="tocarVideo('${urlArquivo}', '${tituloExibicao}', ${index})">
-                        <span>🎵 ${tituloExibicao}</span>
-                        <span class="icone-play">▶</span>
-                    </div>
-                `;
+                playlistContainer.appendChild(item);
             });
-            containerMenu.innerHTML = html;
-        }
 
-        function tocarVideo(urlArquivo, titulo, index) {
-            const videoPlayer = document.getElementById('videoPlayer');
-            const videoTitleActive = document.getElementById('videoTitleActive');
-
-            // Atualiza o título e a fonte do vídeo
-            videoTitleActive.innerText = titulo;
-            videoPlayer.src = `https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}`;
-            videoPlayer.play();
-
-            // Destaca visualmente o episódio atual na lista estilo Netflix
-            document.querySelectorAll('.item-video').forEach(el => el.classList.remove('ativo'));
-            const elementoAtivo = document.getElementById(`item-${index}`);
-            if (elementoAtivo) {
-                elementoAtivo.classList.add('ativo');
+            // Carrega o primeiro vídeo por padrão ao abrir a página
+            if (videos.length > 0) {
+                const primeiroItem = playlistContainer.children[0];
+                trocarVideo(0, primeiroItem);
             }
         }
 
-        function filtrarVideos() {
-            let termo = document.getElementById('searchInput').value.toLowerCase();
-            let itens = document.querySelectorAll('.item-video');
-            itens.forEach(item => {
-                let titulo = item.getAttribute('data-titulo');
-                if (titulo.includes(termo)) {
-                    item.style.display = "flex";
-                } else {
-                    item.style.display = "none";
-                }
+        function trocarVideo(index, elementoItem) {
+            // Remove a classe active de todos
+            document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+            // Adiciona no atual
+            elementoItem.classList.add('active');
+
+            const filename = videos[index];
+            // Codifica corretamente os espaços e acentos para a URL do navegador
+            const videoUrl = baseUrl + encodeURIComponent(filename);
+
+            videoPlayer.src = videoUrl;
+            videoTitle.textContent = filename.replace('.mp4', '');
+            videoPlayer.play().catch(e => {
+                console.log("Reprodução automática bloqueada pelo navegador ou erro ao carregar:", e);
             });
         }
 
-        window.onload = carregarLista;
+        // Inicializa a playlist ao carregar a página
+        carregarPlaylist();
     </script>
 </body>
 </html>
