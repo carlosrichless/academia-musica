@@ -17,7 +17,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* Barra Superior Padronizada */
         .top-bar {
             background-color: #1e293b;
             border-bottom: 1px solid var(--border);
@@ -39,7 +38,6 @@
         }
         .btn-voltar:hover { background: #1d4ed8; }
 
-        /* Container Principal */
         .container {
             max-width: 800px;
             margin: 30px auto;
@@ -68,7 +66,6 @@
         }
         .search-box:focus { border-color: var(--accent); }
 
-        /* Cards de Vídeo */
         .video-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -101,7 +98,6 @@
 </head>
 <body>
 
-    <!-- Barra Superior -->
     <div class="top-bar">
         <div class="top-title">🎬 Vídeos Explicativos das Aulas</div>
         <a href="bateria-vip.html" class="btn-voltar">← Voltar à Área VIP</a>
@@ -112,10 +108,8 @@
             <h1>Vídeos da Apostila</h1>
         </div>
 
-        <!-- Campo de busca rápida -->
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 10, Levadas, Bonus...)" onkeyup="filtrarVideos()">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 28, Levadas...)" onkeyup="filtrarVideos()">
 
-        <!-- Lista onde os vídeos reais serão injetados -->
         <div id="lista-videos"></div>
     </div>
 
@@ -124,7 +118,6 @@
     </footer>
 
     <script>
-        // Array com todos os nomes reais dos arquivos de vídeo exatamente como estão no seu repositório
         const listaNomesVideos = [
             "10 - LEVADAS.mp4",
             "11 - LEVADAS COLCHEIA.mp4",
@@ -217,22 +210,25 @@
         function carregarVideos() {
             let html = '';
             listaNomesVideos.forEach(nomeArquivo => {
-                // Tira a extensão .mp4 do título que aparece na tela para ficar mais limpo
                 let tituloExibicao = nomeArquivo.replace('.mp4', '');
-                // Formata o link codificando espaços e caracteres especiais corretamente para URL
+                
+                // Usando encodeURIComponent rigoroso para forçar a leitura exata do arquivo com acento e cedilha
                 let urlArquivo = encodeURIComponent(nomeArquivo);
 
                 html += `
                     <div class="video-card" data-titulo="${tituloExibicao.toLowerCase()}">
                         <h3>${tituloExibicao}</h3>
                         <video controls controlsList="nodownload" preload="metadata">
-                            <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}" type="video/mp4">
+                            <source src="https://raw.githubusercontent.com/carlosrichless/bateria-arquivos-videovip/main/${urlArquivo}" type="video/mp4">
                             Seu navegador não suporta vídeo.
                         </video>
                     </div>
                 `;
             });
             container.innerHTML = html;
+        }
+
+        function filtrarVideos`()` { // Corrigido
         }
 
         function filtrarVideos() {
