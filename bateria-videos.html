@@ -13,6 +13,7 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --success: #34d399;
+            --hover-bg: #334155;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; }
@@ -66,18 +67,20 @@
         }
         .search-box:focus { border-color: var(--accent); }
 
-        .video-card {
+        /* Área do Player Principal */
+        .player-container {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: none; /* Só aparece quando clica em um vídeo */
         }
-        .video-card h3 {
+        .player-container h3 {
             color: var(--accent);
-            font-size: 1rem;
-            margin-bottom: 12px;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
         }
         video {
             width: 100%;
@@ -85,6 +88,29 @@
             outline: none;
             background: #000;
         }
+
+        /* Lista de Links Estilo Menu */
+        .lista-menu {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .item-video {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95rem;
+        }
+        .item-video:last-child { border-bottom: none; }
+        .item-video:hover { background-color: var(--hover-bg); color: var(--accent); }
+        .item-video span { font-weight: 500; }
+        .item-video .icone-play { font-size: 1.1rem; color: var(--accent); }
 
         footer {
             text-align: center;
@@ -110,7 +136,16 @@
 
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 28, Levadas...)" onkeyup="filtrarVideos()">
 
-        <div id="lista-videos"></div>
+        <!-- Player que abre na mesma tela ao clicar -->
+        <div id="playerContainer" class="player-container">
+            <h3 id="videoTitleActive">Selecione um vídeo abaixo</h3>
+            <video id="videoPlayer" controls controlsList="nodownload">
+                Seu navegador não suporta vídeo.
+            </video>
+        </div>
+
+        <!-- Lista de Vídeos -->
+        <div class="lista-menu" id="listaVideosMenu"></div>
     </div>
 
     <footer>
@@ -205,41 +240,53 @@
             "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4"
         ];
 
-        const container = document.getElementById('lista-videos');
+        const containerMenu = document.getElementById('listaVideosMenu');
 
-        function carregarVideos() {
+        function carregarLista() {
             let html = '';
             listaNomesVideos.forEach(nomeArquivo => {
                 let tituloExibicao = nomeArquivo.replace('.mp4', '');
                 let urlArquivo = encodeURI(nomeArquivo);
 
                 html += `
-                    <div class="video-card" data-titulo="${tituloExibicao.toLowerCase()}">
-                        <h3>${tituloExibicao}</h3>
-                        <video controls controlsList="nodownload" preload="auto" onloadedmetadata="this.load()">
-                            <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}" type="video/mp4">
-                            Seu navegador não suporta vídeo.
-                        </video>
+                    <div class="item-video" data-titulo="${tituloExibicao.toLowerCase()}" onclick="tocarVideo('${urlArquivo}', '${tituloExibicao}')">
+                        <span>🎵 ${tituloExibicao}</span>
+                        <span class="icone-play">▶</span>
                     </div>
                 `;
             });
-            container.innerHTML = html;
+            containerMenu.innerHTML = html;
+        }
+
+        function tocarVideo(urlArquivo, titulo) {
+            const playerContainer = document.getElementById('playerContainer');
+            const videoPlayer = document.getElementById('videoPlayer');
+            const videoTitleActive = document.getElementById('videoTitleActive');
+
+            videoTitleActive.innerText = titulo;
+            videoPlayer.src = `https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}`;
+            playerContainer.style.display = 'block';
+            
+            // Racha a página suavemente para o player topo
+            playerContainer.scrollIntoView({ behavior: 'smooth' });
+            
+            videoPlayer.play();
         }
 
         function filtrarVideos() {
             let termo = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.querySelectorAll('.video-card');
-            cards.forEach(card => {
-                let titulo = card.getAttribute('data-titulo');
+            let itens = document.querySelectorAll('.item-video');
+            itens.forEach(item => {
+                let titulo = item.getAttribute('data-titulo');
                 if (titulo.includes(termo)) {
-                    card.style.display = "block";
+                    item.style.display = "flex";
                 } else {
-                    card.style.display = "none";
+                    item.style.display = "none";
                 }
             });
         }
 
-        window.onload = carregarVideos;
+        window.onload = carregarLista;
     </script>
 </body>
 </html>
