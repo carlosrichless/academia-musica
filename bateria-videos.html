@@ -216,7 +216,7 @@
                 html += `
                     <div class="video-card" data-titulo="${tituloExibicao.toLowerCase()}">
                         <h3>${tituloExibicao}</h3>
-                        <video controls controlsList="nodownload" preload="none">
+                        <video controls controlsList="nodownload" preload="auto" onloadedmetadata="this.load()">
                             <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}" type="video/mp4">
                             Seu navegador não suporta vídeo.
                         </video>
