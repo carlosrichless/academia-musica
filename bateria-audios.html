@@ -2,201 +2,170 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Exercícios em Áudio - Bateria | C. Richless</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apostila de Bateria - Áudios</title>
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #38bdf8;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --success: #34d399;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
-        
-        .container { max-width: 850px; margin: 0 auto; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
-        .top-bar h1 { color: var(--success); font-size: 1.4rem; }
-        
-        .btn-voltar { background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: background 0.2s; font-size: 0.9rem; }
-        .btn-voltar:hover { background: #475569; }
-
-        .audio-container-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 30px auto;
             padding: 20px;
         }
-        .audio-container-box h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.2rem; }
-        .audio-container-box p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; }
-
-        .audio-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-height: 650px;
-            overflow-y: auto;
-            padding-right: 5px;
+        h1 {
+            text-align: center;
+            color: #111;
         }
-
-        .audio-item {
-            background: #ffffff;
+        .audio-card {
+            background: #fff;
             padding: 15px;
+            margin-bottom: 15px;
             border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
         .audio-title {
-            color: #1e293b;
-            font-size: 0.95rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
         }
-
-        .audio-title span { color: #0284c7; }
-
+        /* ESSA LINHA ESCONDE O BOTÃO DE DOWNLOAD DO PLAYER DO NAVEGADOR, MAS MANTÉM A VELOCIDADE */
+        audio::-webkit-media-controls-download-button {
+            display: none !important;
+        }
         audio {
             width: 100%;
-            height: 40px;
-            outline: none;
         }
-
-        footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="top-bar">
-            <h1>🎧 Exercícios da Apostila em Áudio (.wav)</h1>
-            <a href="bateria-vip.html" class="btn-voltar">← Voltar à Área VIP</a>
-        </div>
-
-        <div class="audio-container-box">
-            <h3>Lista de Reprodução de Áudios</h3>
-            <p>Utilize os controles do player para reproduzir, pausar, avançar ou ajustar a velocidade de cada exercício:</p>
-            
-            <div class="audio-list" id="audioList"></div>
-        </div>
+    <h1>Áudios da Apostila de Bateria</h1>
+    
+    <div id="player-container">
+        <!-- O script abaixo vai gerar os players automaticamente para os 83 arquivos -->
     </div>
 
-    <footer>
-        <p>Projeto Academia de Música - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
-    </footer>
-
     <script>
-        // Lista oficial apontando direto para o seu repositório de áudios no GitHub
-        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-som/";
-
-        const audios = [
-            { titulo: "10 - LEVADAS.wav", arquivo: "10 - LEVADAS.wav" },
-            { titulo: "11 - LEVADAS COLCHEIA.wav", arquivo: "11 - LEVADAS COLCHEIA.wav" },
-            { titulo: "14 - VARIAÇÃO DE LEVADAS.wav", arquivo: "14 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "15 - VARIAÇÃO DE LEVADAS.wav", arquivo: "15 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "16 - VARIAÇÃO DE LEVADAS.wav", arquivo: "16 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "17 - VARIAÇÃO DE LEVADAS.wav", arquivo: "17 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "18 - VARIAÇÃO DE LEVADAS.wav", arquivo: "18 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "19 - VARIAÇÃO DE LEVADAS.wav", arquivo: "19 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "20 - VARIAÇÃO DE LEVADAS.wav", arquivo: "20 - VARIAÇÃO DE LEVADAS.wav" },
-            { titulo: "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", arquivo: "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav" },
-            { titulo: "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", arquivo: "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav" },
-            { titulo: "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", arquivo: "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav" },
-            { titulo: "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", arquivo: "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav" },
-            { titulo: "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", arquivo: "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav" },
-            { titulo: "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", arquivo: "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav" },
-            { titulo: "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", arquivo: "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", arquivo: "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", arquivo: "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav", arquivo: "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav" },
-            { titulo: "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", arquivo: "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", arquivo: "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", arquivo: "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "71 - LEVADAS BONUS.wav", arquivo: "71 - LEVADAS BONUS.wav" },
-            { titulo: "72 - LEVADAS BONUS COLCHEIA.wav", arquivo: "72 - LEVADAS BONUS COLCHEIA.wav" },
-            { titulo: "73 - LEVADAS BONUS HI-HAT ABERTO.wav", arquivo: "73 - LEVADAS BONUS HI-HAT ABERTO.wav" },
-            { titulo: "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav", arquivo: "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav" },
-            { titulo: "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav", arquivo: "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav" },
-            { titulo: "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav", arquivo: "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav" },
-            { titulo: "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", arquivo: "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav" },
-            { titulo: "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", arquivo: "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav" },
-            { titulo: "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav", arquivo: "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav" },
-            { titulo: "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav", arquivo: "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav" },
-            { titulo: "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav", arquivo: "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav" },
-            { titulo: "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav", arquivo: "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav" },
-            { titulo: "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav", arquivo: "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav" },
-            { titulo: "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", arquivo: "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav" },
-            { titulo: "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", arquivo: "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav" },
-            { titulo: "89 - SUGESTÕES DE VIRADAS.wav", arquivo: "89 - SUGESTÕES DE VIRADAS.wav" },
-            { titulo: "90 - SUGESTÕES DE VIRADAS.wav", arquivo: "90 - SUGESTÕES DE VIRADAS.wav" },
-            { titulo: "92 - ADICIONANDO ELEMENTOS.wav", arquivo: "92 - ADICIONANDO ELEMENTOS.wav" },
-            { titulo: "93 - ADICIONANDO ELEMENTOS.wav", arquivo: "93 - ADICIONANDO ELEMENTOS.wav" },
-            { titulo: "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav", arquivo: "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav" },
-            { titulo: "97 - OUTRAS LEVADAS.wav", arquivo: "97 - OUTRAS LEVADAS.wav" },
-            { titulo: "98 - OUTRAS LEVADAS SHUFFLE.wav", arquivo: "98 - OUTRAS LEVADAS SHUFFLE.wav" },
-            { titulo: "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav", arquivo: "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav" },
-            { titulo: "100 - OUTRAS LEVADAS 6 POR 9.wav", arquivo: "100 - OUTRAS LEVADAS 6 POR 9.wav" },
-            { titulo: "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav", arquivo: "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav" }
+        // Lista com os nomes exatos dos arquivos que você subiu no GitHub
+        const arquivosAudio = [
+            "10 - LEVADAS.wav",
+            "100 - OUTRAS LEVADAS 6 POR 9.wav",
+            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav",
+            "11 - LEVADAS COLCHEIA.wav",
+            "14 - VARIAÇÃO DE LEVADAS.wav",
+            "15 - VARIAÇÃO DE LEVADAS.wav",
+            "16 - VARIAÇÃO DE LEVADAS.wav",
+            "17 - VARIAÇÃO DE LEVADAS.wav",
+            "18 - VARIAÇÃO DE LEVADAS.wav",
+            "19 - VARIAÇÃO DE LEVADAS.wav",
+            "20 - VARIAÇÃO DE LEVADAS.wav",
+            "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "67 -  VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav",
+            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "71 - LEVADAS BONUS.wav",
+            "72 - LEVADAS BONUS COLCHEIA.wav",
+            "73 - LEVADAS BONUS HI-HAT ABERTO.wav",
+            "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav",
+            "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
+            "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
+            "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav",
+            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav",
+            "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav",
+            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS PART B.wav",
+            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav",
+            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA PART B.wav",
+            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav",
+            "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav",
+            "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav",
+            "89 - SUGESTÕES DE VIRADAS.wav",
+            "90 - SUGESTÕES DE VIRADAS.wav",
+            "92 - ADICIONANDO ELEMENTOS.wav",
+            "93 - ADICIONANDO ELEMENTOS.wav",
+            "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav",
+            "97 - OUTRAS LEVADAS.wav",
+            "98 - OUTRAS LEVADAS SHUFFLE.wav",
+            "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav"
         ];
 
-        const listContainer = document.getElementById('audioList');
+        const container = document.getElementById('player-container');
+        let todosOsPlayers = [];
 
-        audios.forEach(item => {
-            const div = document.createElement('div');
-            div.className = 'audio-item';
-            // Codifica o nome do arquivo para aceitar espaços e acentos perfeitamente na URL
-            const urlFinal = baseUrl + encodeURIComponent(item.arquivo);
-            
-            div.innerHTML = `
-                <div class="audio-title"><span>▶</span> ${item.titulo}</div>
-                <audio controls preload="none">
-                    <source src="${urlFinal}" type="audio/wav">
-                    Seu navegador não suporta a reprodução de áudio.
-                </audio>
-            `;
-            listContainer.appendChild(div);
+        // Cria os blocos de áudio na tela de forma automática
+        arquivosAudioforEach = arquivosAudio.forEach((nomeArquivo) => {
+            const card = document.createElement('div');
+            card.className = 'audio-card';
+
+            const title = document.createElement('div');
+            title.className = 'audio-title';
+            // Tira a extensão .wav para o título ficar limpo na tela
+            title.innerText = nomeArquivo.replace('.wav', '');
+
+            const audio = document.createElement('audio');
+            audio.controls = true;
+            // Puxa o link direto do seu GitHub Pages
+            audio.src = `https://carlosrichless.github.io/bateria-arquivos-som/${encodeURIComponent(nomeArquivo)}`;
+
+            // LÓGICA DO EFEITO FITA: Quando um play é acionado, pausa todos os outros
+            audio.addEventListener('play', () => {
+                todosOsPlayers.forEach(outroAudio => {
+                    if (outroAudio !== audio) {
+                        outroAudio.pause();
+                    }
+                });
+            });
+
+            todosOsPlayers.push(audio);
+
+            card.appendChild(title);
+            card.appendChild(audio);
+            container.appendChild(card);
         });
     </script>
 </body>
