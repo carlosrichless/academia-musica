@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Academia de Música - Acesso</title>
     <style>
         :root {
@@ -51,6 +51,7 @@
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
+            transition: background 0.2s;
         }
         .btn-entrar:hover { background: #7dd3fc; }
         .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 15px; display: none; }
@@ -61,7 +62,7 @@
 
     <div class="login-card">
         <h1>🎵 Academia de Música</h1>
-        <p>Digite sua senha de acesso:</p>
+        <p>Digite sua senha de acesso geral:</p>
         
         <div class="input-group">
             <input type="password" id="senhaInput" class="input-field" placeholder="Senha..." autocomplete="current-password">
@@ -75,16 +76,23 @@
         </footer>
     </div>
 
+    <script src="config-senhas.js"></script>
     <script>
         function validarLogin() {
             let senhaDigitada = document.getElementById('senhaInput').value;
 
-            // Senha fixa de teste baseada no seu config-senhas.js
-            let senhaCorreta = "123456";
+            if (typeof CONFIG_SISTEMA === 'undefined') {
+                alert("Erro ao carregar configurações!");
+                return;
+            }
 
-            if (senhaDigitada === senhaCorreta) {
+            if (senhaDigitada === CONFIG_SISTEMA.senhaSiteGeral) {
                 sessionStorage.setItem('site_liberado', 'true');
                 window.location.href = "painel-geral.html";
+            } 
+            else if (senhaDigitada === CONFIG_SISTEMA.senhaAdminSistema) {
+                sessionStorage.setItem('site_liberado', 'true');
+                window.location.href = "painel-admin.html";
             } else {
                 document.getElementById('erroMsg').style.display = 'block';
             }
