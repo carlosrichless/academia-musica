@@ -68,7 +68,7 @@
 </head>
 <body>
 
-    <!-- Script de Proteção: Redireciona para o login se não houver sessão ativa -->
+    <!-- Proteção de Sessão -->
     <script>
         if (sessionStorage.getItem('site_liberado') !== 'true') {
             window.location.href = "index.html";
@@ -101,7 +101,7 @@
             <h3>📝 Seus Lembretes Importantes</h3>
             <ul>
                 <li>Lembre-se de verificar os arquivos da bateria semanalmente.</li>
-                <li>Mantenha os links com acesso liberado.</li>
+                <li>Mantenha os links do Google Drive com acesso liberado.</li>
                 <li>Use este painel para adicionar novos atalhos sempre que precisar.</li>
             </ul>
         </div>
