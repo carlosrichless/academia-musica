@@ -1,20 +1,100 @@
-<script src="config-senhas.js"></script>
-<script>
-    function validarSenhaVipAluno(senhaDigitada) {
-        if (typeof CONFIG_SISTEMA === 'undefined') {
-            alert("Erro ao carregar configurações de senhas!");
-            return false;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área VIP - Bateria | Academia de Música</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --success: #34d399;
+            --danger: #f87171;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
+        .login-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .login-box h2 { color: var(--accent); margin-bottom: 15px; }
+        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            text-align: center;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .login-input:focus { outline: none; border-color: var(--accent); }
+        .btn-login {
+            width: 100%;
+            background: var(--success);
+            color: #0f172a;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h2>🥁 Área VIP - Bateria</h2>
+        <p>Digite a sua senha de aluno(a) VIP:</p>
+        <input type="password" id="senhaVipInput" class="login-input" placeholder="Senha...">
+        <button onclick="validarSenhaVipAluno()" class="btn-login">Entrar no Módulo</button>
+        <div id="erroSenha" class="erro-msg">Senha incorreta para a Bateria!</div>
+        
+        <div style="margin-top: 20px;">
+            <a href="painel-geral.html" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none;">← Voltar ao Painel Geral</a>
+        </div>
+    </div>
+
+    <!-- Importa o arquivo central de senhas -->
+    <script src="config-senhas.js"></script>
+    <script>
+        function validarSenhaVipAluno() {
+            let senhaDigitada = document.getElementById('senhaVipInput').value;
+
+            if (typeof CONFIG_SISTEMA === 'undefined') {
+                alert("Erro ao carregar o arquivo config-senhas.js!");
+                return;
+            }
+
+            // Procura na lista centralizada se existe a senha para o módulo de bateria
+            let autorizado = CONFIG_SISTEMA.senhasVip.find(item => item.senha === senhaDigitada && item.modulo === 'bateria');
+            
+            if (autorizado) {
+                alert("Bem-vindo(a), " + (autorizado.nome || "Aluno(a)") + "!");
+                sessionStorage.setItem('bateria_vip_liberado', 'true');
+                // Redireciona para a página interna da apostila/áudios se desejar, ou mantenha aqui
+                window.location.href = "bateria-apostila.html"; 
+            } else {
+                document.getElementById('erroSenha').style.display = 'block';
+            }
         }
 
-        // Procura na lista centralizada se existe a senha para o módulo de bateria
-        let autorizado = CONFIG_SISTEMA.senhasVip.find(item => item.senha === senhaDigitada && item.modulo === 'bateria');
-        
-        if (autorizado) {
-            alert("Bem-vindo(a), " + (autorizado.nome || "Aluno(a)") + "!");
-            return true;
-        } else {
-            alert("Senha incorreta para a Área VIP de Bateria.");
-            return false;
-        }
-    }
-</script>
+        document.getElementById('senhaVipInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") validarSenhaVipAluno();
+        });
+    </script>
+</body>
+</html>
