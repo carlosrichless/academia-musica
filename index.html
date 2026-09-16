@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academia de Música - Acesso</title>
     <style>
         :root {
@@ -30,7 +30,6 @@
         .login-card h1 { color: var(--success); font-size: 1.8rem; margin-bottom: 10px; }
         .login-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
         .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
         .input-field {
             width: 100%;
             padding: 12px;
@@ -39,6 +38,7 @@
             border-radius: 6px;
             color: var(--text-main);
             font-size: 1rem;
+            text-align: center;
         }
         .input-field:focus { outline: none; border-color: var(--accent); }
         .btn-entrar {
@@ -51,7 +51,6 @@
             font-weight: bold;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.2s;
         }
         .btn-entrar:hover { background: #7dd3fc; }
         .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 15px; display: none; }
@@ -62,10 +61,10 @@
 
     <div class="login-card">
         <h1>🎵 Academia de Música</h1>
-        <p>Digite sua senha de acesso geral:</p>
+        <p>Digite sua senha de acesso:</p>
         
         <div class="input-group">
-            <input type="password" id="senhaInput" class="input-field" placeholder="Senha de acesso..." autocomplete="current-password">
+            <input type="password" id="senhaInput" class="input-field" placeholder="Senha..." autocomplete="current-password">
         </div>
         
         <button onclick="validarLogin()" class="btn-entrar">Entrar</button>
@@ -76,32 +75,21 @@
         </footer>
     </div>
 
-    <!-- Importa o arquivo central de senhas -->
-    <script src="config-senhas.js"></script>
     <script>
         function validarLogin() {
             let senhaDigitada = document.getElementById('senhaInput').value;
 
-            if (typeof CONFIG_SISTEMA === 'undefined') {
-                alert("Erro: Arquivo config-senhas.js não foi carregado corretamente!");
-                return;
-            }
+            // Senha fixa de teste baseada no seu config-senhas.js
+            let senhaCorreta = "123456";
 
-            // Verifica se a senha bate com a senha geral do sistema configurada no config-senhas.js
-            if (senhaDigitada === CONFIG_SISTEMA.senhaGeral) {
+            if (senhaDigitada === senhaCorreta) {
                 sessionStorage.setItem('site_liberado', 'true');
                 window.location.href = "painel-geral.html";
-            } 
-            // Ou se for a senha de admin
-            else if (senhaDigitada === CONFIG_SISTEMA.senhaAdmin) {
-                sessionStorage.setItem('site_liberado', 'true');
-                window.location.href = "painel-admin.html";
             } else {
                 document.getElementById('erroMsg').style.display = 'block';
             }
         }
 
-        // Permite enviar com a tecla Enter
         document.getElementById('senhaInput').addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 validarLogin();
