@@ -112,10 +112,10 @@
             <h1>Vídeos da Apostila</h1>
         </div>
 
-        <!-- Campo de busca para achar rápido qualquer vídeo pelo número ou nome -->
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 10, Levadas, 45...)" onkeyup="filtrarVideos()">
+        <!-- Campo de busca rápida -->
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 10, Levadas, Bonus...)" onkeyup="filtrarVideos()">
 
-        <!-- Lista onde os vídeos serão injetados automaticamente -->
+        <!-- Lista onde os vídeos reais serão injetados -->
         <div id="lista-videos"></div>
     </div>
 
@@ -124,50 +124,117 @@
     </footer>
 
     <script>
-        // Lista com os nomes exatos dos seus arquivos de vídeo em ordem numérica correta.
-        // Basta adicionar novos nomes aqui se precisar expandir no futuro!
-        const arquivosVideos = [
-            "1 - ABERTURA", // Exemplo genérico caso tenha o 1
-            "10 - LEVADAS",
-            "11 - LEVADAS COLCHEIA",
-            // Insira os outros nomes na ordem exata aqui, ou o script gerará pelo padrão abaixo:
+        // Array com todos os nomes reais dos arquivos de vídeo exatamente como estão no seu repositório
+        const listaNomesVideos = [
+            "10 - LEVADAS.mp4",
+            "11 - LEVADAS COLCHEIA.mp4",
+            "14 - VARIAÇÃO DE LEVADAS.mp4",
+            "15 - VARIAÇÃO DE LEVADAS.mp4",
+            "16 - VARIAÇÃO DE LEVADAS.mp4",
+            "17 - VARIAÇÃO DE LEVADAS.mp4",
+            "18 - VARIAÇÃO DE LEVADAS.mp4",
+            "19 - VARIAÇÃO DE LEVADAS.mp4",
+            "20 - VARIAÇÃO DE LEVADAS.mp4",
+            "21 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "22 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "23 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "24 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "25 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "26 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "27 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "28 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "29 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "30 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "31 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "32 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "33 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "34 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "35 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "36 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "37 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "38 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "39 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "40 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "41 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "42 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "43 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "44 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "45 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "46 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "47 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "48 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "49 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "50 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "51 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "52 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "53 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "54 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "55 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "56 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "57 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "58 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "59 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "60 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "61 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "62 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "63 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "64 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "65 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "66 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "67 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "68 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "69 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "70 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "71 - LEVADAS BONUS.mp4",
+            "72 - LEVADAS BONUS COLCHEIA.mp4",
+            "73 - LEVADAS BONUS HI-HAT ABERTO.mp4",
+            "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.mp4",
+            "76 - CONDUZIR NO CONTRA DOS TEMPOS.mp4",
+            "77 - CONDUZIR NO CONTRA DOS TEMPOS COM A MAO ESQUERDA.mp4",
+            "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.mp4",
+            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS COM MAO ESQUERDA.mp4",
+            "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.mp4",
+            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA COM MAO ESQUERDA.mp4",
+            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COM PRATO ESQUERDO.mp4",
+            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA COM MAO ESQUERDA NO PRATO ESQUERDO.mp4",
+            "84 - ABRINDO HI-HAT LEVADAS ADD BUM.mp4",
+            "86 - VIRADA INTEGRADA NA MUDANÇA DE COMPASSO.mp4",
+            "87 - VIRADA INTEGRADA NA MUDANÇA DE COMPASSO.mp4",
+            "89 - SUGESTÕES DE VIRADAS.mp4",
+            "90 - SUGESTÕES DE VIRADAS.mp4",
+            "92 - ADICIONANDO ELEMENTOS.mp4",
+            "93 - ADICIONANDO ELEMENTOS.mp4",
+            "95 - VIRADAS DE TENSÃO OU VIRADA EXTREMA.mp4",
+            "97 - OUTRAS LEVADAS.mp4",
+            "98 - OUTRAS LEVADAS SHUFFLE.mp4",
+            "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE.mp4",
+            "100 - OUTRAS LEVADAS 6 POR 9.mp4",
+            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4"
         ];
 
-        // Se você preferir gerar de forma totalmente automatizada de 1 até 83 (ajuste o número máximo se precisar):
-        // (Caso seus arquivos sigam o padrão exato de nomenclatura numérica no GitHub)
-        const totalVideos = 83; 
         const container = document.getElementById('lista-videos');
 
         function carregarVideos() {
             let html = '';
-            // Se quiser usar a lista manual preenchida acima, mude para: arquivosVideos
-            // Caso queira gerar de 1 a 83 de forma automática:
-            for (let i = 1; i <= totalVideos; i++) {
-                // Monta o nome base correspondente (ajuste conforme o prefixo que você usa nos arquivos)
-                // Exemplo: se seus arquivos se chamam "1 - NOME.mp4", "2 - NOME.mp4", etc.
-                let nomeExibicao = `Aula de Bateria - Vídeo ${i}`;
-                let nomeArquivo = `${i}%20-%20AULA.mp4`; // Ajuste o sufixo se necessário
-
-                // Tratamento especial para os vídeos que já sabemos que existem com nomes específicos:
-                if (i === 10) { nomeExibicao = "10 - LEVADAS"; nomeArquivo = "10%20-%20LEVADAS.mp4"; }
-                if (i === 11) { nomeExibicao = "11 - LEVADAS COLCHEIA"; nomeArquivo = "11%20-%20LEVADAS%20COLCHEIA.mp4"; }
-                if (i === 100) { nomeExibicao = "100 - OUTRAS LEVADAS 6 POR 9"; nomeArquivo = "100%20-%20OUTRAS%20LEVADAS%206%20POR%209.mp4"; }
-                if (i === 101) { nomeExibicao = "101 - OUTRAS LEVADAS E NOTAS FANTASMAS"; nomeArquivo = "101%20-%20OUTRAS%20LEVADAS%20E%20NOTAS%20FANTASMAS.mp4"; }
+            listaNomesVideos.forEach(nomeArquivo => {
+                // Tira a extensão .mp4 do título que aparece na tela para ficar mais limpo
+                let tituloExibicao = nomeArquivo.replace('.mp4', '');
+                // Formata o link codificando espaços e caracteres especiais corretamente para URL
+                let urlArquivo = encodeURIComponent(nomeArquivo);
 
                 html += `
-                    <div class="video-card" data-titulo="${nomeExibicao.toLowerCase()}">
-                        <h3>${nomeExibicao}</h3>
+                    <div class="video-card" data-titulo="${tituloExibicao.toLowerCase()}">
+                        <h3>${tituloExibicao}</h3>
                         <video controls controlsList="nodownload" preload="metadata">
-                            <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${nomeArquivo}" type="video/mp4">
+                            <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}" type="video/mp4">
                             Seu navegador não suporta vídeo.
                         </video>
                     </div>
                 `;
-            }
+            });
             container.innerHTML = html;
         }
 
-        // Função de busca instantânea
         function filtrarVideos() {
             let termo = document.getElementById('searchInput').value.toLowerCase();
             let cards = document.querySelectorAll('.video-card');
@@ -181,7 +248,6 @@
             });
         }
 
-        // Executa ao carregar a página
         window.onload = carregarVideos;
     </script>
 </body>
