@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área VIP - Bateria | Academia de Música</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Área VIP - Bateria | C. Richless</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -13,87 +13,261 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --success: #34d399;
-            --danger: #f87171;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-        .login-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 15px; -webkit-overflow-scrolling: touch; }
+        
+        .container { max-width: 900px; margin: 0 auto; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+        .top-bar h1 { color: var(--success); font-size: 1.6rem; }
+        
+        .btn-voltar { background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: background 0.2s; font-size: 0.9rem; }
+        .btn-voltar:hover { background: #475569; }
+
+        .vip-section { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 25px; }
+        .vip-section h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.2rem; border-left: 4px solid var(--accent); padding-left: 10px; }
+
+        .ebook-container { 
+            width: 100%; 
+            height: 650px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border); 
+            overflow-y: scroll !important; 
+            -webkit-overflow-scrolling: touch;
+            background: #ffffff; 
+            position: relative;
         }
-        .login-box h2 { color: var(--accent); margin-bottom: 15px; }
-        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-        .login-input {
-            width: 100%;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            text-align: center;
-            font-size: 1rem;
-            margin-bottom: 15px;
+        .ebook-container iframe { 
+            width: 100%; 
+            height: 100%; 
+            border: none; 
         }
-        .login-input:focus { outline: none; border-color: var(--accent); }
-        .btn-login {
+        
+        .block-overlay-pdf {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 50px;
+            z-index: 10;
+            background: transparent;
+        }
+
+        .folder-box-iframe { 
+            width: 100%; 
+            height: 600px; 
+            background: #ffffff; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            overflow: hidden;
+        }
+        .folder-box-iframe iframe {
             width: 100%;
-            background: var(--success);
-            color: #0f172a;
-            padding: 12px;
+            height: 100%;
             border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
         }
-        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none; }
+
+        /* Caixa de Áudios Estilizada idêntica à foto, mas com players nativos funcionais */
+        .audio-box-custom {
+            width: 100%;
+            height: 600px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow-y: scroll;
+            padding: 15px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .audio-row {
+            display: flex;
+            flex-direction: column;
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            gap: 8px;
+            background: #fff;
+            transition: background 0.2s;
+        }
+        .audio-row:hover {
+            background: #f8fafc;
+        }
+
+        .audio-row-title {
+            color: #1e293b;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .audio-row-title span {
+            color: #0284c7;
+        }
+
+        .audio-row audio {
+            width: 100%;
+            height: 35px;
+            outline: none;
+        }
+
+        footer { text-align: center; margin-top: 30px; padding: 20px; color: var(--text-muted); border-top: 1px solid var(--border); font-size: 0.85rem; }
+
+        @media (max-width: 768px) {
+            .ebook-container { height: 500px; }
+            .folder-box-iframe { height: 500px; }
+            .audio-box-custom { height: 500px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2>🥁 Área VIP - Bateria</h2>
-        <p>Digite a sua senha de aluno(a) VIP:</p>
-        <input type="password" id="senhaVipInput" class="login-input" placeholder="Senha...">
-        <button onclick="validarSenhaVipAluno()" class="btn-login">Entrar no Módulo</button>
-        <div id="erroSenha" class="erro-msg">Senha incorreta para a Bateria!</div>
-        
-        <div style="margin-top: 20px;">
-            <a href="painel-geral.html" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none;">← Voltar ao Painel Geral</a>
+    <div class="container">
+        <div class="top-bar">
+            <h1>🔓 Área VIP - Módulo Bateria</h1>
+            <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
         </div>
+
+        <!-- 1. Apostila em Cima -->
+        <div class="vip-section">
+            <h3>📖 Apostila Completa (Leitura Interativa)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Deslize para cima e para baixo para navegar entre as páginas:</p>
+            
+            <div class="ebook-container">
+                <div class="block-overlay-pdf"></div>
+                <iframe src="https://drive.google.com/file/d/1kjHmBqoZFrofljWOoRWCb_WjIirdiokN/preview?usp=sharing" title="Apostila de Bateria"></iframe>
+            </div>
+        </div>
+
+        <!-- 2. Vídeos Explicativos no Meio -->
+        <div class="vip-section">
+            <h3>🎬 Vídeos Explicativos das Aulas</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Escolha o vídeo através das miniaturas:</p>
+            
+            <div class="folder-box-iframe">
+                <iframe src="https://drive.google.com/embeddedfolderview?id=1VpAyIZRy5g_0qvbuN3PsbRjSrPP2SiJv&rm=grid" title="Pasta de Vídeos"></iframe>
+            </div>
+        </div>
+
+        <!-- 3. Áudios Embaixo (Caixa retangular com players embutidos - sem abrir novas abas) -->
+        <div class="vip-section">
+            <h3>🎧 Exercícios da Apostila em Áudio (.wav)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px;">Role a barra vertical e use os controles do player para ouvir, ajustar volume ou alterar a velocidade:</p>
+            
+            <div class="audio-box-custom" id="audioContainerList">
+                <!-- Os áudios são injetados aqui de forma organizada -->
+            </div>
+        </div>
+
     </div>
 
-    <!-- Importa o arquivo central de senhas -->
-    <script src="config-senhas.js"></script>
+    <footer>
+        <p>Projeto Academia de Música - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
+    </footer>
+
     <script>
-        function validarSenhaVipAluno() {
-            let senhaDigitada = document.getElementById('senhaVipInput').value;
+        const listaAudiosOriginal = [
+            { titulo: "10 - LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=1sYd1YgG2W_nPpdlXT5-ikrw_GcKHSo8S" },
+            { titulo: "11 - LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1DTDqS1HuKgos72nS17qsR7fupG9IE_6A" },
+            { titulo: "14 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=1eoROjLOSfUkKwr9feegnlpTeF1okVwNw" },
+            { titulo: "15 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=1vrjyHVcqyWQRc-jfPo7BbmGZoCm-I2b8" },
+            { titulo: "16 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=14JWYHvLVAn0c4jRG14oOq4gnQU3FMNZ9" },
+            { titulo: "17 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=16bSI3ECnxKpaDBEQm_w5yJUDYEFTwcgp" },
+            { titulo: "18 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=13q_q0-_UgCkT14q07Z1egoYfeONAgu-O" },
+            { titulo: "19 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=1LoKZXFlsmoTO8cvRJ9y-hpZjgWaylBjO" },
+            { titulo: "20 - VARIAÇÃO DE LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=1sLGwxniaTYZErDHBtpbLnnwRs34fqKDI" },
+            { titulo: "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1NEJ19I8jakAp4Rd0AfalKIx47Ap8B1en" },
+            { titulo: "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=131hhlBDPKTC5VLWUM37WNDjxNresH25f" },
+            { titulo: "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1wW2a9FZ4cWs4y7ECThZyKEqIXrktflFL" },
+            { titulo: "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=10if5kTCvIZbLMW26NVse-lJwStjsUFSY" },
+            { titulo: "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1bGBHSkWeHzCWSO53K6gczlE5E7Cqe0rO" },
+            { titulo: "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=16MTUK1Ejv_TpZxhKYuJVYm0vm0_ucMri" },
+            { titulo: "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1kwB0PqGbAP_NcBvOIalOXkbX3uPsZ94T" },
+            { titulo: "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=1H19jmy5cU4qjZYK2-a3qi-_zLGbYxgYH" },
+            { titulo: "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=15c81zobsFxrq3q72PzYXl-U2EnxF4JdL" },
+            { titulo: "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=1zYmHa6qEawy6xqIgE4B6B2jgAgAkGUTh" },
+            { titulo: "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=10r8pAQ7zu48DxFlVvCc_tqVeEFEFdQQf" },
+            { titulo: "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=1VHfKMZAtLH0sdgP64L00x0QZWoRfwKHj" },
+            { titulo: "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=1PDhb32jpskm3YcdK9fZhma4qQTo18i26" },
+            { titulo: "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", url: "https://docs.google.com/uc?export=download&id=1feWQ5cS2Bk4D0pMXG8AL-BlUJvEJkpsm" },
+            { titulo: "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1iZxcLqYcR8RRsWLM14y1nGpeZrCppeai" },
+            { titulo: "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1SUSS3ECyEdvcMXaLVfu5oJyOqz-TxEem" },
+            { titulo: "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1NyWCFT3DrxddBnRxTH-U7INc7hveuqUe" },
+            { titulo: "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1ng7YXt5e3xAFajRC01YPUMI5TOj8dSUl" },
+            { titulo: "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1ODBMJBIiNzgp118ItOw4wmRMllvg9CwO" },
+            { titulo: "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=14EVfrGHkxozPLSYEmzVZFoBE6umMcLia" },
+            { titulo: "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1wByoHmSQ9BHPZfSDfPyVVzO_QU0vIc0d" },
+            { titulo: "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1czap4Ox-LYZXnFe80S1ZjZxmOT-ZZ_ZD" },
+            { titulo: "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1cJOnix9EocYnwdM6hpSaTjvYKBeJyxJu" },
+            { titulo: "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1yhaWOH_eKj45QO681EZGMtrCt1LoHjVX" },
+            { titulo: "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1vBfa69WzPcUFW_yKCib4_6bmruDwCrfN" },
+            { titulo: "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1sHGVIJcvrYyn0HmjQLGuh4Fs4fUnhWXj" },
+            { titulo: "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=12qfuNL6EAttA1WLR_i9scrlYvuJ1EokN" },
+            { titulo: "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1blIayc_KbDnZsS_zI-HwMzVH-HfRd1eI" },
+            { titulo: "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1EO2WArtO0sVGM_b7-kSQSf__H6AVGpII" },
+            { titulo: "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1RFISr_K5bLVuLpEkWsyZ5VsZ7aYVcjkt" },
+            { titulo: "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1uc9XkZ_M3lAfjbRGFGbKwOhsnXc5ceIb" },
+            { titulo: "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1K_r6AWsQmoWVdIba4qF29Vap4Hdvuesj" },
+            { titulo: "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1xaQBNbt1VgXBmeXMoivJSMkMdhsRGEhi" },
+            { titulo: "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1FTR3pIjiFr1mtfQFcywvJ7Q8FtLslgou" },
+            { titulo: "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1YsQTYaN4NmBAXgDDDnH1avjaG8rsvow5" },
+            { titulo: "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1pJBJm_MrKWEwZc33AcoODVPU8OR1wMcY" },
+            { titulo: "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=19uUq8ctClbHJGQlgR7iYWKK95WcY7SJe" },
+            { titulo: "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=19EXUyP0xBrQH_HZ_UPkjflw2V19-ZT3N" },
+            { titulo: "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1LBNXG2t6uR_btE8etWkJ38pvUUzTmoqe" },
+            { titulo: "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1FPn9Z9MAP30pCGiOI-CrEm7vjGUTXxA7" },
+            { titulo: "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=12tXJ1ONPwPlUMK8hKlSZVKVP6wiQS_Cm" },
+            { titulo: "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", url: "https://docs.google.com/uc?export=download&id=1dm4WcI1Ass2EgCgJTdIp3BdcpePjRLYF" },
+            { titulo: "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1x4qB76l_lGH-gegbdiIVu6-me1KOoXVV" },
+            { titulo: "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1Ds0LYpOcaEdE6AXTpM49z09J53rfj4MH" },
+            { titulo: "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1JXU8r7sLcf0s3JZ089RlUb4A9psjDOuz" },
+            { titulo: "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav", url: "https://docs.google.com/uc?export=download&id=1IWcHdbIFpvT2ch_TrfNwiNv7knkz0H8N" },
+            { titulo: "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1C2dJSmaaBIQh3bIC9IKaA6d2_LfBhZLq" },
+            { titulo: "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1ijFIEXRJdfPmkJyjVsqQs_ShMEFY8J38" },
+            { titulo: "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1HuXr3dAgU8GuRPhmCVd1S2mbh_SdRT-p" },
+            { titulo: "71 - LEVADAS BONUS.wav", url: "https://docs.google.com/uc?export=download&id=1zyq-ihZ0kcjZs1iEVWfN-1uLUZUNc0fL" },
+            { titulo: "72 - LEVADAS BONUS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1c4ZFTQRR4OjjUPx2KG5tPbuo4dgeomPs" },
+            { titulo: "73 - LEVADAS BONUS HI-HAT ABERTO.wav", url: "https://docs.google.com/uc?export=download&id=1b4VIlan6xufyjJZ4e-NueGI5GTjX60A8" },
+            { titulo: "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1TgxV1O5JBusf2WeoVzG-YWc3HrXTZ9kZ" },
+            { titulo: "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav", url: "https://docs.google.com/uc?export=download&id=1bZLC1mZJKUaBuBdRIPjP0cXkSjcCLX66" },
+            { titulo: "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav", url: "https://docs.google.com/uc?export=download&id=15m02Nwe0lL44pubA7vF6C6ph_VKwXNX6" },
+            { titulo: "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", url: "https://docs.google.com/uc?export=download&id=1yzwpmuUflF6NlolyE8vT_9wVqH9hNqnE" },
+            { titulo: "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", url: "https://docs.google.com/uc?export=download&id=1l0TRYeIYt2UTG9nnE7glbsbOSP2o7B_f" },
+            { titulo: "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav", url: "https://docs.google.com/uc?export=download&id=1dVRq8n6dJycCyy7g86NZXUoEJDvMVaLj" },
+            { titulo: "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav", url: "https://docs.google.com/uc?export=download&id=18UTqSZsuCkl7-UChCc8XtPpRnDTd_SuB" },
+            { titulo: "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1k_1wSM9c6Yc4Ok31tya46NyF1zM1SwhF" },
+            { titulo: "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav", url: "https://docs.google.com/uc?export=download&id=1Xdealt9mBGHNgadq1HiKOUuzlhlLSXVn" },
+            { titulo: "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav", url: "https://docs.google.com/uc?export=download&id=1hfmwRmBMLcDXAggyPeQwS_OpKCrPcmlc" },
+            { titulo: "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", url: "https://docs.google.com/uc?export=download&id=1kaZiBI0FYLlCPMMPe6WyDSZFhRgX-uXG" },
+            { titulo: "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", url: "https://docs.google.com/uc?export=download&id=1a_3jLdAwcnmSxcsA06JLRJ3GIUXmER4G" },
+            { titulo: "89 - SUGESTÕES DE VIRADAS.wav", url: "https://docs.google.com/uc?export=download&id=1x2SbVXLqy3wrwT_16qTjeDahJ1CIzzeU" },
+            { titulo: "90 - SUGESTÕES DE VIRADAS.wav", url: "https://docs.google.com/uc?export=download&id=1LRbIKhcWoG5l8paWarJY_RctM53Jln_c" },
+            { titulo: "92 - ADICIONANDO ELEMENTOS.wav", url: "https://docs.google.com/uc?export=download&id=1J3D7TYJBOTtYarKxXEkuzJimypbwbeYt" },
+            { titulo: "93 - ADICIONANDO ELEMENTOS.wav", url: "https://docs.google.com/uc?export=download&id=1GWfmpq4INAyzNVpnxi94cLGag2UnSR5l" },
+            { titulo: "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav", url: "https://docs.google.com/uc?export=download&id=1gfvQtofunwBC4_w_2M-Bf5Qes8McSyEt" },
+            { titulo: "97 - OUTRAS LEVADAS.wav", url: "https://docs.google.com/uc?export=download&id=1fNFujtaFhArsELnNtfJOb8xxWBsAq7xP" },
+            { titulo: "98 - OUTRAS LEVADAS SHUFFLE.wav", url: "https://docs.google.com/uc?export=download&id=12-GbmGahpUsPIQwi729rBMrnWcEydLtB" },
+            { titulo: "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav", url: "https://docs.google.com/uc?export=download&id=1v-ATUdo0cwo0Ls3iao-YWKcCW7ZBFKhZ" },
+            { titulo: "100 - OUTRAS LEVADAS 6 POR 9.wav", url: "https://docs.google.com/uc?export=download&id=1YUy0pv2gxGDKBQyEWgDHgnneDP6hyzrg" },
+            { titulo: "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav", url: "https://docs.google.com/uc?export=download&id=1KB_3uis99uoijuGanfZVSx31cZac9-Bv" }
+        ];
 
-            if (typeof CONFIG_SISTEMA === 'undefined') {
-                alert("Erro ao carregar o arquivo config-senhas.js!");
-                return;
-            }
+        const containerList = document.getElementById('audioContainerList');
 
-            // Procura na lista centralizada se existe a senha para o módulo de bateria
-            let autorizado = CONFIG_SISTEMA.senhasVip.find(item => item.senha === senhaDigitada && item.modulo === 'bateria');
+        listaAudiosOriginal.forEach((audio, index) => {
+            const row = document.createElement('div');
+            row.className = 'audio-row';
             
-            if (autorizado) {
-                alert("Bem-vindo(a), " + (autorizado.nome || "Aluno(a)") + "!");
-                sessionStorage.setItem('bateria_vip_liberado', 'true');
-                // Redireciona para a página interna da apostila/áudios se desejar, ou mantenha aqui
-                window.location.href = "bateria-apostila.html"; 
-            } else {
-                document.getElementById('erroSenha').style.display = 'block';
-            }
-        }
-
-        document.getElementById('senhaVipInput').addEventListener("keypress", function(event) {
-            if (event.key === "Enter") validarSenhaVipAluno();
+            row.innerHTML = `
+                <div class="audio-row-title">
+                    <span>▶</span> ${audio.titulo}
+                </div>
+                <audio controls preload="none">
+                    <source src="${audio.url}" type="audio/wav">
+                    Seu navegador não suporta a reprodução de áudio.
+                </audio>
+            `;
+            containerList.appendChild(row);
         });
     </script>
 </body>
