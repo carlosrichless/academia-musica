@@ -211,24 +211,19 @@
             let html = '';
             listaNomesVideos.forEach(nomeArquivo => {
                 let tituloExibicao = nomeArquivo.replace('.mp4', '');
-                
-                // Usando encodeURIComponent rigoroso para forçar a leitura exata do arquivo com acento e cedilha
-                let urlArquivo = encodeURIComponent(nomeArquivo);
+                let urlArquivo = encodeURI(nomeArquivo);
 
                 html += `
                     <div class="video-card" data-titulo="${tituloExibicao.toLowerCase()}">
                         <h3>${tituloExibicao}</h3>
-                        <video controls controlsList="nodownload" preload="metadata">
-                            <source src="https://raw.githubusercontent.com/carlosrichless/bateria-arquivos-videovip/main/${urlArquivo}" type="video/mp4">
+                        <video controls controlsList="nodownload" preload="none">
+                            <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}" type="video/mp4">
                             Seu navegador não suporta vídeo.
                         </video>
                     </div>
                 `;
             });
             container.innerHTML = html;
-        }
-
-        function filtrarVideos`()` { // Corrigido
         }
 
         function filtrarVideos() {
