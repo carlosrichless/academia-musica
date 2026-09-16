@@ -20,7 +20,7 @@ const CONFIG_SISTEMA = {
 
     // Mural de Avisos
     mural: {
-        tempoDuracao: 4, // em segundos
+        tempoDuracao: 4,
         avisos: [
             { titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }
         ]
