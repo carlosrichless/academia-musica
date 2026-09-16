@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Painel Geral de Links | C. Richless</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | C. Richless</title>
     <style>
         :root {
             --bg-color: #0f172a;
@@ -13,110 +13,73 @@
             --text-muted: #94a3b8;
             --border: #334155;
             --success: #34d399;
+            --danger: #f87171;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; line-height: 1.6; }
         
-        .container { max-width: 800px; margin: 40px auto; }
+        .container { max-width: 800px; margin: 30px auto; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .btn-voltar { background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; transition: background 0.2s; font-size: 0.9rem; }
+        .btn-voltar { background: #334155; color: #fff; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
         .btn-voltar:hover { background: #475569; }
 
-        .header { text-align: center; margin-bottom: 35px; }
-        .header h1 { color: var(--success); font-size: 2rem; margin-bottom: 8px; }
-        .header p { color: var(--text-muted); font-size: 1rem; }
-
-        .menu-grid { display: grid; gap: 15px; margin-bottom: 30px; }
-        
-        .menu-card { 
-            background-color: var(--card-bg); 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            padding: 20px 25px; 
-            text-decoration: none; 
-            color: var(--text-main); 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between;
-            transition: all 0.2s ease;
-        }
-        .menu-card:hover { 
-            border-color: var(--accent); 
-            transform: translateY(-2px); 
-            background-color: #253348;
-        }
-        .menu-info h3 { color: var(--accent); font-size: 1.2rem; margin-bottom: 5px; }
-        .menu-info p { color: var(--text-muted); font-size: 0.9rem; }
-        .arrow { font-size: 1.2rem; color: var(--accent); font-weight: bold; }
-
-        .lembretes-box {
+        .card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .lembretes-box h3 { color: var(--success); margin-bottom: 12px; font-size: 1.1rem; }
-        .lembretes-box ul { padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; }
-        .lembretes-box li { margin-bottom: 8px; }
-
-        .btn-sair { background: #7f1d1d; color: #fca5a5; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; border: none; cursor: pointer; }
-        .btn-sair:hover { background: #991b1b; }
-
-        footer { text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.85rem; }
+        .card h2 { color: var(--success); margin-bottom: 15px; font-size: 1.4rem; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px; }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 1rem;
+        }
+        .input-field:focus { outline: none; border-color: var(--accent); }
+        .info-txt { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- Proteção de Sessão -->
-    <script>
-        if (sessionStorage.getItem('site_liberado') !== 'true') {
-            window.location.href = "index.html";
-        }
-    </script>
-
     <div class="container">
         <div class="top-bar">
-            <a href="index.html" class="btn-voltar">← Voltar ao Início (Index)</a>
-            <button onclick="sairDoSistema()" class="btn-sair">Sair / Bloquear 🔒</button>
+            <a href="painel-geral.html" class="btn-voltar">← Voltar ao Painel Geral</a>
         </div>
 
-        <div class="header">
-            <h1>📌 Painel de Links & Lembretes</h1>
-            <p>Central de acesso rápido aos módulos e avisos:</p>
-        </div>
+        <div class="card">
+            <h2>⚙️ Painel do Administrador</h2>
+            <p class="info-txt">Aqui você gerencia as configurações gerais puxadas do arquivo <strong>config-senhas.js</strong>.</p>
+            
+            <div class="input-group">
+                <label>Senha Geral do Site:</label>
+                <input type="text" id="passSiteGeral" class="input-field" readonly>
+            </div>
 
-        <div class="menu-grid">
-            <!-- Link para a Área VIP de Bateria -->
-            <a href="bateria-vip.html" class="menu-card">
-                <div class="menu-info">
-                    <h3>🥁 Área VIP - Bateria</h3>
-                    <p>Apostila, Vídeos explicativos e Áudios dos exercícios</p>
-                </div>
-                <div class="arrow">→</div>
-            </a>
+            <div class="input-group">
+                <label>Senha do Administrador:</label>
+                <input type="text" id="passAdmin" class="input-field" readonly>
+            </div>
         </div>
-
-        <div class="lembretes-box">
-            <h3>📝 Seus Lembretes Importantes</h3>
-            <ul>
-                <li>Lembre-se de verificar os arquivos da bateria semanalmente.</li>
-                <li>Mantenha os links do Google Drive com acesso liberado.</li>
-                <li>Use este painel para adicionar novos atalhos sempre que precisar.</li>
-            </ul>
-        </div>
-
     </div>
 
-    <footer>
-        <p>Painel Geral - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
-    </footer>
-
+    <script src="config-senhas.js"></script>
     <script>
-        function sairDoSistema() {
-            sessionStorage.removeItem('site_liberado');
-            window.location.href = "index.html";
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            if (typeof CONFIG_SISTEMA !== 'undefined') {
+                document.getElementById('passSiteGeral').value = CONFIG_SISTEMA.senhaSiteGeral;
+                document.getElementById('passAdmin').value = CONFIG_SISTEMA.senhaAdminSistema;
+            } else {
+                alert("Aviso: config-senhas.js não carregado corretamente.");
+            }
+        });
     </script>
 </body>
 </html>
