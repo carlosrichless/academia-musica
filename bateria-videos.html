@@ -67,7 +67,6 @@
         }
         .search-box:focus { border-color: var(--accent); }
 
-        /* Área do Player Principal */
         .player-container {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -75,7 +74,7 @@
             padding: 20px;
             margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            display: none; /* Só aparece quando clica em um vídeo */
+            display: none;
         }
         .player-container h3 {
             color: var(--accent);
@@ -89,7 +88,6 @@
             background: #000;
         }
 
-        /* Lista de Links Estilo Menu */
         .lista-menu {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -136,7 +134,6 @@
 
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 28, Levadas...)" onkeyup="filtrarVideos()">
 
-        <!-- Player que abre na mesma tela ao clicar -->
         <div id="playerContainer" class="player-container">
             <h3 id="videoTitleActive">Selecione um vídeo abaixo</h3>
             <video id="videoPlayer" controls controlsList="nodownload">
@@ -144,7 +141,6 @@
             </video>
         </div>
 
-        <!-- Lista de Vídeos -->
         <div class="lista-menu" id="listaVideosMenu"></div>
     </div>
 
@@ -246,6 +242,7 @@
             let html = '';
             listaNomesVideos.forEach(nomeArquivo => {
                 let tituloExibicao = nomeArquivo.replace('.mp4', '');
+                // Codifica limpo usando encodeURI diretamente sobre o nome exato
                 let urlArquivo = encodeURI(nomeArquivo);
 
                 html += `
@@ -266,10 +263,7 @@
             videoTitleActive.innerText = titulo;
             videoPlayer.src = `https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}`;
             playerContainer.style.display = 'block';
-            
-            // Racha a página suavemente para o player topo
             playerContainer.scrollIntoView({ behavior: 'smooth' });
-            
             videoPlayer.play();
         }
 
