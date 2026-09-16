@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Academia de Música - Acesso</title>
     <style>
         :root {
@@ -17,76 +17,95 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; height: 100vh; padding: 20px; }
-        .login-box {
+        .login-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
-            padding: 30px;
             border-radius: 12px;
+            padding: 30px;
             width: 100%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .login-box h2 { color: var(--accent); margin-bottom: 15px; }
-        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-        .login-input {
+        .login-card h1 { color: var(--success); font-size: 1.8rem; margin-bottom: 10px; }
+        .login-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
+        .input-field {
             width: 100%;
             padding: 12px;
             background: #0f172a;
             border: 1px solid var(--border);
             border-radius: 6px;
             color: var(--text-main);
-            text-align: center;
             font-size: 1rem;
-            margin-bottom: 15px;
         }
-        .login-input:focus { outline: none; border-color: var(--accent); }
-        .btn-login {
+        .input-field:focus { outline: none; border-color: var(--accent); }
+        .btn-entrar {
             width: 100%;
-            background: var(--success);
+            background: var(--accent);
             color: #0f172a;
             padding: 12px;
             border: none;
             border-radius: 6px;
             font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none; }
+        .btn-entrar:hover { background: #7dd3fc; }
+        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 15px; display: none; }
+        footer { margin-top: 25px; font-size: 0.8rem; color: var(--text-muted); }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2>🔒 Área Restrita</h2>
-        <p>Digite a senha de acesso ao site:</p>
-        <input type="password" id="senhaGeralInput" class="login-input" placeholder="Senha...">
-        <button onclick="verificarSenhaGeral()" class="btn-login">Entrar</button>
-        <div id="erroSenha" class="erro-msg">Senha incorreta!</div>
+    <div class="login-card">
+        <h1>🎵 Academia de Música</h1>
+        <p>Digite sua senha de acesso geral:</p>
         
-        <div style="margin-top: 20px;">
-            <a href="painel-admin.html" style="color: var(--text-muted); font-size: 0.8rem; text-decoration: none;">Acesso Administrador ⚙️</a>
+        <div class="input-group">
+            <input type="password" id="senhaInput" class="input-field" placeholder="Senha de acesso..." autocomplete="current-password">
         </div>
+        
+        <button onclick="validarLogin()" class="btn-entrar">Entrar</button>
+        <div id="erroMsg" class="erro-msg">Senha incorreta. Tente novamente.</div>
+
+        <footer>
+            C. Richless &copy; 2026
+        </footer>
     </div>
 
-    <!-- Importando o arquivo central de senhas -->
+    <!-- Importa o arquivo central de senhas -->
     <script src="config-senhas.js"></script>
     <script>
-        function verificarSenhaGeral() {
-            let senhaDigitada = document.getElementById('senhaGeralInput').value;
-            // Usa a senha do arquivo config-senhas.js (com fallback caso não carregue)
-            let senhaCorreta = (typeof CONFIG_SISTEMA !== 'undefined') ? CONFIG_SISTEMA.senhaSiteGeral : "123456";
+        function validarLogin() {
+            let senhaDigitada = document.getElementById('senhaInput').value;
 
-            if(senhaDigitada === senhaCorreta) {
-                // Salva sessão local apenas para manter o usuário logado navegando nas páginas
+            if (typeof CONFIG_SISTEMA === 'undefined') {
+                alert("Erro: Arquivo config-senhas.js não foi carregado corretamente!");
+                return;
+            }
+
+            // Verifica se a senha bate com a senha geral do sistema configurada no config-senhas.js
+            if (senhaDigitada === CONFIG_SISTEMA.senhaGeral) {
                 sessionStorage.setItem('site_liberado', 'true');
                 window.location.href = "painel-geral.html";
+            } 
+            // Ou se for a senha de admin
+            else if (senhaDigitada === CONFIG_SISTEMA.senhaAdmin) {
+                sessionStorage.setItem('site_liberado', 'true');
+                window.location.href = "painel-admin.html";
             } else {
-                document.getElementById('erroSenha').style.display = 'block';
+                document.getElementById('erroMsg').style.display = 'block';
             }
         }
 
-        document.getElementById('senhaGeralInput').addEventListener("keypress", function(event) {
-            if (event.key === "Enter") verificarSenhaGeral();
+        // Permite enviar com a tecla Enter
+        document.getElementById('senhaInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                validarLogin();
+            }
         });
     </script>
 </body>
