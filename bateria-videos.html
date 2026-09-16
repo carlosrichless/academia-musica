@@ -40,43 +40,45 @@
         .btn-voltar:hover { background: #1d4ed8; }
 
         .container {
-            max-width: 800px;
-            margin: 30px auto;
+            max-width: 1300px;
+            margin: 20px auto;
             padding: 0 20px;
             width: 100%;
             flex-grow: 1;
         }
+        
         .page-header {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .page-header h1 {
             color: var(--success);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
         }
-        .search-box {
-            width: 100%;
-            padding: 12px 15px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 1rem;
-            margin-bottom: 25px;
-            outline: none;
-        }
-        .search-box:focus { border-color: var(--accent); }
 
-        .player-container {
+        /* Layout Estilo Streaming: Player na Esquerda, Lista/Busca na Direita */
+        .streaming-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .streaming-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .player-section {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 20px;
-            margin-bottom: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            display: none;
+            position: sticky;
+            top: 20px;
         }
-        .player-container h3 {
+        .player-section h3 {
             color: var(--accent);
             font-size: 1.1rem;
             margin-bottom: 15px;
@@ -86,29 +88,56 @@
             border-radius: 6px;
             outline: none;
             background: #000;
+            max-height: 550px;
         }
+
+        .playlist-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .search-box:focus { border-color: var(--accent); }
 
         .lista-menu {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 10px;
-            overflow: hidden;
+            max-height: 600px;
+            overflow-y: auto;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
+        
+        /* Estilização da barra de rolagem da lista */
+        .lista-menu::-webkit-scrollbar { width: 8px; }
+        .lista-menu::-webkit-scrollbar-track { background: var(--card-bg); }
+        .lista-menu::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
         .item-video {
-            padding: 15px 20px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border);
             cursor: pointer;
             transition: background 0.2s;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
         .item-video:last-child { border-bottom: none; }
         .item-video:hover { background-color: var(--hover-bg); color: var(--accent); }
+        .item-video.ativo { background-color: var(--hover-bg); border-left: 4px solid var(--accent); color: var(--accent); }
         .item-video span { font-weight: 500; }
-        .item-video .icone-play { font-size: 1.1rem; color: var(--accent); }
+        .item-video .icone-play { font-size: 1rem; color: var(--accent); }
 
         footer {
             text-align: center;
@@ -132,16 +161,21 @@
             <h1>Vídeos da Apostila</h1>
         </div>
 
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 29, Levadas...)" onkeyup="filtrarVideos()">
+        <div class="streaming-layout">
+            <!-- Coluna da Esquerda: O Player de Vídeo Fixado/Destaque -->
+            <div class="player-section">
+                <h3 id="videoTitleActive">Selecione um vídeo ao lado</h3>
+                <video id="videoPlayer" controls controlsList="nodownload">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </div>
 
-        <div id="playerContainer" class="player-container">
-            <h3 id="videoTitleActive">Selecione um vídeo abaixo</h3>
-            <video id="videoPlayer" controls controlsList="nodownload">
-                Seu navegador não suporta vídeo.
-            </video>
+            <!-- Coluna da Direita: Busca e Lista estilo Streaming -->
+            <div class="playlist-section">
+                <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar episódio (ex: 29, Bumbo...)" onkeyup="filtrarVideos()">
+                <div class="lista-menu" id="listaVideosMenu"></div>
+            </div>
         </div>
-
-        <div class="lista-menu" id="listaVideosMenu"></div>
     </div>
 
     <footer>
@@ -149,7 +183,6 @@
     </footer>
 
     <script>
-        // Lista oficial extraída diretamente dos arquivos reais do repositório
         const listaNomesVideos = [
             "10 - LEVADAS.mp4",
             "100 - OUTRAS LEVADAS 6 POR 9.mp4",
@@ -240,12 +273,12 @@
 
         function carregarLista() {
             let html = '';
-            listaNomesVideos.forEach(nomeArquivo => {
+            listaNomesVideos.forEach((nomeArquivo, index) => {
                 let tituloExibicao = nomeArquivo.replace('.mp4', '');
                 let urlArquivo = encodeURI(nomeArquivo);
 
                 html += `
-                    <div class="item-video" data-titulo="${tituloExibique = tituloExibicao.toLowerCase()}" onclick="tocarVideo('${urlArquivo}', '${tituloExibicao}')">
+                    <div class="item-video" id="item-${index}" data-titulo="${tituloExibicao.toLowerCase()}" onclick="tocarVideo('${urlArquivo}', '${tituloExibicao}', ${index})">
                         <span>🎵 ${tituloExibicao}</span>
                         <span class="icone-play">▶</span>
                     </div>
@@ -254,16 +287,21 @@
             containerMenu.innerHTML = html;
         }
 
-        function tocarVideo(urlArquivo, titulo) {
-            const playerContainer = document.getElementById('playerContainer');
+        function tocarVideo(urlArquivo, titulo, index) {
             const videoPlayer = document.getElementById('videoPlayer');
             const videoTitleActive = document.getElementById('videoTitleActive');
 
+            // Atualiza o título e a fonte do vídeo
             videoTitleActive.innerText = titulo;
             videoPlayer.src = `https://carlosrichless.github.io/bateria-arquivos-videovip/${urlArquivo}`;
-            playerContainer.style.display = 'block';
-            playerContainer.scrollIntoView({ behavior: 'smooth' });
             videoPlayer.play();
+
+            // Destaca visualmente o episódio atual na lista estilo Netflix
+            document.querySelectorAll('.item-video').forEach(el => el.classList.remove('ativo'));
+            const elementoAtivo = document.getElementById(`item-${index}`);
+            if (elementoAtivo) {
+                elementoAtivo.classList.add('ativo');
+            }
         }
 
         function filtrarVideos() {
