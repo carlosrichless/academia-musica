@@ -132,7 +132,7 @@
             <h1>Vídeos da Apostila</h1>
         </div>
 
-        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 28, Levadas...)" onkeyup="filtrarVideos()">
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 29, Levadas...)" onkeyup="filtrarVideos()">
 
         <div id="playerContainer" class="player-container">
             <h3 id="videoTitleActive">Selecione um vídeo abaixo</h3>
@@ -149,8 +149,11 @@
     </footer>
 
     <script>
+        // Lista oficial extraída diretamente dos arquivos reais do repositório
         const listaNomesVideos = [
             "10 - LEVADAS.mp4",
+            "100 - OUTRAS LEVADAS 6 POR 9.mp4",
+            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4",
             "11 - LEVADAS COLCHEIA.mp4",
             "14 - VARIAÇÃO DE LEVADAS.mp4",
             "15 - VARIAÇÃO DE LEVADAS.mp4",
@@ -165,50 +168,49 @@
             "24 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
             "25 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
             "26 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "27 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "28 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "29 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "30 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "31 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "32 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "33 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "34 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "35 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "36 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "37 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "38 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "39 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "40 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "41 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "42 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "43 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "44 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "45 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "46 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "47 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "48 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "49 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "50 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "51 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "52 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "53 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "54 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "55 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "56 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "57 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "58 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "59 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "60 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "61 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "62 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "63 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "64 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "65 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "66 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "67 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "68 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "69 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
-            "70 - VARIAÇÃO DE LEVADAS ACRESCENTADAS.mp4",
+            "27 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
+            "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
+            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
             "71 - LEVADAS BONUS.mp4",
             "72 - LEVADAS BONUS COLCHEIA.mp4",
             "73 - LEVADAS BONUS HI-HAT ABERTO.mp4",
@@ -221,19 +223,17 @@
             "81 - CONDUZIR RIDE E CÚPULA NO CONTRA COM MAO ESQUERDA.mp4",
             "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COM PRATO ESQUERDO.mp4",
             "83 - CONDUZIR RIDE E CÚPULA NO CONTRA COM MAO ESQUERDA NO PRATO ESQUERDO.mp4",
-            "84 - ABRINDO HI-HAT LEVADAS ADD BUM.mp4",
+            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO.mp4",
             "86 - VIRADA INTEGRADA NA MUDANÇA DE COMPASSO.mp4",
             "87 - VIRADA INTEGRADA NA MUDANÇA DE COMPASSO.mp4",
             "89 - SUGESTÕES DE VIRADAS.mp4",
             "90 - SUGESTÕES DE VIRADAS.mp4",
             "92 - ADICIONANDO ELEMENTOS.mp4",
             "93 - ADICIONANDO ELEMENTOS.mp4",
-            "95 - VIRADAS DE TENSÃO OU VIRADA EXTREMA.mp4",
+            "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.mp4",
             "97 - OUTRAS LEVADAS.mp4",
             "98 - OUTRAS LEVADAS SHUFFLE.mp4",
-            "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE.mp4",
-            "100 - OUTRAS LEVADAS 6 POR 9.mp4",
-            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4"
+            "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE.mp4"
         ];
 
         const containerMenu = document.getElementById('listaVideosMenu');
@@ -242,11 +242,10 @@
             let html = '';
             listaNomesVideos.forEach(nomeArquivo => {
                 let tituloExibicao = nomeArquivo.replace('.mp4', '');
-                // Codifica limpo usando encodeURI diretamente sobre o nome exato
                 let urlArquivo = encodeURI(nomeArquivo);
 
                 html += `
-                    <div class="item-video" data-titulo="${tituloExibicao.toLowerCase()}" onclick="tocarVideo('${urlArquivo}', '${tituloExibicao}')">
+                    <div class="item-video" data-titulo="${tituloExibique = tituloExibicao.toLowerCase()}" onclick="tocarVideo('${urlArquivo}', '${tituloExibicao}')">
                         <span>🎵 ${tituloExibicao}</span>
                         <span class="icone-play">▶</span>
                     </div>
