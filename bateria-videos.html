@@ -55,6 +55,18 @@
             color: var(--success);
             font-size: 1.8rem;
         }
+        .search-box {
+            width: 100%;
+            padding: 12px 15px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 1rem;
+            margin-bottom: 25px;
+            outline: none;
+        }
+        .search-box:focus { border-color: var(--accent); }
 
         /* Cards de Vídeo */
         .video-card {
@@ -89,7 +101,6 @@
 </head>
 <body>
 
-
     <!-- Barra Superior -->
     <div class="top-bar">
         <div class="top-title">🎬 Vídeos Explicativos das Aulas</div>
@@ -101,43 +112,77 @@
             <h1>Vídeos da Apostila</h1>
         </div>
 
-        <!-- Apontando para o repositório correto: bateria-arquivos-videovip -->
-        <div class="video-card">
-            <h3>10 - LEVADAS</h3>
-            <video controls>
-                <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/10%20-%20LEVADAS.mp4" type="video/mp4">
-                Seu navegador não suporta vídeo.
-            </video>
-        </div>
+        <!-- Campo de busca para achar rápido qualquer vídeo pelo número ou nome -->
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Pesquisar aula (ex: 10, Levadas, 45...)" onkeyup="filtrarVideos()">
 
-        <div class="video-card">
-            <h3>100 - OUTRAS LEVADAS 6 POR 9</h3>
-            <video controls>
-                <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/100%20-%20OUTRAS%20LEVADAS%206%20POR%209.mp4" type="video/mp4">
-                Seu navegador não suporta vídeo.
-            </video>
-        </div>
-
-        <div class="video-card">
-            <h3>101 - OUTRAS LEVADAS E NOTAS FANTASMAS</h3>
-            <video controls>
-                <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/101%20-%20OUTRAS%20LEVADAS%20E%20NOTAS%20FANTASMAS.mp4" type="video/mp4">
-                Seu navegador não suporta vídeo.
-            </video>
-        </div>
-
-        <div class="video-card">
-            <h3>11 - LEVADAS COLCHEIA</h3>
-            <video controls>
-                <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/11%20-%20LEVADAS%20COLCHEIA.mp4" type="video/mp4">
-                Seu navegador não suporta vídeo.
-            </video>
-        </div>
+        <!-- Lista onde os vídeos serão injetados automaticamente -->
+        <div id="lista-videos"></div>
     </div>
 
     <footer>
         Projeto Academia de Música - C. Richless &copy; 2026
     </footer>
 
+    <script>
+        // Lista com os nomes exatos dos seus arquivos de vídeo em ordem numérica correta.
+        // Basta adicionar novos nomes aqui se precisar expandir no futuro!
+        const arquivosVideos = [
+            "1 - ABERTURA", // Exemplo genérico caso tenha o 1
+            "10 - LEVADAS",
+            "11 - LEVADAS COLCHEIA",
+            // Insira os outros nomes na ordem exata aqui, ou o script gerará pelo padrão abaixo:
+        ];
+
+        // Se você preferir gerar de forma totalmente automatizada de 1 até 83 (ajuste o número máximo se precisar):
+        // (Caso seus arquivos sigam o padrão exato de nomenclatura numérica no GitHub)
+        const totalVideos = 83; 
+        const container = document.getElementById('lista-videos');
+
+        function carregarVideos() {
+            let html = '';
+            // Se quiser usar a lista manual preenchida acima, mude para: arquivosVideos
+            // Caso queira gerar de 1 a 83 de forma automática:
+            for (let i = 1; i <= totalVideos; i++) {
+                // Monta o nome base correspondente (ajuste conforme o prefixo que você usa nos arquivos)
+                // Exemplo: se seus arquivos se chamam "1 - NOME.mp4", "2 - NOME.mp4", etc.
+                let nomeExibicao = `Aula de Bateria - Vídeo ${i}`;
+                let nomeArquivo = `${i}%20-%20AULA.mp4`; // Ajuste o sufixo se necessário
+
+                // Tratamento especial para os vídeos que já sabemos que existem com nomes específicos:
+                if (i === 10) { nomeExibicao = "10 - LEVADAS"; nomeArquivo = "10%20-%20LEVADAS.mp4"; }
+                if (i === 11) { nomeExibicao = "11 - LEVADAS COLCHEIA"; nomeArquivo = "11%20-%20LEVADAS%20COLCHEIA.mp4"; }
+                if (i === 100) { nomeExibicao = "100 - OUTRAS LEVADAS 6 POR 9"; nomeArquivo = "100%20-%20OUTRAS%20LEVADAS%206%20POR%209.mp4"; }
+                if (i === 101) { nomeExibicao = "101 - OUTRAS LEVADAS E NOTAS FANTASMAS"; nomeArquivo = "101%20-%20OUTRAS%20LEVADAS%20E%20NOTAS%20FANTASMAS.mp4"; }
+
+                html += `
+                    <div class="video-card" data-titulo="${nomeExibicao.toLowerCase()}">
+                        <h3>${nomeExibicao}</h3>
+                        <video controls controlsList="nodownload" preload="metadata">
+                            <source src="https://carlosrichless.github.io/bateria-arquivos-videovip/${nomeArquivo}" type="video/mp4">
+                            Seu navegador não suporta vídeo.
+                        </video>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        // Função de busca instantânea
+        function filtrarVideos() {
+            let termo = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.querySelectorAll('.video-card');
+            cards.forEach(card => {
+                let titulo = card.getAttribute('data-titulo');
+                if (titulo.includes(termo)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // Executa ao carregar a página
+        window.onload = carregarVideos;
+    </script>
 </body>
 </html>
