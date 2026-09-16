@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -60,14 +60,25 @@
         .lembretes-box ul { padding-left: 20px; color: var(--text-muted); font-size: 0.95rem; }
         .lembretes-box li { margin-bottom: 8px; }
 
+        .btn-sair { background: #7f1d1d; color: #fca5a5; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.9rem; border: none; cursor: pointer; }
+        .btn-sair:hover { background: #991b1b; }
+
         footer { text-align: center; margin-top: 40px; color: var(--text-muted); font-size: 0.85rem; }
     </style>
 </head>
 <body>
 
+    <!-- Script de Proteção: Redireciona para o login se não houver sessão ativa -->
+    <script>
+        if (sessionStorage.getItem('site_liberado') !== 'true') {
+            window.location.href = "index.html";
+        }
+    </script>
+
     <div class="container">
         <div class="top-bar">
             <a href="index.html" class="btn-voltar">← Voltar ao Início (Index)</a>
+            <button onclick="sairDoSistema()" class="btn-sair">Sair / Bloquear 🔒</button>
         </div>
 
         <div class="header">
@@ -84,24 +95,13 @@
                 </div>
                 <div class="arrow">→</div>
             </a>
-
-            <!-- AQUI VOCÊ PODE COLAR MAIS LINKS DE OUTRAS COISAS QUE QUISER -->
-            <!-- 
-            <a href="LINK_OU_OUTRA_PAGINA_AQUI" class="menu-card">
-                <div class="menu-info">
-                    <h3>Outro Link / Módulo</h3>
-                    <p>Descrição do que é</p>
-                </div>
-                <div class="arrow">→</div>
-            </a>
-            -->
         </div>
 
         <div class="lembretes-box">
             <h3>📝 Seus Lembretes Importantes</h3>
             <ul>
                 <li>Lembre-se de verificar os arquivos da bateria semanalmente.</li>
-                <li>Mantenha os links do Google Drive com acesso liberado.</li>
+                <li>Mantenha os links com acesso liberado.</li>
                 <li>Use este painel para adicionar novos atalhos sempre que precisar.</li>
             </ul>
         </div>
@@ -112,5 +112,11 @@
         <p>Painel Geral - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
     </footer>
 
+    <script>
+        function sairDoSistema() {
+            sessionStorage.removeItem('site_liberado');
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
 </html>
