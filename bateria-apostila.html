@@ -151,7 +151,7 @@
             background: radial-gradient(circle, #222 0%, #121212 100%);
             padding: 10px;
             overflow: auto;
-            touch-action: none; /* Desativa comportamentos padrão indesejados para controlarmos o zoom e o toque perfeitamente */
+            touch-action: none;
         }
 
         .book-viewport:fullscreen {
@@ -204,7 +204,7 @@
 
         canvas {
             display: block;
-            max-width: 100%;
+            width: 100%;
             height: auto !important;
             border-radius: 2px;
             pointer-events: none;
@@ -332,7 +332,7 @@
         let pageNumPending = null;
         let pdfOutlines = [];
 
-        // Controle de Zoom Dinâmico (Pinça e Touchpad)
+        // Controle de Zoom Dinâmico com foco na região da pinça
         let currentScaleFactor = 1.0;
         let initialDistance = null;
 
@@ -377,9 +377,16 @@
                     scale = maxWidth / unscaledViewport.width;
                 }
 
-                const viewport = page.getViewport({ scale: scale });
+                // ALTA QUALIDADE: Renderiza com resolução multiplicada por 2.0 para garantir nitidez perfeita no zoom
+                const qualityMultiplier = 2.0;
+                const viewport = page.getViewport({ scale: scale * qualityMultiplier });
+                
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
+                
+                // Define o tamanho físico de exibição do canvas proporcionalmente limpo
+                canvas.style.width = (viewport.width / qualityMultiplier) + 'px';
+                canvas.style.height = (viewport.height / qualityMultiplier) + 'px';
 
                 const renderContext = {
                     canvasContext: ctx,
@@ -391,8 +398,9 @@
                     pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
                     pageContainer.style.opacity = "1";
                     
-                    // Reseta o zoom visual ao mudar de página para evitar distorção
+                    // Reseta o zoom visual ao mudar de página
                     currentScaleFactor = 1.0;
+                    pageContainer.style.transformOrigin = `center center`;
                     pageContainer.style.transform = `scale(1)`;
 
                     if (pageNumPending !== null) {
@@ -432,16 +440,23 @@
         });
 
         // -------------------------------------------------------------
-        // SUPORTE TOTAL A ZOOM (Pinça com 2 dedos no celular & Touchpad)
+        // ZOOM COM FOCO NA REGIÃO DA PINÇA / TOUCHPAD
         // -------------------------------------------------------------
 
-        // 1. Zoom via Pinça (Touch com 2 dedos em celulares/tablets)
         bookViewport.addEventListener('touchstart', (e) => {
             if (e.touches.length === 2) {
                 initialDistance = Math.hypot(
                     e.touches[0].clientX - e.touches[1].clientX,
                     e.touches[0].clientY - e.touches[1].clientY
                 );
+
+                // Calcula o centro exato entre os dois dedos relativo ao container da página
+                const rect = pageContainer.getBoundingClientRect();
+                let centerX = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left) / rect.width * 100;
+                let centerY = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top) / rect.height * 100;
+                
+                // Define o ponto de ancoragem do zoom exatamente onde o usuário colocou os dedos
+                pageContainer.style.transformOrigin = `${centerX}% ${centerY}%`;
             }
         }, { passive: true });
 
@@ -454,7 +469,6 @@
                 let zoomFactor = currentDistance / initialDistance;
                 let newScale = currentScaleFactor * zoomFactor;
 
-                // Limites de zoom (entre 1x e 4x)
                 if (newScale >= 1.0 && newScale <= 4.0) {
                     pageContainer.style.transform = `scale(${newScale})`;
                 }
@@ -464,7 +478,6 @@
         bookViewport.addEventListener('touchend', (e) => {
             if (e.touches.length < 2) {
                 if (initialDistance !== null) {
-                    // Atualiza o fator de escala atual com base no transform aplicado
                     let matrix = window.getComputedStyle(pageContainer).transform;
                     if (matrix && matrix !== 'none') {
                         let values = matrix.split('(')[1].split(')')[0].split(',');
@@ -475,10 +488,16 @@
             }
         }, { passive: true });
 
-        // 2. Zoom via Touchpad do Notebook (Gesto de pinça ou Ctrl + Scroll)
+        // Zoom via Touchpad do Notebook com foco no cursor do mouse
         bookViewport.addEventListener('wheel', (e) => {
             if (e.ctrlKey || e.deltaY !== 0) {
                 e.preventDefault();
+                
+                const rect = pageContainer.getBoundingClientRect();
+                let mouseX = (e.clientX - rect.left) / rect.width * 100;
+                let mouseY = (e.clientY - rect.top) / rect.height * 100;
+                pageContainer.style.transformOrigin = `${mouseX}% ${mouseY}%`;
+
                 let zoomIntensity = 0.08;
                 let direction = e.deltaY < 0 ? 1 : -1;
                 let newScale = currentScaleFactor + (direction * zoomIntensity);
@@ -506,7 +525,6 @@
             if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
                 touchEndX = e.clientX;
                 let limiteSwipe = 50;
-                // Só executa o swipe se não estiver com zoom aplicado
                 if (currentScaleFactor <= 1.05) {
                     if (touchEndX < touchStartX - limiteSwipe) onNextPage();
                     if (touchEndX > touchStartX + limiteSwipe) onPrevPage();
@@ -515,7 +533,7 @@
         });
 
         // -------------------------------------------------------------
-        // CORREÇÃO DEFINITIVA DO BUG DE TELA CHEIA
+        // TELA CHEIA E REDIMENSIONAMENTO
         // -------------------------------------------------------------
         fullscreenBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
@@ -527,7 +545,6 @@
             }
         });
 
-        // O setTimeout corrige o bug da imagem esticada/bugada ao entrar/sair da tela cheia
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenBtn.textContent = "⤹ Sair Tela Cheia";
@@ -543,7 +560,7 @@
             setTimeout(() => renderPage(pageNum), 200);
         });
 
-        // Exibir e tratar clique nos marcadores com robustez total
+        // Exibir e tratar clique nos marcadores
         function exibirMarcadores(outlines, filtro = '') {
             bookmarksList.innerHTML = '';
             
