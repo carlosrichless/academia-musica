@@ -69,6 +69,25 @@
             font-weight: bold;
             border-bottom: 1px solid #333;
         }
+        /* Estilo da barra de pesquisa */
+        .search-box {
+            padding: 10px 15px;
+            background-color: #181818;
+            border-bottom: 1px solid #333;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        .search-box input:focus {
+            border-color: #1db954;
+        }
         .playlist {
             overflow-y: auto;
             flex: 1;
@@ -121,6 +140,10 @@
         <!-- Lista de Vídeos -->
         <div class="playlist-area">
             <div class="playlist-header">Aulas Disponíveis</div>
+            <!-- Barra de Pesquisa Adicionada -->
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Pesquisar aula...">
+            </div>
             <div class="playlist" id="playlist">
                 <!-- Preenchido via JavaScript -->
             </div>
@@ -221,36 +244,42 @@
         const videoPlayer = document.getElementById('videoPlayer');
         const videoTitle = document.getElementById('videoTitle');
         const playlistContainer = document.getElementById('playlist');
+        const searchInput = document.getElementById('searchInput');
 
-        function carregarPlaylist() {
+        function carregarPlaylist(filtro = '') {
             playlistContainer.innerHTML = '';
-            videos.forEach((filename, index) => {
-                const item = document.createElement('div');
-                item.className = 'playlist-item';
-                // Remove a extensão .mp4 na exibição da lista para ficar mais limpo
-                item.textContent = filename.replace('.mp4', '');
+            
+            videos.forEach((filename) => {
+                const nomeLimpo = filename.replace('.mp4', '');
                 
-                item.addEventListener('click', () => {
-                    trocarVideo(index, item);
-                });
+                // Verifica se o item corresponde à pesquisa (ignorando maiúsculas/minúsculas)
+                if (nomeLimpo.toLowerCase().includes(filtro.toLowerCase())) {
+                    const item = document.createElement('div');
+                    item.className = 'playlist-item';
+                    item.textContent = nomeLimpo;
+                    
+                    // Verifica se este item é o atualmente em reprodução para manter o destaque ativo
+                    if (videoPlayer.src.includes(encodeURIComponent(filename))) {
+                        item.classList.add('active');
+                    }
+                    
+                    item.addEventListener('click', () => {
+                        trocarVideo(filename, item);
+                    });
 
-                playlistContainer.appendChild(item);
+                    playlistContainer.appendChild(item);
+                }
             });
-
-            // Carrega o primeiro vídeo por padrão ao abrir a página
-            if (videos.length > 0) {
-                const primeiroItem = playlistContainer.children[0];
-                trocarVideo(0, primeiroItem);
-            }
         }
 
-        function trocarVideo(index, elementoItem) {
+        function trocarVideo(filename, elementoItem) {
             // Remove a classe active de todos
             document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
-            // Adiciona no atual
-            elementoItem.classList.add('active');
+            // Adiciona no atual se o elemento existir na tela
+            if (elementoItem) {
+                elementoItem.classList.add('active');
+            }
 
-            const filename = videos[index];
             // Codifica corretamente os espaços e acentos para a URL do navegador
             const videoUrl = baseUrl + encodeURIComponent(filename);
 
@@ -261,8 +290,16 @@
             });
         }
 
-        // Inicializa a playlist ao carregar a página
+        // Evento para filtrar a playlist em tempo real enquanto digita
+        searchInput.addEventListener('input', (e) => {
+            carregarPlaylist(e.target.value);
+        });
+
+        // Inicializa a playlist e carrega o primeiro vídeo por padrão ao abrir a página
         carregarPlaylist();
+        if (videos.length > 0) {
+            trocarVideo(videos[0], null);
+        }
     </script>
 </body>
 </html>
