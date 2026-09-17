@@ -23,11 +23,37 @@
             background-color: #1f1f1f;
             padding: 15px 20px;
             border-bottom: 1px solid #333;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         header h1 {
             font-size: 1.2rem;
             color: #fff;
+            flex: 1;
+            text-align: center;
+        }
+        /* Estilo do botão de voltar */
+        .btn-voltar {
+            background-color: #2a2a2a;
+            color: #fff;
+            padding: 8px 14px;
+            border: 1px solid #444;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-voltar:hover {
+            background-color: #333;
+            border-color: #1db954;
+        }
+        /* Espaçador invisível para equilibrar o header centralizado */
+        .header-spacer {
+            width: 90px; 
         }
         .container {
             display: flex;
@@ -119,13 +145,29 @@
             video {
                 max-height: 40vh;
             }
+            header {
+                padding: 10px 15px;
+            }
+            header h1 {
+                font-size: 1rem;
+            }
+            .btn-voltar {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            .header-spacer {
+                width: 60px;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
+        <!-- Botão de Voltar (Altere o href para o link correto do seu módulo ou página anterior, ex: index.html) -->
+        <a href="index.html" class="btn-voltar">&#8592; Voltar</a>
         <h1>Biblioteca VIP - Carlos Richless</h1>
+        <div class="header-spacer"></div>
     </header>
 
     <div class="container">
@@ -140,7 +182,7 @@
         <!-- Lista de Vídeos -->
         <div class="playlist-area">
             <div class="playlist-header">Aulas Disponíveis</div>
-            <!-- Barra de Pesquisa Adicionada -->
+            <!-- Barra de Pesquisa -->
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="Pesquisar aula...">
             </div>
@@ -252,13 +294,11 @@
             videos.forEach((filename) => {
                 const nomeLimpo = filename.replace('.mp4', '');
                 
-                // Verifica se o item corresponde à pesquisa (ignorando maiúsculas/minúsculas)
                 if (nomeLimpo.toLowerCase().includes(filtro.toLowerCase())) {
                     const item = document.createElement('div');
                     item.className = 'playlist-item';
                     item.textContent = nomeLimpo;
                     
-                    // Verifica se este item é o atualmente em reprodução para manter o destaque ativo
                     if (videoPlayer.src.includes(encodeURIComponent(filename))) {
                         item.classList.add('active');
                     }
@@ -273,14 +313,11 @@
         }
 
         function trocarVideo(filename, elementoItem) {
-            // Remove a classe active de todos
             document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
-            // Adiciona no atual se o elemento existir na tela
             if (elementoItem) {
                 elementoItem.classList.add('active');
             }
 
-            // Codifica corretamente os espaços e acentos para a URL do navegador
             const videoUrl = baseUrl + encodeURIComponent(filename);
 
             videoPlayer.src = videoUrl;
@@ -290,12 +327,10 @@
             });
         }
 
-        // Evento para filtrar a playlist em tempo real enquanto digita
         searchInput.addEventListener('input', (e) => {
             carregarPlaylist(e.target.value);
         });
 
-        // Inicializa a playlist e carrega o primeiro vídeo por padrão ao abrir a página
         carregarPlaylist();
         if (videos.length > 0) {
             trocarVideo(videos[0], null);
