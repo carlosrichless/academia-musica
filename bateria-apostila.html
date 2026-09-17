@@ -28,39 +28,42 @@
         }
         header {
             background-color: #000000;
-            padding: 12px 20px;
+            padding: 10px 20px;
             border-bottom: 1px solid #282828;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 60px;
+            height: 55px;
+            flex-shrink: 0;
         }
         header h1 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #fff;
             flex: 1;
             text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .btn-voltar {
             background-color: #242424;
             color: #fff;
-            padding: 8px 14px;
+            padding: 6px 12px;
             border: none;
             border-radius: 20px;
             text-decoration: none;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
-            transition: background 0.2s, transform 0.1s;
+            transition: background 0.2s;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
         }
         .btn-voltar:hover {
             background-color: #2a2a2a;
-            transform: scale(1.02);
         }
         .header-spacer {
-            width: 70px; 
+            width: 60px; 
         }
 
         /* Layout Principal do E-book */
@@ -69,38 +72,38 @@
             display: flex;
             flex-direction: row;
             background: #121212;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 55px);
             overflow: hidden;
         }
 
         /* Menu Lateral (Índice / Marcadores / Pesquisa) */
         .sidebar {
-            width: 320px;
+            width: 300px;
             background-color: #181818;
             border-right: 1px solid #282828;
             display: flex;
             flex-direction: column;
-            padding: 15px;
-            gap: 15px;
+            padding: 12px;
+            gap: 10px;
             height: 100%;
+            flex-shrink: 0;
         }
 
         .sidebar-title {
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             color: #fff;
             font-weight: bold;
         }
 
         .search-box input {
             width: 100%;
-            padding: 10px 14px;
+            padding: 8px 12px;
             background-color: #2a2a2a;
             border: 1px solid #444;
             border-radius: 20px;
             color: #fff;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             outline: none;
-            transition: border-color 0.2s;
         }
         .search-box input:focus {
             border-color: #1db954;
@@ -111,15 +114,15 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 5px;
             padding-right: 4px;
         }
 
         .bookmark-item {
             background-color: #202020;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #ccc;
             cursor: pointer;
             transition: all 0.2s;
@@ -144,45 +147,50 @@
             justify-content: center;
             position: relative;
             background: radial-gradient(circle, #252525 0%, #121212 100%);
-            padding: 20px;
+            padding: 15px;
             overflow: hidden;
+            touch-action: pan-y; /* Permite scroll vertical se necessário, mas deixa horizontal livre */
         }
 
-        /* Efeito visual de Caderno / Livro */
         .book-page-container {
-            background-color: #f4f1ea; /* Tom clássico de folha de livro */
-            padding: 15px;
+            background-color: #f4f1ea;
+            padding: 12px;
             border-radius: 6px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            max-height: 75vh;
+            max-height: 72vh;
+            max-width: 100%;
             overflow: hidden;
-            transition: transform 0.25s ease, opacity 0.25s ease;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            cursor: grab;
+        }
+        .book-page-container:active {
+            cursor: grabbing;
         }
 
         canvas {
             display: block;
             max-width: 100%;
             height: auto !important;
-            max-height: 70vh;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-height: 68vh;
             border-radius: 2px;
+            pointer-events: none; /* Garante que o evento de arrastar pegue no container */
         }
 
         /* Barra de Controle de Páginas Inferior */
         .book-footer-bar {
             position: absolute;
-            bottom: 15px;
+            bottom: 12px;
             background-color: rgba(18, 18, 18, 0.95);
             border: 1px solid #333;
-            padding: 8px 20px;
+            padding: 6px 16px;
             border-radius: 30px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             backdrop-filter: blur(5px);
             z-index: 10;
         }
@@ -191,10 +199,10 @@
             background: #2a2a2a;
             border: 1px solid #444;
             color: #fff;
-            padding: 6px 14px;
-            border-radius: 18px;
+            padding: 5px 12px;
+            border-radius: 16px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             transition: all 0.2s;
         }
@@ -203,7 +211,6 @@
             background-color: #1db954;
             border-color: #1db954;
             color: #000;
-            transform: scale(1.05);
         }
 
         .book-btn:disabled {
@@ -212,25 +219,59 @@
         }
 
         .page-indicator {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #fff;
             font-weight: bold;
         }
 
-        /* Responsividade para Celulares */
+        /* Botão de Tela Cheia Flutuante */
+        .fullscreen-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            border: 1px solid #444;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            z-index: 20;
+            transition: background 0.2s;
+        }
+        .fullscreen-btn:hover {
+            background: #1db954;
+            color: #000;
+            border-color: #1db954;
+        }
+
+        /* Responsividade para Celulares (Empilhado e proporcional) */
         @media (max-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: auto;
+            }
             .main-container {
                 flex-direction: column;
-                overflow-y: auto;
+                height: auto;
+                min-height: calc(100vh - 55px);
             }
             .sidebar {
                 width: 100%;
-                height: 160px;
-                min-height: 160px;
+                height: 130px;
+                min-height: 130px;
+                max-height: 130px;
             }
             .book-viewport {
-                height: calc(100vh - 220px);
+                height: calc(100vh - 185px);
+                min-height: 400px;
                 padding: 10px;
+            }
+            .book-page-container {
+                max-height: 62vh;
+            }
+            canvas {
+                max-height: 58vh;
             }
         }
     </style>
@@ -244,7 +285,7 @@
     </header>
 
     <div class="main-container">
-        <!-- Menu Lateral com Pesquisa e Marcadores (Índice do PDF) -->
+        <!-- Menu Lateral com Pesquisa e Marcadores -->
         <div class="sidebar">
             <div class="sidebar-title">Índice da Apostila</div>
             <div class="search-box">
@@ -255,8 +296,10 @@
             </div>
         </div>
 
-        <!-- Visualizador do E-book (Folheador Horizontal) -->
-        <div class="book-viewport">
+        <!-- Visualizador do E-book -->
+        <div class="book-viewport" id="bookViewport">
+            <button class="fullscreen-btn" id="fullscreenBtn" title="Tela Cheia">⛶ Tela Cheia</button>
+            
             <div class="book-page-container" id="pageContainer">
                 <canvas id="pdfCanvas"></canvas>
             </div>
@@ -271,7 +314,6 @@
     </div>
 
     <script>
-        // Link direto do repositório apostila-vip no GitHub Pages
         const urlPdf = "https://carlosrichless.github.io/apostila-vip/APOSTILA%20DE%20AULAS%20DE%20BATERIA%20VOL1%20C.RICHLESS%202%C2%AA%20EDI%C3%87%C3%83O%20REVISTA%20E%20ATUALIZADA%202026.pdf";
 
         let pdfDoc = null;
@@ -287,15 +329,16 @@
         const bookmarksList = document.getElementById('bookmarksList');
         const searchInput = document.getElementById('searchBookmark');
         const pageContainer = document.getElementById('pageContainer');
+        const bookViewport = document.getElementById('bookViewport');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-        // Carregar o PDF usando o PDF.js
+        // Carregar o PDF
         pdfjsLib.getDocument(urlPdf).promise.then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
             pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
-            
             renderPage(pageNum);
 
-            // Carregar os marcadores (outline / índice interno do PDF)
+            // Carregar o Índice / Marcadores
             pdfDoc.getOutline().then(function(outline) {
                 pdfOutlines = outline || [];
                 exibirMarcadores(pdfOutlines);
@@ -307,12 +350,10 @@
             bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#ff5555;">Erro ao carregar PDF.</div>';
         });
 
-        // Função para renderizar a página com efeito de virada horizontal
         function renderPage(num) {
             pageRendering = true;
-            
             pageContainer.style.transform = "scale(0.97)";
-            pageContainer.style.opacity = "0.6";
+            pageContainer.style.opacity = "0.5";
 
             pdfDoc.getPage(num).then(function(page) {
                 const viewport = page.getViewport({ scale: scale });
@@ -324,15 +365,14 @@
                     viewport: viewport
                 };
                 
-                const renderTask = page.render(renderContext);
-                renderTask.promise.then(function() {
+                page.render(renderContext).promise.then(function() {
                     pageRendering = false;
                     pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
                     
                     setTimeout(() => {
                         pageContainer.style.transform = "scale(1)";
                         pageContainer.style.opacity = "1";
-                    }, 80);
+                    }, 50);
 
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
@@ -365,13 +405,64 @@
         document.getElementById('prevPage').addEventListener('click', onPrevPage);
         document.getElementById('nextPage').addEventListener('click', onNextPage);
 
-        // Navegação por teclado (Setas Esquerda / Direita)
+        // Navegação por teclado
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') onPrevPage();
             if (e.key === 'ArrowRight') onNextPage();
         });
 
-        // Função para processar e exibir os marcadores na barra lateral com suporte a busca
+        // Suporte a Arrastar Horizontalmente (Swipe / Mouse Drag)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        pageContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        pageContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            tratarSwipe();
+        }, { passive: true });
+
+        pageContainer.addEventListener('mousedown', (e) => {
+            touchStartX = e.clientX;
+        });
+
+        pageContainer.addEventListener('mouseup', (e) => {
+            touchEndX = e.clientX;
+            tratarSwipe();
+        });
+
+        function tratarSwipe() {
+            let limiteSwipe = 50; // Distância mínima para considerar o gesto
+            if (touchEndX < touchStartX - limiteSwipe) {
+                onNextPage(); // Arrastou para a esquerda -> Próxima página
+            }
+            if (touchEndX > touchStartX + limiteSwipe) {
+                onPrevPage(); // Arrastou para a direita -> Página anterior
+            }
+        }
+
+        // Função de Tela Cheia
+        fullscreenBtn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                bookViewport.requestFullscreen().catch(err => {
+                    alert(`Erro ao tentar modo tela cheia: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                fullscreenBtn.textContent = "⤹ Sair da Tela Cheia";
+            } else {
+                fullscreenBtn.textContent = "⛶ Tela Cheia";
+            }
+        });
+
+        // Exibir e tratar clique nos marcadores com precisão absoluta
         function exibirMarcadores(outlines, filtro = '') {
             bookmarksList.innerHTML = '';
             
@@ -398,6 +489,12 @@
                                     queueRenderPage(pageNum);
                                 });
                             }
+                        }).catch(() => {
+                            // Fallback caso o formato venha direto como string de nome
+                            pdfDoc.getPageIndex(item.dest).then(index => {
+                                pageNum = index + 1;
+                                queueRenderPage(pageNum);
+                            }).catch(err => console.error("Erro ao navegar para o marcador:", err));
                         });
                     }
                 });
@@ -409,7 +506,6 @@
             }
         }
 
-        // Caixa de Pesquisa em tempo real
         searchInput.addEventListener('input', (e) => {
             exibirMarcadores(pdfOutlines, e.target.value);
         });
