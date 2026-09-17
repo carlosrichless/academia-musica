@@ -151,7 +151,7 @@
             background: radial-gradient(circle, #222 0%, #121212 100%);
             padding: 10px;
             overflow: auto;
-            touch-action: pan-x pan-y; /* Permite scroll nativo do container se necessário */
+            touch-action: pan-x pan-y;
         }
 
         .book-viewport:fullscreen {
@@ -336,12 +336,12 @@
         let initialDistance = null;
         let isResizing = false;
 
-        // Variáveis para controle de posições do Pan (arrastar com 2 dedos) e Swipe (1 dedo)
         let panX = 0;
         let panY = 0;
         let lastTouchCenter = { x: 0, y: 0 };
         let touchStartX = 0;
         let touchEndX = 0;
+        let gestureType = null; // 'zoom' ou 'pan' para evitar conflitos de sensibilidade
 
         const canvas = document.getElementById('pdfCanvas');
         const ctx = canvas.getContext('2d');
@@ -450,7 +450,7 @@
         });
 
         // -------------------------------------------------------------
-        // ZOOM (PINÇA) + PAN (ARRASTAR COM 2 DEDOS DENTRO DO ZOOM)
+        // CONTROLE INTELIGENTE DE TOQUE (SEPARAÇÃO DE ZOOM E PAN)
         // -------------------------------------------------------------
 
         bookViewport.addEventListener('touchstart', (e) => {
@@ -465,6 +465,8 @@
                     y: (e.touches[0].clientY + e.touches[1].clientY) / 2
                 };
 
+                gestureType = null; // Reseta a intenção até o movimento esclarecer
+
                 const rect = pageContainer.getBoundingClientRect();
                 let centerX = (lastTouchCenter.x - rect.left) / rect.width * 100;
                 let centerY = (lastTouchCenter.y - rect.top) / rect.height * 100;
@@ -476,31 +478,45 @@
 
         bookViewport.addEventListener('touchmove', (e) => {
             if (e.touches.length === 2) {
-                // Pinça para Zoom
-                if (initialDistance !== null) {
-                    let currentDistance = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
+                let currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+
+                let currentCenter = {
+                    x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                    y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+                };
+
+                // Define se é zoom ou pan com base na variação da distância dos dedos
+                if (!gestureType) {
+                    let diffDist = Math.abs(currentDistance - initialDistance);
+                    if (diffDist > 8) {
+                        gestureType = 'zoom';
+                    } else {
+                        let movedX = Math.abs(currentCenter.x - lastTouchCenter.x);
+                        let movedY = Math.abs(currentCenter.y - lastTouchCenter.y);
+                        if (movedX > 4 || movedY > 4) {
+                            gestureType = 'pan';
+                        }
+                    }
+                }
+
+                // Executa apenas a ação definida para evitar conflito
+                if (gestureType === 'zoom' && initialDistance !== null) {
                     let zoomFactor = currentDistance / initialDistance;
                     let newScale = currentScaleFactor * zoomFactor;
 
                     if (newScale >= 1.0 && newScale <= 4.0) {
                         currentScaleFactor = newScale;
                     }
+                } else if (gestureType === 'pan') {
+                    let deltaX = currentCenter.x - lastTouchCenter.x;
+                    let deltaY = currentCenter.y - lastTouchCenter.y;
+
+                    panX += deltaX;
+                    panY += deltaY;
                 }
-
-                // Arastar com 2 dedos (Pan) para navegar na página com zoom
-                let currentCenter = {
-                    x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-                    y: (e.touches[0].clientY + e.touches[1].clientY) / 2
-                };
-
-                let deltaX = currentCenter.x - lastTouchCenter.x;
-                let deltaY = currentCenter.y - lastTouchCenter.y;
-
-                panX += deltaX;
-                panY += deltaY;
 
                 lastTouchCenter = currentCenter;
                 updateTransform();
@@ -510,7 +526,7 @@
         bookViewport.addEventListener('touchend', (e) => {
             if (e.touches.length < 2) {
                 initialDistance = null;
-                // Se o zoom voltar para 1.0 ou menos, reseta a posição de arrasto
+                gestureType = null;
                 if (currentScaleFactor <= 1.02) {
                     currentScaleFactor = 1.0;
                     panX = 0;
@@ -519,7 +535,7 @@
                 }
             }
 
-            // Swipe de 1 dedo para mudar de página (somente se não estiver com zoom)
+            // Swipe de 1 dedo para mudar de página (somente sem zoom)
             if (e.touches.length === 0 && currentScaleFactor <= 1.05) {
                 touchEndX = e.changedTouches[0].clientX;
                 let limiteSwipe = 50;
@@ -528,7 +544,7 @@
             }
         }, { passive: true });
 
-        // Suporte a Mouse Wheel Zoom (para desktop/notebook)
+        // Zoom com roda do mouse (desktop)
         bookViewport.addEventListener('wheel', (e) => {
             if (e.ctrlKey || e.deltaY !== 0) {
                 e.preventDefault();
