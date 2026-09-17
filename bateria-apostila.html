@@ -151,7 +151,7 @@
             background: radial-gradient(circle, #222 0%, #121212 100%);
             padding: 10px;
             overflow: auto;
-            touch-action: none;
+            touch-action: pan-x pan-y; /* Permite scroll nativo do container se necessário */
         }
 
         .book-viewport:fullscreen {
@@ -199,6 +199,7 @@
             position: relative;
             margin: auto;
             transform-origin: center center;
+            will-change: transform;
         }
 
         canvas {
@@ -335,6 +336,13 @@
         let initialDistance = null;
         let isResizing = false;
 
+        // Variáveis para controle de posições do Pan (arrastar com 2 dedos) e Swipe (1 dedo)
+        let panX = 0;
+        let panY = 0;
+        let lastTouchCenter = { x: 0, y: 0 };
+        let touchStartX = 0;
+        let touchEndX = 0;
+
         const canvas = document.getElementById('pdfCanvas');
         const ctx = canvas.getContext('2d');
         const pageIndicator = document.getElementById('pageIndicator');
@@ -360,6 +368,10 @@
             console.error(error);
             bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#ff5555;">Erro ao carregar PDF.</div>';
         });
+
+        function updateTransform() {
+            pageContainer.style.transform = `translate(${panX}px, ${panY}px) scale(${currentScaleFactor})`;
+        }
 
         function renderPage(num) {
             pageRendering = true;
@@ -396,8 +408,10 @@
                     pageContainer.style.opacity = "1";
                     
                     currentScaleFactor = 1.0;
+                    panX = 0;
+                    panY = 0;
                     pageContainer.style.transformOrigin = `center center`;
-                    pageContainer.style.transform = `scale(1)`;
+                    updateTransform();
 
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
@@ -436,7 +450,7 @@
         });
 
         // -------------------------------------------------------------
-        // ZOOM COM FOCO NA REGIÃO DA PINÇA / TOUCHPAD
+        // ZOOM (PINÇA) + PAN (ARRASTAR COM 2 DEDOS DENTRO DO ZOOM)
         // -------------------------------------------------------------
 
         bookViewport.addEventListener('touchstart', (e) => {
@@ -446,42 +460,75 @@
                     e.touches[0].clientY - e.touches[1].clientY
                 );
 
+                lastTouchCenter = {
+                    x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                    y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+                };
+
                 const rect = pageContainer.getBoundingClientRect();
-                let centerX = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left) / rect.width * 100;
-                let centerY = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top) / rect.height * 100;
-                
+                let centerX = (lastTouchCenter.x - rect.left) / rect.width * 100;
+                let centerY = (lastTouchCenter.y - rect.top) / rect.height * 100;
                 pageContainer.style.transformOrigin = `${centerX}% ${centerY}%`;
+            } else if (e.touches.length === 1) {
+                touchStartX = e.touches[0].clientX;
             }
         }, { passive: true });
 
         bookViewport.addEventListener('touchmove', (e) => {
-            if (e.touches.length === 2 && initialDistance !== null) {
-                let currentDistance = Math.hypot(
-                    e.touches[0].clientX - e.touches[1].clientX,
-                    e.touches[0].clientY - e.touches[1].clientY
-                );
-                let zoomFactor = currentDistance / initialDistance;
-                let newScale = currentScaleFactor * zoomFactor;
+            if (e.touches.length === 2) {
+                // Pinça para Zoom
+                if (initialDistance !== null) {
+                    let currentDistance = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    let zoomFactor = currentDistance / initialDistance;
+                    let newScale = currentScaleFactor * zoomFactor;
 
-                if (newScale >= 1.0 && newScale <= 4.0) {
-                    pageContainer.style.transform = `scale(${newScale})`;
+                    if (newScale >= 1.0 && newScale <= 4.0) {
+                        currentScaleFactor = newScale;
+                    }
                 }
+
+                // Arastar com 2 dedos (Pan) para navegar na página com zoom
+                let currentCenter = {
+                    x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+                    y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+                };
+
+                let deltaX = currentCenter.x - lastTouchCenter.x;
+                let deltaY = currentCenter.y - lastTouchCenter.y;
+
+                panX += deltaX;
+                panY += deltaY;
+
+                lastTouchCenter = currentCenter;
+                updateTransform();
             }
         }, { passive: true });
 
         bookViewport.addEventListener('touchend', (e) => {
             if (e.touches.length < 2) {
-                if (initialDistance !== null) {
-                    let matrix = window.getComputedStyle(pageContainer).transform;
-                    if (matrix && matrix !== 'none') {
-                        let values = matrix.split('(')[1].split(')')[0].split(',');
-                        currentScaleFactor = parseFloat(values[0]);
-                    }
-                }
                 initialDistance = null;
+                // Se o zoom voltar para 1.0 ou menos, reseta a posição de arrasto
+                if (currentScaleFactor <= 1.02) {
+                    currentScaleFactor = 1.0;
+                    panX = 0;
+                    panY = 0;
+                    updateTransform();
+                }
+            }
+
+            // Swipe de 1 dedo para mudar de página (somente se não estiver com zoom)
+            if (e.touches.length === 0 && currentScaleFactor <= 1.05) {
+                touchEndX = e.changedTouches[0].clientX;
+                let limiteSwipe = 50;
+                if (touchEndX < touchStartX - limiteSwipe) onNextPage();
+                if (touchEndX > touchStartX + limiteSwipe) onPrevPage();
             }
         }, { passive: true });
 
+        // Suporte a Mouse Wheel Zoom (para desktop/notebook)
         bookViewport.addEventListener('wheel', (e) => {
             if (e.ctrlKey || e.deltaY !== 0) {
                 e.preventDefault();
@@ -497,36 +544,14 @@
 
                 if (newScale >= 1.0 && newScale <= 4.0) {
                     currentScaleFactor = newScale;
-                    pageContainer.style.transform = `scale(${currentScaleFactor})`;
+                    if (currentScaleFactor === 1.0) { panX = 0; panY = 0; }
+                    updateTransform();
                 }
             }
         }, { passive: false });
 
         // -------------------------------------------------------------
-        // NAVEGAÇÃO POR SWIPE (1 dedo)
-        // -------------------------------------------------------------
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        bookViewport.addEventListener('pointerdown', (e) => {
-            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
-                touchStartX = e.clientX;
-            }
-        });
-
-        bookViewport.addEventListener('pointerup', (e) => {
-            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
-                touchEndX = e.clientX;
-                let limiteSwipe = 50;
-                if (currentScaleFactor <= 1.05) {
-                    if (touchEndX < touchStartX - limiteSwipe) onNextPage();
-                    if (touchEndX > touchStartX + limiteSwipe) onPrevPage();
-                }
-            }
-        });
-
-        // -------------------------------------------------------------
-        // TELA CHEIA NATURAL (RESPEITA A ORIENTAÇÃO DO CELULAR)
+        // TELA CHEIA NATURAL
         // -------------------------------------------------------------
         fullscreenBtn.addEventListener('click', async () => {
             try {
@@ -542,7 +567,6 @@
             }
         });
 
-        // Aguarda a transição estabilizar completamente antes de redesenhar o PDF
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenBtn.textContent = "⤹ Sair Tela Cheia";
@@ -550,7 +574,6 @@
                 fullscreenBtn.textContent = "⛶ Tela Cheia";
             }
 
-            // Pausa redimensionamentos duplicados durante a transição
             isResizing = true;
             setTimeout(() => {
                 isResizing = false;
