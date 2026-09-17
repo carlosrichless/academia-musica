@@ -86,9 +86,8 @@
             outline: none;
         }
 
-        /* Oculta o controle de volume e mute nativo do vídeo, mantendo play/pause, progresso e tela cheia */
+        /* Oculta apenas o slider e botão de volume nativo, mantendo o de tela cheia */
         video::-webkit-media-controls-mute-button,
-        video::-webkit-media-controls-volume-slider-container,
         video::-webkit-media-controls-volume-slider {
             display: none !important;
         }
@@ -437,9 +436,9 @@
     </header>
 
     <div class="main-container">
-        <!-- Player de Vídeo em Destaque no Topo (Com controle de tela cheia ativo, sem três pontinhos e sem controle de volume nativo) -->
+        <!-- Player de Vídeo em Destaque no Topo (Com botão de tela cheia liberado, sem os três pontinhos e sem controle de volume nativo) -->
         <div class="video-player-wrapper">
-            <video id="videoPlayer" playsinline webkit-playsinline controls controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture></video>
+            <video id="videoPlayer" playsinline webkit-playsinline controls controlslist="nodownload noremoteplayback" disablepictureinpicture></video>
         </div>
 
         <div class="playlist-section">
