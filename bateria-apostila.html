@@ -199,7 +199,7 @@
             position: relative;
             margin: auto;
             transform-origin: center center;
-            will-change: transform;
+            /* REMOVIDO QUALQUER EFEITO DE TRANSIÇÃO PARA EVITAR BUGS DE RENDERIZAÇÃO */
         }
 
         canvas {
@@ -332,7 +332,6 @@
         let pageNumPending = null;
         let pdfOutlines = [];
 
-        // Controle de Zoom Dinâmico com foco na região da pinça
         let currentScaleFactor = 1.0;
         let initialDistance = null;
 
@@ -377,14 +376,12 @@
                     scale = maxWidth / unscaledViewport.width;
                 }
 
-                // ALTA QUALIDADE: Renderiza com resolução multiplicada por 2.0 para garantir nitidez perfeita no zoom
                 const qualityMultiplier = 2.0;
                 const viewport = page.getViewport({ scale: scale * qualityMultiplier });
                 
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
                 
-                // Define o tamanho físico de exibição do canvas proporcionalmente limpo
                 canvas.style.width = (viewport.width / qualityMultiplier) + 'px';
                 canvas.style.height = (viewport.height / qualityMultiplier) + 'px';
 
@@ -398,7 +395,6 @@
                     pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
                     pageContainer.style.opacity = "1";
                     
-                    // Reseta o zoom visual ao mudar de página
                     currentScaleFactor = 1.0;
                     pageContainer.style.transformOrigin = `center center`;
                     pageContainer.style.transform = `scale(1)`;
@@ -450,12 +446,10 @@
                     e.touches[0].clientY - e.touches[1].clientY
                 );
 
-                // Calcula o centro exato entre os dois dedos relativo ao container da página
                 const rect = pageContainer.getBoundingClientRect();
                 let centerX = ((e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left) / rect.width * 100;
                 let centerY = ((e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top) / rect.height * 100;
                 
-                // Define o ponto de ancoragem do zoom exatamente onde o usuário colocou os dedos
                 pageContainer.style.transformOrigin = `${centerX}% ${centerY}%`;
             }
         }, { passive: true });
@@ -488,7 +482,6 @@
             }
         }, { passive: true });
 
-        // Zoom via Touchpad do Notebook com foco no cursor do mouse
         bookViewport.addEventListener('wheel', (e) => {
             if (e.ctrlKey || e.deltaY !== 0) {
                 e.preventDefault();
@@ -510,7 +503,7 @@
         }, { passive: false });
 
         // -------------------------------------------------------------
-        // SUPORTE A NAVEGAÇÃO POR SWIPE (1 dedo)
+        // NAVEGAÇÃO POR SWIPE (1 dedo)
         // -------------------------------------------------------------
         let touchStartX = 0;
         let touchEndX = 0;
@@ -533,7 +526,7 @@
         });
 
         // -------------------------------------------------------------
-        // TELA CHEIA E REDIMENSIONAMENTO
+        // TELA CHEIA E REDIMENSIONAMENTO SEGURO
         // -------------------------------------------------------------
         fullscreenBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
@@ -545,6 +538,7 @@
             }
         });
 
+        // Aguarda a rotação/redimensionamento da tela cheia estabilizar antes de redesenhar
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenBtn.textContent = "⤹ Sair Tela Cheia";
@@ -553,11 +547,11 @@
             }
             setTimeout(() => {
                 renderPage(pageNum);
-            }, 250);
+            }, 350);
         });
 
         window.addEventListener('resize', () => {
-            setTimeout(() => renderPage(pageNum), 200);
+            setTimeout(() => renderPage(pageNum), 250);
         });
 
         // Exibir e tratar clique nos marcadores
