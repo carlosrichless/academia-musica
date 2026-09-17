@@ -341,7 +341,7 @@
         let lastTouchCenter = { x: 0, y: 0 };
         let touchStartX = 0;
         let touchEndX = 0;
-        let gestureType = null; // 'zoom' ou 'pan' para evitar conflitos de sensibilidade
+        let gestureType = null;
 
         const canvas = document.getElementById('pdfCanvas');
         const ctx = canvas.getContext('2d');
@@ -450,7 +450,7 @@
         });
 
         // -------------------------------------------------------------
-        // CONTROLE INTELIGENTE DE TOQUE (SEPARAÇÃO DE ZOOM E PAN)
+        // CONTROLE DE TOQUE (ZOOM COM 40% MENOS SENSIBILIDADE + PAN)
         // -------------------------------------------------------------
 
         bookViewport.addEventListener('touchstart', (e) => {
@@ -465,7 +465,7 @@
                     y: (e.touches[0].clientY + e.touches[1].clientY) / 2
                 };
 
-                gestureType = null; // Reseta a intenção até o movimento esclarecer
+                gestureType = null;
 
                 const rect = pageContainer.getBoundingClientRect();
                 let centerX = (lastTouchCenter.x - rect.left) / rect.width * 100;
@@ -488,7 +488,6 @@
                     y: (e.touches[0].clientY + e.touches[1].clientY) / 2
                 };
 
-                // Define se é zoom ou pan com base na variação da distância dos dedos
                 if (!gestureType) {
                     let diffDist = Math.abs(currentDistance - initialDistance);
                     if (diffDist > 8) {
@@ -502,10 +501,11 @@
                     }
                 }
 
-                // Executa apenas a ação definida para evitar conflito
                 if (gestureType === 'zoom' && initialDistance !== null) {
-                    let zoomFactor = currentDistance / initialDistance;
-                    let newScale = currentScaleFactor * zoomFactor;
+                    let rawZoomFactor = currentDistance / initialDistance;
+                    // Reduz a sensibilidade do zoom em 40% suavizando a variação
+                    let dampenedZoomFactor = 1 + (rawZoomFactor - 1) * 0.6;
+                    let newScale = currentScaleFactor * dampenedZoomFactor;
 
                     if (newScale >= 1.0 && newScale <= 4.0) {
                         currentScaleFactor = newScale;
@@ -535,7 +535,6 @@
                 }
             }
 
-            // Swipe de 1 dedo para mudar de página (somente sem zoom)
             if (e.touches.length === 0 && currentScaleFactor <= 1.05) {
                 touchEndX = e.changedTouches[0].clientX;
                 let limiteSwipe = 50;
@@ -544,7 +543,6 @@
             }
         }, { passive: true });
 
-        // Zoom com roda do mouse (desktop)
         bookViewport.addEventListener('wheel', (e) => {
             if (e.ctrlKey || e.deltaY !== 0) {
                 e.preventDefault();
