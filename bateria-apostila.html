@@ -199,7 +199,6 @@
             position: relative;
             margin: auto;
             transform-origin: center center;
-            /* REMOVIDO QUALQUER EFEITO DE TRANSIÇÃO PARA EVITAR BUGS DE RENDERIZAÇÃO */
         }
 
         canvas {
@@ -334,6 +333,7 @@
 
         let currentScaleFactor = 1.0;
         let initialDistance = null;
+        let isResizing = false;
 
         const canvas = document.getElementById('pdfCanvas');
         const ctx = canvas.getContext('2d');
@@ -526,32 +526,50 @@
         });
 
         // -------------------------------------------------------------
-        // TELA CHEIA E REDIMENSIONAMENTO SEGURO
+        // TELA CHEIA ESTÁVEL E ANTI-GIRO (MOBILE FIX)
         // -------------------------------------------------------------
-        fullscreenBtn.addEventListener('click', () => {
-            if (!document.fullscreenElement) {
-                bookViewport.requestFullscreen().catch(err => {
-                    alert(`Erro ao tentar modo tela cheia: ${err.message}`);
-                });
-            } else {
-                document.exitFullscreen();
+        fullscreenBtn.addEventListener('click', async () => {
+            try {
+                if (!document.fullscreenElement) {
+                    await bookViewport.requestFullscreen();
+                    // Trava a orientação para evitar que o celular vire de cabeça para baixo no meio da transição
+                    if (screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(() => {});
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        await document.exitFullscreen();
+                    }
+                    if (screen.orientation && screen.orientation.unlock) {
+                        screen.orientation.unlock();
+                    }
+                }
+            } catch (err) {
+                console.log("Erro no modo tela cheia: ", err);
             }
         });
 
-        // Aguarda a rotação/redimensionamento da tela cheia estabilizar antes de redesenhar
+        // Aguarda a rotação estabilizar completamente antes de redesenhar o PDF
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenBtn.textContent = "⤹ Sair Tela Cheia";
             } else {
                 fullscreenBtn.textContent = "⛶ Tela Cheia";
             }
+
+            // Pausa redimensionamentos duplicados durante o piscar do navegador
+            isResizing = true;
             setTimeout(() => {
+                isResizing = false;
                 renderPage(pageNum);
-            }, 350);
+            }, 500); // 500ms garante que o layout do celular estabilizou 100%
         });
 
         window.addEventListener('resize', () => {
-            setTimeout(() => renderPage(pageNum), 250);
+            if (isResizing) return;
+            setTimeout(() => {
+                if (!isResizing) renderPage(pageNum);
+            }, 300);
         });
 
         // Exibir e tratar clique nos marcadores
