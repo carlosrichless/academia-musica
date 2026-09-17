@@ -22,7 +22,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            overflow: hidden; /* Trava a tela inteira para focar no e-book */
+            overflow: hidden;
         }
         header {
             background-color: #000000;
@@ -61,7 +61,7 @@
             width: 70px; 
         }
 
-        /* Layout Principal dividido em: Painel Lateral (Marcadores/Busca) e Área do E-book */
+        /* Layout Principal */
         .main-layout {
             display: flex;
             flex: 1;
@@ -69,7 +69,7 @@
             background: #181818;
         }
 
-        /* Barra Lateral de Índice e Pesquisa */
+        /* Barra Lateral */
         .sidebar {
             width: 320px;
             background-color: #121212;
@@ -89,10 +89,6 @@
             color: #fff;
             font-weight: bold;
             margin-bottom: 10px;
-        }
-
-        .search-box {
-            width: 100%;
         }
 
         .search-box input {
@@ -141,7 +137,7 @@
             border-left: 3px solid #1db954;
         }
 
-        /* Área do Visualizador de Livro (E-book) */
+        /* Visualizador do E-book */
         .ebook-container {
             flex: 1;
             display: flex;
@@ -154,30 +150,29 @@
             overflow: hidden;
         }
 
-        /* Efeito de Caderno / Página Folheada Horizontalmente */
         .book-stage {
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #000;
+            background-color: #f4f1ea;
             padding: 15px;
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             border: 1px solid #333;
             max-height: 80vh;
             position: relative;
-            perspective: 1000px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
         canvas {
             display: block;
             max-width: 100%;
             height: auto !important;
-            max-height: 72vh;
-            border-radius: 4px;
+            max-height: 70vh;
+            border-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Barra de Controle de Páginas Inferior (Estilo Spotify/E-book) */
         .ebook-controls {
             position: absolute;
             bottom: 15px;
@@ -224,7 +219,6 @@
             text-align: center;
         }
 
-        /* Responsividade para Celulares */
         @media (max-width: 768px) {
             .main-layout {
                 flex-direction: column;
@@ -236,15 +230,6 @@
             .ebook-container {
                 height: calc(100vh - 200px);
                 padding: 10px;
-            }
-            .ebook-controls {
-                bottom: 10px;
-                padding: 6px 12px;
-                gap: 8px;
-            }
-            .ebook-btn {
-                padding: 4px 10px;
-                font-size: 0.8rem;
             }
         }
     </style>
@@ -258,7 +243,7 @@
     </header>
 
     <div class="main-layout">
-        <!-- Painel Lateral com Pesquisa e Marcadores do PDF -->
+        <!-- Painel Lateral com Pesquisa e Marcadores -->
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-title">Marcadores da Apostila</div>
@@ -273,7 +258,7 @@
 
         <!-- Visualizador de Páginas no Estilo E-book -->
         <div class="ebook-container">
-            <div class="book-stage">
+            <div class="book-stage" id="bookStage">
                 <canvas id="pdfCanvas"></canvas>
             </div>
 
@@ -287,8 +272,8 @@
     </div>
 
     <script>
-        // Substitua pelo link direto do seu arquivo PDF da apostila VIP
-        const pdfUrl = "https://carlosrichless.github.io/bateria-arquivos-videovip/apostila.pdf";
+        // Link convertido do Google Drive para acesso direto
+        const pdfUrl = "https://drive.google.com/uc?export=download&id=1kjHmBqoZFrofljWOoRWCb_WjIirdiokN";
 
         let pdfDoc = null;
         let pageNum = 1;
@@ -304,6 +289,7 @@
         const nextPageBtn = document.getElementById('nextPageBtn');
         const outlineList = document.getElementById('outlineList');
         const searchInput = document.getElementById('searchInput');
+        const bookStage = document.getElementById('bookStage');
 
         // Carregar o PDF usando PDF.js
         pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
@@ -312,23 +298,34 @@
             loadOutline();
         }).catch(error => {
             console.error("Erro ao carregar o PDF:", error);
-            outlineList.innerHTML = `<div class="outline-item" style="color:#ff5555;">Erro ao carregar o PDF. Verifique o link.</div>`;
+            outlineList.innerHTML = `<div class="outline-item" style="color:#ff5555;">Erro ao carregar o PDF do Drive. Verifique se o arquivo está público para visualização.</div>`;
         });
 
-        // Função para renderizar a página com efeito de virada horizontal
+        // Função para renderizar a página
         function renderPage(num) {
             pageRendering = true;
+            
+            // Efeito de virada de página horizontal (suave)
+            bookStage.style.transform = "scale(0.98)";
+            bookStage.style.opacity = "0.6";
+
             pdfDoc.getPage(num).then(function(page) {
                 let viewport = page.getViewport({ scale: scale });
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
 
                 let renderContext = {
-Com certeza! Dá para transformar a sua página `bateria-apostila.html` em um verdadeiro leitor de e-book em formato de caderno, com **virada de páginas horizontal** (estilo livro real, folheando de lado) e integração completa com o índice/marcadores do seu PDF, além de uma caixa de pesquisa inteligente.
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
 
-Para alcançar esse visual profissional de e-book com transição lateral por páginas, a melhor ferramenta em JavaScript puro (sem precisar de instalações pesadas ou servidores complexos) é a biblioteca **PDF.js** combinada com uma estilização personalizada para o efeito de virada de página horizontal.
+                let renderTask = pageOpa! A duplicação aconteceu porque o código anterior acabou colando duas versões do script na mesma resposta. Além disso, o link do **Google Drive** (`https://drive.google.com/...`) não funciona diretamente no leitor de PDF do navegador (`PDF.js`) por conta de bloqueios de segurança do Google (política de CORS).
 
-Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`**:
+Para resolver isso de forma definitiva:
+1. **Removemos a duplicação** deixando o código limpo e único.
+2. **Convertemos o link do Google Drive** para um formato de link de download direto compatível com o PDF.js (`https://drive.google.com/uc?export=download&id=1kjHmBqoZFrofljWOoRWCb_WjIirdiokN`). *(Nota: Certifique-se de que o arquivo no Google Drive esteja com o compartilhamento ativado para "Qualquer pessoa com o link pode acessar").*
+
+Aqui está o código completo, corrigido e limpo para substituir todo o conteúdo do seu arquivo **`bateria-apostila.html`**:
 
 ```html
 <!DOCTYPE html>
@@ -356,16 +353,17 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             color: #e0e0e0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            overflow: hidden;
         }
         header {
             background-color: #000000;
-            padding: 15px 20px;
+            padding: 12px 20px;
             border-bottom: 1px solid #282828;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 60px;
         }
         header h1 {
             font-size: 1.1rem;
@@ -401,7 +399,8 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             display: flex;
             flex-direction: row;
             background: #121212;
-            height: calc(100vh - 65px);
+            height: calc(100vh - 60px);
+            overflow: hidden;
         }
 
         /* Menu Lateral (Índice / Marcadores / Pesquisa) */
@@ -413,11 +412,11 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             flex-direction: column;
             padding: 15px;
             gap: 15px;
-            z-index: 10;
+            height: 100%;
         }
 
         .sidebar-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             color: #fff;
             font-weight: bold;
         }
@@ -474,44 +473,48 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             align-items: center;
             justify-content: center;
             position: relative;
-            background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%);
+            background: radial-gradient(circle, #252525 0%, #121212 100%);
             padding: 20px;
+            overflow: hidden;
         }
 
         /* Efeito visual de Caderno / Livro */
         .book-page-container {
             background-color: #f4f1ea; /* Tom clássico de folha de livro */
-            padding: 20px;
-            border-radius: 4px;
+            padding: 15px;
+            border-radius: 6px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 0 40px rgba(0,0,0,0.05);
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            max-height: 80vh;
+            max-height: 75vh;
             overflow: hidden;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.25s ease, opacity 0.25s ease;
         }
 
         canvas {
             display: block;
             max-width: 100%;
             height: auto !important;
+            max-height: 70vh;
             box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            border-radius: 2px;
         }
 
         /* Barra de Controle de Páginas Inferior */
         .book-footer-bar {
             position: absolute;
             bottom: 15px;
-            background-color: rgba(24, 24, 24, 0.9);
+            background-color: rgba(18, 18, 18, 0.95);
             border: 1px solid #333;
-            padding: 10px 20px;
+            padding: 8px 20px;
             border-radius: 30px;
             display: flex;
             align-items: center;
             gap: 15px;
             backdrop-filter: blur(5px);
+            z-index: 10;
         }
 
         .book-btn {
@@ -519,17 +522,18 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             border: 1px solid #444;
             color: #fff;
             padding: 6px 14px;
-            border-radius: 15px;
+            border-radius: 18px;
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: bold;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .book-btn:hover:not(:disabled) {
             background-color: #1db954;
             border-color: #1db954;
             color: #000;
+            transform: scale(1.05);
         }
 
         .book-btn:disabled {
@@ -539,7 +543,7 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
 
         .page-indicator {
             font-size: 0.85rem;
-            color: #b3b3b3;
+            color: #fff;
             font-weight: bold;
         }
 
@@ -547,15 +551,15 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
         @media (max-width: 768px) {
             .main-container {
                 flex-direction: column;
+                overflow-y: auto;
             }
             .sidebar {
                 width: 100%;
-                max-height: 180px;
-                padding: 10px;
+                height: 160px;
+                min-height: 160px;
             }
             .book-viewport {
-                height: auto;
-                flex: 1;
+                height: calc(100vh - 220px);
                 padding: 10px;
             }
         }
@@ -597,14 +601,14 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
     </div>
 
     <script>
-        // Substitua pelo link direto do seu arquivo PDF hospedado no GitHub
-        const urlPdf = "[https://carlosrichless.github.io/bateria-arquivos-videovip/apostila.pdf](https://carlosrichless.github.io/bateria-arquivos-videovip/apostila.pdf)";
+        // Link direto convertido para o PDF.js carregar corretamente do Google Drive
+        const urlPdf = "[https://drive.google.com/uc?export=download&id=1kjHmBqoZFrofljWOoRWCb_WjIirdiokN](https://drive.google.com/uc?export=download&id=1kjHmBqoZFrofljWOoRWCb_WjIirdiokN)";
 
         let pdfDoc = null;
         let pageNum = 1;
         let pageRendering = false;
         let pageNumPending = null;
-        let scale = 1.2;
+        let scale = 1.25;
         let pdfOutlines = [];
 
         const canvas = document.getElementById('pdfCanvas');
@@ -619,7 +623,6 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             pdfDoc = pdfDoc_;
             pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
             
-            // Renderizar a primeira página
             renderPage(pageNum);
 
             // Carregar os marcadores (outline / índice interno do PDF)
@@ -631,16 +634,15 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
             });
         }).catch(function(error) {
             console.error(error);
-            bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#ff5555;">Erro ao carregar PDF. Verifique o link.</div>';
+            bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#ff5555;">Erro ao carregar PDF do Drive. Verifique se o arquivo está público ("Qualquer pessoa com o link").</div>';
         });
 
-        // Função para renderizar a página com animação horizontal estilo folhear
+        // Função para renderizar a página com efeito de virada horizontal
         function renderPage(num) {
             pageRendering = true;
             
-            // Efeito suave de transição lateral de página
-            pageContainer.style.transform = "scale(0.98)";
-            pageContainer.style.opacity = "0.7";
+            pageContainer.style.transform = "scale(0.97)";
+            pageContainer.style.opacity = "0.6";
 
             pdfDoc.getPage(num).then(function(page) {
                 const viewport = page.getViewport({ scale: scale });
@@ -657,11 +659,10 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
                     pageRendering = false;
                     pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
                     
-                    // Retorna ao normal com suavidade
                     setTimeout(() => {
                         pageContainer.style.transform = "scale(1)";
                         pageContainer.style.opacity = "1";
-                    }, 100);
+                    }, 80);
 
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
@@ -694,24 +695,26 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
         document.getElementById('prevPage').addEventListener('click', onPrevPage);
         document.getElementById('nextPage').addEventListener('click', onNextPage);
 
-        // Suporte a navegação por teclado (Setas Esquerda/Direita folheiam o livro)
+        // Navegação por teclado (Setas Esquerda / Direita)
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') onPrevPage();
             if (e.key === 'ArrowRight') onNextPage();
         });
 
-        // Função para processar e exibir os marcadores na barra lateral
+        // Função para processar e exibir os marcadores na barra lateral com suporte a busca
         function exibirMarcadores(outlines, filtro = '') {
             bookmarksList.innerHTML = '';
             
             if (!outlines || outlines.length === 0) {
-                bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#777;">Sem marcadores cadastrados.</div>';
+                bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#777;">Sem marcadores no PDF.</div>';
                 return;
             }
 
+            let contador = 0;
             outlines.forEach(item => {
                 if (filtro && !item.title.toLowerCase().includes(filtro.toLowerCase())) return;
 
+                contador++;
                 const div = document.createElement('div');
                 div.className = 'bookmark-item';
                 div.textContent = item.title;
@@ -730,9 +733,13 @@ Aqui está o código completo e estruturado para o seu **`bateria-apostila.html`
                 });
                 bookmarksList.appendChild(div);
             });
+
+            if (contador === 0) {
+                bookmarksList.innerHTML = '<div class="bookmark-item" style="color:#777;">Nenhum exercício encontrado.</div>';
+            }
         }
 
-        // Caixa de Pesquisa do Índice
+        // Caixa de Pesquisa em tempo real
         searchInput.addEventListener('input', (e) => {
             exibirMarcadores(pdfOutlines, e.target.value);
         });
