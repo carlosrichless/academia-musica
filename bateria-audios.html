@@ -65,11 +65,35 @@
             background: linear-gradient(to bottom, #202020 0%, #121212 100%);
         }
 
+        .playlist-header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
         .playlist-title {
             font-size: 1.4rem;
             color: #fff;
-            margin-bottom: 15px;
             font-weight: bold;
+        }
+
+        /* Estilo da barra de pesquisa */
+        .search-box input {
+            padding: 8px 14px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 0.85rem;
+            outline: none;
+            width: 250px;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            border-color: #1db954;
         }
 
         .audio-list {
@@ -274,6 +298,13 @@
             .np-center {
                 width: 45%;
             }
+            .search-box input {
+                width: 100%;
+            }
+            .playlist-header-area {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
@@ -281,12 +312,17 @@
 
     <header>
         <a href="bateria-vip.html" class="btn-voltar">&#8592; Voltar</a>
-        <h1>Áudios VIP - Apostila</h1>
+        <h1>Áudios VIP - Carlos Richless</h1>
         <div class="header-spacer"></div>
     </header>
 
     <div class="main-container">
-        <div class="playlist-title">Faixas de Áudio (.wav)</div>
+        <div class="playlist-header-area">
+            <div class="playlist-title">Apostila de Áudios (.wav)</div>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Pesquisar áudio...">
+            </div>
+        </div>
         <div class="audio-list" id="audioList">
             <!-- Preenchido via JavaScript -->
         </div>
@@ -297,7 +333,7 @@
         <div class="np-left">
             <div class="np-thumb">♫</div>
             <div class="np-info">
-                <div class="np-title" id="npTitle">Nenhuma faixa selecionada</div>
+                <div class="np-title" id="npTitle">Selecione uma faixa</div>
                 <div class="np-subtitle">Carlos Richless - Bateria VIP</div>
             </div>
         </div>
@@ -325,14 +361,93 @@
 
     <script>
         // URL base do repositório no GitHub Pages para os áudios .wav
-        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-videovip/";
+        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-som/";
 
-        // Lista de áudios (.wav) - Altere ou adicione conforme os arquivos reais do seu repositório
+        // Lista completa de áudios (.wav) fornecida
         const audios = [
-            "exercicio-01.wav",
-            "exercicio-02.wav",
-            "exercicio-03.wav",
-            "exercicio-04.wav"
+            "10 - LEVADAS.wav",
+            "100 - OUTRAS LEVADAS 6 POR 9.wav",
+            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav",
+            "11 - LEVADAS COLCHEIA.wav",
+            "14 - VARIAÇÃO DE LEVADAS.wav",
+            "15 - VARIAÇÃO DE LEVADAS.wav",
+            "16 - VARIAÇÃO DE LEVADAS.wav",
+            "17 - VARIAÇÃO DE LEVADAS.wav",
+            "18 - VARIAÇÃO DE LEVADAS.wav",
+            "19 - VARIAÇÃO DE LEVADAS.wav",
+            "20 - VARIAÇÃO DE LEVADAS.wav",
+            "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav",
+            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "71 - LEVADAS BONUS.wav",
+            "72 - LEVADAS BONUS COLCHEIA.wav",
+            "73 - LEVADAS BONUS HI-HAT ABERTO.wav",
+            "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav",
+            "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
+            "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
+            "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav",
+            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav",
+            "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav",
+            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav",
+            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav",
+            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav",
+            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav",
+            "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav",
+            "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav",
+            "89 - SUGESTÕES DE VIRADAS.wav",
+            "90 - SUGESTÕES DE VIRADAS.wav",
+            "92 - ADICIONANDO ELEMENTOS.wav",
+            "93 - ADICIONANDO ELEMENTOS.wav",
+            "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav",
+            "97 - OUTRAS LEVADAS.wav",
+            "98 - OUTRAS LEVADAS SHUFFLE.wav",
+            "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav"
         ];
 
         let currentIndex = 0;
@@ -345,6 +460,7 @@
         const durationTimeEl = document.getElementById('durationTime');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const searchInput = document.getElementById('searchInput');
 
         function formatTime(seconds) {
             const mins = Math.floor(seconds / 60);
@@ -352,25 +468,28 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
-        function carregarLista() {
+        function carregarLista(filtro = '') {
             audioListContainer.innerHTML = '';
+            
             audios.forEach((filename, index) => {
-                const item = document.createElement('div');
-                item.className = `audio-item ${index === currentIndex ? 'active' : ''}`;
-                
                 const nomeLimpo = filename.replace('.wav', '');
                 
-                item.innerHTML = `
-                    <span class="audio-item-name">${nomeLimpo}</span>
-                    <button class="play-icon-btn">&#9654;</button>
-                `;
+                if (nomeLimpo.toLowerCase().includes(filtro.toLowerCase())) {
+                    const item = document.createElement('div');
+                    item.className = `audio-item ${index === currentIndex ? 'active' : ''}`;
+                    
+                    item.innerHTML = `
+                        <span class="audio-item-name">${nomeLimpo}</span>
+                        <button class="play-icon-btn">&#9654;</button>
+                    `;
 
-                item.addEventListener('click', () => {
-                    currentIndex = index;
-                    tocarFaixa(currentIndex);
-                });
+                    item.addEventListener('click', () => {
+                        currentIndex = index;
+                        tocarFaixa(currentIndex);
+                    });
 
-                audioListContainer.appendChild(item);
+                    audioListContainer.appendChild(item);
+                }
             });
         }
 
@@ -383,15 +502,14 @@
             npTitle.textContent = filename.replace('.wav', '');
             
             audioPlayer.play().then(() => {
-                playPauseBtn.innerHTML = '&#10074;&#10074;'; // Ícone de pause
+                playPauseBtn.innerHTML = '&#10074;&#10074;';
             }).catch(e => {
-                console.log("Erro ao reproduzir áudio:", e);
+                console.log("Reprodução iniciada ou aguardando interação:", e);
             });
 
-            carregarLista(); // Atualiza o destaque visual na lista
+            carregarLista(searchInput.value);
         }
 
-        // Evento Botão Play/Pause principal
         playPauseBtn.addEventListener('click', () => {
             if (audioPlayer.paused) {
                 if (!audioPlayer.src && audios.length > 0) {
@@ -406,7 +524,6 @@
             }
         });
 
-        // Próxima e Anterior
         nextBtn.addEventListener('click', () => {
             currentIndex = (currentIndex + 1) % audios.length;
             tocarFaixa(currentIndex);
@@ -417,7 +534,6 @@
             tocarFaixa(currentIndex);
         });
 
-        // Atualizar barra de progresso
         audioPlayer.addEventListener('timeupdate', () => {
             if (audioPlayer.duration) {
                 const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
@@ -430,7 +546,6 @@
             durationTimeEl.textContent = formatTime(audioPlayer.duration);
         });
 
-        // Permitir clicar na barra para avançar/retroceder o áudio
         progressBar.addEventListener('input', () => {
             if (audioPlayer.duration) {
                 const time = (progressBar.value / 100) * audioPlayer.duration;
@@ -438,18 +553,17 @@
             }
         });
 
-        // Quando terminar a faixa, toca a próxima automaticamente
         audioPlayer.addEventListener('ended', () => {
             currentIndex = (currentIndex + 1) % audios.length;
             tocarFaixa(currentIndex);
         });
 
+        searchInput.addEventListener('input', (e) => {
+            carregarLista(e.target.value);
+        });
+
         // Inicialização
         carregarLista();
-        if(audios.length > 0) {
-            npTitle.textContent = audios[0].replace('.wav', '');
-            audioPlayer.src = baseUrl + encodeURIComponent(audios[0]);
-        }
     </script>
 </body>
 </html>
