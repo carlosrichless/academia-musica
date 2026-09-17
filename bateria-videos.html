@@ -65,7 +65,6 @@
             width: 100%;
         }
 
-        /* Container do Vídeo no Topo - Ajustado para garantir visibilidade */
         .video-player-wrapper {
             width: 100%;
             max-width: 800px;
@@ -85,6 +84,13 @@
             display: block;
             background-color: #000;
             outline: none;
+        }
+
+        /* Oculta o controle de volume e mute nativo do vídeo, mantendo play/pause, progresso e tela cheia */
+        video::-webkit-media-controls-mute-button,
+        video::-webkit-media-controls-volume-slider-container,
+        video::-webkit-media-controls-volume-slider {
+            display: none !important;
         }
 
         .playlist-section {
@@ -431,9 +437,9 @@
     </header>
 
     <div class="main-container">
-        <!-- Player de Vídeo em Destaque no Topo -->
+        <!-- Player de Vídeo em Destaque no Topo (Com controle de tela cheia ativo, sem três pontinhos e sem controle de volume nativo) -->
         <div class="video-player-wrapper">
-            <video id="videoPlayer" playsinline webkit-playsinline controls></video>
+            <video id="videoPlayer" playsinline webkit-playsinline controls controlslist="nodownload nofullscreen noremoteplayback" disablepictureinpicture></video>
         </div>
 
         <div class="playlist-section">
