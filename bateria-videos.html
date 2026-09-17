@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biblioteca de Vídeos VIP - Bateria</title>
+    <title>Vídeos VIP - Bateria (Pro Player)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -20,143 +20,401 @@
             overflow: hidden;
         }
         header {
-            background-color: #1f1f1f;
+            background-color: #000000;
             padding: 15px 20px;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #282828;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         header h1 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #fff;
             flex: 1;
             text-align: center;
         }
-        /* Estilo do botão de voltar */
         .btn-voltar {
-            background-color: #2a2a2a;
+            background-color: #242424;
             color: #fff;
             padding: 8px 14px;
-            border: 1px solid #444;
-            border-radius: 4px;
+            border: none;
+            border-radius: 20px;
             text-decoration: none;
-            font-size: 0.9rem;
-            transition: background 0.2s, border-color 0.2s;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: background 0.2s, transform 0.1s;
             display: flex;
             align-items: center;
             gap: 6px;
         }
         .btn-voltar:hover {
-            background-color: #333;
-            border-color: #1db954;
+            background-color: #2a2a2a;
+            transform: scale(1.02);
         }
-        /* Espaçador invisível para equilibrar o header centralizado */
         .header-spacer {
-            width: 90px; 
+            width: 70px; 
         }
-        .container {
-            display: flex;
+
+        .main-container {
             flex: 1;
-            overflow: hidden;
-        }
-        .player-area {
-            flex: 2;
-            background-color: #000;
+            overflow-y: auto;
+            padding: 15px;
+            padding-bottom: 240px; /* Espaço para o player de vídeo + barra de controle */
+            background: linear-gradient(to bottom, #202020 0%, #121212 100%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
         }
+
+        /* Área do Vídeo Principal em destaque */
+        .video-player-wrapper {
+            width: 100%;
+            max-width: 800px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+        }
+
         video {
             width: 100%;
-            max-height: 75vh;
-            outline: none;
-            background: #000;
+            max-height: 450px;
+            display: block;
+            background-color: #000;
         }
-        .video-title {
-            margin-top: 15px;
-            font-size: 1.1rem;
-            color: #fff;
-            text-align: center;
-        }
-        .playlist-area {
-            flex: 1;
-            background-color: #181818;
-            border-left: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            max-width: 400px;
-        }
-        .playlist-header {
-            padding: 15px;
-            background-color: #202020;
-            font-weight: bold;
-            border-bottom: 1px solid #333;
-        }
-        /* Estilo da barra de pesquisa */
-        .search-box {
-            padding: 10px 15px;
-            background-color: #181818;
-            border-bottom: 1px solid #333;
-        }
-        .search-box input {
+
+        .playlist-section {
             width: 100%;
-            padding: 8px 12px;
+            max-width: 800px;
+        }
+
+        .playlist-header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .playlist-title {
+            font-size: 1.2rem;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .search-box input {
+            padding: 8px 14px;
             background-color: #2a2a2a;
             border: 1px solid #444;
-            border-radius: 4px;
+            border-radius: 20px;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             outline: none;
+            width: 220px;
+            transition: border-color 0.2s;
         }
         .search-box input:focus {
             border-color: #1db954;
         }
-        .playlist {
-            overflow-y: auto;
-            flex: 1;
+
+        .video-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
-        .playlist-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #222;
+
+        .video-item {
+            background-color: #181818;
+            padding: 12px 16px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             cursor: pointer;
             transition: background 0.2s;
-            font-size: 0.9rem;
         }
-        .playlist-item:hover {
-            background-color: #2a2a2a;
+
+        .video-item:hover {
+            background-color: #282828;
         }
-        .playlist-item.active {
-            background-color: #333;
+
+        .video-item.active {
+            background-color: #282828;
             border-left: 4px solid #1db954;
+        }
+
+        .video-item-name {
+            font-size: 0.95rem;
             color: #fff;
+        }
+
+        .video-item.active .video-item-name {
+            color: #1db954;
             font-weight: bold;
         }
+
+        .play-icon-btn {
+            background: #1db954;
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Barra de Controle Inferior Fixa para Vídeos */
+        .now-playing-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #181818;
+            border-top: 1px solid #282828;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            z-index: 1000;
+        }
+
+        .np-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 25%;
+        }
+
+        .np-thumb {
+            width: 45px;
+            height: 45px;
+            background-color: #282828;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #1db954;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .np-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .np-title {
+            font-size: 0.9rem;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .np-subtitle {
+            font-size: 0.75rem;
+            color: #b3b3b3;
+        }
+
+        .np-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 50%;
+        }
+
+        .np-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .np-btn {
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #b3b3b3;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .np-btn:hover {
+            color: #fff;
+            border-color: #888;
+        }
+
+        .np-btn-play {
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .np-btn-play:hover {
+            transform: scale(1.05);
+            background-color: #1db954;
+            color: #fff;
+            border: none;
+        }
+
+        /* ESTADOS DE ATIVO */
+        #loopBtn.active-loop {
+            background-color: #1db954;
+            color: #000;
+            border-color: #1db954;
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+        }
+
+        #btnA.active-marker {
+            background-color: #3b82f6;
+            color: #fff;
+            border: 2px solid #93c5fd;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+        }
+
+        #btnB.active-marker {
+            background-color: #f59e0b;
+            color: #000;
+            border: 2px solid #fde68a;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+        }
+
+        .np-progress-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            font-size: 0.75rem;
+            color: #b3b3b3;
+        }
+
+        .np-progress-bar {
+            flex: 1;
+            height: 6px;
+            background-color: #4d4d4d;
+            border-radius: 3px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .np-progress-bar::-webkit-slider-thumb {
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #1db954;
+            cursor: pointer;
+        }
+
+        .np-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 15px;
+            width: 25%;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #b3b3b3;
+        }
+
+        .control-group select {
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .control-group select:hover {
+            border-color: #1db954;
+        }
+
+        .volume-slider {
+            width: 70px;
+            height: 4px;
+            background-color: #4d4d4d;
+            border-radius: 2px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        /* MEDIA QUERY PARA CELULARES */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            .playlist-area {
-                max-width: 100%;
-                max-height: 40vh;
-            }
-            video {
-                max-height: 40vh;
-            }
-            header {
-                padding: 10px 15px;
-            }
             header h1 {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
             .btn-voltar {
                 padding: 6px 10px;
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
-            .header-spacer {
-                width: 60px;
+            .playlist-header-area {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box input {
+                width: 100%;
+            }
+
+            .now-playing-bar {
+                flex-direction: column;
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .np-left, .np-center, .np-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .np-controls {
+                gap: 6px;
+                justify-content: center;
+            }
+
+            .np-btn {
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
+
+            .np-right {
+                justify-content: space-around;
+                border-top: 1px solid #282828;
+                padding-top: 6px;
+            }
+
+            .main-container {
+                padding-bottom: 280px;
             }
         }
     </style>
@@ -164,177 +422,263 @@
 <body>
 
     <header>
-        <!-- Botão de Voltar para bateria-vip.html -->
         <a href="bateria-vip.html" class="btn-voltar">&#8592; Voltar</a>
-        <h1>Biblioteca VIP - Carlos Richless</h1>
+        <h1>Vídeos VIP - Carlos Richless</h1>
         <div class="header-spacer"></div>
     </header>
 
-    <div class="container">
-        <!-- Área do Player -->
-        <div class="player-area">
-            <video id="videoPlayer" controls autoplay>
-                Seu navegador não suporta reprodução de vídeo.
-            </video>
-            <div class="video-title" id="videoTitle">Selecione um vídeo ao lado</div>
+    <div class="main-container">
+        <!-- Player de Vídeo em Destaque -->
+        <div class="video-player-wrapper">
+            <video id="videoPlayer" playsinline></video>
         </div>
 
-        <!-- Lista de Vídeos -->
-        <div class="playlist-area">
-            <div class="playlist-header">Aulas Disponíveis</div>
-            <!-- Barra de Pesquisa -->
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="Pesquisar aula...">
+        <div class="playlist-section">
+            <div class="playlist-header-area">
+                <div class="playlist-title">Apostila de Vídeos (.mp4)</div>
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Pesquisar vídeo...">
+                </div>
             </div>
-            <div class="playlist" id="playlist">
-                <!-- Preenchido via JavaScript -->
+            <div class="video-list" id="videoList"></div>
+        </div>
+    </div>
+
+    <!-- Barra de Controles Inferior para Vídeos -->
+    <div class="now-playing-bar">
+        <div class="np-left">
+            <div class="np-thumb">🎬</div>
+            <div class="np-info">
+                <div class="np-title" id="npTitle">Selecione um vídeo</div>
+                <div class="np-subtitle">Carlos Richless - Bateria VIP</div>
+            </div>
+        </div>
+
+        <div class="np-center">
+            <div class="np-controls">
+                <button class="np-btn" id="prevBtn" title="Anterior">&#9664;&#9664;</button>
+                <button class="np-btn np-btn-play" id="playPauseBtn" title="Play/Pause">&#9654;</button>
+                <button class="np-btn" id="nextBtn" title="Próxima">&#9654;&#9654;</button>
+                <button class="np-btn" id="loopBtn" title="Repetir Vídeo">🔁 Repetir</button>
+                <button class="np-btn" id="btnA" title="Marcar Ponto A">Ponto A</button>
+                <button class="np-btn" id="btnB" title="Marcar Ponto B (Ativa Loop)">Ponto B</button>
+            </div>
+            <div class="np-progress-area">
+                <span id="currentTime">0:00</span>
+                <input type="range" id="progressBar" class="np-progress-bar" value="0" min="0" max="100" step="0.1">
+                <span id="durationTime">0:00</span>
+            </div>
+        </div>
+
+        <div class="np-right">
+            <div class="control-group">
+                <label for="speedSelect">Velocidade:</label>
+                <select id="speedSelect">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1.0" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="volumeSlider">Volume:</label>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.05" value="1">
             </div>
         </div>
     </div>
 
     <script>
-        // URL base do repositório no GitHub Pages
-        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-videovip/";
+        // Substitua pela URL base onde estão hospedados os seus vídeos no GitHub Pages
+        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-video/";
 
-        // Lista exata de arquivos fornecida
+        // Lista de exemplo com seus arquivos de vídeo (substitua pelos nomes reais dos seus arquivos .mp4)
         const videos = [
-            "10 - LEVADAS.mp4",
-            "100 - OUTRAS LEVADAS 6 POR 9.mp4",
-            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4",
-            "11 - LEVADAS COLCHEIA.mp4",
-            "14 - VARIAÇÃO DE LEVADAS.mp4",
-            "15 - VARIAÇÃO DE LEVADAS.mp4",
-            "16 - VARIAÇÃO DE LEVADAS.mp4",
-            "17 - VARIAÇÃO DE LEVADAS.mp4",
-            "18 - VARIAÇÃO DE LEVADAS.mp4",
-            "19 - VARIAÇÃO DE LEVADAS.mp4",
-            "20 - VARIAÇÃO DE LEVADAS.mp4",
-            "21 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "22 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "23 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "24 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "25 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "26 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "27 - VARIAÇÃO DE LEVADAS COLCHEIA.mp4",
-            "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.mp4",
-            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.mp4",
-            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.mp4",
-            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.mp4",
-            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.mp4",
-            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
-            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
-            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
-            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.mp4",
-            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
-            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
-            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.mp4",
-            "71 - LEVADAS BONUS.mp4",
-            "72 - LEVADAS BONUS COLCHEIA.mp4",
-            "73 - LEVADAS BONUS HI-HAT ABERTO.mp4",
-            "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.mp4",
-            "76 - CONDUZIR NO CONTRA DOS TEMPOS.mp4",
-            "77 - CONDUZIR NO CONTRA DOS TEMPOS.mp4",
-            "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.mp4",
-            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.mp4",
-            "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.mp4",
-            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS PART B.mp4",
-            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.mp4",
-            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA PART B.mp4",
-            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.mp4",
-            "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.mp4",
-            "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.mp4",
-            "89 - SUGESTÕES DE VIRADAS.mp4",
-            "90 - SUGESTÕES DE VIRADAS.mp4",
-            "92 - ADICIONANDO ELEMENTOS.mp4",
-            "93 - ADICIONANDO ELEMENTOS.mp4",
-            "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.mp4",
-            "97 - OUTRAS LEVADAS.mp4",
-            "98 - OUTRAS LEVADAS SHUFFLE.mp4",
-            "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE.mp4"
+            "01 - Introducao.mp4",
+            "02 - Pegada e Baquetas.mp4",
+            "03 - Independencia Basica.mp4"
         ];
 
+        let currentIndex = 0;
+        let isSingleLoop = false;
+        let pointA = null;
+        let pointB = null;
+        let isDragging = false;
+
         const videoPlayer = document.getElementById('videoPlayer');
-        const videoTitle = document.getElementById('videoTitle');
-        const playlistContainer = document.getElementById('playlist');
+        const videoListContainer = document.getElementById('videoList');
+        const npTitle = document.getElementById('npTitle');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const currentTimeEl = document.getElementById('currentTime');
+        const durationTimeEl = document.getElementById('durationTime');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const loopBtn = document.getElementById('loopBtn');
+        const btnA = document.getElementById('btnA');
+        const btnB = document.getElementById('btnB');
+        const speedSelect = document.getElementById('speedSelect');
+        const volumeSlider = document.getElementById('volumeSlider');
         const searchInput = document.getElementById('searchInput');
 
-        function carregarPlaylist(filtro = '') {
-            playlistContainer.innerHTML = '';
-            
-            videos.forEach((filename) => {
-                const nomeLimpo = filename.replace('.mp4', '');
-                
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        function carregarLista(filtro = '') {
+            videoListContainer.innerHTML = '';
+            videos.forEach((filename, index) => {
+                const nomeLimpo = filename.replace('.mp4', '').replace('.mov', '');
                 if (nomeLimpo.toLowerCase().includes(filtro.toLowerCase())) {
                     const item = document.createElement('div');
-                    item.className = 'playlist-item';
-                    item.textContent = nomeLimpo;
-                    
-                    if (videoPlayer.src.includes(encodeURIComponent(filename))) {
-                        item.classList.add('active');
-                    }
-                    
+                    item.className = `video-item ${index === currentIndex ? 'active' : ''}`;
+                    item.innerHTML = `
+                        <span class="video-item-name">${nomeLimpo}</span>
+                        <button class="play-icon-btn">&#9654;</button>
+                    `;
                     item.addEventListener('click', () => {
-                        trocarVideo(filename, item);
+                        currentIndex = index;
+                        tocarVideo(currentIndex);
                     });
-
-                    playlistContainer.appendChild(item);
+                    videoListContainer.appendChild(item);
                 }
             });
         }
 
-        function trocarVideo(filename, elementoItem) {
-            document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
-            if (elementoItem) {
-                elementoItem.classList.add('active');
-            }
+        function tocarVideo(index) {
+            currentIndex = index;
+            const filename = videos[currentIndex];
+            videoPlayer.src = baseUrl + encodeURIComponent(filename);
+            npTitle.textContent = filename.replace('.mp4', '').replace('.mov', '');
+            
+            pointA = null;
+            pointB = null;
+            btnA.classList.remove('active-marker');
+            btnB.classList.remove('active-marker');
 
-            const videoUrl = baseUrl + encodeURIComponent(filename);
+            videoPlayer.play().then(() => {
+                playPauseBtn.innerHTML = '&#10074;&#10074;';
+            }).catch(e => console.log(e));
 
-            videoPlayer.src = videoUrl;
-            videoTitle.textContent = filename.replace('.mp4', '');
-            videoPlayer.play().catch(e => {
-                console.log("Reprodução automática bloqueada pelo navegador ou erro ao carregar:", e);
-            });
+            carregarLista(searchInput.value);
         }
 
-        searchInput.addEventListener('input', (e) => {
-            carregarPlaylist(e.target.value);
+        playPauseBtn.addEventListener('click', () => {
+            if (videoPlayer.paused) {
+                if (!videoPlayer.src && videos.length > 0) tocarVideo(0);
+                else {
+                    videoPlayer.play();
+                    playPauseBtn.innerHTML = '&#10074;&#10074;';
+                }
+            } else {
+                videoPlayer.pause();
+                playPauseBtn.innerHTML = '&#9654;';
+            }
         });
 
-        carregarPlaylist();
-        if (videos.length > 0) {
-            trocarVideo(videos[0], null);
-        }
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % videos.length;
+            tocarVideo(currentIndex);
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + videos.length) % videos.length;
+            tocarVideo(currentIndex);
+        });
+
+        loopBtn.addEventListener('click', () => {
+            isSingleLoop = !isSingleLoop;
+            videoPlayer.loop = isSingleLoop;
+            loopBtn.classList.toggle('active-loop', isSingleLoop);
+        });
+
+        btnA.addEventListener('click', () => {
+            pointA = videoPlayer.currentTime;
+            btnA.classList.add('active-marker');
+            if (pointB !== null && pointA >= pointB) {
+                pointB = null;
+                btnB.classList.remove('active-marker');
+            }
+        });
+
+        btnB.addEventListener('click', () => {
+            if (pointA === null) {
+                alert("Por favor, marque o Ponto A primeiro!");
+                return;
+            }
+            if (pointB === null) {
+                pointB = videoPlayer.currentTime;
+                if (pointB <= pointA) {
+                    alert("O Ponto B precisa ser à frente do Ponto A!");
+                    pointB = null;
+                    return;
+                }
+                btnB.classList.add('active-marker');
+            } else {
+                pointA = null;
+                pointB = null;
+                btnA.classList.remove('active-marker');
+                btnB.classList.remove('active-marker');
+            }
+        });
+
+        videoPlayer.addEventListener('timeupdate', () => {
+            if (videoPlayer.duration && !isDragging) {
+                const progress = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+                progressBar.value = progress;
+                currentTimeEl.textContent = formatTime(videoPlayer.currentTime);
+
+                if (pointA !== null && pointB !== null) {
+                    if (videoPlayer.currentTime >= pointB) {
+                        videoPlayer.currentTime = pointA;
+                    }
+                }
+            }
+        });
+
+        videoPlayer.addEventListener('loadedmetadata', () => {
+            durationTimeEl.textContent = formatTime(videoPlayer.duration);
+        });
+
+        progressBar.addEventListener('mousedown', () => { isDragging = true; });
+        progressBar.addEventListener('touchstart', () => { isDragging = true; });
+
+        progressBar.addEventListener('input', () => {
+            if (videoPlayer.duration) {
+                const manualTime = (progressBar.value / 100) * videoPlayer.duration;
+                currentTimeEl.textContent = formatTime(manualTime);
+            }
+        });
+
+        progressBar.addEventListener('change', () => {
+            if (videoPlayer.duration) {
+                videoPlayer.currentTime = (progressBar.value / 100) * videoPlayer.duration;
+            }
+            isDragging = false;
+        });
+
+        speedSelect.addEventListener('change', (e) => {
+            videoPlayer.playbackRate = parseFloat(e.target.value);
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            videoPlayer.volume = parseFloat(e.target.value);
+        });
+
+        videoPlayer.addEventListener('ended', () => {
+            if (!isSingleLoop && pointA === null) {
+                currentIndex = (currentIndex + 1) % videos.length;
+                tocarVideo(currentIndex);
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            carregarLista(e.target.value);
+        });
+
+        carregarLista();
     </script>
 </body>
 </html>
