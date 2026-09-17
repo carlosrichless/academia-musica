@@ -80,7 +80,7 @@
 
         /* Menu Lateral (Índice / Marcadores / Pesquisa) */
         .sidebar {
-            width: 280px;
+            width: 300px;
             background-color: #181818;
             border-right: 1px solid #282828;
             display: flex;
@@ -116,23 +116,23 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Espaçamento ideal para os marcadores não encostarem */
+            gap: 8px; 
             padding-right: 4px;
         }
 
+        /* Correção definitiva dos marcadores: altura automática e quebra limpa sem sobreposição */
         .bookmark-item {
-            background-color: #222;
-            padding: 9px 12px; /* Altura segura para toque e clique */
+            background-color: #202020;
+            padding: 10px 12px;
             border-radius: 6px;
             font-size: 0.8rem;
             color: #ccc;
             cursor: pointer;
             transition: all 0.2s;
             border-left: 3px solid transparent;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.3;
+            white-space: normal; /* Permite quebrar linha sem esbarrar */
+            word-break: break-word;
+            line-height: 1.4; /* Espaçamento ideal entre linhas do texto */
         }
 
         .bookmark-item:hover {
@@ -155,7 +155,6 @@
             touch-action: pan-y;
         }
 
-        /* Estilo ativado quando a área do livro entra em Tela Cheia */
         .book-viewport:fullscreen {
             background: #121212;
             padding: 20px;
@@ -268,9 +267,9 @@
             }
             .sidebar {
                 width: 100%;
-                height: 110px;
-                min-height: 110px;
-                max-height: 110px;
+                height: 120px;
+                min-height: 120px;
+                max-height: 120px;
                 padding: 8px 10px;
                 gap: 6px;
             }
@@ -278,18 +277,18 @@
                 gap: 6px;
             }
             .bookmark-item {
-                padding: 7px 10px;
+                padding: 8px 10px;
                 font-size: 0.75rem;
             }
             .book-viewport {
-                height: calc(100vh - 160px);
+                height: calc(100vh - 170px);
                 padding: 5px;
             }
             .book-page-container {
-                max-height: calc(100vh - 225px);
+                max-height: calc(100vh - 235px);
             }
             canvas {
-                max-height: calc(100vh - 235px);
+                max-height: calc(100vh - 245px);
             }
             .book-footer-bar {
                 margin-top: 5px;
@@ -318,7 +317,7 @@
             </div>
         </div>
 
-        <!-- Visualizador do E-book (Área que entra em Tela Cheia) -->
+        <!-- Visualizador do E-book -->
         <div class="book-viewport" id="bookViewport">
             <button class="fullscreen-btn" id="fullscreenBtn" title="Tela Cheia da Apostila">⛶ Tela Cheia</button>
             
@@ -375,7 +374,7 @@
             pageContainer.style.opacity = "0.6";
 
             pdfDoc.getPage(num).then(function(page) {
-                let viewportHeightLimit = window.innerWidth <= 768 ? window.innerHeight - 225 : window.innerHeight - 130;
+                let viewportHeightLimit = window.innerWidth <= 768 ? window.innerHeight - 245 : window.innerHeight - 130;
                 let unscaledViewport = page.getViewport({ scale: 1.0 });
                 let scale = viewportHeightLimit / unscaledViewport.height;
                 
@@ -487,7 +486,7 @@
             renderPage(pageNum);
         });
 
-        // Exibir e tratar clique nos marcadores corrigido
+        // Exibir e tratar clique nos marcadores com robustez total
         function exibirMarcadores(outlines, filtro = '') {
             bookmarksList.innerHTML = '';
             
@@ -505,11 +504,13 @@
                 div.className = 'bookmark-item';
                 div.textContent = item.title;
                 
-                // Evento de clique corrigido e garantido para o PDF.js
                 div.addEventListener('click', () => {
                     if (item.dest) {
-                        pdfDoc.getDestination(item.dest).then(destination => {
-                            if (destination) {
+                        // Trata se o destino é string nomeada ou array direto
+                        let destResolver = typeof item.dest === 'string' ? pdfDoc.getDestination(item.dest) : Promise.resolve(item.dest);
+                        
+                        destResolver.then(destination => {
+                            if (destination && destination[0]) {
                                 pdfDoc.getPageIndex(destination[0]).then(index => {
                                     pageNum = index + 1;
                                     queueRenderPage(pageNum);
