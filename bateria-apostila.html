@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apostila VIP - Bateria (E-book)</title>
     
     <!-- PDF.js para renderizar o PDF diretamente no navegador -->
@@ -140,7 +140,7 @@
             border-left-color: #1db954;
         }
 
-        /* Área do Livro / E-book com suporte a rolagem e zoom livre */
+        /* Área do Livro / E-book */
         .book-viewport {
             flex: 1;
             display: flex;
@@ -150,8 +150,8 @@
             position: relative;
             background: radial-gradient(circle, #222 0%, #121212 100%);
             padding: 10px;
-            overflow: auto; /* Permite rolar quando ampliado com zoom */
-            touch-action: pan-x pan-y pinch-zoom; /* Habilita zoom nativo por pinça */
+            overflow: auto;
+            touch-action: none; /* Desativa comportamentos padrão indesejados para controlarmos o zoom e o toque perfeitamente */
         }
 
         .book-viewport:fullscreen {
@@ -198,7 +198,8 @@
             align-items: center;
             position: relative;
             margin: auto;
-            transition: transform 0.1s ease-out;
+            transform-origin: center center;
+            will-change: transform;
         }
 
         canvas {
@@ -206,6 +207,7 @@
             max-width: 100%;
             height: auto !important;
             border-radius: 2px;
+            pointer-events: none;
         }
 
         /* Barra de Controle de Páginas Inferior */
@@ -330,6 +332,10 @@
         let pageNumPending = null;
         let pdfOutlines = [];
 
+        // Controle de Zoom Dinâmico (Pinça e Touchpad)
+        let currentScaleFactor = 1.0;
+        let initialDistance = null;
+
         const canvas = document.getElementById('pdfCanvas');
         const ctx = canvas.getContext('2d');
         const pageIndicator = document.getElementById('pageIndicator');
@@ -361,12 +367,11 @@
             pageContainer.style.opacity = "0.6";
 
             pdfDoc.getPage(num).then(function(page) {
-                // Renderizamos com uma escala maior (1.5x) para garantir alta nitidez quando usar o zoom
-                let viewportHeightLimit = (window.innerWidth <= 768 ? window.innerHeight - 245 : window.innerHeight - 130) * 1.3;
+                let viewportHeightLimit = window.innerWidth <= 768 ? window.innerHeight - 245 : window.innerHeight - 130;
                 let unscaledViewport = page.getViewport({ scale: 1.0 });
                 let scale = viewportHeightLimit / unscaledViewport.height;
                 
-                let maxWidth = (window.innerWidth <= 768 ? window.innerWidth - 20 : window.innerWidth - 320) * 1.3;
+                let maxWidth = window.innerWidth <= 768 ? window.innerWidth - 20 : window.innerWidth - 320;
                 let scaledWidth = unscaledViewport.width * scale;
                 if (scaledWidth > maxWidth) {
                     scale = maxWidth / unscaledViewport.width;
@@ -385,6 +390,10 @@
                     pageRendering = false;
                     pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
                     pageContainer.style.opacity = "1";
+                    
+                    // Reseta o zoom visual ao mudar de página para evitar distorção
+                    currentScaleFactor = 1.0;
+                    pageContainer.style.transform = `scale(1)`;
 
                     if (pageNumPending !== null) {
                         renderPage(pageNumPending);
@@ -422,39 +431,92 @@
             if (e.key === 'ArrowRight') onNextPage();
         });
 
-        // Suporte a Arrastar Horizontalmente (Swipe / Mouse Drag) quando NÃO estiver com zoom aplicado
-        let touchStartX = 0;
-        let touchEndX = 0;
+        // -------------------------------------------------------------
+        // SUPORTE TOTAL A ZOOM (Pinça com 2 dedos no celular & Touchpad)
+        // -------------------------------------------------------------
 
+        // 1. Zoom via Pinça (Touch com 2 dedos em celulares/tablets)
         bookViewport.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                touchStartX = e.changedTouches[0].screenX;
+            if (e.touches.length === 2) {
+                initialDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+            }
+        }, { passive: true });
+
+        bookViewport.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialDistance !== null) {
+                let currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                let zoomFactor = currentDistance / initialDistance;
+                let newScale = currentScaleFactor * zoomFactor;
+
+                // Limites de zoom (entre 1x e 4x)
+                if (newScale >= 1.0 && newScale <= 4.0) {
+                    pageContainer.style.transform = `scale(${newScale})`;
+                }
             }
         }, { passive: true });
 
         bookViewport.addEventListener('touchend', (e) => {
-            if (e.changedTouches.length === 1) {
-                touchEndX = e.changedTouches[0].screenX;
-                tratarSwipe();
+            if (e.touches.length < 2) {
+                if (initialDistance !== null) {
+                    // Atualiza o fator de escala atual com base no transform aplicado
+                    let matrix = window.getComputedStyle(pageContainer).transform;
+                    if (matrix && matrix !== 'none') {
+                        let values = matrix.split('(')[1].split(')')[0].split(',');
+                        currentScaleFactor = parseFloat(values[0]);
+                    }
+                }
+                initialDistance = null;
             }
         }, { passive: true });
 
-        bookViewport.addEventListener('mousedown', (e) => {
-            touchStartX = e.clientX;
+        // 2. Zoom via Touchpad do Notebook (Gesto de pinça ou Ctrl + Scroll)
+        bookViewport.addEventListener('wheel', (e) => {
+            if (e.ctrlKey || e.deltaY !== 0) {
+                e.preventDefault();
+                let zoomIntensity = 0.08;
+                let direction = e.deltaY < 0 ? 1 : -1;
+                let newScale = currentScaleFactor + (direction * zoomIntensity);
+
+                if (newScale >= 1.0 && newScale <= 4.0) {
+                    currentScaleFactor = newScale;
+                    pageContainer.style.transform = `scale(${currentScaleFactor})`;
+                }
+            }
+        }, { passive: false });
+
+        // -------------------------------------------------------------
+        // SUPORTE A NAVEGAÇÃO POR SWIPE (1 dedo)
+        // -------------------------------------------------------------
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        bookViewport.addEventListener('pointerdown', (e) => {
+            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
+                touchStartX = e.clientX;
+            }
         });
 
-        bookViewport.addEventListener('mouseup', (e) => {
-            touchEndX = e.clientX;
-            tratarSwipe();
+        bookViewport.addEventListener('pointerup', (e) => {
+            if (e.pointerType === 'touch' || e.pointerType === 'mouse') {
+                touchEndX = e.clientX;
+                let limiteSwipe = 50;
+                // Só executa o swipe se não estiver com zoom aplicado
+                if (currentScaleFactor <= 1.05) {
+                    if (touchEndX < touchStartX - limiteSwipe) onNextPage();
+                    if (touchEndX > touchStartX + limiteSwipe) onPrevPage();
+                }
+            }
         });
 
-        function tratarSwipe() {
-            let limiteSwipe = 50;
-            if (touchEndX < touchStartX - limiteSwipe) onNextPage();
-            if (touchEndX > touchStartX + limiteSwipe) onPrevPage();
-        }
-
-        // Tela Cheia restrita apenas à área da Apostila
+        // -------------------------------------------------------------
+        // CORREÇÃO DEFINITIVA DO BUG DE TELA CHEIA
+        // -------------------------------------------------------------
         fullscreenBtn.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 bookViewport.requestFullscreen().catch(err => {
@@ -465,20 +527,23 @@
             }
         });
 
+        // O setTimeout corrige o bug da imagem esticada/bugada ao entrar/sair da tela cheia
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenBtn.textContent = "⤹ Sair Tela Cheia";
             } else {
                 fullscreenBtn.textContent = "⛶ Tela Cheia";
             }
-            setTimeout(() => renderPage(pageNum), 100);
+            setTimeout(() => {
+                renderPage(pageNum);
+            }, 250);
         });
 
         window.addEventListener('resize', () => {
-            renderPage(pageNum);
+            setTimeout(() => renderPage(pageNum), 200);
         });
 
-        // Exibir e tratar clique nos marcadores
+        // Exibir e tratar clique nos marcadores com robustez total
         function exibirMarcadores(outlines, filtro = '') {
             bookmarksList.innerHTML = '';
             
