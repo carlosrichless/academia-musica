@@ -59,7 +59,7 @@
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            padding-bottom: 120px; /* Espaço para a barra maior */
+            padding-bottom: 130px;
             background: linear-gradient(to bottom, #202020 0%, #121212 100%);
         }
 
@@ -143,13 +143,13 @@
             cursor: pointer;
         }
 
-        /* Player Fixo Inferior Completo */
+        /* Player Fixo Inferior */
         .now-playing-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 100px;
+            height: 110px;
             background-color: #181818;
             border-top: 1px solid #282828;
             display: flex;
@@ -199,73 +199,96 @@
             color: #b3b3b3;
         }
 
-        /* Controles centrais */
         .np-center {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             width: 50%;
         }
 
         .np-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
 
         .np-btn {
-            background: none;
-            border: none;
+            background: #2a2a2a;
+            border: 1px solid #444;
             color: #b3b3b3;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-            padding: 4px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: bold;
         }
 
         .np-btn:hover {
             color: #fff;
+            border-color: #888;
         }
 
-        .np-btn.active-control {
-            color: #1db954;
-        }
-
+        /* Botão Play/Pause padrão menor redondinho */
         .np-btn-play {
             background-color: #fff;
             color: #000;
+            border: none;
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 0.9rem;
-            transition: transform 0.1s;
         }
-
         .np-btn-play:hover {
             transform: scale(1.05);
             background-color: #1db954;
             color: #fff;
+            border: none;
+        }
+
+        /* ESTADOS DE ATIVO DOS BOTÕES DE LOOP (A, B e Repetir) */
+        #loopBtn.active-loop {
+            background-color: #1db954;
+            color: #000;
+            border-color: #1db954;
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+        }
+
+        #btnA.active-marker {
+            background-color: #3b82f6;
+            color: #fff;
+            border: 2px solid #93c5fd;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+        }
+
+        #btnB.active-marker {
+            background-color: #f59e0b;
+            color: #000;
+            border: 2px solid #fde68a;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
         }
 
         .np-progress-area {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             font-size: 0.75rem;
             color: #b3b3b3;
         }
 
+        /* Barra de progresso funcional */
         .np-progress-bar {
             flex: 1;
-            height: 4px;
+            height: 6px;
             background-color: #4d4d4d;
-            border-radius: 2px;
+            border-radius: 3px;
             outline: none;
             appearance: none;
             cursor: pointer;
@@ -273,18 +296,13 @@
 
         .np-progress-bar::-webkit-slider-thumb {
             appearance: none;
-            width: 10px;
-            height: 10px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
-            background-color: #fff;
-            display: none;
+            background-color: #1db954;
+            cursor: pointer;
         }
 
-        .np-progress-bar:hover::-webkit-slider-thumb {
-            display: block;
-        }
-
-        /* Lado direito (Velocidade e Volume) */
         .np-right {
             display: flex;
             align-items: center;
@@ -306,7 +324,7 @@
             color: #fff;
             border: 1px solid #444;
             border-radius: 4px;
-            padding: 3px 6px;
+            padding: 4px 8px;
             font-size: 0.8rem;
             outline: none;
             cursor: pointer;
@@ -339,7 +357,7 @@
                 height: auto;
                 flex-direction: column;
                 padding: 10px;
-                gap: 8px;
+                gap: 10px;
             }
             .np-left, .np-center, .np-right {
                 width: 100%;
@@ -350,7 +368,7 @@
                 justify-content: center;
             }
             .main-container {
-                padding-bottom: 160px;
+                padding-bottom: 180px;
             }
         }
     </style>
@@ -373,7 +391,7 @@
         <div class="audio-list" id="audioList"></div>
     </div>
 
-    <!-- Barra de Player Estilo Spotify Pro (Fixa Embaixo) -->
+    <!-- Barra de Player Estilo Spotify Pro -->
     <div class="now-playing-bar">
         <div class="np-left">
             <div class="np-thumb">♫</div>
@@ -388,21 +406,19 @@
                 <button class="np-btn" id="prevBtn" title="Anterior">&#9664;&#9664;</button>
                 <button class="np-btn np-btn-play" id="playPauseBtn" title="Play/Pause">&#9654;</button>
                 <button class="np-btn" id="nextBtn" title="Próxima">&#9654;&#9654;</button>
-                <!-- Botão de Repetir a mesma faixa -->
-                <button class="np-btn" id="loopBtn" title="Repetir Faixa">🔁</button>
-                <!-- Botões de Loop de Trecho A-B -->
-                <button class="np-btn" id="btnA" title="Marcar Ponto A">A</button>
-                <button class="np-btn" id="btnB" title="Marcar Ponto B (Ativa/Desativa Loop)">B</button>
+                <!-- Botões Maiores e Destacados -->
+                <button class="np-btn" id="loopBtn" title="Repetir Faixa">🔁 Repetir</button>
+                <button class="np-btn" id="btnA" title="Marcar Ponto A">Ponto A</button>
+                <button class="np-btn" id="btnB" title="Marcar Ponto B (Ativa Loop)">Ponto B</button>
             </div>
             <div class="np-progress-area">
                 <span id="currentTime">0:00</span>
-                <input type="range" id="progressBar" class="np-progress-bar" value="0" min="0" max="100">
+                <input type="range" id="progressBar" class="np-progress-bar" value="0" min="0" max="100" step="0.1">
                 <span id="durationTime">0:00</span>
             </div>
         </div>
 
         <div class="np-right">
-            <!-- Controle de Velocidade -->
             <div class="control-group">
                 <label for="speedSelect">Velocidade:</label>
                 <select id="speedSelect">
@@ -413,7 +429,6 @@
                     <option value="1.5">1.5x</option>
                 </select>
             </div>
-            <!-- Controle de Volume -->
             <div class="control-group">
                 <label for="volumeSlider">Volume:</label>
                 <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.05" value="1">
@@ -469,6 +484,7 @@
         let isSingleLoop = false;
         let pointA = null;
         let pointB = null;
+        let isDragging = false; // Controle para evitar conflito ao arrastar a barra
 
         const audioPlayer = document.getElementById('audioPlayer');
         const audioListContainer = document.getElementById('audioList');
@@ -518,11 +534,11 @@
             audioPlayer.src = baseUrl + encodeURIComponent(filename);
             npTitle.textContent = filename.replace('.wav', '');
             
-            // Reseta pontos A-B ao trocar de faixa
+            // Reseta marcações de A-B ao trocar
             pointA = null;
             pointB = null;
-            btnA.classList.remove('active-control');
-            btnB.classList.remove('active-control');
+            btnA.classList.remove('active-marker');
+            btnB.classList.remove('active-marker');
 
             audioPlayer.play().then(() => {
                 playPauseBtn.innerHTML = '&#10074;&#10074;';
@@ -554,54 +570,55 @@
             tocarFaixa(currentIndex);
         });
 
-        // Botão para repetir apenas a mesma faixa
+        // Botão de Repetir Faixa com feedback visual ativo/desligado
         loopBtn.addEventListener('click', () => {
             isSingleLoop = !isSingleLoop;
             audioPlayer.loop = isSingleLoop;
-            loopBtn.classList.toggle('active-control', isSingleLoop);
+            loopBtn.classList.toggle('active-loop', isSingleLoop);
         });
 
-        // Controles de Loop A-B
+        // Botão A
         btnA.addEventListener('click', () => {
             pointA = audioPlayer.currentTime;
-            btnA.classList.add('active-control');
-            // Se B já foi marcado antes de A, limpa B para refazer o trecho
+            btnA.classList.add('active-marker');
+            // Se B já existia e ficou menor que A, limpa B
             if (pointB !== null && pointA >= pointB) {
                 pointB = null;
-                btnB.classList.remove('active-control');
+                btnB.classList.remove('active-marker');
             }
         });
 
+        // Botão B
         btnB.addEventListener('click', () => {
             if (pointA === null) {
-                alert("Marque o ponto A primeiro!");
+                alert("Por favor, marque o Ponto A primeiro!");
                 return;
             }
             if (pointB === null) {
                 pointB = audioPlayer.currentTime;
                 if (pointB <= pointA) {
-                    alert("O ponto B deve ser maior que o ponto A!");
+                    alert("O Ponto B precisa ser à frente do Ponto A!");
                     pointB = null;
                     return;
                 }
-                btnB.classList.add('active-control');
+                btnB.classList.add('active-marker');
             } else {
                 // Desativa o loop A-B se clicar novamente
                 pointA = null;
                 pointB = null;
-                btnA.classList.remove('active-control');
-                btnB.classList.remove('active-control');
+                btnA.classList.remove('active-marker');
+                btnB.classList.remove('active-marker');
             }
         });
 
-        // Monitoramento do tempo para aplicar o loop A-B
+        // Atualização contínua do andamento do player
         audioPlayer.addEventListener('timeupdate', () => {
-            if (audioPlayer.duration) {
+            if (audioPlayer.duration && !isDragging) {
                 const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
                 progressBar.value = progress;
                 currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
 
-                // Lógica de repetição do trecho A-B
+                // Executa o loop do trecho A-B se configurado
                 if (pointA !== null && pointB !== null) {
                     if (audioPlayer.currentTime >= pointB) {
                         audioPlayer.currentTime = pointA;
@@ -614,13 +631,24 @@
             durationTimeEl.textContent = formatTime(audioPlayer.duration);
         });
 
+        // Eventos para permitir arrastar ou clicar na barra e atualizar o áudio perfeitamente
+        progressBar.addEventListener('mousedown', () => { isDragging = true; });
+        progressBar.addEventListener('touchstart', () => { isDragging = true; });
+
         progressBar.addEventListener('input', () => {
             if (audioPlayer.duration) {
-                audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
+                const manualTime = (progressBar.value / 100) * audioPlayer.duration;
+                currentTimeEl.textContent = formatTime(manualTime);
             }
         });
 
-        // Controles de Velocidade e Volume
+        progressBar.addEventListener('change', () => {
+            if (audioPlayer.duration) {
+                audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
+            }
+            isDragging = false;
+        });
+
         speedSelect.addEventListener('change', (e) => {
             audioPlayer.playbackRate = parseFloat(e.target.value);
         });
