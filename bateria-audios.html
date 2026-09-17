@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Áudios VIP - Bateria (Spotify Style)</title>
+    <title>Áudios VIP - Bateria (Spotify Style Pro)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -33,7 +33,6 @@
             flex: 1;
             text-align: center;
         }
-        /* Botão de Voltar estilo Spotify */
         .btn-voltar {
             background-color: #242424;
             color: #fff;
@@ -56,12 +55,11 @@
             width: 80px; 
         }
 
-        /* Container principal da lista */
         .main-container {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            padding-bottom: 110px; /* Espaço para a barra fixa embaixo */
+            padding-bottom: 120px; /* Espaço para a barra maior */
             background: linear-gradient(to bottom, #202020 0%, #121212 100%);
         }
 
@@ -80,7 +78,6 @@
             font-weight: bold;
         }
 
-        /* Estilo da barra de pesquisa */
         .search-box input {
             padding: 8px 14px;
             background-color: #2a2a2a;
@@ -146,13 +143,13 @@
             cursor: pointer;
         }
 
-        /* Player Fixo Inferior estilo Spotify ("Now Playing Bar") */
+        /* Player Fixo Inferior Completo */
         .now-playing-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 90px;
+            height: 100px;
             background-color: #181818;
             border-top: 1px solid #282828;
             display: flex;
@@ -166,7 +163,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            width: 30%;
+            width: 25%;
         }
 
         .np-thumb {
@@ -202,19 +199,19 @@
             color: #b3b3b3;
         }
 
-        /* Controles centrais do player */
+        /* Controles centrais */
         .np-center {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
-            width: 40%;
+            width: 50%;
         }
 
         .np-controls {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
         .np-btn {
@@ -222,20 +219,25 @@
             border: none;
             color: #b3b3b3;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: color 0.2s;
+            padding: 4px;
         }
 
         .np-btn:hover {
             color: #fff;
         }
 
+        .np-btn.active-control {
+            color: #1db954;
+        }
+
         .np-btn-play {
             background-color: #fff;
             color: #000;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -254,7 +256,7 @@
             align-items: center;
             gap: 8px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             font-size: 0.75rem;
             color: #b3b3b3;
         }
@@ -282,28 +284,73 @@
             display: block;
         }
 
+        /* Lado direito (Velocidade e Volume) */
         .np-right {
             display: flex;
+            align-items: center;
             justify-content: flex-end;
-            width: 30%;
+            gap: 15px;
+            width: 25%;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: #b3b3b3;
+        }
+
+        .control-group select {
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 3px 6px;
+            font-size: 0.8rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .control-group select:hover {
+            border-color: #1db954;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            background-color: #4d4d4d;
+            border-radius: 2px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .np-right {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 4px;
+            }
         }
 
         @media (max-width: 768px) {
-            .np-left {
-                width: 50%;
+            .now-playing-bar {
+                height: auto;
+                flex-direction: column;
+                padding: 10px;
+                gap: 8px;
+            }
+            .np-left, .np-center, .np-right {
+                width: 100%;
+                justify-content: space-between;
             }
             .np-right {
-                display: none;
+                flex-direction: row;
+                justify-content: center;
             }
-            .np-center {
-                width: 45%;
-            }
-            .search-box input {
-                width: 100%;
-            }
-            .playlist-header-area {
-                flex-direction: column;
-                align-items: stretch;
+            .main-container {
+                padding-bottom: 160px;
             }
         }
     </style>
@@ -323,12 +370,10 @@
                 <input type="text" id="searchInput" placeholder="Pesquisar áudio...">
             </div>
         </div>
-        <div class="audio-list" id="audioList">
-            <!-- Preenchido via JavaScript -->
-        </div>
+        <div class="audio-list" id="audioList"></div>
     </div>
 
-    <!-- Barra de Player Estilo Spotify (Fixa Embaixo) -->
+    <!-- Barra de Player Estilo Spotify Pro (Fixa Embaixo) -->
     <div class="now-playing-bar">
         <div class="np-left">
             <div class="np-thumb">♫</div>
@@ -343,6 +388,11 @@
                 <button class="np-btn" id="prevBtn" title="Anterior">&#9664;&#9664;</button>
                 <button class="np-btn np-btn-play" id="playPauseBtn" title="Play/Pause">&#9654;</button>
                 <button class="np-btn" id="nextBtn" title="Próxima">&#9654;&#9654;</button>
+                <!-- Botão de Repetir a mesma faixa -->
+                <button class="np-btn" id="loopBtn" title="Repetir Faixa">🔁</button>
+                <!-- Botões de Loop de Trecho A-B -->
+                <button class="np-btn" id="btnA" title="Marcar Ponto A">A</button>
+                <button class="np-btn" id="btnB" title="Marcar Ponto B (Ativa/Desativa Loop)">B</button>
             </div>
             <div class="np-progress-area">
                 <span id="currentTime">0:00</span>
@@ -352,105 +402,74 @@
         </div>
 
         <div class="np-right">
-            <!-- Espaço reservado para equilíbrio visual -->
+            <!-- Controle de Velocidade -->
+            <div class="control-group">
+                <label for="speedSelect">Velocidade:</label>
+                <select id="speedSelect">
+                    <option value="0.5">0.5x</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1.0" selected>1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                </select>
+            </div>
+            <!-- Controle de Volume -->
+            <div class="control-group">
+                <label for="volumeSlider">Volume:</label>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.05" value="1">
+            </div>
         </div>
     </div>
 
-    <!-- Elemento de Áudio Oculto -->
     <audio id="audioPlayer"></audio>
 
     <script>
-        // URL base do repositório no GitHub Pages para os áudios .wav
         const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-som/";
 
-        // Lista completa de áudios (.wav) fornecida
         const audios = [
-            "10 - LEVADAS.wav",
-            "100 - OUTRAS LEVADAS 6 POR 9.wav",
-            "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav",
-            "11 - LEVADAS COLCHEIA.wav",
-            "14 - VARIAÇÃO DE LEVADAS.wav",
-            "15 - VARIAÇÃO DE LEVADAS.wav",
-            "16 - VARIAÇÃO DE LEVADAS.wav",
-            "17 - VARIAÇÃO DE LEVADAS.wav",
-            "18 - VARIAÇÃO DE LEVADAS.wav",
-            "19 - VARIAÇÃO DE LEVADAS.wav",
-            "20 - VARIAÇÃO DE LEVADAS.wav",
-            "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
-            "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
-            "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
-            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
-            "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
-            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
-            "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
-            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
-            "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
-            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav",
-            "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
-            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
-            "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
-            "71 - LEVADAS BONUS.wav",
-            "72 - LEVADAS BONUS COLCHEIA.wav",
-            "73 - LEVADAS BONUS HI-HAT ABERTO.wav",
-            "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav",
-            "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
-            "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
-            "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav",
-            "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav",
-            "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav",
-            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav",
-            "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav",
-            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav",
-            "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav",
-            "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav",
-            "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav",
-            "89 - SUGESTÕES DE VIRADAS.wav",
-            "90 - SUGESTÕES DE VIRADAS.wav",
-            "92 - ADICIONANDO ELEMENTOS.wav",
-            "93 - ADICIONANDO ELEMENTOS.wav",
-            "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav",
-            "97 - OUTRAS LEVADAS.wav",
-            "98 - OUTRAS LEVADAS SHUFFLE.wav",
+            "10 - LEVADAS.wav", "100 - OUTRAS LEVADAS 6 POR 9.wav", "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav",
+            "11 - LEVADAS COLCHEIA.wav", "14 - VARIAÇÃO DE LEVADAS.wav", "15 - VARIAÇÃO DE LEVADAS.wav",
+            "16 - VARIAÇÃO DE LEVADAS.wav", "17 - VARIAÇÃO DE LEVADAS.wav", "18 - VARIAÇÃO DE LEVADAS.wav",
+            "19 - VARIAÇÃO DE LEVADAS.wav", "20 - VARIAÇÃO DE LEVADAS.wav", "21 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "22 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", "23 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", "24 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "25 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", "26 - VARIAÇÃO DE LEVADAS COLCHEIA.wav", "27 - VARIAÇÃO DE LEVADAS COLCHEIA.wav",
+            "29 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", "30 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "31 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", "32 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "33 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", "34 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav",
+            "35 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO.wav", "36 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "37 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", "38 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "39 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", "40 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "41 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav", "42 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO COLCHEIA.wav",
+            "43 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", "44 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "45 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", "46 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "47 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", "48 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav",
+            "49 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA.wav", "50 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "51 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", "52 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "53 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", "54 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "55 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav", "56 - VARIAÇÃO DE LEVADAS ACRESCENTANDO CAIXA COLCHEIA.wav",
+            "57 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", "58 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "59 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", "60 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "61 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", "62 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav",
+            "63 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA.wav", "64 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "65 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", "66 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "67 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA ESTE SIM.wav", "68 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "69 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav", "70 - VARIAÇÃO DE LEVADAS ACRESCENTANDO BUMBO E CAIXA COLCHEIA.wav",
+            "71 - LEVADAS BONUS.wav", "72 - LEVADAS BONUS COLCHEIA.wav", "73 - LEVADAS BONUS HI-HAT ABERTO.wav",
+            "74 - LEVADAS BONUS HI-HAT ABERTO COLCHEIA.wav", "76 - CONDUZIR NO CONTRA DOS TEMPOS.wav", "77 - CONDUZIR NO CONTRA DOS TEMPOS.wav",
+            "78 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", "79 - ABRINDO HI-HAT NO CONTRA DOS TEMPOS.wav", "80 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS.wav",
+            "81 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS Copia.wav", "82 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA.wav",
+            "83 - CONDUZIR RIDE E CÚPULA NO CONTRA DOS TEMPOS COLCHEIA - Copia.wav", "84 - ABRINDO HI-HAT LEVADAS ADD BUMBO E CAIXA COLCHEIA.wav",
+            "86 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", "87 - VIRADA INTEGRADA NA MUDANÇA DE LEVADA.wav", "89 - SUGESTÕES DE VIRADAS.wav",
+            "90 - SUGESTÕES DE VIRADAS.wav", "92 - ADICIONANDO ELEMENTOS.wav", "93 - ADICIONANDO ELEMENTOS.wav",
+            "95 - VIRADAS DE TENSÃO OU VIRADA EXPLICADA.wav", "97 - OUTRAS LEVADAS.wav", "98 - OUTRAS LEVADAS SHUFFLE.wav",
             "99 - OUTRAS LEVADAS 3 POR 4 + SHUFFLE .wav"
         ];
 
         let currentIndex = 0;
+        let isSingleLoop = false;
+        let pointA = null;
+        let pointB = null;
+
         const audioPlayer = document.getElementById('audioPlayer');
         const audioListContainer = document.getElementById('audioList');
         const npTitle = document.getElementById('npTitle');
@@ -460,6 +479,11 @@
         const durationTimeEl = document.getElementById('durationTime');
         const prevBtn = document.getElementById('prevBtn');
         const nextBtn = document.getElementById('nextBtn');
+        const loopBtn = document.getElementById('loopBtn');
+        const btnA = document.getElementById('btnA');
+        const btnB = document.getElementById('btnB');
+        const speedSelect = document.getElementById('speedSelect');
+        const volumeSlider = document.getElementById('volumeSlider');
         const searchInput = document.getElementById('searchInput');
 
         function formatTime(seconds) {
@@ -470,24 +494,19 @@
 
         function carregarLista(filtro = '') {
             audioListContainer.innerHTML = '';
-            
             audios.forEach((filename, index) => {
                 const nomeLimpo = filename.replace('.wav', '');
-                
                 if (nomeLimpo.toLowerCase().includes(filtro.toLowerCase())) {
                     const item = document.createElement('div');
                     item.className = `audio-item ${index === currentIndex ? 'active' : ''}`;
-                    
                     item.innerHTML = `
                         <span class="audio-item-name">${nomeLimpo}</span>
                         <button class="play-icon-btn">&#9654;</button>
                     `;
-
                     item.addEventListener('click', () => {
                         currentIndex = index;
                         tocarFaixa(currentIndex);
                     });
-
                     audioListContainer.appendChild(item);
                 }
             });
@@ -496,25 +515,26 @@
         function tocarFaixa(index) {
             currentIndex = index;
             const filename = audios[currentIndex];
-            const audioUrl = baseUrl + encodeURIComponent(filename);
-
-            audioPlayer.src = audioUrl;
+            audioPlayer.src = baseUrl + encodeURIComponent(filename);
             npTitle.textContent = filename.replace('.wav', '');
             
+            // Reseta pontos A-B ao trocar de faixa
+            pointA = null;
+            pointB = null;
+            btnA.classList.remove('active-control');
+            btnB.classList.remove('active-control');
+
             audioPlayer.play().then(() => {
                 playPauseBtn.innerHTML = '&#10074;&#10074;';
-            }).catch(e => {
-                console.log("Reprodução iniciada ou aguardando interação:", e);
-            });
+            }).catch(e => console.log(e));
 
             carregarLista(searchInput.value);
         }
 
         playPauseBtn.addEventListener('click', () => {
             if (audioPlayer.paused) {
-                if (!audioPlayer.src && audios.length > 0) {
-                    tocarFaixa(0);
-                } else {
+                if (!audioPlayer.src && audios.length > 0) tocarFaixa(0);
+                else {
                     audioPlayer.play();
                     playPauseBtn.innerHTML = '&#10074;&#10074;';
                 }
@@ -534,11 +554,59 @@
             tocarFaixa(currentIndex);
         });
 
+        // Botão para repetir apenas a mesma faixa
+        loopBtn.addEventListener('click', () => {
+            isSingleLoop = !isSingleLoop;
+            audioPlayer.loop = isSingleLoop;
+            loopBtn.classList.toggle('active-control', isSingleLoop);
+        });
+
+        // Controles de Loop A-B
+        btnA.addEventListener('click', () => {
+            pointA = audioPlayer.currentTime;
+            btnA.classList.add('active-control');
+            // Se B já foi marcado antes de A, limpa B para refazer o trecho
+            if (pointB !== null && pointA >= pointB) {
+                pointB = null;
+                btnB.classList.remove('active-control');
+            }
+        });
+
+        btnB.addEventListener('click', () => {
+            if (pointA === null) {
+                alert("Marque o ponto A primeiro!");
+                return;
+            }
+            if (pointB === null) {
+                pointB = audioPlayer.currentTime;
+                if (pointB <= pointA) {
+                    alert("O ponto B deve ser maior que o ponto A!");
+                    pointB = null;
+                    return;
+                }
+                btnB.classList.add('active-control');
+            } else {
+                // Desativa o loop A-B se clicar novamente
+                pointA = null;
+                pointB = null;
+                btnA.classList.remove('active-control');
+                btnB.classList.remove('active-control');
+            }
+        });
+
+        // Monitoramento do tempo para aplicar o loop A-B
         audioPlayer.addEventListener('timeupdate', () => {
             if (audioPlayer.duration) {
                 const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
                 progressBar.value = progress;
                 currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
+
+                // Lógica de repetição do trecho A-B
+                if (pointA !== null && pointB !== null) {
+                    if (audioPlayer.currentTime >= pointB) {
+                        audioPlayer.currentTime = pointA;
+                    }
+                }
             }
         });
 
@@ -548,21 +616,30 @@
 
         progressBar.addEventListener('input', () => {
             if (audioPlayer.duration) {
-                const time = (progressBar.value / 100) * audioPlayer.duration;
-                audioPlayer.currentTime = time;
+                audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
             }
         });
 
+        // Controles de Velocidade e Volume
+        speedSelect.addEventListener('change', (e) => {
+            audioPlayer.playbackRate = parseFloat(e.target.value);
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            audioPlayer.volume = parseFloat(e.target.value);
+        });
+
         audioPlayer.addEventListener('ended', () => {
-            currentIndex = (currentIndex + 1) % audios.length;
-            tocarFaixa(currentIndex);
+            if (!isSingleLoop && pointA === null) {
+                currentIndex = (currentIndex + 1) % audios.length;
+                tocarFaixa(currentIndex);
+            }
         });
 
         searchInput.addEventListener('input', (e) => {
             carregarLista(e.target.value);
         });
 
-        // Inicialização
         carregarLista();
     </script>
 </body>
