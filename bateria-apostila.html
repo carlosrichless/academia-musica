@@ -526,22 +526,15 @@
         });
 
         // -------------------------------------------------------------
-        // TELA CHEIA ESTÁVEL E ANTI-GIRO (MOBILE FIX)
+        // TELA CHEIA NATURAL (RESPEITA A ORIENTAÇÃO DO CELULAR)
         // -------------------------------------------------------------
         fullscreenBtn.addEventListener('click', async () => {
             try {
                 if (!document.fullscreenElement) {
                     await bookViewport.requestFullscreen();
-                    // Trava a orientação para evitar que o celular vire de cabeça para baixo no meio da transição
-                    if (screen.orientation && screen.orientation.lock) {
-                        screen.orientation.lock('landscape').catch(() => {});
-                    }
                 } else {
                     if (document.exitFullscreen) {
                         await document.exitFullscreen();
-                    }
-                    if (screen.orientation && screen.orientation.unlock) {
-                        screen.orientation.unlock();
                     }
                 }
             } catch (err) {
@@ -549,7 +542,7 @@
             }
         });
 
-        // Aguarda a rotação estabilizar completamente antes de redesenhar o PDF
+        // Aguarda a transição estabilizar completamente antes de redesenhar o PDF
         document.addEventListener('fullscreenchange', () => {
             if (document.fullscreenElement) {
                 fullscreenBtn.textContent = "⤹ Sair Tela Cheia";
@@ -557,12 +550,12 @@
                 fullscreenBtn.textContent = "⛶ Tela Cheia";
             }
 
-            // Pausa redimensionamentos duplicados durante o piscar do navegador
+            // Pausa redimensionamentos duplicados durante a transição
             isResizing = true;
             setTimeout(() => {
                 isResizing = false;
                 renderPage(pageNum);
-            }, 500); // 500ms garante que o layout do celular estabilizou 100%
+            }, 400);
         });
 
         window.addEventListener('resize', () => {
