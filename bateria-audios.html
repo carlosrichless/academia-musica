@@ -28,7 +28,7 @@
             align-items: center;
         }
         header h1 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #fff;
             flex: 1;
             text-align: center;
@@ -52,14 +52,15 @@
             transform: scale(1.02);
         }
         .header-spacer {
-            width: 80px; 
+            width: 70px; 
         }
 
         .main-container {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 130px;
+            padding: 15px;
+            /* Deixa espaço suficiente embaixo para a barra adaptativa do mobile */
+            padding-bottom: 170px; 
             background: linear-gradient(to bottom, #202020 0%, #121212 100%);
         }
 
@@ -73,7 +74,7 @@
         }
 
         .playlist-title {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: #fff;
             font-weight: bold;
         }
@@ -86,7 +87,7 @@
             color: #fff;
             font-size: 0.85rem;
             outline: none;
-            width: 250px;
+            width: 220px;
             transition: border-color 0.2s;
         }
         .search-box input:focus {
@@ -143,19 +144,18 @@
             cursor: pointer;
         }
 
-        /* Player Fixo Inferior */
+        /* Player Fixo Inferior Padrão (Desktop) */
         .now-playing-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 110px;
             background-color: #181818;
             border-top: 1px solid #282828;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 12px 20px;
             z-index: 1000;
         }
 
@@ -167,8 +167,8 @@
         }
 
         .np-thumb {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background-color: #282828;
             border-radius: 4px;
             display: flex;
@@ -176,7 +176,7 @@
             align-items: center;
             color: #1db954;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .np-info {
@@ -210,7 +210,9 @@
         .np-controls {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .np-btn {
@@ -218,9 +220,9 @@
             border: 1px solid #444;
             color: #b3b3b3;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 0.85rem;
             transition: all 0.2s;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-weight: bold;
         }
@@ -230,14 +232,13 @@
             border-color: #888;
         }
 
-        /* Botão Play/Pause padrão menor redondinho */
         .np-btn-play {
             background-color: #fff;
             color: #000;
             border: none;
             border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             padding: 0;
             display: flex;
             justify-content: center;
@@ -251,7 +252,7 @@
             border: none;
         }
 
-        /* ESTADOS DE ATIVO DOS BOTÕES DE LOOP (A, B e Repetir) */
+        /* ESTADOS DE ATIVO */
         #loopBtn.active-loop {
             background-color: #1db954;
             color: #000;
@@ -278,12 +279,11 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            max-width: 550px;
+            max-width: 500px;
             font-size: 0.75rem;
             color: #b3b3b3;
         }
 
-        /* Barra de progresso funcional */
         .np-progress-bar {
             flex: 1;
             height: 6px;
@@ -335,7 +335,7 @@
         }
 
         .volume-slider {
-            width: 80px;
+            width: 70px;
             height: 4px;
             background-color: #4d4d4d;
             border-radius: 2px;
@@ -344,31 +344,58 @@
             cursor: pointer;
         }
 
-        @media (max-width: 1024px) {
-            .np-right {
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 4px;
-            }
-        }
-
+        /* MEDIA QUERY PARA CELULARES (Layout Vertical Perfeito) */
         @media (max-width: 768px) {
+            header h1 {
+                font-size: 0.95rem;
+            }
+            .btn-voltar {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+            .playlist-header-area {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box input {
+                width: 100%;
+            }
+
             .now-playing-bar {
-                height: auto;
                 flex-direction: column;
                 padding: 10px;
-                gap: 10px;
+                gap: 8px;
             }
-            .np-left, .np-center, .np-right {
+
+            .np-left {
                 width: 100%;
-                justify-content: space-between;
+                justify-content: flex-start;
             }
-            .np-right {
-                flex-direction: row;
+
+            .np-center {
+                width: 100%;
+                gap: 6px;
+            }
+
+            .np-controls {
+                gap: 6px;
                 justify-content: center;
             }
+
+            .np-btn {
+                padding: 5px 8px;
+                font-size: 0.75rem;
+            }
+
+            .np-right {
+                width: 100%;
+                justify-content: space-around;
+                border-top: 1px solid #282828;
+                padding-top: 6px;
+            }
+
             .main-container {
-                padding-bottom: 180px;
+                padding-bottom: 220px; /* Garante que nenhum áudio fique coberto pelo player expandido */
             }
         }
     </style>
@@ -391,7 +418,7 @@
         <div class="audio-list" id="audioList"></div>
     </div>
 
-    <!-- Barra de Player Estilo Spotify Pro -->
+    <!-- Barra de Player Responsiva -->
     <div class="now-playing-bar">
         <div class="np-left">
             <div class="np-thumb">♫</div>
@@ -406,7 +433,6 @@
                 <button class="np-btn" id="prevBtn" title="Anterior">&#9664;&#9664;</button>
                 <button class="np-btn np-btn-play" id="playPauseBtn" title="Play/Pause">&#9654;</button>
                 <button class="np-btn" id="nextBtn" title="Próxima">&#9654;&#9654;</button>
-                <!-- Botões Maiores e Destacados -->
                 <button class="np-btn" id="loopBtn" title="Repetir Faixa">🔁 Repetir</button>
                 <button class="np-btn" id="btnA" title="Marcar Ponto A">Ponto A</button>
                 <button class="np-btn" id="btnB" title="Marcar Ponto B (Ativa Loop)">Ponto B</button>
@@ -484,7 +510,7 @@
         let isSingleLoop = false;
         let pointA = null;
         let pointB = null;
-        let isDragging = false; // Controle para evitar conflito ao arrastar a barra
+        let isDragging = false;
 
         const audioPlayer = document.getElementById('audioPlayer');
         const audioListContainer = document.getElementById('audioList');
@@ -534,7 +560,6 @@
             audioPlayer.src = baseUrl + encodeURIComponent(filename);
             npTitle.textContent = filename.replace('.wav', '');
             
-            // Reseta marcações de A-B ao trocar
             pointA = null;
             pointB = null;
             btnA.classList.remove('active-marker');
@@ -570,25 +595,21 @@
             tocarFaixa(currentIndex);
         });
 
-        // Botão de Repetir Faixa com feedback visual ativo/desligado
         loopBtn.addEventListener('click', () => {
             isSingleLoop = !isSingleLoop;
             audioPlayer.loop = isSingleLoop;
             loopBtn.classList.toggle('active-loop', isSingleLoop);
         });
 
-        // Botão A
         btnA.addEventListener('click', () => {
             pointA = audioPlayer.currentTime;
             btnA.classList.add('active-marker');
-            // Se B já existia e ficou menor que A, limpa B
             if (pointB !== null && pointA >= pointB) {
                 pointB = null;
                 btnB.classList.remove('active-marker');
             }
         });
 
-        // Botão B
         btnB.addEventListener('click', () => {
             if (pointA === null) {
                 alert("Por favor, marque o Ponto A primeiro!");
@@ -603,7 +624,6 @@
                 }
                 btnB.classList.add('active-marker');
             } else {
-                // Desativa o loop A-B se clicar novamente
                 pointA = null;
                 pointB = null;
                 btnA.classList.remove('active-marker');
@@ -611,14 +631,12 @@
             }
         });
 
-        // Atualização contínua do andamento do player
         audioPlayer.addEventListener('timeupdate', () => {
             if (audioPlayer.duration && !isDragging) {
                 const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
                 progressBar.value = progress;
                 currentTimeEl.textContent = formatTime(audioPlayer.currentTime);
 
-                // Executa o loop do trecho A-B se configurado
                 if (pointA !== null && pointB !== null) {
                     if (audioPlayer.currentTime >= pointB) {
                         audioPlayer.currentTime = pointA;
@@ -631,7 +649,6 @@
             durationTimeEl.textContent = formatTime(audioPlayer.duration);
         });
 
-        // Eventos para permitir arrastar ou clicar na barra e atualizar o áudio perfeitamente
         progressBar.addEventListener('mousedown', () => { isDragging = true; });
         progressBar.addEventListener('touchstart', () => { isDragging = true; });
 
