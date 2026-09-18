@@ -116,19 +116,6 @@
         }
         .modulo-box h3 { color: var(--success); margin-bottom: 10px; font-size: 1.3rem; }
         .modulo-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
-        
-        .input-senha {
-            width: 100%;
-            padding: 10px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 0.95rem;
-        }
-        .input-senha:focus { outline: none; border-color: var(--accent); }
 
         .btn-modulo {
             display: inline-block;
@@ -143,7 +130,6 @@
             cursor: pointer;
             font-size: 0.95rem;
         }
-        .erro-senha-modulo { color: var(--danger); font-size: 0.8rem; margin-bottom: 10px; display: none; }
 
         .lembretes-grid {
             display: grid;
@@ -220,17 +206,14 @@
         <div class="modulos-grid">
             <div class="modulo-box">
                 <h3>🥁 Módulo Bateria</h3>
-                <p>Acesse a Área exclusiva com áudios, capas e videoaulas.</p>
-                <div id="erroBateria" class="erro-senha-modulo">Senha incorreta ou excluída!</div>
-                <button onclick="acessarModulo('bateria')" class="btn-modulo">Acessar Área VIP</button>
+                <p>Acesse a Área VIP exclusiva com áudios, capas e videoaulas.</p>
+                <button onclick="acessarModulo('bateria')" class="btn-modulo">Acessar</button>
             </div>
             
             <div class="modulo-box">
                 <h3>🎸 Módulo Violão / Guitarra</h3>
-                <p>Acesse a Área exclusiva com materiais e videoaulas práticas.</p>
-                <input type="password" id="senhaViolaoInput" class="input-senha" placeholder="Senha do Violão">
-                <div id="erroViolao" class="erro-senha-modulo">Senha incorreta ou excluída!</div>
-                <button onclick="acessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Acessar Área VIP</button>
+                <p>Acesse a Área VIP exclusiva com materiais e videoaulas práticas.</p>
+                <button onclick="acessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Acessar</button>
             </div>
         </div>
 
@@ -272,27 +255,9 @@
         });
 
         function acessarModulo(moduloAlvo) {
-            let inputId = moduloAlvo === 'bateria' ? 'senhaBateriaInput' : 'senhaViolaoInput';
-            let erroId = moduloAlvo === 'bateria' ? 'erroBateria' : 'erroViolao';
+            // Como tiramos a exigência de senha por módulo, ao clicar ele vai direto para a página VIP correspondente
             let paginaDestino = moduloAlvo === 'bateria' ? 'bateria-vip.html' : 'violao-vip.html';
-            
-            let digitada = document.getElementById(inputId).value;
-            
-            // Busca a lista de senhas cadastradas no painel
-            let senhasVipSalvas = localStorage.getItem('admin_senhas_vip');
-            let listaVip = senhasVipSalvas ? JSON.parse(senhasVipSalvas) : [
-                { senha: "bateria123", modulo: "bateria" },
-                { senha: "violao123", modulo: "violao" }
-            ];
-
-            // Verifica se a senha digitada bate com alguma ativa e se pertence ao módulo correto
-            let senhaValida = listaVip.some(item => item.senha === digitada && item.modulo === moduloAlvo);
-
-            if (senhaValida) {
-                window.location.href = paginaDestino;
-            } else {
-                document.getElementById(erroId).style.display = 'block';
-            }
+            window.location.href = paginaDestino;
         }
 
         function inicializarSite() {
@@ -341,4 +306,3 @@
     </script>
 </body>
 </html>
-
