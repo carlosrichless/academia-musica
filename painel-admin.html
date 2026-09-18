@@ -255,6 +255,7 @@
             if(document.getElementById('senhaAdminInput').value === senhaMestreSalva) {
                 document.getElementById('telaLogin').style.display = 'none';
                 document.getElementById('conteudoPainel').style.display = 'block';
+                await carregarDadosPainel(); // <-- Adicione esta linha exata aqui
             } else {
                 document.getElementById('erroSenha').style.display = 'block';
             }
