@@ -1,28 +1,13 @@
-// config-senhas.js - Central de Configurações e Senhas do Projeto Academia de Música
-
-const CONFIG_SISTEMA = {
-    // Senhas Principais
-    senhaSiteGeral: "123456",
-    senhaAdminSistema: "admin123",
-
-    // Senhas VIP de Alunos (Módulos de Bateria e Violão)
-    senhasVip: [
-        { nome: "Padrão Bateria", senha: "bateria123", modulo: "bateria" },
-        { nome: "Padrão Violão", senha: "violao123", modulo: "violao" }
-    ],
-
-    // Caminhos de Mídias / Lembretes
-    midias: {
-        imagem: "assets/foto.jpg",
-        audio: "assets/audio.mp3",
-        video: "assets/video.mp4"
-    },
-
-    // Mural de Avisos
-    mural: {
-        tempoDuracao: 4,
-        avisos: [
-            { titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }
-        ]
-    }
+// CONFIGURAÇÃO DO FIREBASE (Global para o sistema)
+const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_AUTH_DOMAIN",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_STORAGE_BUCKET",
+    messagingSenderId: "SUA_MESSAGING_SENDER_ID",
+    appId: "SUA_APP_ID"
 };
+
+// Inicializa o Firebase e o Firestore
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
