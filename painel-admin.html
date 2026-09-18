@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1db954">
-    <title>Projeto Academia de Música</title>
     <title>Painel Administrativo - Projeto Academia de Música</title>
     <style>
         :root {
@@ -83,7 +82,7 @@
         .card-painel h3 { color: var(--accent); margin-bottom: 12px; font-size: 1.2rem; }
         
         label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
-        input[type="text"], input[type="number"], input[type="password"], select {
+        input[type="text"], input[type="number"], input[type="password"] {
             width: 100%;
             padding: 10px;
             background: #0f172a;
@@ -93,7 +92,7 @@
             margin-bottom: 15px;
             font-size: 0.95rem;
         }
-        input:focus, select:focus { outline: none; border-color: var(--accent); }
+        input:focus { outline: none; border-color: var(--accent); }
 
         .btn-acao {
             background: var(--success);
@@ -116,18 +115,6 @@
             cursor: pointer;
             font-size: 0.85rem;
         }
-
-        .item-linha-gerenciador {
-            background: #0f172a;
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .item-linha-gerenciador input, .item-linha-gerenciador select { margin-bottom: 0 !important; }
 
         .aviso-item-box {
             background: #0f172a;
@@ -176,7 +163,7 @@
         </div>
 
         <div class="header">
-            <p>Gerencie senhas de acesso, alunos VIP, mídias e avisos.</p>
+            <p>Gerencie senhas do sistema, mídias e avisos.</p>
         </div>
 
         <div id="alertaSucesso" class="sucesso-alerta">Alterações salvas com sucesso!</div>
@@ -191,19 +178,6 @@
             <input type="text" id="passAdmin" placeholder="Ex: admin123">
             
             <button onclick="salvarSenhasPrincipais()" class="btn-acao">Salvar Senhas Principais</button>
-        </div>
-
-        <!-- Gerenciador de Senhas de Alunos VIP -->
-        <div class="card-painel">
-            <h3>👥 Gerenciar Alunos e Senhas VIP (Bateria e Violão)</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px;">Cadastre senhas individuais e defina qual módulo elas abrem. Você pode excluir qualquer uma a qualquer momento.</p>
-            
-            <div id="listaSenhasVipContainer"></div>
-
-            <button onclick="adicionarCampoSenhaVip('', 'bateria')" class="btn-acao" style="background: #334155; color: #fff; margin-top: 5px; margin-bottom: 15px;">+ Adicionar Nova Senha VIP</button>
-            
-            <br>
-            <button onclick="salvarTodasSenhasVip()" class="btn-acao">💾 Salvar Alterações de Alunos VIP</button>
         </div>
 
         <!-- Links Locais das Mídias -->
@@ -259,67 +233,12 @@
             document.getElementById('inputVideo').value = localStorage.getItem('admin_video') || "";
             document.getElementById('inputTempo').value = localStorage.getItem('admin_tempo_mural') || "4";
 
-            // Carregar Senhas VIP dinâmicas
-            let senhasVipSalvas = localStorage.getItem('admin_senhas_vip');
-            let arrayVip = [
-                { senha: "bateria123", modulo: "bateria", nome: "Padrão Bateria" },
-                { senha: "violao123", modulo: "violao", nome: "Padrão Violão" }
-            ];
-            if(senhasVipSalvas) {
-                arrayVip = JSON.parse(senhasVipSalvas);
-            }
-            renderizarSenhasVip(arrayVip);
-
             // Carregar Avisos
             let salvosAvisos = localStorage.getItem('admin_avisos_custom');
             let arrayAvisos = salvosAvisos ? JSON.parse(salvosAvisos) : [
                 { titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }
             ];
             renderizarListaAvisos(arrayAvisos);
-        }
-
-        function renderizarSenhasVip(senhas) {
-            let container = document.getElementById('listaSenhasVipContainer');
-            container.innerHTML = "";
-            senhas.forEach(item => {
-                adicionarCampoSenhaVip(item.senha, item.modulo, item.nome || "");
-            });
-        }
-
-        function adicionarCampoSenhaVip(senhaVal = "", moduloVal = "bateria", nomeVal = "") {
-            let container = document.getElementById('listaSenhasVipContainer');
-            let div = document.createElement('div');
-            div.className = 'item-linha-gerenciador';
-            div.innerHTML = `
-                <input type="text" class="vip-nome" value="${nomeVal}" placeholder="Identificação (Ex: Aluno João)" style="flex: 2;">
-                <input type="text" class="vip-senha" value="${senhaVal}" placeholder="Senha..." style="flex: 2;">
-                <select class="vip-modulo" style="flex: 2;">
-                    <option value="bateria" ${moduloVal === 'bateria' ? 'selected' : ''}>Módulo Bateria</option>
-                    <option value="violao" ${moduloVal === 'violao' ? 'selected' : ''}>Módulo Violão</option>
-                </select>
-                <button type="button" class="btn-remover" onclick="this.parentElement.remove()">Excluir</button>
-            `;
-            container.appendChild(div);
-        }
-
-        function salvarTodasSenhasVip() {
-            let nomes = document.querySelectorAll('.vip-nome');
-            let senhas = document.querySelectorAll('.vip-senha');
-            let modulos = document.querySelectorAll('.vip-modulo');
-            let lista = [];
-
-            for(let i = 0; i < senhas.length; i++) {
-                if(senhas[i].value.trim() !== "") {
-                    lista.push({
-                        nome: nomes[i].value,
-                        senha: senhas[i].value,
-                        modulo: modulos[i].value
-                    });
-                }
-            }
-
-            localStorage.setItem('admin_senhas_vip', JSON.stringify(lista));
-            mostrarAlerta();
         }
 
         function renderizarListaAvisos(avisos) {
