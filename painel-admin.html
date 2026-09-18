@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1db954">
     <title>Painel Administrativo - Projeto Academia de Música</title>
+    
+    <!-- Importando o Firebase SDK (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <!-- Seu arquivo centralizado de configuração -->
+    <script src="config-senhas.js"></script>
+
     <style>
         :root {
             --bg-color: #0f172a;
@@ -163,26 +171,26 @@
         </div>
 
         <div class="header">
-            <p>Gerencie senhas do sistema, mídias e avisos.</p>
+            <p>Gerencie senhas globais, mídias e avisos em tempo real.</p>
         </div>
 
-        <div id="alertaSucesso" class="sucesso-alerta">Alterações salvas com sucesso!</div>
+        <div id="alertaSucesso" class="sucesso-alerta">Alterações salvas globalmente na nuvem!</div>
 
         <!-- Senhas Principais do Sistema -->
         <div class="card-painel">
-            <h3>🔑 Senhas Principais</h3>
-            <label>Senha de Acesso Geral do Site:</label>
+            <h3>🔑 Senhas Globais do Sistema</h3>
+            <label>Senha de Acesso Geral do Site (Alunos):</label>
             <input type="text" id="passSiteGeral" placeholder="Ex: 123456">
 
             <label>Senha do Painel Administrativo:</label>
             <input type="text" id="passAdmin" placeholder="Ex: admin123">
             
-            <button onclick="salvarSenhasPrincipais()" class="btn-acao">Salvar Senhas Principais</button>
+            <button onclick="salvarSenhasPrincipais()" class="btn-acao">Salvar Senhas Globais</button>
         </div>
 
         <!-- Links Locais das Mídias -->
         <div class="card-painel">
-            <h3>📁 Caminhos dos Lembretes (Memória do Site)</h3>
+            <h3>📁 Caminhos dos Lembretes</h3>
             <label>Caminho/Link da Imagem:</label>
             <input type="text" id="inputImg" placeholder="Ex: assets/foto.jpg">
             <label>Caminho/Link do Áudio:</label>
@@ -209,12 +217,45 @@
     </div>
 
     <script>
-        function verificarSenha() {
-            let senhaMestreSalva = localStorage.getItem('senha_admin_sistema') || "admin123";
+        let dadosGlobais = {};
+
+        // Carrega dados da nuvem ao iniciar
+        async function carregarDadosPainel() {
+            try {
+                let docRef = await db.collection("configuracoes").doc("sistema").get();
+                if (docRef.exists) {
+                    dadosGlobais = docRef.data();
+                } else {
+                    dadosGlobais = {
+                        senha_site_geral: "123456",
+                        senha_admin_sistema: "admin123",
+                        admin_img: "",
+                        admin_audio: "",
+                        admin_video: "",
+                        admin_tempo_mural: 4,
+                        admin_avisos_custom: [{ titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }]
+                    };
+                }
+
+                document.getElementById('passSiteGeral').value = dadosGlobais.senha_site_geral || "123456";
+                document.getElementById('passAdmin').value = dadosGlobais.senha_admin_sistema || "admin123";
+                document.getElementById('inputImg').value = dadosGlobais.admin_img || "";
+                document.getElementById('inputAudio').value = dadosGlobais.admin_audio || "";
+                document.getElementById('inputVideo').value = dadosGlobais.admin_video || "";
+                document.getElementById('inputTempo').value = dadosGlobais.admin_tempo_mural || 4;
+
+                renderizarListaAvisos(dadosGlobais.admin_avisos_custom || []);
+            } catch (erro) {
+                console.error("Erro ao carregar dados da nuvem: ", erro);
+                alert("Erro ao conectar com a nuvem.");
+            }
+        }
+
+        async function verificarSenha() {
+            let senhaMestreSalva = dadosGlobais.senha_admin_sistema || "admin123";
             if(document.getElementById('senhaAdminInput').value === senhaMestreSalva) {
                 document.getElementById('telaLogin').style.display = 'none';
                 document.getElementById('conteudoPainel').style.display = 'block';
-                carregarDadosPainel();
             } else {
                 document.getElementById('erroSenha').style.display = 'block';
             }
@@ -224,22 +265,12 @@
             if (event.key === "Enter") verificarSenha();
         });
 
-        function carregarDadosPainel() {
-            document.getElementById('passSiteGeral').value = localStorage.getItem('senha_site_geral') || "123456";
-            document.getElementById('passAdmin').value = localStorage.getItem('senha_admin_sistema') || "admin123";
-
-            document.getElementById('inputImg').value = localStorage.getItem('admin_img') || "";
-            document.getElementById('inputAudio').value = localStorage.getItem('admin_audio') || "";
-            document.getElementById('inputVideo').value = localStorage.getItem('admin_video') || "";
-            document.getElementById('inputTempo').value = localStorage.getItem('admin_tempo_mural') || "4";
-
-            // Carregar Avisos
-            let salvosAvisos = localStorage.getItem('admin_avisos_custom');
-            let arrayAvisos = salvosAvisos ? JSON.parse(salvosAvisos) : [
-                { titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }
-            ];
-            renderizarListaAvisos(arrayAvisos);
-        }
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                let docRef = await db.collection("configuracoes").doc("sistema").get();
+                if(docRef.exists) dadosGlobais = docRef.data();
+            } catch(e) { console.log(e); }
+        });
 
         function renderizarListaAvisos(avisos) {
             let container = document.getElementById('listaAvisosContainer');
@@ -272,17 +303,30 @@
             container.appendChild(div);
         }
 
+        async function salvarNaNuvem(novosDados) {
+            try {
+                await db.collection("configuracoes").doc("sistema").set(novosDados, { merge: true });
+                dadosGlobais = { ...dadosGlobais, ...novosDados };
+                mostrarAlerta();
+            } catch (e) {
+                console.error("Erro ao salvar: ", e);
+                alert("Erro ao salvar na nuvem.");
+            }
+        }
+
         function salvarSenhasPrincipais() {
-            localStorage.setItem('senha_site_geral', document.getElementById('passSiteGeral').value);
-            localStorage.setItem('senha_admin_sistema', document.getElementById('passAdmin').value);
-            mostrarAlerta();
+            salvarNaNuvem({
+                senha_site_geral: document.getElementById('passSiteGeral').value,
+                senha_admin_sistema: document.getElementById('passAdmin').value
+            });
         }
 
         function salvarLinks() {
-            localStorage.setItem('admin_img', document.getElementById('inputImg').value);
-            localStorage.setItem('admin_audio', document.getElementById('inputAudio').value);
-            localStorage.setItem('admin_video', document.getElementById('inputVideo').value);
-            mostrarAlerta();
+            salvarNaNuvem({
+                admin_img: document.getElementById('inputImg').value,
+                admin_audio: document.getElementById('inputAudio').value,
+                admin_video: document.getElementById('inputVideo').value
+            });
         }
 
         function salvarMuralCompleto() {
@@ -294,9 +338,10 @@
                     novaLista.push({ titulo: titulos[i].value, texto: textos[i].value });
                 }
             }
-            localStorage.setItem('admin_avisos_custom', JSON.stringify(novaLista));
-            localStorage.setItem('admin_tempo_mural', document.getElementById('inputTempo').value || 4);
-            mostrarAlerta();
+            salvarNaNuvem({
+                admin_avisos_custom: novaLista,
+                admin_tempo_mural: parseInt(document.getElementById('inputTempo').value) || 4
+            });
         }
 
         function mostrarAlerta() {
@@ -304,15 +349,6 @@
             alerta.style.display = 'block';
             setTimeout(() => { alerta.style.display = 'none'; }, 3000);
         }
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('Service Worker registrado com sucesso!', reg))
-            .catch(err => console.log('Falha ao registrar o Service Worker:', err));
-        });
-      }
     </script>
 </body>
 </html>
