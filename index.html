@@ -220,20 +220,20 @@
         <div class="modulos-grid">
             <div class="modulo-box">
                 <h3>🥁 Módulo Bateria</h3>
-                <p>Acesse a Área VIP exclusiva com áudios, capas e videoaulas.</p>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Digite sua senha VIP:</div>
+                <p>Acesse a Área exclusiva com áudios, capas e videoaulas.</p>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Clique aqui:</div>
                 <input type="password" id="senhaBateriaInput" class="input-senha" placeholder="Senha da Bateria">
                 <div id="erroBateria" class="erro-senha-modulo">Senha incorreta ou excluída!</div>
-                <button onclick="acessarModulo('bateria')" class="btn-modulo">Acessar Área VIP</button>
+                <button onclick="acessarModulo('bateria')" class="btn-modulo">Acessar Matérias</button>
             </div>
             
             <div class="modulo-box">
                 <h3>🎸 Módulo Violão / Guitarra</h3>
-                <p>Acesse a Área VIP exclusiva com materiais e videoaulas práticas.</p>
-                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Digite sua senha VIP:</div>
+                <p>Acesse a Área exclusiva com materiais e videoaulas práticas.</p>
+                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">Clique aqui:</div>
                 <input type="password" id="senhaViolaoInput" class="input-senha" placeholder="Senha do Violão">
                 <div id="erroViolao" class="erro-senha-modulo">Senha incorreta ou excluída!</div>
-                <button onclick="acessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Acessar Área VIP</button>
+                <button onclick="acessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Acessar Matéria</button>
             </div>
         </div>
 
@@ -274,31 +274,7 @@
             if (event.key === "Enter") verificarSenhaSite();
         });
 
-        function acessarModulo(moduloAlvo) {
-            let inputId = moduloAlvo === 'bateria' ? 'senhaBateriaInput' : 'senhaViolaoInput';
-            let erroId = moduloAlvo === 'bateria' ? 'erroBateria' : 'erroViolao';
-            let paginaDestino = moduloAlvo === 'bateria' ? 'bateria-vip.html' : 'violao-vip.html';
-            
-            let digitada = document.getElementById(inputId).value;
-            
-            // Busca a lista de senhas cadastradas no painel
-            let senhasVipSalvas = localStorage.getItem('admin_senhas_vip');
-            let listaVip = senhasVipSalvas ? JSON.parse(senhasVipSalvas) : [
-                { senha: "bateria123", modulo: "bateria" },
-                { senha: "violao123", modulo: "violao" }
-            ];
-
-            // Verifica se a senha digitada bate com alguma ativa e se pertence ao módulo correto
-            let senhaValida = listaVip.some(item => item.senha === digitada && item.modulo === moduloAlvo);
-
-            if (senhaValida) {
-                window.location.href = paginaDestino;
-            } else {
-                document.getElementById(erroId).style.display = 'block';
-            }
-        }
-
-        function inicializarSite() {
+               function inicializarSite() {
             let listaAvisosPadrao = [{ titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }];
             let listaAvisos = localStorage.getItem('admin_avisos_custom') ? JSON.parse(localStorage.getItem('admin_avisos_custom')) : listaAvisosPadrao;
             
