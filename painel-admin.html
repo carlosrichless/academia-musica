@@ -3,8 +3,6 @@
 <head>
 
     <meta charset="UTF-8">
-
-    <!-- Firebase e arquivo centralizado de senhas -->
     <script type="module" src="config-senhas.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,12 +27,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family:
-                'Segoe UI',
-                Tahoma,
-                Geneva,
-                Verdana,
-                sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -330,10 +323,6 @@
 
 <body>
 
-    <!-- =========================================
-         TELA DE LOGIN
-         ========================================= -->
-
     <div id="telaLogin" class="container">
 
         <div class="login-box">
@@ -385,10 +374,6 @@
     </div>
 
 
-    <!-- =========================================
-         CONTEÚDO DO PAINEL
-         ========================================= -->
-
     <div
         id="conteudoPainel"
         class="container"
@@ -424,9 +409,7 @@
         </div>
 
 
-        <!-- =========================================
-             SENHAS PRINCIPAIS
-             ========================================= -->
+        <!-- SENHAS PRINCIPAIS -->
 
         <div class="card-painel">
 
@@ -464,59 +447,7 @@
         </div>
 
 
-        <!-- =========================================
-             CAMINHOS DAS MÍDIAS
-             ========================================= -->
-
-        <div class="card-painel">
-
-            <h3>
-                📁 Caminhos dos Lembretes
-            </h3>
-
-            <label>
-                Caminho/Link da Imagem:
-            </label>
-
-            <input
-                type="text"
-                id="inputImg"
-                placeholder="Ex: https://..."
-            >
-
-            <label>
-                Caminho/Link do Áudio:
-            </label>
-
-            <input
-                type="text"
-                id="inputAudio"
-                placeholder="Ex: https://..."
-            >
-
-            <label>
-                Caminho/Link do Vídeo:
-            </label>
-
-            <input
-                type="text"
-                id="inputVideo"
-                placeholder="Ex: https://..."
-            >
-
-            <button
-                onclick="salvarLinks()"
-                class="btn-acao"
-            >
-                Salvar Caminhos
-            </button>
-
-        </div>
-
-
-        <!-- =========================================
-             UPLOAD DOS LEMBRETES
-             ========================================= -->
+        <!-- UPLOAD DOS LEMBRETES -->
 
         <div class="card-painel">
 
@@ -527,8 +458,8 @@
             <p class="info-midia">
 
                 Envie um arquivo por categoria.
-                Ao enviar um novo arquivo, o sistema deverá
-                substituir o arquivo anterior daquela categoria.
+                Ao enviar um novo arquivo,
+                ele substitui o anterior.
 
             </p>
 
@@ -652,9 +583,7 @@
         </div>
 
 
-        <!-- =========================================
-             MURAL DE AVISOS
-             ========================================= -->
+        <!-- MURAL DE AVISOS -->
 
         <div class="card-painel">
 
@@ -715,48 +644,23 @@
     </div>
 
 
-    <!-- =========================================
-         JAVASCRIPT
-         ========================================= -->
-
     <script>
-
-        /*
-         * Dados atuais carregados do Firestore.
-         */
 
         let dadosGlobais = {};
 
 
         /*
-         * =====================================================
-         * CONFIGURAÇÃO DO SERVIÇO DE UPLOAD
-         * =====================================================
+         * ENDEREÇO DA FUTURA PONTE SEGURA DE UPLOAD.
          *
-         * IMPORTANTE:
-         *
-         * O HTML público NÃO deve possuir um token do GitHub.
-         *
-         * Quando criarmos a ponte segura de upload,
-         * colocaremos aqui o endereço dela.
-         *
-         * Exemplo:
-         *
-         * const UPLOAD_API_URL =
-         *     "https://seu-endpoint-de-upload...";
-         *
-         * Por enquanto deixamos vazio para não fingir
-         * que o GitHub já está sendo acessado.
+         * Não colocar token do GitHub neste HTML.
          */
 
         const UPLOAD_API_URL = "";
 
 
-        /*
-         * =====================================================
-         * CARREGAR DADOS DO FIRESTORE
-         * =====================================================
-         */
+        /* =========================================
+           CARREGAR DADOS DO FIRESTORE
+           ========================================= */
 
         async function carregarDadosPainel() {
 
@@ -819,10 +723,6 @@
                 }
 
 
-                /*
-                 * Preenche os campos.
-                 */
-
                 document.getElementById(
                     'passSiteGeral'
                 ).value =
@@ -838,43 +738,14 @@
 
 
                 document.getElementById(
-                    'inputImg'
-                ).value =
-                    dadosGlobais.admin_img ||
-                    "";
-
-
-                document.getElementById(
-                    'inputAudio'
-                ).value =
-                    dadosGlobais.admin_audio ||
-                    "";
-
-
-                document.getElementById(
-                    'inputVideo'
-                ).value =
-                    dadosGlobais.admin_video ||
-                    "";
-
-
-                document.getElementById(
                     'inputTempo'
                 ).value =
                     dadosGlobais.admin_tempo_mural ||
                     4;
 
 
-                /*
-                 * Mostra URLs atuais.
-                 */
-
                 atualizarUrlsAtuais();
 
-
-                /*
-                 * Renderiza mural.
-                 */
 
                 renderizarListaAvisos(
                     dadosGlobais.admin_avisos_custom ||
@@ -898,11 +769,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * LOGIN
-         * =====================================================
-         */
+        /* =========================================
+           LOGIN
+           ========================================= */
 
         async function verificarSenha() {
 
@@ -943,10 +812,6 @@
         }
 
 
-        /*
-         * Enter na senha.
-         */
-
         document.getElementById(
             'senhaAdminInput'
         ).addEventListener(
@@ -962,12 +827,6 @@
             }
         );
 
-
-        /*
-         * =====================================================
-         * CARREGAMENTO INICIAL DA SENHA
-         * =====================================================
-         */
 
         window.addEventListener(
             'DOMContentLoaded',
@@ -992,7 +851,7 @@
 
                     }
 
-                } catch (e) {
+                } catch(e) {
 
                     console.log(e);
 
@@ -1002,11 +861,9 @@
         );
 
 
-        /*
-         * =====================================================
-         * LISTA DE AVISOS
-         * =====================================================
-         */
+        /* =========================================
+           LISTA DE AVISOS
+           ========================================= */
 
         function renderizarListaAvisos(avisos) {
 
@@ -1032,42 +889,98 @@
                         'aviso-item-box';
 
 
-                    div.innerHTML = `
+                    let bloco =
+                        document.createElement(
+                            'div'
+                        );
 
-                        <div
-                            style="
-                                flex-grow: 1;
-                                display: flex;
-                                flex-direction: column;
-                                gap: 6px;
-                            "
-                        >
+                    bloco.style.flexGrow =
+                        "1";
 
-                            <input
-                                type="text"
-                                class="aviso-titulo"
-                                value="${escaparHTML(item.titulo || '')}"
-                                placeholder="Título..."
-                            >
+                    bloco.style.display =
+                        "flex";
 
-                            <input
-                                type="text"
-                                class="aviso-texto"
-                                value="${escaparHTML(item.texto || '')}"
-                                placeholder="Texto..."
-                            >
+                    bloco.style.flexDirection =
+                        "column";
 
-                        </div>
+                    bloco.style.gap =
+                        "6px";
 
-                        <button
-                            type="button"
-                            class="btn-remover"
-                            onclick="this.parentElement.remove()"
-                        >
-                            Excluir
-                        </button>
 
-                    `;
+                    let titulo =
+                        document.createElement(
+                            'input'
+                        );
+
+                    titulo.type =
+                        "text";
+
+                    titulo.className =
+                        "aviso-titulo";
+
+                    titulo.value =
+                        item.titulo || "";
+
+                    titulo.placeholder =
+                        "Título...";
+
+
+                    let texto =
+                        document.createElement(
+                            'input'
+                        );
+
+                    texto.type =
+                        "text";
+
+                    texto.className =
+                        "aviso-texto";
+
+                    texto.value =
+                        item.texto || "";
+
+                    texto.placeholder =
+                        "Texto...";
+
+
+                    bloco.appendChild(
+                        titulo
+                    );
+
+                    bloco.appendChild(
+                        texto
+                    );
+
+
+                    let botao =
+                        document.createElement(
+                            'button'
+                        );
+
+                    botao.type =
+                        "button";
+
+                    botao.className =
+                        "btn-remover";
+
+                    botao.textContent =
+                        "Excluir";
+
+                    botao.onclick =
+                        function() {
+
+                            div.remove();
+
+                        };
+
+
+                    div.appendChild(
+                        bloco
+                    );
+
+                    div.appendChild(
+                        botao
+                    );
 
 
                     container.appendChild(
@@ -1079,10 +992,6 @@
 
         }
 
-
-        /*
-         * Adicionar novo aviso.
-         */
 
         function adicionarNovoAviso() {
 
@@ -1102,42 +1011,92 @@
                 'aviso-item-box';
 
 
-            div.innerHTML = `
+            let bloco =
+                document.createElement(
+                    'div'
+                );
 
-                <div
-                    style="
-                        flex-grow: 1;
-                        display: flex;
-                        flex-direction: column;
-                        gap: 6px;
-                    "
-                >
+            bloco.style.flexGrow =
+                "1";
 
-                    <input
-                        type="text"
-                        class="aviso-titulo"
-                        value=""
-                        placeholder="Título..."
-                    >
+            bloco.style.display =
+                "flex";
 
-                    <input
-                        type="text"
-                        class="aviso-texto"
-                        value=""
-                        placeholder="Texto..."
-                    >
+            bloco.style.flexDirection =
+                "column";
 
-                </div>
+            bloco.style.gap =
+                "6px";
 
-                <button
-                    type="button"
-                    class="btn-remover"
-                    onclick="this.parentElement.remove()"
-                >
-                    Excluir
-                </button>
 
-            `;
+            let titulo =
+                document.createElement(
+                    'input'
+                );
+
+            titulo.type =
+                "text";
+
+            titulo.className =
+                "aviso-titulo";
+
+            titulo.placeholder =
+                "Título...";
+
+
+            let texto =
+                document.createElement(
+                    'input'
+                );
+
+            texto.type =
+                "text";
+
+            texto.className =
+                "aviso-texto";
+
+            texto.placeholder =
+                "Texto...";
+
+
+            bloco.appendChild(
+                titulo
+            );
+
+            bloco.appendChild(
+                texto
+            );
+
+
+            let botao =
+                document.createElement(
+                    'button'
+                );
+
+            botao.type =
+                "button";
+
+            botao.className =
+                "btn-remover";
+
+            botao.textContent =
+                "Excluir";
+
+            botao.onclick =
+                function() {
+
+                    div.remove();
+
+                };
+
+
+            div.appendChild(
+                bloco
+            );
+
+            div.appendChild(
+                botao
+            );
 
 
             container.appendChild(
@@ -1147,11 +1106,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * SALVAR NA NUVEM
-         * =====================================================
-         */
+        /* =========================================
+           SALVAR NA NUVEM
+           ========================================= */
 
         async function salvarNaNuvem(
             novosDados
@@ -1204,11 +1161,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * SALVAR SENHAS
-         * =====================================================
-         */
+        /* =========================================
+           SALVAR SENHAS
+           ========================================= */
 
         async function salvarSenhasPrincipais() {
 
@@ -1240,11 +1195,6 @@
                 versaoAtual;
 
 
-            /*
-             * Só aumenta a versão quando
-             * a senha geral realmente mudar.
-             */
-
             if (
                 novaSenhaSite !==
                 senhaSiteAtual
@@ -1272,43 +1222,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * SALVAR LINKS MANUALMENTE
-         * =====================================================
-         */
-
-        async function salvarLinks() {
-
-            await salvarNaNuvem({
-
-                admin_img:
-                    document.getElementById(
-                        'inputImg'
-                    ).value,
-
-                admin_audio:
-                    document.getElementById(
-                        'inputAudio'
-                    ).value,
-
-                admin_video:
-                    document.getElementById(
-                        'inputVideo'
-                    ).value
-
-            });
-
-            atualizarUrlsAtuais();
-
-        }
-
-
-        /*
-         * =====================================================
-         * MOSTRAR URLS ATUAIS
-         * =====================================================
-         */
+        /* =========================================
+           MOSTRAR URLS ATUAIS
+           ========================================= */
 
         function atualizarUrlsAtuais() {
 
@@ -1334,7 +1250,7 @@
                     dadosGlobais.admin_img
                         ? "Atual: " +
                           dadosGlobais.admin_img
-                        : "Nenhuma imagem cadastrada.";
+                        : "Nenhuma imagem enviada.";
 
             }
 
@@ -1345,7 +1261,7 @@
                     dadosGlobais.admin_audio
                         ? "Atual: " +
                           dadosGlobais.admin_audio
-                        : "Nenhum áudio cadastrado.";
+                        : "Nenhum áudio enviado.";
 
             }
 
@@ -1356,18 +1272,16 @@
                     dadosGlobais.admin_video
                         ? "Atual: " +
                           dadosGlobais.admin_video
-                        : "Nenhum vídeo cadastrado.";
+                        : "Nenhum vídeo enviado.";
 
             }
 
         }
 
 
-        /*
-         * =====================================================
-         * SELECIONAR CAMPO DE ARQUIVO
-         * =====================================================
-         */
+        /* =========================================
+           OBTER CAMPO DE ARQUIVO
+           ========================================= */
 
         function obterInputArquivo(tipo) {
 
@@ -1403,11 +1317,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * BOTÃO / STATUS DO UPLOAD
-         * =====================================================
-         */
+        /* =========================================
+           ELEMENTOS DO UPLOAD
+           ========================================= */
 
         function obterElementosUpload(tipo) {
 
@@ -1479,16 +1391,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * ENVIO DO ARQUIVO
-         * =====================================================
-         *
-         * Esta função já está organizada para conversar
-         * com a futura ponte segura de upload.
-         *
-         * Não colocamos token do GitHub aqui.
-         */
+        /* =========================================
+           ENVIO DO ARQUIVO
+           ========================================= */
 
         async function enviarArquivo(tipo) {
 
@@ -1528,10 +1433,6 @@
             let arquivo =
                 inputArquivo.files[0];
 
-
-            /*
-             * Verificação básica do tipo.
-             */
 
             if (
                 tipo === "imagem" &&
@@ -1575,27 +1476,16 @@
             }
 
 
-            /*
-             * Se ainda não existe a ponte segura,
-             * não fingimos que o upload funcionou.
-             */
-
             if (!UPLOAD_API_URL) {
 
                 alert(
-                    "O painel está pronto para o envio, " +
-                    "mas a conexão segura com o GitHub ainda " +
-                    "não foi configurada."
+                    "A conexão segura com o GitHub ainda não foi configurada."
                 );
 
                 return;
 
             }
 
-
-            /*
-             * Desabilita o botão durante o envio.
-             */
 
             if (elementos.botao) {
 
@@ -1615,11 +1505,6 @@
 
             try {
 
-                /*
-                 * FormData leva o arquivo ao servidor
-                 * seguro.
-                 */
-
                 let formulario =
                     new FormData();
 
@@ -1636,25 +1521,12 @@
                 );
 
 
-                /*
-                 * O servidor deverá identificar:
-                 *
-                 * imagem -> lembrete-imagem
-                 * audio  -> lembrete-audio
-                 * video  -> lembrete-video
-                 *
-                 * e substituir o arquivo anterior.
-                 */
-
                 let resposta =
                     await fetch(
                         UPLOAD_API_URL,
                         {
-
                             method: "POST",
-
                             body: formulario
-
                         }
                     );
 
@@ -1678,15 +1550,11 @@
                 ) {
 
                     throw new Error(
-                        "O servidor não retornou a URL pública."
+                        "O servidor não retornou a URL."
                     );
 
                 }
 
-
-                /*
-                 * Salva a URL no Firestore.
-                 */
 
                 await salvarEnderecoMidia(
                     tipo,
@@ -1694,41 +1562,8 @@
                 );
 
 
-                /*
-                 * Atualiza os campos.
-                 */
-
-                if (tipo === "imagem") {
-
-                    document.getElementById(
-                        "inputImg"
-                    ).value =
-                        resultado.url;
-
-                }
-
-
-                if (tipo === "audio") {
-
-                    document.getElementById(
-                        "inputAudio"
-                    ).value =
-                        resultado.url;
-
-                }
-
-
-                if (tipo === "video") {
-
-                    document.getElementById(
-                        "inputVideo"
-                    ).value =
-                        resultado.url;
-
-                }
-
-
-                atualizarUrlsAtuais();
+                inputArquivo.value =
+                    "";
 
 
                 if (elementos.status) {
@@ -1739,11 +1574,7 @@
                 }
 
 
-                /*
-                 * Limpa o campo.
-                 */
-
-                inputArquivo.value = "";
+                atualizarUrlsAtuais();
 
 
             } catch (erro) {
@@ -1781,11 +1612,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * SALVAR ENDEREÇO DA MÍDIA
-         * =====================================================
-         */
+        /* =========================================
+           SALVAR ENDEREÇO DA MÍDIA
+           ========================================= */
 
         async function salvarEnderecoMidia(
             tipo,
@@ -1826,11 +1655,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * SALVAR MURAL COMPLETO
-         * =====================================================
-         */
+        /* =========================================
+           SALVAR MURAL
+           ========================================= */
 
         async function salvarMuralCompleto() {
 
@@ -1892,11 +1719,9 @@
         }
 
 
-        /*
-         * =====================================================
-         * ALERTA DE SUCESSO
-         * =====================================================
-         */
+        /* =========================================
+           ALERTA
+           ========================================= */
 
         function mostrarAlerta() {
 
@@ -1919,24 +1744,6 @@
                 },
                 3000
             );
-
-        }
-
-
-        /*
-         * =====================================================
-         * ESCAPAR TEXTO PARA O HTML
-         * =====================================================
-         */
-
-        function escaparHTML(texto) {
-
-            return String(texto)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
 
         }
 
