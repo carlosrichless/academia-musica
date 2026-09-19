@@ -831,155 +831,105 @@
            ========================================= */
 
         window.addEventListener(
-            "DOMContentLoaded",
-            async function() {
+    "DOMContentLoaded",
+    async function() {
 
-                let autorizado =
-                    sessionStorage.getItem(
-                        "siteAutorizado"
-                    );
+        const conteudo =
+            document.getElementById(
+                'conteudoSite'
+            );
 
-
-                let versaoSalva =
-                    sessionStorage.getItem(
-                        "versaoSenhaSite"
-                    );
-
-
-                /*
-                 * Se não existe sessão autorizada,
-                 * simplesmente permanece na tela de login.
-                 */
-                if (
-                    autorizado !== "true"
-                ) {
-
-                    return;
-
-                }
+        const login =
+            document.getElementById(
+                'telaLoginGeral'
+            );
 
 
-                try {
-
-                    /*
-                     * BUSCA A VERSÃO ATUAL DIRETAMENTE
-                     * NO FIRESTORE.
-                     */
-                    let docRef =
-                        await window.firestore.getDoc(
-                            window.firestore.doc(
-                                window.db,
-                                "configuracoes",
-                                "sistema"
-                            )
-                        );
+        let autorizado =
+            sessionStorage.getItem(
+                "siteAutorizado"
+            );
 
 
-                    let dados =
-                        docRef.exists()
-                            ? docRef.data()
-                            : {};
+        let versaoSalva =
+            sessionStorage.getItem(
+                "versaoSenhaSite"
+            );
 
 
-                    let versaoAtual =
-                        String(
-                            dados.versao_senha_site || 1
-                        );
+        try {
+
+            let docRef =
+                await window.firestore.getDoc(
+                    window.firestore.doc(
+                        window.db,
+                        "configuracoes",
+                        "sistema"
+                    )
+                );
 
 
-                    /*
-                     * AQUI ESTÁ A PROTEÇÃO CONTRA F5.
-                     *
-                     * Se a versão salva na sessão for
-                     * diferente da versão atual do Firestore,
-                     * a senha foi alterada.
-                     *
-                     * Então a sessão é apagada e o usuário
-                     * volta para a tela de senha.
-                     */
-                    if (
-                        String(versaoSalva) !==
-                        String(versaoAtual)
-                    ) {
-
-                        sessionStorage.removeItem(
-                            "siteAutorizado"
-                        );
+            let dados =
+                docRef.exists()
+                    ? docRef.data()
+                    : {};
 
 
-                        sessionStorage.removeItem(
-                            "versaoSenhaSite"
-                        );
+            let versaoAtual =
+                dados.versao_senha_site || 1;
 
 
-                        document.getElementById(
-                            'telaLoginGeral'
-                        ).style.display = 'flex';
+            if (
+                autorizado === "true" &&
+                String(versaoSalva) === String(versaoAtual)
+            ) {
 
 
-                        document.getElementById(
-                            'conteudoSite'
-                        ).style.display = 'none';
+                login.style.display = "none";
+
+                conteudo.style.display = "block";
 
 
-                        return;
-
-                    }
+                inicializarSite();
 
 
-                    /*
-                     * VERSÃO IGUAL:
-                     * mantém a sessão normalmente.
-                     */
-                    document.getElementById(
-                        'telaLoginGeral'
-                    ).style.display = 'none';
+            } else {
 
 
-                    document.getElementById(
-                        'conteudoSite'
-                    ).style.display = 'block';
+                sessionStorage.removeItem(
+                    "siteAutorizado"
+                );
 
 
-                    inicializarSite();
+                sessionStorage.removeItem(
+                    "versaoSenhaSite"
+                );
 
 
-                } catch (erro) {
+                login.style.display = "flex";
 
-                    console.error(
-                        "Erro ao verificar versão da senha:",
-                        erro
-                    );
+                conteudo.style.display = "none";
 
-                    /*
-                     * Por segurança, se não conseguirmos
-                     * confirmar a versão no Firestore,
-                     * NÃO liberamos automaticamente.
-                     */
-                    sessionStorage.removeItem(
-                        "siteAutorizado"
-                    );
-
-
-                    sessionStorage.removeItem(
-                        "versaoSenhaSite"
-                    );
-
-
-                    document.getElementById(
-                        'telaLoginGeral'
-                    ).style.display = 'flex';
-
-
-                    document.getElementById(
-                        'conteudoSite'
-                    ).style.display = 'none';
-
-                }
 
             }
-        );
 
+
+        } catch(erro) {
+
+            console.error(
+                "Erro ao validar sessão:",
+                erro
+            );
+
+
+            login.style.display = "flex";
+
+            conteudo.style.display = "none";
+
+        }
+
+    }
+);
 
         /* =========================================
            ENTER NA SENHA
