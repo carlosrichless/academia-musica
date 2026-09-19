@@ -222,140 +222,331 @@
         async function carregarDadosPainel() {
             try {
                 let docRef = await window.firestore.getDoc(
-    window.firestore.doc(db, "configuracoes", "sistema")
-);
+                    window.firestore.doc(db, "configuracoes", "sistema")
+                );
+
                 if (docRef.exists()) {
                     dadosGlobais = docRef.data();
                 } else {
                     dadosGlobais = {
                         senha_site_geral: "123456",
                         senha_admin_sistema: "admin123",
+                        versao_senha_site: 1,
                         admin_img: "",
                         admin_audio: "",
                         admin_video: "",
                         admin_tempo_mural: 4,
-                        admin_avisos_custom: [{ titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }]
+                        admin_avisos_custom: [
+                            {
+                                titulo: "🎵 Bem-vindo ao Projeto 2026!",
+                                texto: "Confira os recados importantes."
+                            }
+                        ]
                     };
                 }
 
-                document.getElementById('passSiteGeral').value = dadosGlobais.senha_site_geral || "123456";
-                document.getElementById('passAdmin').value = dadosGlobais.senha_admin_sistema || "admin123";
-                document.getElementById('inputImg').value = dadosGlobais.admin_img || "";
-                document.getElementById('inputAudio').value = dadosGlobais.admin_audio || "";
-                document.getElementById('inputVideo').value = dadosGlobais.admin_video || "";
-                document.getElementById('inputTempo').value = dadosGlobais.admin_tempo_mural || 4;
+                document.getElementById('passSiteGeral').value =
+                    dadosGlobais.senha_site_geral || "123456";
 
-                renderizarListaAvisos(dadosGlobais.admin_avisos_custom || []);
+                document.getElementById('passAdmin').value =
+                    dadosGlobais.senha_admin_sistema || "admin123";
+
+                document.getElementById('inputImg').value =
+                    dadosGlobais.admin_img || "";
+
+                document.getElementById('inputAudio').value =
+                    dadosGlobais.admin_audio || "";
+
+                document.getElementById('inputVideo').value =
+                    dadosGlobais.admin_video || "";
+
+                document.getElementById('inputTempo').value =
+                    dadosGlobais.admin_tempo_mural || 4;
+
+                renderizarListaAvisos(
+                    dadosGlobais.admin_avisos_custom || []
+                );
+
             } catch (erro) {
-                console.error("Erro ao carregar dados da nuvem: ", erro);
+                console.error(
+                    "Erro ao carregar dados da nuvem: ",
+                    erro
+                );
+
                 alert("Erro ao conectar com a nuvem.");
             }
         }
 
         async function verificarSenha() {
-            let senhaMestreSalva = (dadosGlobais || {}).senha_admin_sistema || "admin123";
-            if(document.getElementById('senhaAdminInput').value === senhaMestreSalva) {
+            let senhaMestreSalva =
+                (dadosGlobais || {}).senha_admin_sistema ||
+                "admin123";
+
+            if (
+                document.getElementById('senhaAdminInput').value ===
+                senhaMestreSalva
+            ) {
                 document.getElementById('telaLogin').style.display = 'none';
                 document.getElementById('conteudoPainel').style.display = 'block';
-                await carregarDadosPainel(); // <-- Adicione esta linha exata aqui
+
+                await carregarDadosPainel();
+
             } else {
                 document.getElementById('erroSenha').style.display = 'block';
             }
         }
 
-        document.getElementById('senhaAdminInput').addEventListener("keypress", function(event) {
-            if (event.key === "Enter") verificarSenha();
-        });
+        document.getElementById('senhaAdminInput').addEventListener(
+            "keypress",
+            function(event) {
+                if (event.key === "Enter") {
+                    verificarSenha();
+                }
+            }
+        );
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                let docRef = await window.firestore.getDoc(
-    window.firestore.doc(db, "configuracoes", "sistema")
-);
-                if(docRef.exists()) dadosGlobais = docRef.data();
-            } catch(e) { console.log(e); }
-        });
+        window.addEventListener(
+            'DOMContentLoaded',
+            async () => {
+                try {
+                    let docRef =
+                        await window.firestore.getDoc(
+                            window.firestore.doc(
+                                db,
+                                "configuracoes",
+                                "sistema"
+                            )
+                        );
+
+                    if (docRef.exists()) {
+                        dadosGlobais = docRef.data();
+                    }
+
+                } catch(e) {
+                    console.log(e);
+                }
+            }
+        );
 
         function renderizarListaAvisos(avisos) {
-            let container = document.getElementById('listaAvisosContainer');
+            let container =
+                document.getElementById(
+                    'listaAvisosContainer'
+                );
+
             container.innerHTML = "";
+
             avisos.forEach(item => {
-                let div = document.createElement('div');
+                let div =
+                    document.createElement('div');
+
                 div.className = 'aviso-item-box';
+
                 div.innerHTML = `
                     <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
                         <input type="text" class="aviso-titulo" value="${item.titulo}" placeholder="Título...">
                         <input type="text" class="aviso-texto" value="${item.texto}" placeholder="Texto...">
                     </div>
-                    <button type="button" class="btn-remover" onclick="this.parentElement.remove()">Excluir</button>
+
+                    <button
+                        type="button"
+                        class="btn-remover"
+                        onclick="this.parentElement.remove()"
+                    >
+                        Excluir
+                    </button>
                 `;
+
                 container.appendChild(div);
             });
         }
 
         function adicionarNovoAviso() {
-            let container = document.getElementById('listaAvisosContainer');
-            let div = document.createElement('div');
+            let container =
+                document.getElementById(
+                    'listaAvisosContainer'
+                );
+
+            let div =
+                document.createElement('div');
+
             div.className = 'aviso-item-box';
+
             div.innerHTML = `
                 <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
                     <input type="text" class="aviso-titulo" value="" placeholder="Título...">
                     <input type="text" class="aviso-texto" value="" placeholder="Texto...">
                 </div>
-                <button type="button" class="btn-remover" onclick="this.parentElement.remove()">Excluir</button>
+
+                <button
+                    type="button"
+                    class="btn-remover"
+                    onclick="this.parentElement.remove()"
+                >
+                    Excluir
+                </button>
             `;
+
             container.appendChild(div);
         }
 
         async function salvarNaNuvem(novosDados) {
             try {
+
                 await window.firestore.setDoc(
-    window.firestore.doc(db, "configuracoes", "sistema"),
-    novosDados,
-    { merge: true }
-);
-                dadosGlobais = { ...dadosGlobais, ...novosDados };
+                    window.firestore.doc(
+                        db,
+                        "configuracoes",
+                        "sistema"
+                    ),
+                    novosDados,
+                    { merge: true }
+                );
+
+                dadosGlobais = {
+                    ...dadosGlobais,
+                    ...novosDados
+                };
+
                 mostrarAlerta();
+
             } catch (e) {
-                console.error("Erro ao salvar: ", e);
+
+                console.error(
+                    "Erro ao salvar: ",
+                    e
+                );
+
                 alert("Erro ao salvar na nuvem.");
             }
         }
 
-        function salvarSenhasPrincipais() {
-            salvarNaNuvem({
-                senha_site_geral: document.getElementById('passSiteGeral').value,
-                senha_admin_sistema: document.getElementById('passAdmin').value
+        async function salvarSenhasPrincipais() {
+
+            let novaSenhaSite =
+                document.getElementById(
+                    'passSiteGeral'
+                ).value;
+
+            let novaSenhaAdmin =
+                document.getElementById(
+                    'passAdmin'
+                ).value;
+
+            let senhaSiteAtual =
+                dadosGlobais.senha_site_geral ||
+                "123456";
+
+            let versaoAtual =
+                Number(
+                    dadosGlobais.versao_senha_site || 1
+                );
+
+            let novaVersao =
+                versaoAtual;
+
+            /*
+             * SOMENTE quando a senha geral do site
+             * realmente mudar, aumentamos a versão.
+             *
+             * Isso fará com que todos os aparelhos
+             * autenticados anteriormente sejam obrigados
+             * a informar a nova senha quando carregarem
+             * novamente o site.
+             */
+            if (novaSenhaSite !== senhaSiteAtual) {
+                novaVersao = versaoAtual + 1;
+            }
+
+            await salvarNaNuvem({
+                senha_site_geral: novaSenhaSite,
+                senha_admin_sistema: novaSenhaAdmin,
+                versao_senha_site: novaVersao
             });
         }
 
         function salvarLinks() {
             salvarNaNuvem({
-                admin_img: document.getElementById('inputImg').value,
-                admin_audio: document.getElementById('inputAudio').value,
-                admin_video: document.getElementById('inputVideo').value
+                admin_img:
+                    document.getElementById(
+                        'inputImg'
+                    ).value,
+
+                admin_audio:
+                    document.getElementById(
+                        'inputAudio'
+                    ).value,
+
+                admin_video:
+                    document.getElementById(
+                        'inputVideo'
+                    ).value
             });
         }
 
         function salvarMuralCompleto() {
-            let titulos = document.querySelectorAll('.aviso-titulo');
-            let textos = document.querySelectorAll('.aviso-texto');
+
+            let titulos =
+                document.querySelectorAll(
+                    '.aviso-titulo'
+                );
+
+            let textos =
+                document.querySelectorAll(
+                    '.aviso-texto'
+                );
+
             let novaLista = [];
-            for(let i = 0; i < titulos.length; i++) {
-                if(titulos[i].value.trim() !== "" || textos[i].value.trim() !== "") {
-                    novaLista.push({ titulo: titulos[i].value, texto: textos[i].value });
+
+            for(
+                let i = 0;
+                i < titulos.length;
+                i++
+            ) {
+
+                if(
+                    titulos[i].value.trim() !== "" ||
+                    textos[i].value.trim() !== ""
+                ) {
+
+                    novaLista.push({
+                        titulo:
+                            titulos[i].value,
+
+                        texto:
+                            textos[i].value
+                    });
                 }
             }
+
             salvarNaNuvem({
-                admin_avisos_custom: novaLista,
-                admin_tempo_mural: parseInt(document.getElementById('inputTempo').value) || 4
+                admin_avisos_custom:
+                    novaLista,
+
+                admin_tempo_mural:
+                    parseInt(
+                        document.getElementById(
+                            'inputTempo'
+                        ).value
+                    ) || 4
             });
         }
 
         function mostrarAlerta() {
-            let alerta = document.getElementById('alertaSucesso');
+
+            let alerta =
+                document.getElementById(
+                    'alertaSucesso'
+                );
+
             alerta.style.display = 'block';
-            setTimeout(() => { alerta.style.display = 'none'; }, 3000);
+
+            setTimeout(
+                () => {
+                    alerta.style.display = 'none';
+                },
+                3000
+            );
         }
     </script>
 </body>
