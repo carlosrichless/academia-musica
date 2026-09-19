@@ -11,21 +11,26 @@
             box-sizing: border-box;
         }
 
+        html,
         body {
             margin: 0;
-            min-height: 100vh;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
             background: #020617;
             color: #ffffff;
             font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+
+        body {
+            min-height: 100vh;
         }
 
         .app {
             width: 100%;
             max-width: 500px;
             min-height: 100vh;
+            margin: 0 auto;
             padding: 20px;
             display: flex;
             flex-direction: column;
@@ -35,7 +40,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .voltar {
@@ -73,6 +78,11 @@
             font-weight: bold;
             line-height: 1;
             margin: 10px 0;
+            transition: transform 0.08s ease;
+        }
+
+        .bpm.pulso {
+            transform: scale(1.08);
         }
 
         .bpm-label {
@@ -134,21 +144,42 @@
             border-color: #3b82f6;
         }
 
-        .botao-iniciar {
+        .botoes-principais {
             width: 100%;
             margin-top: 25px;
-            padding: 20px;
-            border: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .botao-iniciar,
+        .botao-tela-cheia {
+            width: 100%;
+            padding: 18px;
             border-radius: 15px;
-            background: #16a34a;
             color: white;
-            font-size: 1.4rem;
+            font-size: 1.25rem;
             font-weight: bold;
             cursor: pointer;
         }
 
+        .botao-iniciar {
+            border: none;
+            background: #16a34a;
+        }
+
         .botao-iniciar.parado {
             background: #dc2626;
+        }
+
+        .botao-tela-cheia {
+            border: 1px solid #334155;
+            background: #111827;
+        }
+
+        .botao-tela-cheia:active,
+        .botao-iniciar:active {
+            transform: scale(0.98);
         }
 
         .batida {
@@ -165,6 +196,64 @@
             transform: scale(1.4);
         }
 
+
+        /* =========================================
+           MODO TELA CHEIA
+           ========================================= */
+
+        #modoTelaCheia {
+            display: none;
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #modoTelaCheia.ativo {
+            display: flex;
+        }
+
+        #bpmTelaCheia {
+            font-size: clamp(12rem, 35vw, 30rem);
+            font-weight: bold;
+            line-height: 1;
+            color: #ffffff;
+            text-align: center;
+            user-select: none;
+            transition: transform 0.08s ease;
+        }
+
+        #bpmTelaCheia.pulso {
+            transform: scale(1.06);
+        }
+
+        .aviso-tela-cheia {
+            position: absolute;
+            bottom: 25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #475569;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+
+        /* Quando estiver realmente em fullscreen,
+           garantimos que o modo ocupe tudo. */
+
+        #modoTelaCheia:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+        }
+
+
         @media (max-width: 600px) {
 
             .app {
@@ -178,6 +267,10 @@
             .btn-bpm {
                 width: 60px;
                 height: 60px;
+            }
+
+            #bpmTelaCheia {
+                font-size: clamp(10rem, 42vw, 18rem);
             }
         }
     </style>
@@ -238,19 +331,23 @@
 
             <div class="compassos">
 
-                <button class="btn-compasso ativo" onclick="alterarCompasso(2, this)">
+                <button class="btn-compasso ativo"
+                        onclick="alterarCompasso(2, this)">
                     2/4
                 </button>
 
-                <button class="btn-compasso" onclick="alterarCompasso(3, this)">
+                <button class="btn-compasso"
+                        onclick="alterarCompasso(3, this)">
                     3/4
                 </button>
 
-                <button class="btn-compasso" onclick="alterarCompasso(4, this)">
+                <button class="btn-compasso"
+                        onclick="alterarCompasso(4, this)">
                     4/4
                 </button>
 
-                <button class="btn-compasso" onclick="alterarCompasso(6, this)">
+                <button class="btn-compasso"
+                        onclick="alterarCompasso(6, this)">
                     6/8
                 </button>
 
@@ -259,17 +356,46 @@
         </div>
 
 
-        <button id="botaoIniciar"
-                class="botao-iniciar"
-                onclick="alternarMetronomo()">
+        <div class="botoes-principais">
 
-            ▶ INICIAR
+            <button id="botaoIniciar"
+                    class="botao-iniciar"
+                    onclick="alternarMetronomo()">
 
-        </button>
+                ▶ INICIAR
+
+            </button>
+
+
+            <button class="botao-tela-cheia"
+                    onclick="abrirTelaCheia()">
+
+                ⛶ TELA CHEIA
+
+            </button>
+
+        </div>
 
 
         <div id="batida" class="batida"></div>
 
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     TELA DE METRÔNOMO GIGANTE
+     ========================================= -->
+
+<div id="modoTelaCheia">
+
+    <div id="bpmTelaCheia">
+        80
+    </div>
+
+    <div class="aviso-tela-cheia">
+        Toque na tela ou pressione ESC para sair
     </div>
 
 </div>
@@ -288,12 +414,22 @@
     let tocando = false;
 
 
+    /* =========================================
+       ATUALIZAÇÃO DO BPM
+       ========================================= */
+
     function atualizarBpm() {
 
         document.getElementById("bpm").textContent = bpm;
 
+        document.getElementById("bpmTelaCheia").textContent = bpm;
+
     }
 
+
+    /* =========================================
+       ALTERAR BPM
+       ========================================= */
 
     function alterarBpm(valor) {
 
@@ -320,13 +456,19 @@
     }
 
 
+    /* =========================================
+       COMPASSO
+       ========================================= */
+
     function alterarCompasso(valor, botao) {
 
         batidasPorCompasso = valor;
 
         document.querySelectorAll(".btn-compasso")
             .forEach(function(btn) {
+
                 btn.classList.remove("ativo");
+
             });
 
         botao.classList.add("ativo");
@@ -336,14 +478,42 @@
     }
 
 
+    /* =========================================
+       SOM DA BATIDA
+       ========================================= */
+
     function tocarBatida() {
 
-        const elemento = document.getElementById("batida");
+        const elemento =
+            document.getElementById("batida");
 
         elemento.classList.add("ativa");
 
         setTimeout(function() {
+
             elemento.classList.remove("ativa");
+
+        }, 100);
+
+
+        const numeroBpm =
+            document.getElementById("bpm");
+
+        const numeroTelaCheia =
+            document.getElementById("bpmTelaCheia");
+
+
+        numeroBpm.classList.add("pulso");
+
+        numeroTelaCheia.classList.add("pulso");
+
+
+        setTimeout(function() {
+
+            numeroBpm.classList.remove("pulso");
+
+            numeroTelaCheia.classList.remove("pulso");
+
         }, 100);
 
 
@@ -351,19 +521,30 @@
             window.AudioContext ||
             window.webkitAudioContext;
 
+
         if (!AudioContext) {
             return;
         }
 
+
         if (!window.audioContext) {
-            window.audioContext = new AudioContext();
+
+            window.audioContext =
+                new AudioContext();
+
         }
 
-        const contexto = window.audioContext;
 
-        const oscilador = contexto.createOscillator();
+        const contexto =
+            window.audioContext;
 
-        const ganho = contexto.createGain();
+
+        const oscilador =
+            contexto.createOscillator();
+
+        const ganho =
+            contexto.createGain();
+
 
         oscilador.connect(ganho);
 
@@ -386,6 +567,7 @@
             contexto.currentTime
         );
 
+
         ganho.gain.exponentialRampToValueAtTime(
             0.001,
             contexto.currentTime + 0.08
@@ -394,12 +576,14 @@
 
         oscilador.start();
 
+
         oscilador.stop(
             contexto.currentTime + 0.08
         );
 
 
         batidaAtual++;
+
 
         if (batidaAtual >= batidasPorCompasso) {
 
@@ -409,6 +593,10 @@
 
     }
 
+
+    /* =========================================
+       INICIAR
+       ========================================= */
 
     function iniciarMetronomo() {
 
@@ -432,12 +620,19 @@
         const botao =
             document.getElementById("botaoIniciar");
 
-        botao.textContent = "■ PARAR";
+
+        botao.textContent =
+            "■ PARAR";
+
 
         botao.classList.add("parado");
 
     }
 
+
+    /* =========================================
+       PARAR
+       ========================================= */
 
     function pararMetronomo() {
 
@@ -453,12 +648,19 @@
         const botao =
             document.getElementById("botaoIniciar");
 
-        botao.textContent = "▶ INICIAR";
+
+        botao.textContent =
+            "▶ INICIAR";
+
 
         botao.classList.remove("parado");
 
     }
 
+
+    /* =========================================
+       INICIAR / PARAR
+       ========================================= */
 
     function alternarMetronomo() {
 
@@ -474,6 +676,109 @@
 
     }
 
+
+    /* =========================================
+       ABRIR TELA CHEIA
+       ========================================= */
+
+    async function abrirTelaCheia() {
+
+        const tela =
+            document.getElementById("modoTelaCheia");
+
+
+        tela.classList.add("ativo");
+
+
+        try {
+
+            if (tela.requestFullscreen) {
+
+                await tela.requestFullscreen({
+                    navigationUI: "hide"
+                });
+
+            }
+
+        } catch (erro) {
+
+            console.log(
+                "Tela cheia não disponível:",
+                erro
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       SAIR DA TELA CHEIA
+       ========================================= */
+
+    async function fecharTelaCheia() {
+
+        try {
+
+            if (document.fullscreenElement) {
+
+                await document.exitFullscreen();
+
+            }
+
+        } catch (erro) {
+
+            console.log(
+                "Erro ao sair da tela cheia:",
+                erro
+            );
+
+        }
+
+
+        document
+            .getElementById("modoTelaCheia")
+            .classList.remove("ativo");
+
+    }
+
+
+    /* =========================================
+       CLIQUE NA TELA CHEIA
+       ========================================= */
+
+    document
+        .getElementById("modoTelaCheia")
+        .addEventListener("click", function() {
+
+            fecharTelaCheia();
+
+        });
+
+
+    /* =========================================
+       ESC / SAÍDA DO FULLSCREEN
+       ========================================= */
+
+    document.addEventListener(
+        "fullscreenchange",
+        function() {
+
+            if (!document.fullscreenElement) {
+
+                document
+                    .getElementById("modoTelaCheia")
+                    .classList.remove("ativo");
+
+            }
+
+        }
+    );
+
+
+    /* =========================================
+       INICIALIZAÇÃO
+       ========================================= */
 
     atualizarBpm();
 
