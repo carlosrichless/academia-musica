@@ -8,7 +8,8 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>Afinador</title>
+<title>Afinador - Academia de Música</title>
+
 
 <style>
 
@@ -16,275 +17,624 @@
     box-sizing: border-box;
 }
 
+
 body {
+
     margin: 0;
+
     min-height: 100vh;
+
     background: #020617;
+
     color: white;
+
     font-family: Arial, sans-serif;
 }
 
+
 .app {
+
     min-height: 100vh;
-    padding: 20px;
+
+    padding: 18px;
+
     display: flex;
-    flex-direction: column;
-    align-items: center;
+
+    justify-content: center;
 }
+
 
 .conteudo {
+
     width: 100%;
-    max-width: 650px;
+
+    max-width: 760px;
 }
+
+
+/* =====================================================
+   TOPO
+   ===================================================== */
 
 .topo {
+
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
-    margin-bottom: 25px;
+
+    margin-bottom: 18px;
 }
+
 
 .voltar {
+
     color: white;
+
     text-decoration: none;
+
     background: #0f172a;
+
     border: 1px solid #334155;
+
     padding: 10px 15px;
+
     border-radius: 12px;
+
     font-size: 0.9rem;
 }
 
-h1 {
+
+.titulo {
+
     margin: 0;
-    font-size: 1.8rem;
+
+    font-size: 1.7rem;
+
+    text-align: center;
 }
 
-.card {
-    background: #0f172a;
-    border: 1px solid #334155;
-    border-radius: 22px;
-    padding: 25px;
-    margin-bottom: 18px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-}
+
+/* =====================================================
+   STATUS
+   ===================================================== */
 
 .status {
+
     text-align: center;
+
     color: #94a3b8;
+
     font-size: 0.9rem;
-    margin-bottom: 15px;
+
+    min-height: 24px;
+
+    margin-bottom: 10px;
 }
 
-.nota {
+
+/* =====================================================
+   NOTA DETECTADA
+   ===================================================== */
+
+.nota-detectada {
+
     text-align: center;
-    font-size: 7rem;
-    font-weight: bold;
-    line-height: 1;
-    margin: 10px 0;
+
+    font-size: clamp(5rem, 18vw, 9rem);
+
+    font-weight: 900;
+
+    line-height: 0.9;
+
+    margin: 5px 0;
+
+    text-shadow:
+        0 5px 25px rgba(0,0,0,0.5);
 }
+
 
 .frequencia {
+
     text-align: center;
+
+    color: #94a3b8;
+
     font-size: 1rem;
-    color: #94a3b8;
-    margin-bottom: 25px;
-}
 
-.indicador {
-    position: relative;
-    height: 90px;
-    margin: 10px 0 20px;
-}
-
-.linha-central {
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    width: 4px;
-    height: 70px;
-    transform: translateX(-50%);
-    background: #22c55e;
-    border-radius: 10px;
-}
-
-.ponteiro {
-    position: absolute;
-    left: 50%;
-    top: 25px;
-    width: 5px;
-    height: 45px;
-    transform-origin: bottom center;
-    transform: translateX(-50%) rotate(0deg);
-    background: white;
-    border-radius: 10px;
-    transition: transform 0.15s ease;
-}
-
-.escala {
-    display: flex;
-    justify-content: space-between;
-    color: #64748b;
-    font-size: 0.75rem;
-}
-
-.mensagem {
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: bold;
-    min-height: 35px;
-    margin-top: 10px;
-}
-
-
-/* =========================
-   CORDAS
-   ========================= */
-
-.cordas-titulo {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     margin-bottom: 15px;
 }
 
-.cordas {
+
+/* =====================================================
+   AFINADOR GRANDE
+   ===================================================== */
+
+.mostrador {
+
+    background: #0f172a;
+
+    border: 1px solid #334155;
+
+    border-radius: 24px;
+
+    padding: 22px 20px 28px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,0.35);
+}
+
+
+/* =====================================================
+   ESCALA
+   ===================================================== */
+
+.escala-grande {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 150px;
+
+    margin-top: 5px;
+}
+
+
+/* linha horizontal */
+
+.linha-afinacao {
+
+    position: absolute;
+
+    left: 3%;
+
+    right: 3%;
+
+    top: 78px;
+
+    height: 7px;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            to right,
+            #7f1d1d 0%,
+            #ef4444 25%,
+            #22c55e 45%,
+            #22c55e 55%,
+            #f59e0b 75%,
+            #991b1b 100%
+        );
+}
+
+
+/* zona verde */
+
+.zona-verde {
+
+    position: absolute;
+
+    left: 45%;
+
+    width: 10%;
+
+    top: 65px;
+
+    height: 33px;
+
+    border: 3px solid #22c55e;
+
+    border-radius: 10px;
+
+    opacity: 0.9;
+}
+
+
+/* centro */
+
+.marca-centro {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 42px;
+
+    width: 5px;
+
+    height: 72px;
+
+    transform:
+        translateX(-50%);
+
+    background: white;
+
+    border-radius: 10px;
+
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   PONTEIRO GRANDE
+   ===================================================== */
+
+.ponteiro {
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 18px;
+
+    width: 9px;
+
+    height: 110px;
+
+    transform:
+        translateX(-50%)
+        rotate(0deg);
+
+    transform-origin:
+        50% 85%;
+
+    background: white;
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 0 15px rgba(255,255,255,0.7);
+
+    transition:
+        transform 0.12s ease-out;
+}
+
+
+.ponteiro-ponta {
+
+    position: absolute;
+
+    bottom: -7px;
+
+    left: 50%;
+
+    width: 25px;
+
+    height: 25px;
+
+    transform:
+        translateX(-50%)
+        rotate(45deg);
+
+    background: inherit;
+
+    border-radius: 4px;
+}
+
+
+/* =====================================================
+   TEXTOS DA ESCALA
+   ===================================================== */
+
+.labels-afinacao {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 5px;
+
+    font-size: 0.85rem;
+
+    font-weight: bold;
+}
+
+
+.label-apertar {
+
+    color: #f87171;
+}
+
+
+.label-centro {
+
+    color: #4ade80;
+
+    font-size: 1rem;
+}
+
+
+.label-afrouxar {
+
+    color: #fbbf24;
+}
+
+
+/* =====================================================
+   MENSAGEM
+   ===================================================== */
+
+.mensagem {
+
+    text-align: center;
+
+    min-height: 42px;
+
+    margin-top: 12px;
+
+    font-size: 1.65rem;
+
+    font-weight: 900;
+}
+
+
+.mensagem.grave {
+
+    color: #f87171;
+}
+
+
+.mensagem.afinado {
+
+    color: #4ade80;
+}
+
+
+.mensagem.agudo {
+
+    color: #fbbf24;
+}
+
+
+.mensagem.aguardando {
+
+    color: #94a3b8;
+}
+
+
+/* =====================================================
+   REFERÊNCIAS
+   ===================================================== */
+
+.card {
+
+    margin-top: 16px;
+
+    background: #0f172a;
+
+    border: 1px solid #334155;
+
+    border-radius: 20px;
+
+    padding: 18px;
+}
+
+
+.titulo-card {
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 0.8rem;
+
+    font-weight: bold;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 13px;
+}
+
+
+.notas-referencia {
+
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+
+    grid-template-columns:
+        repeat(6, 1fr);
+
     gap: 8px;
 }
 
-.corda {
-    background: #1e293b;
+
+.botao-nota {
+
     border: 1px solid #475569;
+
+    background: #1e293b;
+
     color: white;
-    border-radius: 14px;
+
+    border-radius: 15px;
+
     padding: 13px 5px;
+
     cursor: pointer;
-    text-align: center;
+
+    transition:
+        transform 0.1s ease,
+        background 0.15s ease,
+        border-color 0.15s ease;
 }
 
-.corda strong {
+
+.botao-nota:active {
+
+    transform: scale(0.95);
+}
+
+
+.botao-nota strong {
+
     display: block;
-    font-size: 1.4rem;
+
+    font-size: 1.5rem;
 }
 
-.corda span {
+
+.botao-nota span {
+
     display: block;
-    font-size: 0.65rem;
+
+    margin-top: 4px;
+
     color: #94a3b8;
-    margin-top: 3px;
-}
 
-.corda.ativa {
-    background: #2563eb;
-    border-color: #60a5fa;
+    font-size: 0.62rem;
 }
 
 
-/* =========================
-   SOM DE REFERÊNCIA
-   ========================= */
+.botao-nota.tocando {
 
-.referencia-titulo {
-    text-align: center;
-    color: #94a3b8;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-}
-
-.botao-referencia {
-    width: 100%;
-    padding: 17px;
-    border-radius: 15px;
-    border: 1px solid #22c55e;
     background: #166534;
-    color: white;
-    font-size: 1.05rem;
-    font-weight: bold;
-    cursor: pointer;
-}
 
-.botao-referencia.tocando {
-    background: #b45309;
-    border-color: #f59e0b;
-}
+    border-color: #22c55e;
 
-.botao-parar {
-    width: 100%;
-    padding: 13px;
-    margin-top: 10px;
-    border-radius: 15px;
-    border: 1px solid #475569;
-    background: #1e293b;
-    color: white;
-    font-size: 0.95rem;
-    cursor: pointer;
+    box-shadow:
+        0 0 15px rgba(34,197,94,0.25);
 }
 
 
-/* =========================
+/* =====================================================
    MICROFONE
-   ========================= */
+   ===================================================== */
 
 .botao-microfone {
+
     width: 100%;
-    padding: 17px;
-    border-radius: 15px;
+
     border: 1px solid #3b82f6;
+
     background: #2563eb;
+
     color: white;
-    font-size: 1.1rem;
+
+    padding: 17px;
+
+    border-radius: 15px;
+
+    font-size: 1.05rem;
+
     font-weight: bold;
+
     cursor: pointer;
 }
 
-.botao-microfone.parar {
+
+.botao-microfone.parando {
+
     background: #dc2626;
+
     border-color: #ef4444;
 }
 
 
-/* =========================
-   INSTRUÇÕES
-   ========================= */
+/* =====================================================
+   INFORMAÇÃO
+   ===================================================== */
 
-.instrucoes {
+.informacao {
+
     text-align: center;
+
     color: #94a3b8;
+
+    font-size: 0.82rem;
+
     line-height: 1.5;
-    font-size: 0.9rem;
 }
 
+
+/* =====================================================
+   CELULAR
+   ===================================================== */
 
 @media (max-width: 600px) {
 
     .app {
-        padding: 15px;
+
+        padding: 10px;
     }
 
-    .card {
-        padding: 18px;
-        border-radius: 18px;
+
+    .mostrador {
+
+        padding: 15px 10px 22px;
+
+        border-radius: 20px;
     }
 
-    .nota {
-        font-size: 6rem;
+
+    .escala-grande {
+
+        height: 135px;
     }
 
-    .cordas {
-        gap: 6px;
+
+    .linha-afinacao {
+
+        top: 70px;
     }
 
-    .corda {
+
+    .zona-verde {
+
+        top: 57px;
+
+        height: 35px;
+    }
+
+
+    .marca-centro {
+
+        top: 35px;
+
+        height: 75px;
+    }
+
+
+    .ponteiro {
+
+        top: 12px;
+
+        height: 110px;
+    }
+
+
+    .mensagem {
+
+        font-size: 1.35rem;
+    }
+
+
+    .notas-referencia {
+
+        gap: 5px;
+    }
+
+
+    .botao-nota {
+
         padding: 11px 3px;
+
+        border-radius: 12px;
     }
 
-    .corda strong {
-        font-size: 1.2rem;
+
+    .botao-nota strong {
+
+        font-size: 1.3rem;
+    }
+
+
+    .botao-nota span {
+
+        font-size: 0.55rem;
     }
 
 }
@@ -302,9 +652,9 @@ h1 {
 <div class="conteudo">
 
 
-<!-- =========================
+<!-- =====================================================
      TOPO
-     ========================= -->
+     ===================================================== -->
 
 <div class="topo">
 
@@ -315,19 +665,26 @@ h1 {
 
 </a>
 
-<h1>🎸 Afinador</h1>
 
-<div style="width:70px;"></div>
+<h1 class="titulo">
+
+🎸 Afinador
+
+</h1>
+
+
+<div style="width:60px;"></div>
 
 </div>
 
 
 
-<!-- =========================
-     AFINADOR
-     ========================= -->
+<!-- =====================================================
+     MOSTRADOR
+     ===================================================== -->
 
-<div class="card">
+<div class="mostrador">
+
 
 <div class="status"
      id="status">
@@ -337,8 +694,8 @@ Microfone desligado
 </div>
 
 
-<div class="nota"
-     id="nota">
+<div class="nota-detectada"
+     id="notaDetectada">
 
 —
 
@@ -348,36 +705,67 @@ Microfone desligado
 <div class="frequencia"
      id="frequencia">
 
-0 Hz
+— Hz
 
 </div>
 
 
-<div class="indicador">
 
-<div class="linha-central"></div>
+<!-- ESCALA GRANDE -->
+
+<div class="escala-grande">
+
+
+<div class="linha-afinacao"></div>
+
+
+<div class="zona-verde"></div>
+
+
+<div class="marca-centro"></div>
+
 
 <div class="ponteiro"
-     id="ponteiro"></div>
+     id="ponteiro">
+
+<div class="ponteiro-ponta"></div>
+
+</div>
 
 </div>
 
 
-<div class="escala">
 
-<span>♭ GRAVE</span>
+<div class="labels-afinacao">
 
-<span>AFINADO</span>
+<span class="label-apertar">
 
-<span>♯ AGUDO</span>
+⬅ APERTAR
+
+</span>
+
+
+<span class="label-centro">
+
+✓ AFINADO
+
+</span>
+
+
+<span class="label-afrouxar">
+
+AFROUXAR ➡
+
+</span>
 
 </div>
 
 
-<div class="mensagem"
+
+<div class="mensagem aguardando"
      id="mensagem">
 
-Escolha uma corda
+Toque uma corda
 
 </div>
 
@@ -385,84 +773,85 @@ Escolha uma corda
 
 
 
-<!-- =========================
-     CORDAS
-     ========================= -->
+<!-- =====================================================
+     NOTAS DE REFERÊNCIA
+     ===================================================== -->
 
 <div class="card">
 
-<div class="cordas-titulo">
 
-ESCOLHA A CORDA
+<div class="titulo-card">
+
+🔊 SOM DE REFERÊNCIA — CLIQUE NA NOTA
 
 </div>
 
 
-<div class="cordas">
+<div class="notas-referencia">
 
 
-<button class="corda ativa"
-        id="corda0"
-        onclick="selecionarCorda(0)">
+<button class="botao-nota"
+        id="ref0"
+        onclick="clicarReferencia(0)">
 
 <strong>E</strong>
 
-<span>Mi grave</span>
+<span>82,41 Hz</span>
 
 </button>
 
 
-<button class="corda"
-        id="corda1"
-        onclick="selecionarCorda(1)">
+<button class="botao-nota"
+        id="ref1"
+        onclick="clicarReferencia(1)">
 
 <strong>A</strong>
 
-<span>Lá</span>
+<span>110,00 Hz</span>
 
 </button>
 
 
-<button class="corda"
-        id="corda2"
-        onclick="selecionarCorda(2)">
+<button class="botao-nota"
+        id="ref2"
+        onclick="clicarReferencia(2)">
 
 <strong>D</strong>
 
-<span>Ré</span>
+<span>146,83 Hz</span>
 
 </button>
 
 
-<button class="corda"
-        id="corda3"
-        onclick="selecionarCorda(3)">
+<button class="botao-nota"
+        id="ref3"
+        onclick="clicarReferencia(3)">
 
 <strong>G</strong>
 
-<span>Sol</span>
+<span>196,00 Hz</span>
 
 </button>
 
 
-<button class="corda"
-        id="corda4"
-        onclick="selecionarCorda(4)">
+<button class="botao-nota"
+        id="ref4"
+        onclick="clicarReferencia(4)">
 
 <strong>B</strong>
 
-<span>Si</span>
+<span>246,94 Hz</span>
 
 </button>
 
 
-<button class="corda"
-        id="corda5"
-        onclick="selecionarCorda(5)">
+<button class="botao-nota"
+        id="ref5"
+        onclick="clicarReferencia(5)">
 
 <strong>E</strong>
 
-<span>Mi agudo</span>
+<span>329,63 Hz</span>
 
 </button>
 
@@ -473,46 +862,12 @@ ESCOLHA A CORDA
 
 
 
-<!-- =========================
-     SOM DE REFERÊNCIA
-     ========================= -->
-
-<div class="card">
-
-<div class="referencia-titulo">
-
-🔊 SOM DE REFERÊNCIA
-
-</div>
-
-
-<button
-    class="botao-referencia"
-    id="botaoReferencia"
-    onclick="alternarSomReferencia()">
-
-🔊 OUVIR NOTA E
-
-</button>
-
-
-<button
-    class="botao-parar"
-    onclick="pararSomReferencia()">
-
-■ PARAR SOM
-
-</button>
-
-</div>
-
-
-
-<!-- =========================
+<!-- =====================================================
      MICROFONE
-     ========================= -->
+     ===================================================== -->
 
 <div class="card">
+
 
 <button
     class="botao-microfone"
@@ -523,37 +878,38 @@ ESCOLHA A CORDA
 
 </button>
 
+
 </div>
 
 
 
-<!-- =========================
-     INSTRUÇÕES
-     ========================= -->
+<!-- =====================================================
+     INFORMAÇÃO
+     ===================================================== -->
 
 <div class="card">
 
-<div class="instrucoes">
+<div class="informacao">
 
-<strong>Como usar</strong>
+Clique em uma nota acima para ouvir sua
+referência continuamente.
+
+<br>
+
+Depois toque a corda correspondente do violão.
 
 <br><br>
 
-1. Escolha a corda que deseja afinar.<br>
+O afinador identifica automaticamente
+a nota pelo microfone.
 
-2. Clique em
-<strong>OUVIR NOTA</strong>
-para ouvir a nota de referência.<br>
+<br>
 
-3. Toque a corda do violão.<br>
-
-4. Observe o ponteiro.<br><br>
-
-À esquerda = <strong>grave</strong><br>
-
-Centro = <strong>afinado</strong><br>
-
-À direita = <strong>agudo</strong>
+<strong>
+⬅ APERTAR = corda grave
+&nbsp;&nbsp; | &nbsp;&nbsp;
+AFROUXAR ➡ = corda aguda
+</strong>
 
 </div>
 
@@ -569,84 +925,90 @@ Centro = <strong>afinado</strong><br>
 <script>
 
 
-/* ==================================================
-   AFINAÇÃO PADRÃO DO VIOLÃO
-   ================================================== */
+/* =====================================================
+   AFINAÇÃO PADRÃO
+   ===================================================== */
 
-const cordas = [
+const notasViolao = [
 
     {
         nome: "E",
-        nomeCompleto: "Mi grave",
+        oitava: 2,
         frequencia: 82.41
     },
 
     {
         nome: "A",
-        nomeCompleto: "Lá",
+        oitava: 2,
         frequencia: 110.00
     },
 
     {
         nome: "D",
-        nomeCompleto: "Ré",
+        oitava: 3,
         frequencia: 146.83
     },
 
     {
         nome: "G",
-        nomeCompleto: "Sol",
+        oitava: 3,
         frequencia: 196.00
     },
 
     {
         nome: "B",
-        nomeCompleto: "Si",
+        oitava: 3,
         frequencia: 246.94
     },
 
     {
         nome: "E",
-        nomeCompleto: "Mi agudo",
+        oitava: 4,
         frequencia: 329.63
     }
 
 ];
 
 
-let cordaSelecionada = 0;
 
-
-/* ==================================================
+/* =====================================================
    AUDIO
-   ================================================== */
+   ===================================================== */
 
 let audioContext = null;
 
 let streamMicrofone = null;
 
-let microfone = null;
+let fonteMicrofone = null;
 
 let analisador = null;
 
-let rodando = false;
+let microfoneLigado = false;
 
 
-/* ==================================================
-   SOM DE REFERÊNCIA
-   ================================================== */
+/* =====================================================
+   REFERÊNCIA
+   ===================================================== */
 
 let osciladorReferencia = null;
 
 let ganhoReferencia = null;
 
-let somReferenciaTocando = false;
+let referenciaAtual = -1;
 
 
 
-/* ==================================================
-   CRIAR AUDIO CONTEXT
-   ================================================== */
+/* =====================================================
+   FILTRO DE FREQUÊNCIA
+   ===================================================== */
+
+let historicoFrequencias = [];
+
+
+
+/* =====================================================
+   AUDIO CONTEXT
+   ===================================================== */
 
 function obterAudioContext() {
 
@@ -666,81 +1028,11 @@ function obterAudioContext() {
 
 
 
-/* ==================================================
-   ESCOLHER CORDA
-   ================================================== */
+/* =====================================================
+   BOTÃO DAS NOTAS DE REFERÊNCIA
+   ===================================================== */
 
-function selecionarCorda(numero) {
-
-    cordaSelecionada = numero;
-
-
-    document
-        .querySelectorAll(".corda")
-        .forEach(botao => {
-
-            botao.classList.remove("ativa");
-
-        });
-
-
-    document
-        .getElementById("corda" + numero)
-        .classList.add("ativa");
-
-
-    const corda =
-        cordas[numero];
-
-
-    document.getElementById("mensagem")
-        .innerText =
-        "Toque a corda " +
-        corda.nome;
-
-
-    document.getElementById("botaoReferencia")
-        .innerText =
-        "🔊 OUVIR NOTA " +
-        corda.nome;
-
-
-    /*
-       Se o som de referência estiver tocando,
-       troca automaticamente para a nova corda.
-    */
-
-    if (somReferenciaTocando) {
-
-        iniciarSomReferencia();
-
-    }
-
-}
-
-
-
-/* ==================================================
-   SOM DE REFERÊNCIA
-   ================================================== */
-
-async function alternarSomReferencia() {
-
-    if (somReferenciaTocando) {
-
-        pararSomReferencia();
-
-    } else {
-
-        await iniciarSomReferencia();
-
-    }
-
-}
-
-
-
-async function iniciarSomReferencia() {
+async function clicarReferencia(indice) {
 
     const ctx =
         obterAudioContext();
@@ -754,15 +1046,47 @@ async function iniciarSomReferencia() {
 
 
     /*
-       Para qualquer nota anterior.
+       Clicou na mesma nota:
+       PARA o som.
     */
 
-    pararSomReferencia();
+    if (
+        referenciaAtual === indice
+    ) {
+
+        pararReferencia();
+
+        return;
+
+    }
 
 
-    const frequencia =
-        cordas[cordaSelecionada]
-            .frequencia;
+    /*
+       Outra nota:
+       troca imediatamente.
+    */
+
+    iniciarReferencia(indice);
+
+}
+
+
+
+/* =====================================================
+   INICIAR REFERÊNCIA
+   ===================================================== */
+
+function iniciarReferencia(indice) {
+
+    pararReferencia();
+
+
+    const nota =
+        notasViolao[indice];
+
+
+    const ctx =
+        obterAudioContext();
 
 
     osciladorReferencia =
@@ -774,11 +1098,10 @@ async function iniciarSomReferencia() {
 
 
     /*
-       SOM DA NOTA
+       Onda senoidal limpa.
 
-       Senoide limpa.
-       A frequência é exatamente
-       a frequência da corda.
+       É a frequência exata
+       da corda do violão.
     */
 
     osciladorReferencia.type =
@@ -787,14 +1110,14 @@ async function iniciarSomReferencia() {
 
     osciladorReferencia.frequency
         .setValueAtTime(
-            frequencia,
+            nota.frequencia,
             ctx.currentTime
         );
 
 
     /*
-       Volume inicial quase zero
-       para evitar estalo.
+       Entrada suave para
+       evitar estalo.
     */
 
     ganhoReferencia.gain
@@ -806,8 +1129,8 @@ async function iniciarSomReferencia() {
 
     ganhoReferencia.gain
         .linearRampToValueAtTime(
-            0.22,
-            ctx.currentTime + 0.05
+            0.18,
+            ctx.currentTime + 0.08
         );
 
 
@@ -819,82 +1142,137 @@ async function iniciarSomReferencia() {
         .connect(ctx.destination);
 
 
+    /*
+       FICA TOCANDO.
+
+       Não existe setTimeout.
+
+       O som permanece em loop
+       até clicar novamente.
+    */
+
     osciladorReferencia.start();
 
 
-    somReferenciaTocando = true;
+    referenciaAtual =
+        indice;
 
 
-    document.getElementById(
-        "botaoReferencia"
-    ).innerText =
-        "🔊 TOCANDO " +
-        cordas[cordaSelecionada].nome +
-        " — " +
-        cordas[cordaSelecionada]
-            .nomeCompleto;
-
-
-    document.getElementById(
-        "botaoReferencia"
-    ).classList.add("tocando");
+    atualizarBotoesReferencia();
 
 }
 
 
 
-/* ==================================================
-   PARAR SOM DE REFERÊNCIA
-   ================================================== */
+/* =====================================================
+   PARAR REFERÊNCIA
+   ===================================================== */
 
-function pararSomReferencia() {
+function pararReferencia() {
 
     if (osciladorReferencia) {
 
         try {
 
-            osciladorReferencia.stop();
+            const ctx =
+                obterAudioContext();
+
+
+            ganhoReferencia.gain
+                .cancelScheduledValues(
+                    ctx.currentTime
+                );
+
+
+            ganhoReferencia.gain
+                .setValueAtTime(
+                    ganhoReferencia.gain.value,
+                    ctx.currentTime
+                );
+
+
+            ganhoReferencia.gain
+                .linearRampToValueAtTime(
+                    0.0001,
+                    ctx.currentTime + 0.05
+                );
+
+
+            osciladorReferencia.stop(
+                ctx.currentTime + 0.06
+            );
 
         } catch (erro) {
 
             console.log(
-                "Oscilador já parado."
+                "Referência já encerrada."
             );
 
         }
 
-        osciladorReferencia = null;
-
     }
 
 
+    osciladorReferencia = null;
+
     ganhoReferencia = null;
 
-    somReferenciaTocando = false;
+    referenciaAtual = -1;
 
 
-    document.getElementById(
-        "botaoReferencia"
-    ).innerText =
-        "🔊 OUVIR NOTA " +
-        cordas[cordaSelecionada].nome;
-
-
-    document.getElementById(
-        "botaoReferencia"
-    ).classList.remove("tocando");
+    atualizarBotoesReferencia();
 
 }
 
 
 
-/* ==================================================
+/* =====================================================
+   VISUAL DOS BOTÕES
+   ===================================================== */
+
+function atualizarBotoesReferencia() {
+
+    for (
+        let i = 0;
+        i < notasViolao.length;
+        i++
+    ) {
+
+        const botao =
+            document.getElementById(
+                "ref" + i
+            );
+
+
+        if (
+            i === referenciaAtual
+        ) {
+
+            botao.classList.add(
+                "tocando"
+            );
+
+        } else {
+
+            botao.classList.remove(
+                "tocando"
+            );
+
+        }
+
+    }
+
+}
+
+
+
+/* =====================================================
    MICROFONE
-   ================================================== */
+   ===================================================== */
 
 async function alternarMicrofone() {
 
-    if (rodando) {
+    if (microfoneLigado) {
 
         pararMicrofone();
 
@@ -908,9 +1286,9 @@ async function alternarMicrofone() {
 
 
 
-/* ==================================================
+/* =====================================================
    INICIAR MICROFONE
-   ================================================== */
+   ===================================================== */
 
 async function iniciarMicrofone() {
 
@@ -930,11 +1308,22 @@ async function iniciarMicrofone() {
         }
 
 
+        const ctx =
+            obterAudioContext();
+
+
+        if (ctx.state === "suspended") {
+
+            await ctx.resume();
+
+        }
+
+
         /*
-           IMPORTANTE:
-           Guardamos o stream.
-           Isso permite desligar o microfone
-           corretamente depois.
+           Desliga processamento automático
+           do navegador.
+
+           Isso é importante para afinador.
         */
 
         streamMicrofone =
@@ -947,25 +1336,16 @@ async function iniciarMicrofone() {
 
                         noiseSuppression: false,
 
-                        autoGainControl: false
+                        autoGainControl: false,
+
+                        channelCount: 1
 
                     }
 
                 });
 
 
-        const ctx =
-            obterAudioContext();
-
-
-        if (ctx.state === "suspended") {
-
-            await ctx.resume();
-
-        }
-
-
-        microfone =
+        fonteMicrofone =
             ctx.createMediaStreamSource(
                 streamMicrofone
             );
@@ -976,8 +1356,9 @@ async function iniciarMicrofone() {
 
 
         /*
-           4096 dá uma resolução melhor
-           para as cordas graves.
+           4096 amostras dão resolução
+           suficiente para detectar
+           E grave = 82,41 Hz.
         */
 
         analisador.fftSize =
@@ -985,20 +1366,25 @@ async function iniciarMicrofone() {
 
 
         analisador.smoothingTimeConstant =
-            0.15;
+            0.10;
 
 
-        microfone.connect(
+        fonteMicrofone.connect(
             analisador
         );
 
 
-        rodando = true;
+        microfoneLigado =
+            true;
 
 
-        document.getElementById("status")
-            .innerText =
-            "🎤 MICROFONE ATIVO";
+        historicoFrequencias = [];
+
+
+        document.getElementById(
+            "status"
+        ).innerText =
+            "🎤 OUVINDO O VIOLÃO";
 
 
         const botao =
@@ -1011,33 +1397,41 @@ async function iniciarMicrofone() {
             "■ PARAR AFINADOR";
 
 
-        botao.classList.add("parar");
+        botao.classList.add(
+            "parando"
+        );
 
 
-        document.getElementById("mensagem")
-            .innerText =
-            "Toque a corda " +
-            cordas[cordaSelecionada].nome;
+        document.getElementById(
+            "mensagem"
+        ).innerText =
+            "Toque uma corda";
 
 
-        detectarSom();
+        document.getElementById(
+            "mensagem"
+        ).className =
+            "mensagem aguardando";
 
+
+        detectarPitch();
 
     } catch (erro) {
 
         console.error(
-            "Erro no microfone:",
+            "Erro ao iniciar microfone:",
             erro
         );
 
 
-        document.getElementById("status")
-            .innerText =
+        document.getElementById(
+            "status"
+        ).innerText =
             "Microfone não autorizado";
 
 
         alert(
-            "Permita o acesso ao microfone no navegador e tente novamente."
+            "O navegador precisa de permissão para usar o microfone."
         );
 
     }
@@ -1046,13 +1440,14 @@ async function iniciarMicrofone() {
 
 
 
-/* ==================================================
+/* =====================================================
    PARAR MICROFONE
-   ================================================== */
+   ===================================================== */
 
 function pararMicrofone() {
 
-    rodando = false;
+    microfoneLigado =
+        false;
 
 
     if (streamMicrofone) {
@@ -1065,18 +1460,27 @@ function pararMicrofone() {
 
             });
 
-        streamMicrofone = null;
+        streamMicrofone =
+            null;
 
     }
 
 
-    microfone = null;
+    fonteMicrofone =
+        null;
 
-    analisador = null;
+
+    analisador =
+        null;
 
 
-    document.getElementById("status")
-        .innerText =
+    historicoFrequencias =
+        [];
+
+
+    document.getElementById(
+        "status"
+    ).innerText =
         "Microfone desligado";
 
 
@@ -1088,40 +1492,53 @@ function pararMicrofone() {
 
     document.getElementById(
         "botaoMicrofone"
-    ).classList.remove("parar");
+    ).classList.remove(
+        "parando"
+    );
 
 
-    document.getElementById("nota")
-        .innerText = "—";
+    document.getElementById(
+        "notaDetectada"
+    ).innerText =
+        "—";
 
 
-    document.getElementById("frequencia")
-        .innerText = "0 Hz";
+    document.getElementById(
+        "frequencia"
+    ).innerText =
+        "— Hz";
 
 
-    document.getElementById("mensagem")
-        .innerText =
-        "Escolha uma corda";
+    document.getElementById(
+        "mensagem"
+    ).innerText =
+        "Toque uma corda";
 
 
-    document.getElementById("ponteiro")
-        .style.transform =
+    document.getElementById(
+        "mensagem"
+    ).className =
+        "mensagem aguardando";
+
+
+    document.getElementById(
+        "ponteiro"
+    ).style.transform =
         "translateX(-50%) rotate(0deg)";
 
 }
 
 
 
-/* ==================================================
-   DETECTAR SOM
-   ================================================== */
+/* =====================================================
+   LOOP DE DETECÇÃO
+   ===================================================== */
 
-function detectarSom() {
+function detectarPitch() {
 
     if (
-        !rodando ||
-        !analisador ||
-        !audioContext
+        !microfoneLigado ||
+        !analisador
     ) {
 
         return;
@@ -1140,49 +1557,90 @@ function detectarSom() {
     );
 
 
-    const frequencia =
-        encontrarFrequencia(
-            buffer
-        );
+    const volume =
+        calcularRMS(buffer);
 
 
-    if (
-        frequencia > 0 &&
-        frequencia >= 60 &&
-        frequencia <= 400
-    ) {
+    /*
+       Ignora silêncio.
+    */
 
-        processarNota(
-            frequencia
-        );
+    if (volume > 0.008) {
+
+        const frequencia =
+            detectarFrequencia(
+                buffer
+            );
+
+
+        if (
+            frequencia >= 70 &&
+            frequencia <= 380
+        ) {
+
+            processarFrequencia(
+                frequencia
+            );
+
+        }
 
     }
 
 
     requestAnimationFrame(
-        detectarSom
+        detectarPitch
     );
 
 }
 
 
 
-/* ==================================================
-   DETECÇÃO DA FREQUÊNCIA
-   AUTOCORRELAÇÃO
-   ================================================== */
+/* =====================================================
+   RMS
+   ===================================================== */
 
-function encontrarFrequencia(buffer) {
+function calcularRMS(buffer) {
+
+    let soma = 0;
+
+
+    for (
+        let i = 0;
+        i < buffer.length;
+        i++
+    ) {
+
+        soma +=
+            buffer[i] *
+            buffer[i];
+
+    }
+
+
+    return Math.sqrt(
+        soma / buffer.length
+    );
+
+}
+
+
+
+/* =====================================================
+   DETECÇÃO DE PITCH
+   AUTOCORRELAÇÃO NORMALIZADA
+   ===================================================== */
+
+function detectarFrequencia(buffer) {
 
     const tamanho =
         buffer.length;
 
 
     /*
-       Mede o volume do sinal.
+       Remove o DC offset.
     */
 
-    let energia = 0;
+    let media = 0;
 
 
     for (
@@ -1191,74 +1649,139 @@ function encontrarFrequencia(buffer) {
         i++
     ) {
 
-        energia +=
-            buffer[i] *
+        media +=
             buffer[i];
 
     }
 
 
-    energia =
-        Math.sqrt(
-            energia / tamanho
-        );
+    media /=
+        tamanho;
 
 
-    /*
-       Se não há som suficiente,
-       não tenta detectar uma nota.
-    */
-
-    if (energia < 0.008) {
-
-        return -1;
-
-    }
-
-
-    let melhorDeslocamento = -1;
-
-    let melhorCorrelacao = 0;
-
-
-    const minimo =
-        Math.floor(
-            audioContext.sampleRate / 400
-        );
-
-
-    const maximo =
-        Math.floor(
-            audioContext.sampleRate / 60
+    const sinal =
+        new Float32Array(
+            tamanho
         );
 
 
     for (
-        let deslocamento = minimo;
-        deslocamento <= maximo;
-        deslocamento++
+        let i = 0;
+        i < tamanho;
+        i++
     ) {
 
-        let correlacao = 0;
+        sinal[i] =
+            buffer[i] - media;
+
+    }
+
+
+    /*
+       Faixa do violão.
+
+       70 Hz até 380 Hz.
+    */
+
+    const minFreq =
+        70;
+
+
+    const maxFreq =
+        380;
+
+
+    const sampleRate =
+        audioContext.sampleRate;
+
+
+    const minLag =
+        Math.floor(
+            sampleRate / maxFreq
+        );
+
+
+    const maxLag =
+        Math.floor(
+            sampleRate / minFreq
+        );
+
+
+    let melhorLag =
+        -1;
+
+
+    let melhorCorrelacao =
+        0;
+
+
+    /*
+       Autocorrelação normalizada.
+
+       Isso reduz o problema de o volume
+       sozinho influenciar a detecção.
+    */
+
+    for (
+        let lag = minLag;
+        lag <= maxLag;
+        lag++
+    ) {
+
+        let somaXY = 0;
+
+        let somaX2 = 0;
+
+        let somaY2 = 0;
+
+
+        const limite =
+            tamanho - lag;
 
 
         for (
             let i = 0;
-            i < tamanho - deslocamento;
+            i < limite;
             i++
         ) {
 
-            correlacao +=
-                buffer[i] *
-                buffer[
-                    i + deslocamento
-                ];
+            const x =
+                sinal[i];
+
+
+            const y =
+                sinal[i + lag];
+
+
+            somaXY +=
+                x * y;
+
+
+            somaX2 +=
+                x * x;
+
+
+            somaY2 +=
+                y * y;
 
         }
 
 
-        correlacao /=
-            tamanho - deslocamento;
+        if (
+            somaX2 === 0 ||
+            somaY2 === 0
+        ) {
+
+            continue;
+
+        }
+
+
+        const correlacao =
+            somaXY /
+            Math.sqrt(
+                somaX2 * somaY2
+            );
 
 
         if (
@@ -1269,17 +1792,22 @@ function encontrarFrequencia(buffer) {
             melhorCorrelacao =
                 correlacao;
 
-            melhorDeslocamento =
-                deslocamento;
+            melhorLag =
+                lag;
 
         }
 
     }
 
 
+    /*
+       Se a correlação não é suficientemente
+       forte, não mostramos uma nota falsa.
+    */
+
     if (
-        melhorDeslocamento === -1 ||
-        melhorCorrelacao < 0.003
+        melhorLag === -1 ||
+        melhorCorrelacao < 0.55
     ) {
 
         return -1;
@@ -1287,47 +1815,318 @@ function encontrarFrequencia(buffer) {
     }
 
 
+    /*
+       Frequência aproximada.
+    */
+
+    let frequencia =
+        sampleRate /
+        melhorLag;
+
+
+    /*
+       Pequena interpolação parabólica
+       para melhorar a precisão.
+
+       Procura uma estimativa mais fina
+       ao redor do lag encontrado.
+    */
+
+    if (
+        melhorLag > minLag &&
+        melhorLag < maxLag
+    ) {
+
+        const cAnterior =
+            calcularCorrelacao(
+                sinal,
+                melhorLag - 1
+            );
+
+
+        const cAtual =
+            calcularCorrelacao(
+                sinal,
+                melhorLag
+            );
+
+
+        const cProximo =
+            calcularCorrelacao(
+                sinal,
+                melhorLag + 1
+            );
+
+
+        const denominador =
+            cAnterior -
+            2 * cAtual +
+            cProximo;
+
+
+        if (
+            Math.abs(denominador) >
+            0.000001
+        ) {
+
+            const ajuste =
+                0.5 *
+                (cAnterior - cProximo) /
+                denominador;
+
+
+            const lagRefinado =
+                melhorLag + ajuste;
+
+
+            frequencia =
+                sampleRate /
+                lagRefinado;
+
+        }
+
+    }
+
+
+    return frequencia;
+
+}
+
+
+
+/* =====================================================
+   CORRELAÇÃO AUXILIAR
+   ===================================================== */
+
+function calcularCorrelacao(
+    sinal,
+    lag
+) {
+
+    const limite =
+        sinal.length - lag;
+
+
+    let somaXY = 0;
+
+    let somaX2 = 0;
+
+    let somaY2 = 0;
+
+
+    for (
+        let i = 0;
+        i < limite;
+        i++
+    ) {
+
+        const x =
+            sinal[i];
+
+
+        const y =
+            sinal[i + lag];
+
+
+        somaXY +=
+            x * y;
+
+
+        somaX2 +=
+            x * x;
+
+
+        somaY2 +=
+            y * y;
+
+    }
+
+
+    if (
+        somaX2 === 0 ||
+        somaY2 === 0
+    ) {
+
+        return 0;
+
+    }
+
+
     return (
-        audioContext.sampleRate /
-        melhorDeslocamento
+        somaXY /
+        Math.sqrt(
+            somaX2 * somaY2
+        )
     );
 
 }
 
 
 
-/* ==================================================
-   PROCESSAR NOTA
-   ================================================== */
+/* =====================================================
+   PROCESSAR FREQUÊNCIA
+   ===================================================== */
 
-function processarNota(frequencia) {
+function processarFrequencia(
+    frequencia
+) {
 
-    const corda =
-        cordas[cordaSelecionada];
+    /*
+       Mantém algumas leituras recentes.
+
+       Isso deixa o ponteiro mais estável
+       e evita ficar pulando.
+    */
+
+    historicoFrequencias.push(
+        frequencia
+    );
 
 
-    const alvo =
-        corda.frequencia;
+    if (
+        historicoFrequencias.length > 5
+    ) {
+
+        historicoFrequencias.shift();
+
+    }
+
+
+    const frequenciaFiltrada =
+        mediana(
+            historicoFrequencias
+        );
 
 
     /*
-       Diferença em cents.
+       Encontra a nota mais próxima.
 
-       0 cents =
-       exatamente afinado.
+       Não é necessário escolher
+       a corda manualmente.
+    */
 
-       -100 cents =
-       um semitom abaixo.
+    let notaMaisProxima =
+        notasViolao[0];
 
-       +100 cents =
-       um semitom acima.
+
+    let menorDiferenca =
+        Math.abs(
+            1200 *
+            Math.log2(
+                frequenciaFiltrada /
+                notasViolao[0]
+                    .frequencia
+            )
+        );
+
+
+    for (
+        let i = 1;
+        i < notasViolao.length;
+        i++
+    ) {
+
+        const diferenca =
+            Math.abs(
+                1200 *
+                Math.log2(
+                    frequenciaFiltrada /
+                    notasViolao[i]
+                        .frequencia
+                )
+            );
+
+
+        if (
+            diferenca <
+            menorDiferenca
+        ) {
+
+            menorDiferenca =
+                diferenca;
+
+            notaMaisProxima =
+                notasViolao[i];
+
+        }
+
+    }
+
+
+    /*
+       Calcula cents em relação
+       à nota detectada.
     */
 
     const cents =
         1200 *
         Math.log2(
-            frequencia / alvo
+            frequenciaFiltrada /
+            notaMaisProxima.frequencia
         );
+
+
+    mostrarAfinacao(
+        notaMaisProxima,
+        frequenciaFiltrada,
+        cents
+    );
+
+}
+
+
+
+/* =====================================================
+   MEDIANA
+   ===================================================== */
+
+function mediana(valores) {
+
+    const lista =
+        [...valores]
+            .sort(
+                (a, b) => a - b
+            );
+
+
+    const meio =
+        Math.floor(
+            lista.length / 2
+        );
+
+
+    if (
+        lista.length % 2 === 0
+    ) {
+
+        return (
+            lista[meio - 1] +
+            lista[meio]
+        ) / 2;
+
+    }
+
+
+    return lista[meio];
+
+}
+
+
+
+/* =====================================================
+   MOSTRAR AFINAÇÃO
+   ===================================================== */
+
+function mostrarAfinacao(
+    nota,
+    frequencia,
+    cents
+) {
+
+    document.getElementById(
+        "notaDetectada"
+    ).innerText =
+        nota.nome;
 
 
     document.getElementById(
@@ -1337,57 +2136,50 @@ function processarNota(frequencia) {
         " Hz";
 
 
-    document.getElementById(
-        "nota"
-    ).innerText =
-        corda.nome;
+    /*
+       Limita o movimento visual.
 
+       -50 cents = totalmente para esquerda
+       +50 cents = totalmente para direita.
+    */
 
-    atualizarIndicador(
-        cents
-    );
-
-}
-
-
-
-/* ==================================================
-   INDICADOR
-   ================================================== */
-
-function atualizarIndicador(cents) {
-
-    let valor =
+    let centsVisual =
         cents;
 
 
+    if (
+        centsVisual < -50
+    ) {
+
+        centsVisual =
+            -50;
+
+    }
+
+
+    if (
+        centsVisual > 50
+    ) {
+
+        centsVisual =
+            50;
+
+    }
+
+
     /*
-       Limita o ponteiro visual.
+       45 graus para cada lado.
     */
 
-    if (valor > 50) {
-
-        valor = 50;
-
-    }
-
-
-    if (valor < -50) {
-
-        valor = -50;
-
-    }
-
-
-    const rotacao =
-        (valor / 50) * 45;
+    const graus =
+        (centsVisual / 50) * 45;
 
 
     document.getElementById(
         "ponteiro"
     ).style.transform =
         "translateX(-50%) rotate(" +
-        rotacao +
+        graus +
         "deg)";
 
 
@@ -1397,6 +2189,11 @@ function atualizarIndicador(cents) {
         );
 
 
+    /*
+       Dentro de ±5 cents:
+       afinado.
+    */
+
     if (
         Math.abs(cents) <= 5
     ) {
@@ -1404,43 +2201,60 @@ function atualizarIndicador(cents) {
         mensagem.innerText =
             "✓ AFINADO";
 
-    }
 
-    else if (cents < 0) {
+        mensagem.className =
+            "mensagem afinado";
 
-        if (cents > -25) {
 
-            mensagem.innerText =
-                "♭ UM POUCO GRAVE";
-
-        } else {
-
-            mensagem.innerText =
-                "♭ MUITO GRAVE";
-
-        }
+        return;
 
     }
 
-    else {
 
-        if (cents < 25) {
+    /*
+       Negativo = frequência abaixo
+       da nota = grave.
 
-            mensagem.innerText =
-                "♯ UM POUCO AGUDO";
+       Para afinar:
+       APERTAR.
+    */
 
-        } else {
+    if (
+        cents < 0
+    ) {
 
-            mensagem.innerText =
-                "♯ MUITO AGUDO";
+        mensagem.innerText =
+            "⬅ APERTAR";
 
-        }
+
+        mensagem.className =
+            "mensagem grave";
+
+
+        return;
 
     }
+
+
+    /*
+       Positivo = frequência acima
+       da nota = agudo.
+
+       Para afinar:
+       AFROUXAR.
+    */
+
+    mensagem.innerText =
+        "AFROUXAR ➡";
+
+
+    mensagem.className =
+        "mensagem agudo";
 
 }
 
 </script>
+
 
 </body>
 
