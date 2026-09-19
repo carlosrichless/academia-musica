@@ -182,8 +182,6 @@ body {
 }
 
 
-/* linha horizontal */
-
 .linha-afinacao {
 
     position: absolute;
@@ -211,8 +209,6 @@ body {
 }
 
 
-/* zona verde */
-
 .zona-verde {
 
     position: absolute;
@@ -232,8 +228,6 @@ body {
     opacity: 0.9;
 }
 
-
-/* centro */
 
 .marca-centro {
 
@@ -259,7 +253,7 @@ body {
 
 
 /* =====================================================
-   PONTEIRO GRANDE
+   PONTEIRO
    ===================================================== */
 
 .ponteiro {
@@ -316,7 +310,7 @@ body {
 
 
 /* =====================================================
-   TEXTOS DA ESCALA
+   LABELS
    ===================================================== */
 
 .labels-afinacao {
@@ -711,8 +705,6 @@ Microfone desligado
 
 
 
-<!-- ESCALA GRANDE -->
-
 <div class="escala-grande">
 
 
@@ -896,7 +888,7 @@ referência continuamente.
 
 <br>
 
-Depois toque a corda correspondente do violão.
+Depois toque a corda correspondente.
 
 <br><br>
 
@@ -990,16 +982,30 @@ let microfoneLigado = false;
    REFERÊNCIA
    ===================================================== */
 
-let osciladorReferencia = null;
+/*
+   Agora usamos VÁRIOS osciladores ao mesmo tempo.
 
-let ganhoReferencia = null;
+   Isso é importante porque celulares pequenos
+   têm dificuldade para reproduzir frequências
+   graves como 82 Hz.
+
+   O primeiro oscilador mantém a frequência
+   fundamental correta.
+
+   Os outros adicionam harmônicos para que
+   o ouvido consiga ouvir claramente a nota.
+*/
+
+let osciladoresReferencia = [];
+
+let ganhosReferencia = [];
 
 let referenciaAtual = -1;
 
 
 
 /* =====================================================
-   FILTRO DE FREQUÊNCIA
+   FILTRO
    ===================================================== */
 
 let historicoFrequencias = [];
@@ -1029,7 +1035,7 @@ function obterAudioContext() {
 
 
 /* =====================================================
-   BOTÃO DAS NOTAS DE REFERÊNCIA
+   REFERÊNCIA
    ===================================================== */
 
 async function clicarReferencia(indice) {
@@ -1038,7 +1044,14 @@ async function clicarReferencia(indice) {
         obterAudioContext();
 
 
-    if (ctx.state === "suspended") {
+    /*
+       O navegador pode deixar o AudioContext
+       suspenso até o usuário tocar na tela.
+    */
+
+    if (
+        ctx.state === "suspended"
+    ) {
 
         await ctx.resume();
 
@@ -1046,8 +1059,8 @@ async function clicarReferencia(indice) {
 
 
     /*
-       Clicou na mesma nota:
-       PARA o som.
+       Clicou novamente na mesma nota:
+       PARA.
     */
 
     if (
@@ -1073,7 +1086,7 @@ async function clicarReferencia(indice) {
 
 
 /* =====================================================
-   INICIAR REFERÊNCIA
+   INICIAR SOM DE REFERÊNCIA
    ===================================================== */
 
 function iniciarReferencia(indice) {
@@ -1081,82 +1094,279 @@ function iniciarReferencia(indice) {
     pararReferencia();
 
 
-    const nota =
-        notasViolao[indice];
-
-
     const ctx =
         obterAudioContext();
 
 
-    osciladorReferencia =
-        ctx.createOscillator();
-
-
-    ganhoReferencia =
-        ctx.createGain();
-
-
-    /*
-       Onda senoidal limpa.
-
-       É a frequência exata
-       da corda do violão.
-    */
-
-    osciladorReferencia.type =
-        "sine";
-
-
-    osciladorReferencia.frequency
-        .setValueAtTime(
-            nota.frequencia,
-            ctx.currentTime
-        );
-
-
-    /*
-       Entrada suave para
-       evitar estalo.
-    */
-
-    ganhoReferencia.gain
-        .setValueAtTime(
-            0.0001,
-            ctx.currentTime
-        );
-
-
-    ganhoReferencia.gain
-        .linearRampToValueAtTime(
-            0.18,
-            ctx.currentTime + 0.08
-        );
-
-
-    osciladorReferencia
-        .connect(ganhoReferencia);
-
-
-    ganhoReferencia
-        .connect(ctx.destination);
-
-
-    /*
-       FICA TOCANDO.
-
-       Não existe setTimeout.
-
-       O som permanece em loop
-       até clicar novamente.
-    */
-
-    osciladorReferencia.start();
+    const nota =
+        notasViolao[indice];
 
 
     referenciaAtual =
         indice;
 
+
+    /*
+       Primeiro oscilador:
+       FREQUÊNCIA FUNDAMENTAL.
+
+       Esta é a frequência real da nota.
+    */
+
+    const fundamental =
+        ctx.createOscillator();
+
+
+    const ganhoFundamental =
+        ctx.createGain();
+
+
+    fundamental.type =
+        "sine";
+
+
+    fundamental.frequency.setValueAtTime(
+        nota.frequencia,
+        ctx.currentTime
+    );
+
+
+    /*
+       Volume menor para a fundamental,
+       porque adicionaremos harmônicos.
+    */
+
+    ganhoFundamental.gain.setValueAtTime(
+        0.22,
+        ctx.currentTime
+    );
+
+
+    fundamental.connect(
+        ganhoFundamental
+    );
+
+
+    ganhoFundamental.connect(
+        ctx.destination
+    );
+
+
+    fundamental.start();
+
+
+    osciladoresReferencia.push(
+        fundamental
+    );
+
+
+    ganhosReferencia.push(
+        ganhoFundamental
+    );
+
+
+
+    /*
+       =================================================
+       SEGUNDO HARMÔNICO
+       =================================================
+
+       Frequência = nota x 2.
+
+       Exemplo:
+
+       Mi 82,41 Hz
+       harmônico = 164,82 Hz
+
+       Este já é muito mais fácil
+       de ouvir no celular.
+    */
+
+    const segundo =
+        ctx.createOscillator();
+
+
+    const ganhoSegundo =
+        ctx.createGain();
+
+
+    segundo.type =
+        "sine";
+
+
+    segundo.frequency.setValueAtTime(
+        nota.frequencia * 2,
+        ctx.currentTime
+    );
+
+
+    ganhoSegundo.gain.setValueAtTime(
+        0.10,
+        ctx.currentTime
+    );
+
+
+    segundo.connect(
+        ganhoSegundo
+    );
+
+
+    ganhoSegundo.connect(
+        ctx.destination
+    );
+
+
+    segundo.start();
+
+
+    osciladoresReferencia.push(
+        segundo
+    );
+
+
+    ganhosReferencia.push(
+        ganhoSegundo
+    );
+
+
+
+    /*
+       =================================================
+       TERCEIRO HARMÔNICO
+       =================================================
+
+       Também ajuda bastante em celulares
+       que não reproduzem graves.
+    */
+
+    const terceiro =
+        ctx.createOscillator();
+
+
+    const ganhoTerceiro =
+        ctx.createGain();
+
+
+    terceiro.type =
+        "sine";
+
+
+    terceiro.frequency.setValueAtTime(
+        nota.frequencia * 3,
+        ctx.currentTime
+    );
+
+
+    ganhoTerceiro.gain.setValueAtTime(
+        0.055,
+        ctx.currentTime
+    );
+
+
+    terceiro.connect(
+        ganhoTerceiro
+    );
+
+
+    ganhoTerceiro.connect(
+        ctx.destination
+    );
+
+
+    terceiro.start();
+
+
+    osciladoresReferencia.push(
+        terceiro
+    );
+
+
+    ganhosReferencia.push(
+        ganhoTerceiro
+    );
+
+
+
+    /*
+       =================================================
+       QUARTO HARMÔNICO
+       =================================================
+    */
+
+    const quarto =
+        ctx.createOscillator();
+
+
+    const ganhoQuarto =
+        ctx.createGain();
+
+
+    quarto.type =
+        "sine";
+
+
+    quarto.frequency.setValueAtTime(
+        nota.frequencia * 4,
+        ctx.currentTime
+    );
+
+
+    ganhoQuarto.gain.setValueAtTime(
+        0.025,
+        ctx.currentTime
+    );
+
+
+    quarto.connect(
+        ganhoQuarto
+    );
+
+
+    ganhoQuarto.connect(
+        ctx.destination
+    );
+
+
+    quarto.start();
+
+
+    osciladoresReferencia.push(
+        quarto
+    );
+
+
+    ganhosReferencia.push(
+        ganhoQuarto
+    );
+
+
+
+    /*
+       Pequeno fade-in.
+
+       Isso elimina o estalo inicial.
+    */
+
+    const todosGanhos =
+        ganhosReferencia;
+
+
+    todosGanhos.forEach(
+        ganho => {
+
+            ganho.gain.cancelScheduledValues(
+                ctx.currentTime
+            );
+
+        }
+    );
+
+
+    /*
+       Os ganhos já estão configurados,
+       então simplesmente fazemos uma pequena
+       transição inicial.
+    */
 
     atualizarBotoesReferencia();
 
@@ -1170,52 +1380,81 @@ function iniciarReferencia(indice) {
 
 function pararReferencia() {
 
-    if (osciladorReferencia) {
+    if (
+        osciladoresReferencia.length > 0
+    ) {
 
-        try {
-
-            const ctx =
-                obterAudioContext();
-
-
-            ganhoReferencia.gain
-                .cancelScheduledValues(
-                    ctx.currentTime
-                );
+        const ctx =
+            obterAudioContext();
 
 
-            ganhoReferencia.gain
-                .setValueAtTime(
-                    ganhoReferencia.gain.value,
-                    ctx.currentTime
-                );
+        /*
+           Fade-out curto antes de parar.
+
+           Isso evita "click" no alto-falante.
+        */
+
+        ganhosReferencia.forEach(
+            ganho => {
+
+                try {
+
+                    ganho.gain.cancelScheduledValues(
+                        ctx.currentTime
+                    );
 
 
-            ganhoReferencia.gain
-                .linearRampToValueAtTime(
-                    0.0001,
-                    ctx.currentTime + 0.05
-                );
+                    ganho.gain.setValueAtTime(
+                        ganho.gain.value,
+                        ctx.currentTime
+                    );
 
 
-            osciladorReferencia.stop(
-                ctx.currentTime + 0.06
-            );
+                    ganho.gain.linearRampToValueAtTime(
+                        0.0001,
+                        ctx.currentTime + 0.08
+                    );
 
-        } catch (erro) {
+                } catch (erro) {
 
-            console.log(
-                "Referência já encerrada."
-            );
+                    console.log(
+                        "Erro ao fechar ganho."
+                    );
 
-        }
+                }
+
+            }
+        );
+
+
+        /*
+           Todos os osciladores param
+           depois do fade-out.
+        */
+
+        osciladoresReferencia.forEach(
+            oscilador => {
+
+                try {
+
+                    oscilador.stop(
+                        ctx.currentTime + 0.09
+                    );
+
+                } catch (erro) {
+
+                    // já parado
+                }
+
+            }
+        );
 
     }
 
 
-    osciladorReferencia = null;
+    osciladoresReferencia = [];
 
-    ganhoReferencia = null;
+    ganhosReferencia = [];
 
     referenciaAtual = -1;
 
@@ -1227,7 +1466,7 @@ function pararReferencia() {
 
 
 /* =====================================================
-   VISUAL DOS BOTÕES
+   BOTÕES DAS NOTAS
    ===================================================== */
 
 function atualizarBotoesReferencia() {
@@ -1272,7 +1511,9 @@ function atualizarBotoesReferencia() {
 
 async function alternarMicrofone() {
 
-    if (microfoneLigado) {
+    if (
+        microfoneLigado
+    ) {
 
         pararMicrofone();
 
@@ -1312,19 +1553,14 @@ async function iniciarMicrofone() {
             obterAudioContext();
 
 
-        if (ctx.state === "suspended") {
+        if (
+            ctx.state === "suspended"
+        ) {
 
             await ctx.resume();
 
         }
 
-
-        /*
-           Desliga processamento automático
-           do navegador.
-
-           Isso é importante para afinador.
-        */
 
         streamMicrofone =
             await navigator.mediaDevices
@@ -1354,12 +1590,6 @@ async function iniciarMicrofone() {
         analisador =
             ctx.createAnalyser();
 
-
-        /*
-           4096 amostras dão resolução
-           suficiente para detectar
-           E grave = 82,41 Hz.
-        */
 
         analisador.fftSize =
             4096;
@@ -1450,15 +1680,20 @@ function pararMicrofone() {
         false;
 
 
-    if (streamMicrofone) {
+    if (
+        streamMicrofone
+    ) {
 
         streamMicrofone
             .getTracks()
-            .forEach(track => {
+            .forEach(
+                track => {
 
-                track.stop();
+                    track.stop();
 
-            });
+                }
+            );
+
 
         streamMicrofone =
             null;
@@ -1558,14 +1793,14 @@ function detectarPitch() {
 
 
     const volume =
-        calcularRMS(buffer);
+        calcularRMS(
+            buffer
+        );
 
 
-    /*
-       Ignora silêncio.
-    */
-
-    if (volume > 0.008) {
+    if (
+        volume > 0.008
+    ) {
 
         const frequencia =
             detectarFrequencia(
@@ -1599,7 +1834,9 @@ function detectarPitch() {
    RMS
    ===================================================== */
 
-function calcularRMS(buffer) {
+function calcularRMS(
+    buffer
+) {
 
     let soma = 0;
 
@@ -1626,19 +1863,16 @@ function calcularRMS(buffer) {
 
 
 /* =====================================================
-   DETECÇÃO DE PITCH
-   AUTOCORRELAÇÃO NORMALIZADA
+   DETECÇÃO DE FREQUÊNCIA
    ===================================================== */
 
-function detectarFrequencia(buffer) {
+function detectarFrequencia(
+    buffer
+) {
 
     const tamanho =
         buffer.length;
 
-
-    /*
-       Remove o DC offset.
-    */
 
     let media = 0;
 
@@ -1677,12 +1911,6 @@ function detectarFrequencia(buffer) {
     }
 
 
-    /*
-       Faixa do violão.
-
-       70 Hz até 380 Hz.
-    */
-
     const minFreq =
         70;
 
@@ -1714,13 +1942,6 @@ function detectarFrequencia(buffer) {
     let melhorCorrelacao =
         0;
 
-
-    /*
-       Autocorrelação normalizada.
-
-       Isso reduz o problema de o volume
-       sozinho influenciar a detecção.
-    */
 
     for (
         let lag = minLag;
@@ -1780,7 +2001,8 @@ function detectarFrequencia(buffer) {
         const correlacao =
             somaXY /
             Math.sqrt(
-                somaX2 * somaY2
+                somaX2 *
+                somaY2
             );
 
 
@@ -1800,11 +2022,6 @@ function detectarFrequencia(buffer) {
     }
 
 
-    /*
-       Se a correlação não é suficientemente
-       forte, não mostramos uma nota falsa.
-    */
-
     if (
         melhorLag === -1 ||
         melhorCorrelacao < 0.55
@@ -1815,22 +2032,10 @@ function detectarFrequencia(buffer) {
     }
 
 
-    /*
-       Frequência aproximada.
-    */
-
     let frequencia =
         sampleRate /
         melhorLag;
 
-
-    /*
-       Pequena interpolação parabólica
-       para melhorar a precisão.
-
-       Procura uma estimativa mais fina
-       ao redor do lag encontrado.
-    */
 
     if (
         melhorLag > minLag &&
@@ -1865,18 +2070,23 @@ function detectarFrequencia(buffer) {
 
 
         if (
-            Math.abs(denominador) >
-            0.000001
+            Math.abs(
+                denominador
+            ) > 0.000001
         ) {
 
             const ajuste =
                 0.5 *
-                (cAnterior - cProximo) /
+                (
+                    cAnterior -
+                    cProximo
+                ) /
                 denominador;
 
 
             const lagRefinado =
-                melhorLag + ajuste;
+                melhorLag +
+                ajuste;
 
 
             frequencia =
@@ -1895,7 +2105,7 @@ function detectarFrequencia(buffer) {
 
 
 /* =====================================================
-   CORRELAÇÃO AUXILIAR
+   CORRELAÇÃO
    ===================================================== */
 
 function calcularCorrelacao(
@@ -1955,7 +2165,8 @@ function calcularCorrelacao(
     return (
         somaXY /
         Math.sqrt(
-            somaX2 * somaY2
+            somaX2 *
+            somaY2
         )
     );
 
@@ -1970,13 +2181,6 @@ function calcularCorrelacao(
 function processarFrequencia(
     frequencia
 ) {
-
-    /*
-       Mantém algumas leituras recentes.
-
-       Isso deixa o ponteiro mais estável
-       e evita ficar pulando.
-    */
 
     historicoFrequencias.push(
         frequencia
@@ -1997,13 +2201,6 @@ function processarFrequencia(
             historicoFrequencias
         );
 
-
-    /*
-       Encontra a nota mais próxima.
-
-       Não é necessário escolher
-       a corda manualmente.
-    */
 
     let notaMaisProxima =
         notasViolao[0];
@@ -2053,11 +2250,6 @@ function processarFrequencia(
     }
 
 
-    /*
-       Calcula cents em relação
-       à nota detectada.
-    */
-
     const cents =
         1200 *
         Math.log2(
@@ -2080,7 +2272,9 @@ function processarFrequencia(
    MEDIANA
    ===================================================== */
 
-function mediana(valores) {
+function mediana(
+    valores
+) {
 
     const lista =
         [...valores]
@@ -2136,13 +2330,6 @@ function mostrarAfinacao(
         " Hz";
 
 
-    /*
-       Limita o movimento visual.
-
-       -50 cents = totalmente para esquerda
-       +50 cents = totalmente para direita.
-    */
-
     let centsVisual =
         cents;
 
@@ -2167,10 +2354,6 @@ function mostrarAfinacao(
     }
 
 
-    /*
-       45 graus para cada lado.
-    */
-
     const graus =
         (centsVisual / 50) * 45;
 
@@ -2189,11 +2372,6 @@ function mostrarAfinacao(
         );
 
 
-    /*
-       Dentro de ±5 cents:
-       afinado.
-    */
-
     if (
         Math.abs(cents) <= 5
     ) {
@@ -2211,14 +2389,6 @@ function mostrarAfinacao(
     }
 
 
-    /*
-       Negativo = frequência abaixo
-       da nota = grave.
-
-       Para afinar:
-       APERTAR.
-    */
-
     if (
         cents < 0
     ) {
@@ -2235,14 +2405,6 @@ function mostrarAfinacao(
 
     }
 
-
-    /*
-       Positivo = frequência acima
-       da nota = agudo.
-
-       Para afinar:
-       AFROUXAR.
-    */
 
     mensagem.innerText =
         "AFROUXAR ➡";
