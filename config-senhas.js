@@ -1,13 +1,20 @@
-// CONFIGURAÇÃO DO FIREBASE (Global para o sistema)
+// Importa o Firebase SDK modular necessário
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+// Suas credenciais reais do projeto
 const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_AUTH_DOMAIN",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_STORAGE_BUCKET",
-    messagingSenderId: "SUA_MESSAGING_SENDER_ID",
-    appId: "SUA_APP_ID"
+    apiKey: "AIzaSyCJmDAe7ExanZcj2zle56FDkhV7fvtD3mw",
+    authDomain: "academia-musica-6e634.firebaseapp.com",
+    projectId: "academia-musica-6e634",
+    storageBucket: "academia-musica-6e634.firebasestorage.app",
+    messagingSenderId: "712681985133",
+    appId: "1:712681985133:web:2842a3e0dbc67fce5c9b64",
+    measurementId: "G-8710PQNPNP"
 };
 
 // Inicializa o Firebase e o Firestore
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.db = db; // Disponibiliza globalmente para os scripts antigos do painel
