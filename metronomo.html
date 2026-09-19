@@ -28,7 +28,7 @@
 
         .app {
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             min-height: 100vh;
             margin: 0 auto;
             padding: 20px;
@@ -46,31 +46,29 @@
         .voltar {
             color: #ffffff;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
             background: #111827;
             border: 1px solid #334155;
-            padding: 10px 15px;
+            padding: 10px 14px;
             border-radius: 10px;
         }
 
         .titulo {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: bold;
         }
 
         .visor {
             flex: 1;
-            min-height: 300px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
         }
 
         .rotulo {
             color: #94a3b8;
-            font-size: 1rem;
-            margin-bottom: 5px;
+            font-size: 0.95rem;
+            margin-top: 10px;
         }
 
         .bpm {
@@ -78,24 +76,19 @@
             font-weight: bold;
             line-height: 1;
             margin: 10px 0;
-            transition: transform 0.08s ease;
-        }
-
-        .bpm.pulso {
-            transform: scale(1.08);
         }
 
         .bpm-label {
             color: #94a3b8;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
+            font-size: 1rem;
+            margin-bottom: 20px;
         }
 
         .controles-bpm {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 18px;
         }
 
         .btn-bpm {
@@ -113,40 +106,118 @@
             transform: scale(0.94);
         }
 
-        .compasso-area {
+        /* =========================================
+           SEÇÕES DE CONFIGURAÇÃO
+           ========================================= */
+
+        .configuracao {
+            width: 100%;
             margin-top: 25px;
+            padding: 18px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 16px;
         }
 
-        .compasso-titulo {
+        .config-titulo {
             text-align: center;
             color: #94a3b8;
-            margin-bottom: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 14px;
         }
 
-        .compassos {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+        /* =========================================
+           FÓRMULA DE COMPASSO
+           ========================================= */
+
+        .formula {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
 
-        .btn-compasso {
-            padding: 13px 5px;
+        .formula-grupo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .formula-label {
+            color: #64748b;
+            font-size: 0.75rem;
+        }
+
+        .formula-controle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .formula-valor {
+            min-width: 55px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .formula-botao {
+            width: 42px;
+            height: 42px;
             border-radius: 10px;
             border: 1px solid #334155;
             background: #111827;
             color: white;
-            font-size: 1rem;
+            font-size: 1.5rem;
             cursor: pointer;
         }
 
-        .btn-compasso.ativo {
+        .barra-formula {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        /* =========================================
+           SUBDIVISÕES
+           ========================================= */
+
+        .subdivisoes {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 7px;
+        }
+
+        .btn-subdivisao {
+            min-height: 65px;
+            padding: 8px 4px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-subdivisao strong {
+            display: block;
+            font-size: 1.3rem;
+            margin-bottom: 4px;
+        }
+
+        .btn-subdivisao.ativo {
             background: #2563eb;
             border-color: #3b82f6;
         }
 
+        /* =========================================
+           BOTÕES PRINCIPAIS
+           ========================================= */
+
         .botoes-principais {
             width: 100%;
-            margin-top: 25px;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -158,7 +229,7 @@
             padding: 18px;
             border-radius: 15px;
             color: white;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: bold;
             cursor: pointer;
         }
@@ -177,17 +248,12 @@
             background: #111827;
         }
 
-        .botao-tela-cheia:active,
-        .botao-iniciar:active {
-            transform: scale(0.98);
-        }
-
         .batida {
-            width: 25px;
-            height: 25px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: #334155;
-            margin: 25px auto 0;
+            margin: 22px auto 0;
             transition: 0.08s;
         }
 
@@ -196,9 +262,8 @@
             transform: scale(1.4);
         }
 
-
         /* =========================================
-           MODO TELA CHEIA
+           TELA CHEIA
            ========================================= */
 
         #modoTelaCheia {
@@ -212,14 +277,15 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            cursor: pointer;
         }
 
         #modoTelaCheia.ativo {
             display: flex;
         }
 
-        #bpmTelaCheia {
-            font-size: clamp(12rem, 35vw, 30rem);
+        #contagemTelaCheia {
+            font-size: clamp(14rem, 45vw, 35rem);
             font-weight: bold;
             line-height: 1;
             color: #ffffff;
@@ -228,31 +294,36 @@
             transition: transform 0.08s ease;
         }
 
-        #bpmTelaCheia.pulso {
-            transform: scale(1.06);
+        #contagemTelaCheia.pulso {
+            transform: scale(1.08);
         }
 
-        .aviso-tela-cheia {
+        #modoTelaCheia.primeira-batida
+        #contagemTelaCheia {
+            color: #22c55e;
+        }
+
+        .infoTelaCheia {
             position: absolute;
-            bottom: 25px;
+            top: 20px;
             left: 0;
             right: 0;
             text-align: center;
-            color: #475569;
-            font-size: 0.8rem;
-            opacity: 0.7;
+            color: #64748b;
+            font-size: 1rem;
+            pointer-events: none;
         }
 
-
-        /* Quando estiver realmente em fullscreen,
-           garantimos que o modo ocupe tudo. */
-
-        #modoTelaCheia:fullscreen {
-            width: 100vw;
-            height: 100vh;
-            background: #000000;
+        .compassoTelaCheia {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 1rem;
+            pointer-events: none;
         }
-
 
         @media (max-width: 600px) {
 
@@ -269,8 +340,21 @@
                 height: 60px;
             }
 
-            #bpmTelaCheia {
-                font-size: clamp(10rem, 42vw, 18rem);
+            .subdivisoes {
+                gap: 5px;
+            }
+
+            .btn-subdivisao {
+                min-height: 62px;
+                font-size: 0.68rem;
+            }
+
+            .btn-subdivisao strong {
+                font-size: 1.1rem;
+            }
+
+            #contagemTelaCheia {
+                font-size: clamp(11rem, 55vw, 20rem);
             }
         }
     </style>
@@ -290,7 +374,7 @@
             🎵 Metrônomo
         </div>
 
-        <div style="width: 75px;"></div>
+        <div style="width: 65px;"></div>
 
     </div>
 
@@ -312,43 +396,156 @@
 
         <div class="controles-bpm">
 
-            <button class="btn-bpm" onclick="alterarBpm(-5)">
+            <button class="btn-bpm"
+                    onclick="alterarBpm(-5)">
                 −
             </button>
 
-            <button class="btn-bpm" onclick="alterarBpm(5)">
+            <button class="btn-bpm"
+                    onclick="alterarBpm(5)">
                 +
             </button>
 
         </div>
 
 
-        <div class="compasso-area">
+        <!-- =====================================
+             FÓRMULA DE COMPASSO
+             ===================================== -->
 
-            <div class="compasso-titulo">
-                Fórmula de compasso
+        <div class="configuracao">
+
+            <div class="config-titulo">
+                FÓRMULA DE COMPASSO
             </div>
 
-            <div class="compassos">
 
-                <button class="btn-compasso ativo"
-                        onclick="alterarCompasso(2, this)">
-                    2/4
+            <div class="formula">
+
+                <!-- NUMERADOR -->
+
+                <div class="formula-grupo">
+
+                    <div class="formula-label">
+                        NUMERADOR
+                    </div>
+
+                    <div class="formula-controle">
+
+                        <button class="formula-botao"
+                                onclick="alterarNumerador(-1)">
+                            −
+                        </button>
+
+                        <div id="numerador"
+                             class="formula-valor">
+                            4
+                        </div>
+
+                        <button class="formula-botao"
+                                onclick="alterarNumerador(1)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="barra-formula">
+                    /
+                </div>
+
+
+                <!-- DENOMINADOR -->
+
+                <div class="formula-grupo">
+
+                    <div class="formula-label">
+                        DENOMINADOR
+                    </div>
+
+                    <div class="formula-controle">
+
+                        <button class="formula-botao"
+                                onclick="alterarDenominador(-1)">
+                            −
+                        </button>
+
+                        <div id="denominador"
+                             class="formula-valor">
+                            4
+                        </div>
+
+                        <button class="formula-botao"
+                                onclick="alterarDenominador(1)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             SUBDIVISÃO SONORA
+             ===================================== -->
+
+        <div class="configuracao">
+
+            <div class="config-titulo">
+                SUBDIVISÃO SONORA
+            </div>
+
+
+            <div class="subdivisoes">
+
+                <button class="btn-subdivisao ativo"
+                        onclick="selecionarSubdivisao(1, this)">
+
+                    <strong>♩</strong>
+                    Semínima
+
                 </button>
 
-                <button class="btn-compasso"
-                        onclick="alterarCompasso(3, this)">
-                    3/4
+
+                <button class="btn-subdivisao"
+                        onclick="selecionarSubdivisao(2, this)">
+
+                    <strong>♪</strong>
+                    Colcheia
+
                 </button>
 
-                <button class="btn-compasso"
-                        onclick="alterarCompasso(4, this)">
-                    4/4
+
+                <button class="btn-subdivisao"
+                        onclick="selecionarSubdivisao(3, this)">
+
+                    <strong>3</strong>
+                    Tercina
+
                 </button>
 
-                <button class="btn-compasso"
-                        onclick="alterarCompasso(6, this)">
-                    6/8
+
+                <button class="btn-subdivisao"
+                        onclick="selecionarSubdivisao(6, this)">
+
+                    <strong>6</strong>
+                    Sextina
+
+                </button>
+
+
+                <button class="btn-subdivisao"
+                        onclick="selecionarSubdivisao(8, this)">
+
+                    <strong>𝄾</strong>
+                    Fusa
+
                 </button>
 
             </div>
@@ -356,11 +553,15 @@
         </div>
 
 
+        <!-- =====================================
+             BOTÕES
+             ===================================== -->
+
         <div class="botoes-principais">
 
             <button id="botaoIniciar"
                     class="botao-iniciar"
-                    onclick="alternarMetronomo()">
+                    onclick="alternarMetronomo">
 
                 ▶ INICIAR
 
@@ -377,7 +578,8 @@
         </div>
 
 
-        <div id="batida" class="batida"></div>
+        <div id="batida"
+             class="batida"></div>
 
     </div>
 
@@ -385,17 +587,22 @@
 
 
 <!-- =========================================
-     TELA DE METRÔNOMO GIGANTE
+     MODO TELA CHEIA
      ========================================= -->
 
 <div id="modoTelaCheia">
 
-    <div id="bpmTelaCheia">
-        80
+    <div class="infoTelaCheia">
+        CONTAGEM DO COMPASSO
     </div>
 
-    <div class="aviso-tela-cheia">
-        Toque na tela ou pressione ESC para sair
+    <div id="contagemTelaCheia">
+        1
+    </div>
+
+    <div id="compassoTelaCheia"
+         class="compassoTelaCheia">
+        4/4
     </div>
 
 </div>
@@ -403,11 +610,21 @@
 
 <script>
 
+    /* =========================================
+       CONFIGURAÇÕES
+       ========================================= */
+
     let bpm = 80;
 
-    let batidasPorCompasso = 2;
+    let numerador = 4;
+
+    let denominador = 4;
+
+    let subdivisao = 1;
 
     let batidaAtual = 0;
+
+    let subdivisaoAtual = 0;
 
     let intervalo = null;
 
@@ -415,21 +632,15 @@
 
 
     /* =========================================
-       ATUALIZAÇÃO DO BPM
+       BPM
        ========================================= */
 
     function atualizarBpm() {
 
         document.getElementById("bpm").textContent = bpm;
 
-        document.getElementById("bpmTelaCheia").textContent = bpm;
-
     }
 
-
-    /* =========================================
-       ALTERAR BPM
-       ========================================= */
 
     function alterarBpm(valor) {
 
@@ -457,14 +668,85 @@
 
 
     /* =========================================
-       COMPASSO
+       NUMERADOR
        ========================================= */
 
-    function alterarCompasso(valor, botao) {
+    function alterarNumerador(valor) {
 
-        batidasPorCompasso = valor;
+        numerador += valor;
 
-        document.querySelectorAll(".btn-compasso")
+        if (numerador < 1) {
+            numerador = 1;
+        }
+
+        if (numerador > 32) {
+            numerador = 32;
+        }
+
+        batidaAtual = 0;
+
+        atualizarFormula();
+
+    }
+
+
+    /* =========================================
+       DENOMINADOR
+       ========================================= */
+
+    function alterarDenominador(valor) {
+
+        const opcoes = [2, 4, 8, 16];
+
+        let indice =
+            opcoes.indexOf(denominador);
+
+        indice += valor;
+
+        if (indice < 0) {
+            indice = 0;
+        }
+
+        if (indice >= opcoes.length) {
+            indice = opcoes.length - 1;
+        }
+
+        denominador = opcoes[indice];
+
+        batidaAtual = 0;
+
+        atualizarFormula();
+
+    }
+
+
+    /* =========================================
+       ATUALIZAR FÓRMULA
+       ========================================= */
+
+    function atualizarFormula() {
+
+        document.getElementById("numerador")
+            .textContent = numerador;
+
+        document.getElementById("denominador")
+            .textContent = denominador;
+
+        atualizarContagemTelaCheia();
+
+    }
+
+
+    /* =========================================
+       SUBDIVISÃO
+       ========================================= */
+
+    function selecionarSubdivisao(valor, botao) {
+
+        subdivisao = valor;
+
+        document
+            .querySelectorAll(".btn-subdivisao")
             .forEach(function(btn) {
 
                 btn.classList.remove("ativo");
@@ -473,49 +755,50 @@
 
         botao.classList.add("ativo");
 
-        batidaAtual = 0;
+
+        if (tocando) {
+
+            pararMetronomo();
+
+            iniciarMetronomo();
+
+        }
 
     }
 
 
     /* =========================================
-       SOM DA BATIDA
+       CONTAGEM PRINCIPAL
        ========================================= */
 
-    function tocarBatida() {
+    function atualizarContagemTelaCheia() {
 
-        const elemento =
-            document.getElementById("batida");
+        const numero =
+            document.getElementById(
+                "contagemTelaCheia"
+            );
 
-        elemento.classList.add("ativa");
-
-        setTimeout(function() {
-
-            elemento.classList.remove("ativa");
-
-        }, 100);
-
-
-        const numeroBpm =
-            document.getElementById("bpm");
-
-        const numeroTelaCheia =
-            document.getElementById("bpmTelaCheia");
+        const compasso =
+            document.getElementById(
+                "compassoTelaCheia"
+            );
 
 
-        numeroBpm.classList.add("pulso");
+        numero.textContent =
+            batidaAtual + 1;
 
-        numeroTelaCheia.classList.add("pulso");
+
+        compasso.textContent =
+            numerador + "/" + denominador;
+
+    }
 
 
-        setTimeout(function() {
+    /* =========================================
+       SOM
+       ========================================= */
 
-            numeroBpm.classList.remove("pulso");
-
-            numeroTelaCheia.classList.remove("pulso");
-
-        }, 100);
-
+    function tocarSom(acento) {
 
         const AudioContext =
             window.AudioContext ||
@@ -551,9 +834,9 @@
         ganho.connect(contexto.destination);
 
 
-        if (batidaAtual === 0) {
+        if (acento) {
 
-            oscilador.frequency.value = 1000;
+            oscilador.frequency.value = 1100;
 
         } else {
 
@@ -563,14 +846,14 @@
 
 
         ganho.gain.setValueAtTime(
-            0.3,
+            0.25,
             contexto.currentTime
         );
 
 
         ganho.gain.exponentialRampToValueAtTime(
             0.001,
-            contexto.currentTime + 0.08
+            contexto.currentTime + 0.06
         );
 
 
@@ -578,16 +861,135 @@
 
 
         oscilador.stop(
-            contexto.currentTime + 0.08
+            contexto.currentTime + 0.06
         );
 
+    }
 
-        batidaAtual++;
+
+    /* =========================================
+       PULSO VISUAL
+       ========================================= */
+
+    function animarContagem(acento) {
+
+        const numero =
+            document.getElementById(
+                "contagemTelaCheia"
+            );
+
+        const modo =
+            document.getElementById(
+                "modoTelaCheia"
+            );
 
 
-        if (batidaAtual >= batidasPorCompasso) {
+        numero.classList.remove("pulso");
 
-            batidaAtual = 0;
+        void numero.offsetWidth;
+
+        numero.classList.add("pulso");
+
+
+        if (acento) {
+
+            modo.classList.add(
+                "primeira-batida"
+            );
+
+        } else {
+
+            modo.classList.remove(
+                "primeira-batida"
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       BATIDA / SUBDIVISÃO
+       ========================================= */
+
+    function tocarBatida() {
+
+        /*
+         * A primeira subdivisão de cada tempo
+         * é o tempo principal.
+         */
+
+        const primeiraSubdivisao =
+            subdivisaoAtual === 0;
+
+
+        /*
+         * Primeiro tempo do compasso.
+         */
+
+        const primeiroTempo =
+            batidaAtual === 0 &&
+            primeiraSubdivisao;
+
+
+        tocarSom(primeiroTempo);
+
+
+        /*
+         * Mostramos a contagem principal
+         * somente no início de cada tempo.
+         */
+
+        if (primeiraSubdivisao) {
+
+            atualizarContagemTelaCheia();
+
+            animarContagem(primeiroTempo);
+
+        }
+
+
+        const elemento =
+            document.getElementById("batida");
+
+
+        elemento.classList.add("ativa");
+
+
+        setTimeout(function() {
+
+            elemento.classList.remove("ativa");
+
+        }, 60);
+
+
+        /*
+         * Avança a subdivisão.
+         */
+
+        subdivisaoAtual++;
+
+
+        /*
+         * Terminou as subdivisões deste tempo.
+         */
+
+        if (subdivisaoAtual >= subdivisao) {
+
+            subdivisaoAtual = 0;
+
+            batidaAtual++;
+
+
+            /*
+             * Terminou o compasso.
+             */
+
+            if (batidaAtual >= numerador) {
+
+                batidaAtual = 0;
+
+            }
 
         }
 
@@ -604,21 +1006,40 @@
 
         batidaAtual = 0;
 
-        tocarBatida();
+        subdivisaoAtual = 0;
 
 
-        const intervaloMs =
+        /*
+         * BPM representa o número de
+         * tempos principais por minuto.
+         */
+
+        const tempoPrincipal =
             60000 / bpm;
+
+
+        /*
+         * Cada subdivisão divide
+         * o tempo principal.
+         */
+
+        const intervaloSubdivisao =
+            tempoPrincipal / subdivisao;
+
+
+        tocarBatida();
 
 
         intervalo = setInterval(
             tocarBatida,
-            intervaloMs
+            intervaloSubdivisao
         );
 
 
         const botao =
-            document.getElementById("botaoIniciar");
+            document.getElementById(
+                "botaoIniciar"
+            );
 
 
         botao.textContent =
@@ -644,9 +1065,15 @@
 
         batidaAtual = 0;
 
+        subdivisaoAtual = 0;
+
+        atualizarContagemTelaCheia();
+
 
         const botao =
-            document.getElementById("botaoIniciar");
+            document.getElementById(
+                "botaoIniciar"
+            );
 
 
         botao.textContent =
@@ -659,7 +1086,7 @@
 
 
     /* =========================================
-       INICIAR / PARAR
+       ALTERNAR
        ========================================= */
 
     function alternarMetronomo() {
@@ -678,14 +1105,18 @@
 
 
     /* =========================================
-       ABRIR TELA CHEIA
+       TELA CHEIA
        ========================================= */
 
     async function abrirTelaCheia() {
 
         const tela =
-            document.getElementById("modoTelaCheia");
+            document.getElementById(
+                "modoTelaCheia"
+            );
 
+
+        atualizarContagemTelaCheia();
 
         tela.classList.add("ativo");
 
@@ -713,10 +1144,16 @@
 
 
     /* =========================================
-       SAIR DA TELA CHEIA
+       FECHAR TELA CHEIA
        ========================================= */
 
     async function fecharTelaCheia() {
+
+        const tela =
+            document.getElementById(
+                "modoTelaCheia"
+            );
+
 
         try {
 
@@ -736,28 +1173,29 @@
         }
 
 
-        document
-            .getElementById("modoTelaCheia")
-            .classList.remove("ativo");
+        tela.classList.remove("ativo");
 
     }
 
 
     /* =========================================
-       CLIQUE NA TELA CHEIA
+       TOQUE NA TELA CHEIA
        ========================================= */
 
     document
         .getElementById("modoTelaCheia")
-        .addEventListener("click", function() {
+        .addEventListener(
+            "click",
+            function() {
 
-            fecharTelaCheia();
+                fecharTelaCheia();
 
-        });
+            }
+        );
 
 
     /* =========================================
-       ESC / SAÍDA DO FULLSCREEN
+       ESC
        ========================================= */
 
     document.addEventListener(
@@ -767,7 +1205,9 @@
             if (!document.fullscreenElement) {
 
                 document
-                    .getElementById("modoTelaCheia")
+                    .getElementById(
+                        "modoTelaCheia"
+                    )
                     .classList.remove("ativo");
 
             }
@@ -781,6 +1221,8 @@
        ========================================= */
 
     atualizarBpm();
+
+    atualizarFormula();
 
 </script>
 
