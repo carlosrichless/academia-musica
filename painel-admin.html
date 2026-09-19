@@ -221,7 +221,9 @@
         // Carrega dados da nuvem ao iniciar
         async function carregarDadosPainel() {
             try {
-                let docRef = await db.collection("configuracoes").doc("sistema").get();
+                let docRef = await window.firestore.getDoc(
+    window.firestore.doc(db, "configuracoes", "sistema")
+);
                 if (docRef.exists) {
                     dadosGlobais = docRef.data();
                 } else {
@@ -267,7 +269,9 @@
 
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                let docRef = await db.collection("configuracoes").doc("sistema").get();
+                let docRef = await window.firestore.getDoc(
+    window.firestore.doc(db, "configuracoes", "sistema")
+);
                 if(docRef.exists) dadosGlobais = docRef.data();
             } catch(e) { console.log(e); }
         });
@@ -305,7 +309,11 @@
 
         async function salvarNaNuvem(novosDados) {
             try {
-                await db.collection("configuracoes").doc("sistema").set(novosDados, { merge: true });
+                await window.firestore.setDoc(
+    window.firestore.doc(db, "configuracoes", "sistema"),
+    novosDados,
+    { merge: true }
+);
                 dadosGlobais = { ...dadosGlobais, ...novosDados };
                 mostrarAlerta();
             } catch (e) {
