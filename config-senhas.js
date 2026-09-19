@@ -1,8 +1,11 @@
-// Importa o Firebase SDK modular necessário
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
-// Suas credenciais reais do projeto
 const firebaseConfig = {
     apiKey: "AIzaSyCJmDAe7ExanZcj2zle56FDkhV7fvtD3mw",
     authDomain: "academia-musica-6e634.firebaseapp.com",
@@ -13,8 +16,17 @@ const firebaseConfig = {
     measurementId: "G-8710PQNPNP"
 };
 
-// Inicializa o Firebase e o Firestore
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.db = db; // Disponibiliza globalmente para os scripts antigos do painel
+// Disponibiliza globalmente
+window.db = db;
+
+// Disponibiliza também as funções necessárias
+window.firestore = {
+    doc,
+    getDoc,
+    setDoc
+};
+
+console.log("Firebase inicializado:", app.options.projectId);
