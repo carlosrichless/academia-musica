@@ -253,7 +253,7 @@
         }
 
         async function verificarSenha() {
-            let senhaMestreSalva = dadosGlobais.senha_admin_sistema || "admin123";
+            let senhaMestreSalva = (dadosGlobais || {}).senha_admin_sistema || "admin123";
             if(document.getElementById('senhaAdminInput').value === senhaMestreSalva) {
                 document.getElementById('telaLogin').style.display = 'none';
                 document.getElementById('conteudoPainel').style.display = 'block';
