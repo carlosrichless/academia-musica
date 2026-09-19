@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Afinador</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        min-height: 100vh;
+        background: #020617;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    .app {
+        min-height: 100vh;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .conteudo {
+        width: 100%;
+        max-width: 650px;
+    }
+
+    .topo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .voltar {
+        color: white;
+        text-decoration: none;
+        background: #0f172a;
+        border: 1px solid #334155;
+        padding: 10px 15px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 1.8rem;
+    }
+
+    .card {
+        background: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 22px;
+        padding: 25px;
+        margin-bottom: 18px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    }
+
+    .status {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .nota {
+        text-align: center;
+        font-size: 7rem;
+        font-weight: bold;
+        line-height: 1;
+        margin: 10px 0;
+    }
+
+    .frequencia {
+        text-align: center;
+        font-size: 1rem;
+        color: #94a3b8;
+        margin-bottom: 25px;
+    }
+
+    .indicador {
+        position: relative;
+        height: 90px;
+        margin: 10px 0 20px;
+    }
+
+    .linha-central {
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        width: 4px;
+        height: 70px;
+        transform: translateX(-50%);
+        background: #22c55e;
+        border-radius: 10px;
+    }
+
+    .ponteiro {
+        position: absolute;
+        left: 50%;
+        top: 25px;
+        width: 5px;
+        height: 45px;
+        transform-origin: bottom center;
+        transform: translateX(-50%) rotate(0deg);
+        background: white;
+        border-radius: 10px;
+        transition: transform 0.15s ease;
+    }
+
+    .escala {
+        display: flex;
+        justify-content: space-between;
+        color: #64748b;
+        font-size: 0.75rem;
+    }
+
+    .mensagem {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        min-height: 35px;
+        margin-top: 10px;
+    }
+
+    .cordas-titulo {
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+    }
+
+    .cordas {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+    }
+
+    .corda {
+        background: #1e293b;
+        border: 1px solid #475569;
+        color: white;
+        border-radius: 14px;
+        padding: 13px 5px;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .corda strong {
+        display: block;
+        font-size: 1.4rem;
+    }
+
+    .corda span {
+        display: block;
+        font-size: 0.65rem;
+        color: #94a3b8;
+        margin-top: 3px;
+    }
+
+    .corda.ativa {
+        background: #2563eb;
+        border-color: #60a5fa;
+    }
+
+    .botao-microfone {
+        width: 100%;
+        padding: 17px;
+        border-radius: 15px;
+        border: 1px solid #3b82f6;
+        background: #2563eb;
+        color: white;
+        font-size: 1.1rem;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .botao-microfone.parar {
+        background: #dc2626;
+        border-color: #ef4444;
+    }
+
+    .instrucoes {
+        text-align: center;
+        color: #94a3b8;
+        line-height: 1.5;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+
+        .app {
+            padding: 15px;
+        }
+
+        .card {
+            padding: 18px;
+            border-radius: 18px;
+        }
+
+        .nota {
+            font-size: 6rem;
+        }
+
+        .cordas {
+            gap: 6px;
+        }
+
+        .corda {
+            padding: 11px 3px;
+        }
+
+        .corda strong {
+            font-size: 1.2rem;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="conteudo">
+
+        <div class="topo">
+
+            <a href="index.html" class="voltar">
+                ← Voltar
+            </a>
+
+            <h1>🎸 Afinador</h1>
+
+            <div style="width:70px;"></div>
+
+        </div>
+
+
+        <!-- AFINADOR -->
+
+        <div class="card">
+
+            <div class="status" id="status">
+                Microfone desligado
+            </div>
+
+            <div class="nota" id="nota">
+                —
+            </div>
+
+            <div class="frequencia" id="frequencia">
+                0 Hz
+            </div>
+
+
+            <div class="indicador">
+
+                <div class="linha-central"></div>
+
+                <div
+                    class="ponteiro"
+                    id="ponteiro">
+                </div>
+
+            </div>
+
+
+            <div class="escala">
+
+                <span>♭ GRAVE</span>
+
+                <span>AFINADO</span>
+
+                <span>♯ AGUDO</span>
+
+            </div>
+
+
+            <div
+                class="mensagem"
+                id="mensagem">
+                Toque uma corda
+            </div>
+
+        </div>
+
+
+        <!-- CORDAS -->
+
+        <div class="card">
+
+            <div class="cordas-titulo">
+                Escolha a corda
+            </div>
+
+            <div class="cordas">
+
+                <button
+                    class="corda ativa"
+                    onclick="selecionarCorda(0)"
+                    id="corda0">
+
+                    <strong>E</strong>
+                    <span>Mi grave</span>
+
+                </button>
+
+
+                <button
+                    class="corda"
+                    onclick="selecionarCorda(1)"
+                    id="corda1">
+
+                    <strong>A</strong>
+                    <span>Lá</span>
+
+                </button>
+
+
+                <button
+                    class="corda"
+                    onclick="selecionarCorda(2)"
+                    id="corda2">
+
+                    <strong>D</strong>
+                    <span>Ré</span>
+
+                </button>
+
+
+                <button
+                    class="corda"
+                    onclick="selecionarCorda(3)"
+                    id="corda3">
+
+                    <strong>G</strong>
+                    <span>Sol</span>
+
+                </button>
+
+
+                <button
+                    class="corda"
+                    onclick="selecionarCorda(4)"
+                    id="corda4">
+
+                    <strong>B</strong>
+                    <span>Si</span>
+
+                </button>
+
+
+                <button
+                    class="corda"
+                    onclick="selecionarCorda(5)"
+                    id="corda5">
+
+                    <strong>E</strong>
+                    <span>Mi agudo</span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- MICROFONE -->
+
+        <div class="card">
+
+            <button
+                class="botao-microfone"
+                id="botaoMicrofone"
+                onclick="alternarMicrofone()">
+
+                🎤 INICIAR AFINADOR
+
+            </button>
+
+        </div>
+
+
+        <!-- INSTRUÇÕES -->
+
+        <div class="card">
+
+            <div class="instrucoes">
+
+                <strong>Como usar</strong>
+
+                <br><br>
+
+                1. Escolha a corda que deseja afinar.<br>
+
+                2. Toque a corda perto do celular.<br>
+
+                3. Observe o indicador.<br><br>
+
+                Quando o ponteiro ficar no centro,
+                a corda estará afinada.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   CORDAS DO VIOLÃO
+   ========================= */
+
+const cordas = [
+
+    {
+        nome: "E",
+        nomeCompleto: "Mi grave",
+        frequencia: 82.41
+    },
+
+    {
+        nome: "A",
+        nomeCompleto: "Lá",
+        frequencia: 110.00
+    },
+
+    {
+        nome: "D",
+        nomeCompleto: "Ré",
+        frequencia: 146.83
+    },
+
+    {
+        nome: "G",
+        nomeCompleto: "Sol",
+        frequencia: 196.00
+    },
+
+    {
+        nome: "B",
+        nomeCompleto: "Si",
+        frequencia: 246.94
+    },
+
+    {
+        nome: "E",
+        nomeCompleto: "Mi agudo",
+        frequencia: 329.63
+    }
+
+];
+
+
+let cordaSelecionada = 0;
+
+let audioContext = null;
+
+let analisador = null;
+
+let microfone = null;
+
+let rodando = false;
+
+
+/* =========================
+   ESCOLHER CORDA
+   ========================= */
+
+function selecionarCorda(numero) {
+
+    cordaSelecionada = numero;
+
+    document
+        .querySelectorAll(".corda")
+        .forEach(botao => {
+            botao.classList.remove("ativa");
+        });
+
+    document
+        .getElementById("corda" + numero)
+        .classList.add("ativa");
+
+    document.getElementById("mensagem")
+        .innerText =
+        "Toque a corda " +
+        cordas[numero].nome;
+
+}
+
+
+/* =========================
+   MICROFONE
+   ========================= */
+
+async function alternarMicrofone() {
+
+    if (rodando) {
+
+        pararMicrofone();
+
+    } else {
+
+        await iniciarMicrofone();
+
+    }
+
+}
+
+
+async function iniciarMicrofone() {
+
+    try {
+
+        const stream =
+            await navigator.mediaDevices
+                .getUserMedia({
+                    audio: true
+                });
+
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+
+        microfone =
+            audioContext.createMediaStreamSource(
+                stream
+            );
+
+
+        analisador =
+            audioContext.createAnalyser();
+
+
+        analisador.fftSize = 4096;
+
+        analisador.smoothingTimeConstant =
+            0.5;
+
+
+        microfone.connect(analisador);
+
+
+        rodando = true;
+
+
+        document.getElementById("status")
+            .innerText =
+            "🎤 Microfone ativo";
+
+
+        const botao =
+            document.getElementById(
+                "botaoMicrofone"
+            );
+
+
+        botao.innerText =
+            "■ PARAR AFINADOR";
+
+
+        botao.classList.add("parar");
+
+
+        detectarSom();
+
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        document.getElementById("status")
+            .innerText =
+            "Não foi possível acessar o microfone";
+
+
+        alert(
+            "O navegador precisa de permissão para usar o microfone."
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PARAR
+   ========================= */
+
+function pararMicrofone() {
+
+    rodando = false;
+
+
+    if (microfone &&
+        microfone.mediaStream) {
+
+        microfone.mediaStream
+            .getTracks()
+            .forEach(track => track.stop());
+
+    }
+
+
+    if (audioContext) {
+
+        audioContext.close();
+
+        audioContext = null;
+
+    }
+
+
+    document.getElementById("status")
+        .innerText =
+        "Microfone desligado";
+
+
+    document.getElementById("botaoMicrofone")
+        .innerText =
+        "🎤 INICIAR AFINADOR";
+
+
+    document.getElementById("botaoMicrofone")
+        .classList.remove("parar");
+
+
+    document.getElementById("nota")
+        .innerText = "—";
+
+
+    document.getElementById("frequencia")
+        .innerText = "0 Hz";
+
+
+    document.getElementById("mensagem")
+        .innerText =
+        "Toque uma corda";
+
+
+    document.getElementById("ponteiro")
+        .style.transform =
+        "translateX(-50%) rotate(0deg)";
+
+}
+
+
+/* =========================
+   DETECÇÃO
+   ========================= */
+
+function detectarSom() {
+
+    if (!rodando) return;
+
+
+    const buffer =
+        new Float32Array(
+            analisador.fftSize
+        );
+
+
+    analisador.getFloatTimeDomainData(
+        buffer
+    );
+
+
+    const frequencia =
+        encontrarFrequencia(buffer);
+
+
+    if (frequencia > 0) {
+
+        processarNota(frequencia);
+
+    }
+
+
+    requestAnimationFrame(
+        detectarSom
+    );
+
+}
+
+
+/* =========================
+   AUTOCORRELAÇÃO
+   ========================= */
+
+function encontrarFrequencia(buffer) {
+
+    let tamanho = buffer.length;
+
+
+    let energia = 0;
+
+
+    for (let i = 0; i < tamanho; i++) {
+
+        energia +=
+            buffer[i] * buffer[i];
+
+    }
+
+
+    energia =
+        Math.sqrt(
+            energia / tamanho
+        );
+
+
+    if (energia < 0.01) {
+
+        return -1;
+
+    }
+
+
+    let melhorDeslocamento = -1;
+
+    let melhorCorrelacao = 0;
+
+
+    const minimo =
+        Math.floor(
+            audioContext.sampleRate / 700
+        );
+
+
+    const maximo =
+        Math.floor(
+            audioContext.sampleRate / 60
+        );
+
+
+    for (
+        let deslocamento = minimo;
+        deslocamento <= maximo;
+        deslocamento++
+    ) {
+
+        let correlacao = 0;
+
+
+        for (
+            let i = 0;
+            i < tamanho - deslocamento;
+            i++
+        ) {
+
+            correlacao +=
+                buffer[i] *
+                buffer[i + deslocamento];
+
+        }
+
+
+        correlacao /=
+            tamanho - deslocamento;
+
+
+        if (
+            correlacao >
+            melhorCorrelacao
+        ) {
+
+            melhorCorrelacao =
+                correlacao;
+
+            melhorDeslocamento =
+                deslocamento;
+
+        }
+
+    }
+
+
+    if (
+        melhorDeslocamento === -1 ||
+        melhorCorrelacao < 0.01
+    ) {
+
+        return -1;
+
+    }
+
+
+    return (
+        audioContext.sampleRate /
+        melhorDeslocamento
+    );
+
+}
+
+
+/* =========================
+   PROCESSAR NOTA
+   ========================= */
+
+function processarNota(frequencia) {
+
+    const corda =
+        cordas[cordaSelecionada];
+
+
+    const alvo =
+        corda.frequencia;
+
+
+    /*
+       Diferença em cents.
+       100 cents = 1 semitom.
+    */
+
+    const cents =
+        1200 *
+        Math.log2(
+            frequencia / alvo
+        );
+
+
+    document.getElementById("frequencia")
+        .innerText =
+        frequencia.toFixed(2) + " Hz";
+
+
+    document.getElementById("nota")
+        .innerText =
+        corda.nome;
+
+
+    atualizarIndicador(cents);
+
+}
+
+
+/* =========================
+   INDICADOR
+   ========================= */
+
+function atualizarIndicador(cents) {
+
+    /*
+       Limitamos o ponteiro visual
+       para não sair da tela.
+    */
+
+    let valor = cents;
+
+
+    if (valor > 50) valor = 50;
+
+    if (valor < -50) valor = -50;
+
+
+    /*
+       -50 = -45 graus
+        0  = 0 graus
+       +50 = +45 graus
+    */
+
+    const rotacao =
+        (valor / 50) * 45;
+
+
+    document.getElementById("ponteiro")
+        .style.transform =
+        "translateX(-50%) rotate(" +
+        rotacao +
+        "deg)";
+
+
+    const mensagem =
+        document.getElementById(
+            "mensagem"
+        );
+
+
+    if (Math.abs(cents) <= 5) {
+
+        mensagem.innerText =
+            "✓ AFINADO";
+
+    }
+
+    else if (cents < 0) {
+
+        mensagem.innerText =
+            "♭ MUITO GRAVE";
+
+        if (cents > -25) {
+
+            mensagem.innerText =
+                "♭ UM POUCO GRAVE";
+
+        }
+
+    }
+
+    else {
+
+        mensagem.innerText =
+            "♯ MUITO AGUDO";
+
+        if (cents < 25) {
+
+            mensagem.innerText =
+                "♯ UM POUCO AGUDO";
+
+        }
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
