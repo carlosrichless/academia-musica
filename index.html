@@ -145,66 +145,89 @@
             font-size: 0.95rem;
         }
 
-        /* APLICATIVOS */
+        /* ==================================================
+           APLICATIVOS MUSICAIS
+           ESTILO ÍCONE DE APLICATIVO
+           ================================================== */
+
         .apps-musicais {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 22px;
+            margin: 10px auto 30px;
         }
 
         .app-musical {
+            width: 125px;
+            min-height: 135px;
+
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 190px;
-            padding: 25px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+            justify-content: flex-start;
+
+            padding: 8px;
+
+            background: transparent;
+
+            border: none;
+            border-radius: 18px;
+
             text-decoration: none;
             color: var(--text-main);
+
             cursor: pointer;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-            transition: transform 0.15s ease,
-                        border-color 0.15s ease,
-                        box-shadow 0.15s ease;
+
+            transition:
+                transform 0.15s ease,
+                background 0.15s ease;
         }
 
         .app-musical:hover {
             transform: translateY(-3px);
-            border-color: var(--accent);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .app-musical:active {
-            transform: scale(0.97);
+            transform: scale(0.94);
         }
 
         .app-icone {
-            width: 90px;
-            height: 90px;
-            border-radius: 22px;
+            width: 82px;
+            height: 82px;
+
+            border-radius: 21px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.5rem;
-            margin-bottom: 15px;
+
+            font-size: 3rem;
+
+            margin-bottom: 8px;
+
             background: #0f172a;
+
             border: 1px solid var(--border);
+
+            box-shadow:
+                0 6px 15px rgba(0, 0, 0, 0.28);
         }
 
         .app-musical h3 {
-            font-size: 1.2rem;
+            font-size: 0.82rem;
             color: var(--text-main);
-            margin-bottom: 4px;
+            margin-bottom: 1px;
+            text-align: center;
+            line-height: 1.2;
         }
 
         .app-musical p {
-            font-size: 0.82rem;
+            font-size: 0.62rem;
             color: var(--text-muted);
             text-align: center;
+            line-height: 1.2;
         }
 
         /* MURAL */
@@ -358,7 +381,7 @@
             border-top: 1px solid var(--border);
         }
 
-        /* CELULAR */
+        /* TABLET / CELULAR */
         @media (max-width: 900px) {
 
             .lembretes-grid {
@@ -368,9 +391,9 @@
             .modulos-grid {
                 grid-template-columns: 1fr;
             }
-
         }
 
+        /* CELULAR */
         @media (max-width: 600px) {
 
             body {
@@ -381,30 +404,35 @@
                 font-size: 1.6rem;
             }
 
+            /* ÍCONES DOS APPS NO CELULAR */
+
             .apps-musicais {
-                gap: 12px;
+                gap: 14px;
+                margin-top: 8px;
+                margin-bottom: 25px;
             }
 
             .app-musical {
-                min-height: 155px;
-                padding: 15px 8px;
+                width: 105px;
+                min-height: 118px;
+                padding: 5px;
                 border-radius: 16px;
             }
 
             .app-icone {
-                width: 65px;
-                height: 65px;
+                width: 68px;
+                height: 68px;
                 border-radius: 17px;
-                font-size: 2.5rem;
-                margin-bottom: 10px;
+                font-size: 2.4rem;
+                margin-bottom: 7px;
             }
 
             .app-musical h3 {
-                font-size: 1rem;
+                font-size: 0.72rem;
             }
 
             .app-musical p {
-                font-size: 0.72rem;
+                font-size: 0.58rem;
             }
 
             .secao-mural {
@@ -1007,6 +1035,7 @@
                         );
 
                 }
+
             );
 
         }
