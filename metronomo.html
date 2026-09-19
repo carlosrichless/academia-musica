@@ -26,20 +26,84 @@
             min-height: 100vh;
         }
 
+        /* =========================================
+           APLICAÇÃO
+           ========================================= */
+
         .app {
+            position: relative;
+            isolation: isolate;
+
             width: 100%;
             max-width: 520px;
             min-height: 100vh;
             margin: 0 auto;
             padding: 20px;
+
             display: flex;
             flex-direction: column;
+
+            overflow: hidden;
         }
 
+
+        /* =========================================
+           LOGO DE FUNDO
+
+           A logo fica atrás de tudo.
+           Não ocupa espaço.
+           Não altera a posição dos elementos.
+           ========================================= */
+
+        .app::before {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background-image: url("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/logo.c.richless.png");
+
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 125% auto;
+
+            opacity: 0.13;
+
+            z-index: -2;
+
+            pointer-events: none;
+        }
+
+
+        /* Camada escura sobre a logo para manter
+           os textos fáceis de enxergar */
+
+        .app::after {
+            content: "";
+
+            position: absolute;
+            inset: 0;
+
+            background: rgba(2, 6, 23, 0.35);
+
+            z-index: -1;
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================
+           TOPO
+           ========================================= */
+
         .topo {
+            position: relative;
+            z-index: 1;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             margin-bottom: 20px;
         }
 
@@ -47,8 +111,10 @@
             color: #ffffff;
             text-decoration: none;
             font-size: 0.95rem;
+
             background: #111827;
             border: 1px solid #334155;
+
             padding: 10px 14px;
             border-radius: 10px;
         }
@@ -58,8 +124,17 @@
             font-weight: bold;
         }
 
+
+        /* =========================================
+           VISOR
+           ========================================= */
+
         .visor {
+            position: relative;
+            z-index: 1;
+
             flex: 1;
+
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -84,6 +159,11 @@
             margin-bottom: 20px;
         }
 
+
+        /* =========================================
+           CONTROLES BPM
+           ========================================= */
+
         .controles-bpm {
             display: flex;
             align-items: center;
@@ -94,10 +174,13 @@
         .btn-bpm {
             width: 65px;
             height: 65px;
+
             border-radius: 50%;
             border: 1px solid #334155;
+
             background: #111827;
             color: white;
+
             font-size: 2rem;
             cursor: pointer;
         }
@@ -106,25 +189,33 @@
             transform: scale(0.94);
         }
 
+
         /* =========================================
-           SEÇÕES DE CONFIGURAÇÃO
+           CONFIGURAÇÕES
            ========================================= */
 
         .configuracao {
             width: 100%;
+
             margin-top: 25px;
             padding: 18px;
-            background: #0f172a;
+
+            background: rgba(15, 23, 42, 0.88);
+
             border: 1px solid #1e293b;
             border-radius: 16px;
         }
 
         .config-titulo {
             text-align: center;
+
             color: #94a3b8;
+
             font-size: 0.9rem;
+
             margin-bottom: 14px;
         }
+
 
         /* =========================================
            FÓRMULA DE COMPASSO
@@ -157,7 +248,9 @@
 
         .formula-valor {
             min-width: 55px;
+
             text-align: center;
+
             font-size: 2rem;
             font-weight: bold;
         }
@@ -165,10 +258,13 @@
         .formula-botao {
             width: 42px;
             height: 42px;
+
             border-radius: 10px;
             border: 1px solid #334155;
+
             background: #111827;
             color: white;
+
             font-size: 1.5rem;
             cursor: pointer;
         }
@@ -179,30 +275,41 @@
             margin-top: 20px;
         }
 
+
         /* =========================================
-           SUBDIVISÕES
+           SUBDIVISÕES SONORAS
            ========================================= */
 
         .subdivisoes {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
             gap: 7px;
         }
 
         .btn-subdivisao {
             min-height: 65px;
+
             padding: 8px 4px;
+
             border-radius: 10px;
             border: 1px solid #334155;
+
             background: #111827;
             color: white;
+
             cursor: pointer;
+
             font-size: 0.75rem;
         }
 
         .btn-subdivisao strong {
             display: block;
+
             font-size: 1.3rem;
+
             margin-bottom: 4px;
         }
 
@@ -211,26 +318,35 @@
             border-color: #3b82f6;
         }
 
+
         /* =========================================
            BOTÕES PRINCIPAIS
            ========================================= */
 
         .botoes-principais {
             width: 100%;
+
             margin-top: 20px;
+
             display: flex;
             flex-direction: column;
+
             gap: 10px;
         }
 
         .botao-iniciar,
         .botao-tela-cheia {
             width: 100%;
+
             padding: 18px;
+
             border-radius: 15px;
+
             color: white;
+
             font-size: 1.2rem;
             font-weight: bold;
+
             cursor: pointer;
         }
 
@@ -248,12 +364,21 @@
             background: #111827;
         }
 
+
+        /* =========================================
+           INDICADOR DE BATIDA
+           ========================================= */
+
         .batida {
             width: 24px;
             height: 24px;
+
             border-radius: 50%;
+
             background: #334155;
+
             margin: 22px auto 0;
+
             transition: 0.08s;
         }
 
@@ -262,21 +387,29 @@
             transform: scale(1.4);
         }
 
+
         /* =========================================
            TELA CHEIA
            ========================================= */
 
         #modoTelaCheia {
             display: none;
+
             position: fixed;
             inset: 0;
+
             width: 100vw;
             height: 100vh;
+
             background: #000000;
+
             z-index: 99999;
+
             align-items: center;
             justify-content: center;
+
             overflow: hidden;
+
             cursor: pointer;
         }
 
@@ -285,13 +418,24 @@
         }
 
         #contagemTelaCheia {
-            font-size: clamp(14rem, 45vw, 35rem);
+            font-size: clamp(
+                14rem,
+                45vw,
+                35rem
+            );
+
             font-weight: bold;
+
             line-height: 1;
+
             color: #ffffff;
+
             text-align: center;
+
             user-select: none;
-            transition: transform 0.08s ease;
+
+            transition:
+                transform 0.08s ease;
         }
 
         #contagemTelaCheia.pulso {
@@ -305,25 +449,40 @@
 
         .infoTelaCheia {
             position: absolute;
+
             top: 20px;
             left: 0;
             right: 0;
+
             text-align: center;
+
             color: #64748b;
+
             font-size: 1rem;
+
             pointer-events: none;
         }
 
         .compassoTelaCheia {
             position: absolute;
+
             bottom: 20px;
             left: 0;
             right: 0;
+
             text-align: center;
+
             color: #64748b;
+
             font-size: 1rem;
+
             pointer-events: none;
         }
+
+
+        /* =========================================
+           CELULAR
+           ========================================= */
 
         @media (max-width: 600px) {
 
@@ -354,7 +513,12 @@
             }
 
             #contagemTelaCheia {
-                font-size: clamp(11rem, 55vw, 20rem);
+                font-size:
+                    clamp(
+                        11rem,
+                        55vw,
+                        20rem
+                    );
             }
         }
     </style>
@@ -362,51 +526,90 @@
 
 <body>
 
+
+<!-- =========================================
+     APLICAÇÃO
+     ========================================= -->
+
 <div class="app">
+
+
+    <!-- TOPO -->
 
     <div class="topo">
 
-        <a href="index.html" class="voltar">
+        <a href="index.html"
+           class="voltar">
+
             ← Voltar
+
         </a>
 
+
         <div class="titulo">
+
             🎵 Metrônomo
+
         </div>
+
 
         <div style="width: 65px;"></div>
 
     </div>
 
 
+
+    <!-- VISOR -->
+
     <div class="visor">
 
+
         <div class="rotulo">
+
             TEMPO
+
         </div>
 
-        <div id="bpm" class="bpm">
+
+        <div id="bpm"
+             class="bpm">
+
             80
+
         </div>
+
 
         <div class="bpm-label">
+
             BPM
+
         </div>
 
+
+
+        <!-- BPM -->
 
         <div class="controles-bpm">
 
-            <button class="btn-bpm"
-                    onclick="alterarBpm(-5)">
+            <button
+                class="btn-bpm"
+                onclick="alterarBpm(-5)">
+
                 −
+
             </button>
 
-            <button class="btn-bpm"
-                    onclick="alterarBpm(5)">
+
+            <button
+                class="btn-bpm"
+                onclick="alterarBpm(5)">
+
                 +
+
             </button>
 
         </div>
+
 
 
         <!-- =====================================
@@ -416,45 +619,68 @@
         <div class="configuracao">
 
             <div class="config-titulo">
+
                 FÓRMULA DE COMPASSO
+
             </div>
 
 
             <div class="formula">
+
 
                 <!-- NUMERADOR -->
 
                 <div class="formula-grupo">
 
                     <div class="formula-label">
+
                         NUMERADOR
+
                     </div>
+
 
                     <div class="formula-controle">
 
-                        <button class="formula-botao"
-                                onclick="alterarNumerador(-1)">
+
+                        <button
+                            class="formula-botao"
+                            onclick="alterarNumerador(-1)">
+
                             −
+
                         </button>
 
-                        <div id="numerador"
-                             class="formula-valor">
+
+                        <div
+                            id="numerador"
+                            class="formula-valor">
+
                             4
+
                         </div>
 
-                        <button class="formula-botao"
-                                onclick="alterarNumerador(1)">
+
+                        <button
+                            class="formula-botao"
+                            onclick="alterarNumerador(1)">
+
                             +
+
                         </button>
+
 
                     </div>
 
                 </div>
 
 
+
                 <div class="barra-formula">
+
                     /
+
                 </div>
+
 
 
                 <!-- DENOMINADOR -->
@@ -462,33 +688,51 @@
                 <div class="formula-grupo">
 
                     <div class="formula-label">
+
                         DENOMINADOR
+
                     </div>
+
 
                     <div class="formula-controle">
 
-                        <button class="formula-botao"
-                                onclick="alterarDenominador(-1)">
+
+                        <button
+                            class="formula-botao"
+                            onclick="alterarDenominador(-1)">
+
                             −
+
                         </button>
 
-                        <div id="denominador"
-                             class="formula-valor">
+
+                        <div
+                            id="denominador"
+                            class="formula-valor">
+
                             4
+
                         </div>
 
-                        <button class="formula-botao"
-                                onclick="alterarDenominador(1)">
+
+                        <button
+                            class="formula-botao"
+                            onclick="alterarDenominador(1)">
+
                             +
+
                         </button>
+
 
                     </div>
 
                 </div>
 
+
             </div>
 
         </div>
+
 
 
         <!-- =====================================
@@ -497,60 +741,90 @@
 
         <div class="configuracao">
 
+
             <div class="config-titulo">
+
                 SUBDIVISÃO SONORA
+
             </div>
 
 
             <div class="subdivisoes">
 
-                <button class="btn-subdivisao ativo"
-                        onclick="selecionarSubdivisao(1, this)">
+
+                <!-- SEMÍNIMA -->
+
+                <button
+                    class="btn-subdivisao ativo"
+                    onclick="selecionarSubdivisao(1, this)">
 
                     <strong>♩</strong>
+
                     Semínima
 
                 </button>
 
 
-                <button class="btn-subdivisao"
-                        onclick="selecionarSubdivisao(2, this)">
+
+                <!-- COLCHEIA -->
+
+                <button
+                    class="btn-subdivisao"
+                    onclick="selecionarSubdivisao(2, this)">
 
                     <strong>♪</strong>
+
                     Colcheia
 
                 </button>
 
 
-                <button class="btn-subdivisao"
-                        onclick="selecionarSubdivisao(3, this)">
+
+                <!-- TERCINA -->
+
+                <button
+                    class="btn-subdivisao"
+                    onclick="selecionarSubdivisao(3, this)">
 
                     <strong>3</strong>
+
                     Tercina
 
                 </button>
 
 
-                <button class="btn-subdivisao"
-                        onclick="selecionarSubdivisao(6, this)">
+
+                <!-- SEXTINA -->
+
+                <button
+                    class="btn-subdivisao"
+                    onclick="selecionarSubdivisao(6, this)">
 
                     <strong>6</strong>
+
                     Sextina
 
                 </button>
 
 
-                <button class="btn-subdivisao"
-                        onclick="selecionarSubdivisao(8, this)">
+
+                <!-- FUSA -->
+
+                <button
+                    class="btn-subdivisao"
+                    onclick="selecionarSubdivisao(8, this)">
 
                     <strong>𝄾</strong>
+
                     Fusa
 
                 </button>
 
+
             </div>
 
         </div>
+
 
 
         <!-- =====================================
@@ -559,53 +833,78 @@
 
         <div class="botoes-principais">
 
-            <button id="botaoIniciar"
-                    class="botao-iniciar"
-                    onclick="alternarMetronomo()"
+
+            <button
+                id="botaoIniciar"
+                class="botao-iniciar"
+                onclick="alternarMetronomo()">
 
                 ▶ INICIAR
 
             </button>
 
 
-            <button class="botao-tela-cheia"
-                    onclick="abrirTelaCheia()">
+            <button
+                class="botao-tela-cheia"
+                onclick="abrirTelaCheia()">
 
                 ⛶ TELA CHEIA
 
             </button>
 
+
         </div>
 
 
-        <div id="batida"
-             class="batida"></div>
+
+        <div
+            id="batida"
+            class="batida">
+
+        </div>
+
 
     </div>
 
 </div>
 
 
+
 <!-- =========================================
-     MODO TELA CHEIA
+     TELA CHEIA
+
+     IMPORTANTE:
+     A logo NÃO aparece aqui.
      ========================================= -->
 
 <div id="modoTelaCheia">
 
+
     <div class="infoTelaCheia">
+
         CONTAGEM DO COMPASSO
+
     </div>
+
 
     <div id="contagemTelaCheia">
+
         1
+
     </div>
 
-    <div id="compassoTelaCheia"
-         class="compassoTelaCheia">
+
+    <div
+        id="compassoTelaCheia"
+        class="compassoTelaCheia">
+
         4/4
+
     </div>
+
 
 </div>
+
 
 
 <script>
@@ -631,30 +930,41 @@
     let tocando = false;
 
 
+
     /* =========================================
        BPM
        ========================================= */
 
     function atualizarBpm() {
 
-        document.getElementById("bpm").textContent = bpm;
+        document.getElementById("bpm")
+            .textContent = bpm;
 
     }
+
 
 
     function alterarBpm(valor) {
 
         bpm += valor;
 
+
         if (bpm < 30) {
+
             bpm = 30;
+
         }
+
 
         if (bpm > 240) {
+
             bpm = 240;
+
         }
 
+
         atualizarBpm();
+
 
         if (tocando) {
 
@@ -667,6 +977,7 @@
     }
 
 
+
     /* =========================================
        NUMERADOR
        ========================================= */
@@ -675,49 +986,83 @@
 
         numerador += valor;
 
+
         if (numerador < 1) {
+
             numerador = 1;
+
         }
 
+
         if (numerador > 32) {
+
             numerador = 32;
+
         }
+
 
         batidaAtual = 0;
 
         atualizarFormula();
 
     }
+
 
 
     /* =========================================
        DENOMINADOR
+
+       Valores:
+       2
+       4
+       8
+       16
        ========================================= */
 
     function alterarDenominador(valor) {
 
-        const opcoes = [2, 4, 8, 16];
+        const opcoes = [
+            2,
+            4,
+            8,
+            16
+        ];
+
 
         let indice =
-            opcoes.indexOf(denominador);
+            opcoes.indexOf(
+                denominador
+            );
+
 
         indice += valor;
 
+
         if (indice < 0) {
+
             indice = 0;
+
         }
+
 
         if (indice >= opcoes.length) {
-            indice = opcoes.length - 1;
+
+            indice =
+                opcoes.length - 1;
+
         }
 
-        denominador = opcoes[indice];
+
+        denominador =
+            opcoes[indice];
+
 
         batidaAtual = 0;
 
         atualizarFormula();
 
     }
+
 
 
     /* =========================================
@@ -726,32 +1071,46 @@
 
     function atualizarFormula() {
 
-        document.getElementById("numerador")
-            .textContent = numerador;
+        document.getElementById(
+            "numerador"
+        ).textContent = numerador;
 
-        document.getElementById("denominador")
-            .textContent = denominador;
+
+        document.getElementById(
+            "denominador"
+        ).textContent = denominador;
+
 
         atualizarContagemTelaCheia();
 
     }
 
 
+
     /* =========================================
        SUBDIVISÃO
        ========================================= */
 
-    function selecionarSubdivisao(valor, botao) {
+    function selecionarSubdivisao(
+        valor,
+        botao
+    ) {
 
         subdivisao = valor;
 
+
         document
-            .querySelectorAll(".btn-subdivisao")
+            .querySelectorAll(
+                ".btn-subdivisao"
+            )
             .forEach(function(btn) {
 
-                btn.classList.remove("ativo");
+                btn.classList.remove(
+                    "ativo"
+                );
 
             });
+
 
         botao.classList.add("ativo");
 
@@ -767,8 +1126,9 @@
     }
 
 
+
     /* =========================================
-       CONTAGEM PRINCIPAL
+       CONTAGEM DA TELA CHEIA
        ========================================= */
 
     function atualizarContagemTelaCheia() {
@@ -777,6 +1137,7 @@
             document.getElementById(
                 "contagemTelaCheia"
             );
+
 
         const compasso =
             document.getElementById(
@@ -789,9 +1150,12 @@
 
 
         compasso.textContent =
-            numerador + "/" + denominador;
+            numerador +
+            "/" +
+            denominador;
 
     }
+
 
 
     /* =========================================
@@ -806,7 +1170,9 @@
 
 
         if (!AudioContext) {
+
             return;
+
         }
 
 
@@ -825,22 +1191,32 @@
         const oscilador =
             contexto.createOscillator();
 
+
         const ganho =
             contexto.createGain();
 
 
         oscilador.connect(ganho);
 
-        ganho.connect(contexto.destination);
+        ganho.connect(
+            contexto.destination
+        );
 
+
+        /*
+         * Primeiro tempo:
+         * som mais agudo.
+         */
 
         if (acento) {
 
-            oscilador.frequency.value = 1100;
+            oscilador.frequency.value =
+                1100;
 
         } else {
 
-            oscilador.frequency.value = 700;
+            oscilador.frequency.value =
+                700;
 
         }
 
@@ -867,8 +1243,9 @@
     }
 
 
+
     /* =========================================
-       PULSO VISUAL
+       ANIMAÇÃO DA CONTAGEM
        ========================================= */
 
     function animarContagem(acento) {
@@ -878,17 +1255,24 @@
                 "contagemTelaCheia"
             );
 
+
         const modo =
             document.getElementById(
                 "modoTelaCheia"
             );
 
 
-        numero.classList.remove("pulso");
+        numero.classList.remove(
+            "pulso"
+        );
+
 
         void numero.offsetWidth;
 
-        numero.classList.add("pulso");
+
+        numero.classList.add(
+            "pulso"
+        );
 
 
         if (acento) {
@@ -908,6 +1292,7 @@
     }
 
 
+
     /* =========================================
        BATIDA / SUBDIVISÃO
        ========================================= */
@@ -915,8 +1300,8 @@
     function tocarBatida() {
 
         /*
-         * A primeira subdivisão de cada tempo
-         * é o tempo principal.
+         * É a primeira subdivisão
+         * daquele tempo?
          */
 
         const primeiraSubdivisao =
@@ -924,7 +1309,8 @@
 
 
         /*
-         * Primeiro tempo do compasso.
+         * É o primeiro tempo
+         * do compasso?
          */
 
         const primeiroTempo =
@@ -932,49 +1318,71 @@
             primeiraSubdivisao;
 
 
-        tocarSom(primeiroTempo);
+        /*
+         * Toca o som.
+         */
+
+        tocarSom(
+            primeiroTempo
+        );
 
 
         /*
-         * Mostramos a contagem principal
-         * somente no início de cada tempo.
+         * Só altera o número gigante
+         * nos tempos principais.
          */
 
         if (primeiraSubdivisao) {
 
             atualizarContagemTelaCheia();
 
-            animarContagem(primeiroTempo);
+            animarContagem(
+                primeiroTempo
+            );
 
         }
 
 
+        /*
+         * Indicador visual.
+         */
+
         const elemento =
-            document.getElementById("batida");
+            document.getElementById(
+                "batida"
+            );
 
 
-        elemento.classList.add("ativa");
+        elemento.classList.add(
+            "ativa"
+        );
 
 
         setTimeout(function() {
 
-            elemento.classList.remove("ativa");
+            elemento.classList.remove(
+                "ativa"
+            );
 
         }, 60);
 
 
         /*
-         * Avança a subdivisão.
+         * Próxima subdivisão.
          */
 
         subdivisaoAtual++;
 
 
         /*
-         * Terminou as subdivisões deste tempo.
+         * Terminou as subdivisões
+         * deste tempo.
          */
 
-        if (subdivisaoAtual >= subdivisao) {
+        if (
+            subdivisaoAtual >=
+            subdivisao
+        ) {
 
             subdivisaoAtual = 0;
 
@@ -985,7 +1393,10 @@
              * Terminou o compasso.
              */
 
-            if (batidaAtual >= numerador) {
+            if (
+                batidaAtual >=
+                numerador
+            ) {
 
                 batidaAtual = 0;
 
@@ -994,6 +1405,7 @@
         }
 
     }
+
 
 
     /* =========================================
@@ -1010,8 +1422,8 @@
 
 
         /*
-         * BPM representa o número de
-         * tempos principais por minuto.
+         * BPM é o número de tempos
+         * principais por minuto.
          */
 
         const tempoPrincipal =
@@ -1019,21 +1431,23 @@
 
 
         /*
-         * Cada subdivisão divide
-         * o tempo principal.
+         * Divide o tempo conforme
+         * a subdivisão escolhida.
          */
 
         const intervaloSubdivisao =
-            tempoPrincipal / subdivisao;
+            tempoPrincipal /
+            subdivisao;
 
 
         tocarBatida();
 
 
-        intervalo = setInterval(
-            tocarBatida,
-            intervaloSubdivisao
-        );
+        intervalo =
+            setInterval(
+                tocarBatida,
+                intervaloSubdivisao
+            );
 
 
         const botao =
@@ -1046,9 +1460,12 @@
             "■ PARAR";
 
 
-        botao.classList.add("parado");
+        botao.classList.add(
+            "parado"
+        );
 
     }
+
 
 
     /* =========================================
@@ -1059,13 +1476,19 @@
 
         tocando = false;
 
-        clearInterval(intervalo);
+
+        clearInterval(
+            intervalo
+        );
+
 
         intervalo = null;
+
 
         batidaAtual = 0;
 
         subdivisaoAtual = 0;
+
 
         atualizarContagemTelaCheia();
 
@@ -1080,13 +1503,16 @@
             "▶ INICIAR";
 
 
-        botao.classList.remove("parado");
+        botao.classList.remove(
+            "parado"
+        );
 
     }
 
 
+
     /* =========================================
-       ALTERNAR
+       INICIAR / PARAR
        ========================================= */
 
     function alternarMetronomo() {
@@ -1104,8 +1530,9 @@
     }
 
 
+
     /* =========================================
-       TELA CHEIA
+       ABRIR TELA CHEIA
        ========================================= */
 
     async function abrirTelaCheia() {
@@ -1118,12 +1545,17 @@
 
         atualizarContagemTelaCheia();
 
-        tela.classList.add("ativo");
+
+        tela.classList.add(
+            "ativo"
+        );
 
 
         try {
 
-            if (tela.requestFullscreen) {
+            if (
+                tela.requestFullscreen
+            ) {
 
                 await tela.requestFullscreen({
                     navigationUI: "hide"
@@ -1143,6 +1575,7 @@
     }
 
 
+
     /* =========================================
        FECHAR TELA CHEIA
        ========================================= */
@@ -1157,7 +1590,9 @@
 
         try {
 
-            if (document.fullscreenElement) {
+            if (
+                document.fullscreenElement
+            ) {
 
                 await document.exitFullscreen();
 
@@ -1173,9 +1608,12 @@
         }
 
 
-        tela.classList.remove("ativo");
+        tela.classList.remove(
+            "ativo"
+        );
 
     }
+
 
 
     /* =========================================
@@ -1183,7 +1621,9 @@
        ========================================= */
 
     document
-        .getElementById("modoTelaCheia")
+        .getElementById(
+            "modoTelaCheia"
+        )
         .addEventListener(
             "click",
             function() {
@@ -1194,26 +1634,32 @@
         );
 
 
+
     /* =========================================
-       ESC
+       ESC / SAÍDA DA TELA CHEIA
        ========================================= */
 
     document.addEventListener(
         "fullscreenchange",
         function() {
 
-            if (!document.fullscreenElement) {
+            if (
+                !document.fullscreenElement
+            ) {
 
                 document
                     .getElementById(
                         "modoTelaCheia"
                     )
-                    .classList.remove("ativo");
+                    .classList.remove(
+                        "ativo"
+                    );
 
             }
 
         }
     );
+
 
 
     /* =========================================
