@@ -768,11 +768,15 @@
                     ).value === senhaGeral
                 ) {
 
-                    /* AUTORIZAÇÃO LOCAL */
-                  sessionStorage.setItem(
-                      "siteAutorizado",
-                      "true"
+                    /*
+                     * GUARDA A AUTORIZAÇÃO SOMENTE
+                     * ENQUANTO A ABA/SESSÃO ESTIVER ABERTA.
+                     */
+                    sessionStorage.setItem(
+                        "siteAutorizado",
+                        "true"
                     );
+
 
                     document.getElementById(
                         'telaLoginGeral'
@@ -822,7 +826,7 @@
                     sessionStorage.getItem(
                         "siteAutorizado"
                     ) === "true"
-                )
+                ) {
 
                     document.getElementById(
                         'telaLoginGeral'
@@ -842,7 +846,9 @@
         );
 
 
-        /* ENTER NA SENHA */
+        /* =========================================
+           ENTER NA SENHA
+           ========================================= */
 
         document
             .getElementById('senhaSiteInput')
@@ -851,7 +857,9 @@
                 function(event) {
 
                     if (event.key === "Enter") {
+
                         verificarSenhaSite();
+
                     }
 
                 }
