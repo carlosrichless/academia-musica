@@ -3,590 +3,637 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Metrônomo</title>
+    <title>Metrônomo</title>
 
 
-<style>
+    <style>
 
-/* =====================================================
-   BASE
-   ===================================================== */
+        /* =====================================================
+           BASE
+           ===================================================== */
 
-* {
-    box-sizing: border-box;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-body {
-    margin: 0;
-    min-height: 100vh;
 
-    font-family: Arial, sans-serif;
+        body {
+            margin: 0;
 
-    background: #020617;
-    color: white;
-}
+            min-height: 100vh;
 
+            font-family: Arial, sans-serif;
 
-/* =====================================================
-   APLICATIVO
-   ===================================================== */
+            background: #020617;
 
-.app {
+            color: white;
+        }
 
-    min-height: 100vh;
 
-    position: relative;
+        /* =====================================================
+           APLICATIVO
+           ===================================================== */
 
-    overflow: hidden;
+        .app {
 
-    padding: 25px;
+            min-height: 100vh;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+            position: relative;
 
+            overflow: hidden;
 
-/* =====================================================
-   LOGO GRANDE NO FUNDO
-   ===================================================== */
+            padding: 25px;
 
-.app::before {
+            display: flex;
 
-    content: "";
+            flex-direction: column;
 
-    position: absolute;
+            align-items: center;
+        }
 
-    inset: 0;
 
-    background-image: url(
-        "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/logo%20c.richless.png"
-    );
+        /* =====================================================
+           LOGO GRANDE NO FUNDO
+           ===================================================== */
 
-    background-repeat: no-repeat;
+        .app::before {
 
-    background-position: center center;
+            content: "";
 
-    background-size: 125% auto;
+            position: absolute;
 
-    opacity: 0.14;
+            inset: 0;
 
-    z-index: 0;
+            background-image: url(
+                "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/logo%20c.richless.png"
+            );
 
-    pointer-events: none;
-}
+            background-repeat: no-repeat;
 
+            background-position: center center;
 
-.app::after {
+            background-size: 125% auto;
 
-    content: "";
+            opacity: 0.14;
 
-    position: absolute;
+            z-index: 0;
 
-    inset: 0;
+            pointer-events: none;
+        }
 
-    background: rgba(2, 6, 23, 0.30);
 
-    z-index: 1;
+        .app::after {
 
-    pointer-events: none;
-}
+            content: "";
 
+            position: absolute;
 
-/* =====================================================
-   CONTEÚDO
-   ===================================================== */
+            inset: 0;
 
-.conteudo {
+            background: rgba(2, 6, 23, 0.30);
 
-    width: 100%;
+            z-index: 1;
 
-    max-width: 700px;
+            pointer-events: none;
+        }
 
-    position: relative;
 
-    z-index: 2;
-}
+        /* =====================================================
+           CONTEÚDO
+           ===================================================== */
 
+        .conteudo {
 
-/* =====================================================
-   TOPO
-   ===================================================== */
+            width: 100%;
 
-.topo {
+            max-width: 700px;
 
-    display: flex;
+            position: relative;
 
-    justify-content: space-between;
+            z-index: 2;
+        }
 
-    align-items: center;
 
-    margin-bottom: 25px;
-}
+        /* =====================================================
+           TOPO
+           ===================================================== */
 
+        .topo {
 
-.voltar {
+            display: flex;
 
-    text-decoration: none;
+            justify-content: space-between;
 
-    color: white;
+            align-items: center;
 
-    background: rgba(15, 23, 42, 0.9);
+            margin-bottom: 25px;
+        }
 
-    border: 1px solid #334155;
 
-    padding: 10px 16px;
+        .voltar {
 
-    border-radius: 12px;
+            text-decoration: none;
 
-    font-size: 0.9rem;
-}
+            color: white;
 
+            background: rgba(15, 23, 42, 0.9);
 
-h1 {
+            border: 1px solid #334155;
 
-    margin: 0;
+            padding: 10px 16px;
 
-    text-align: center;
+            border-radius: 12px;
 
-    font-size: 1.8rem;
-}
+            font-size: 0.9rem;
+        }
 
 
-/* =====================================================
-   CARDS
-   ===================================================== */
+        h1 {
 
-.card {
+            margin: 0;
 
-    background: rgba(15, 23, 42, 0.88);
+            text-align: center;
 
-    border: 1px solid #334155;
+            font-size: 1.8rem;
+        }
 
-    border-radius: 22px;
 
-    padding: 25px;
+        /* =====================================================
+           CARDS
+           ===================================================== */
 
-    margin-bottom: 18px;
+        .card {
 
-    box-shadow:
-        0 15px 35px rgba(0,0,0,0.3);
-}
+            background: rgba(15, 23, 42, 0.88);
 
+            border: 1px solid #334155;
 
-.label {
+            border-radius: 22px;
 
-    text-align: center;
+            padding: 25px;
 
-    color: #94a3b8;
+            margin-bottom: 18px;
 
-    font-size: 0.85rem;
+            box-shadow:
+                0 15px 35px rgba(0,0,0,0.3);
+        }
 
-    margin-bottom: 8px;
 
-    text-transform: uppercase;
+        .label {
 
-    letter-spacing: 1px;
-}
+            text-align: center;
 
+            color: #94a3b8;
 
-/* =====================================================
-   BPM
-   ===================================================== */
+            font-size: 0.85rem;
 
-.bpm {
+            margin-bottom: 8px;
 
-    text-align: center;
+            text-transform: uppercase;
 
-    font-size: 6rem;
+            letter-spacing: 1px;
+        }
 
-    font-weight: bold;
 
-    line-height: 1;
+        /* =====================================================
+           BPM
+           ===================================================== */
 
-    margin: 10px 0 20px;
-}
+        .bpm {
 
+            text-align: center;
 
-.controles-bpm {
+            font-size: 6rem;
 
-    display: flex;
+            font-weight: bold;
 
-    justify-content: center;
+            line-height: 1;
 
-    gap: 12px;
-}
+            margin: 10px 0 20px;
+        }
 
 
-button {
+        .descricao-bpm {
 
-    border: none;
+            text-align: center;
 
-    cursor: pointer;
+            color: #94a3b8;
 
-    color: white;
+            font-size: 0.78rem;
 
-    background: #1e293b;
+            margin-top: -12px;
 
-    border: 1px solid #475569;
+            margin-bottom: 18px;
+        }
 
-    border-radius: 14px;
 
-    padding: 13px 20px;
+        .controles-bpm {
 
-    font-size: 1rem;
+            display: flex;
 
-    font-weight: bold;
-}
+            justify-content: center;
 
+            gap: 12px;
+        }
 
-button:active {
 
-    transform: scale(0.96);
-}
+        button {
 
+            border: none;
 
-.botao-principal {
+            cursor: pointer;
 
-    width: 100%;
+            color: white;
 
-    background: #2563eb;
+            background: #1e293b;
 
-    border-color: #3b82f6;
+            border: 1px solid #475569;
 
-    font-size: 1.2rem;
+            border-radius: 14px;
 
-    padding: 17px;
+            padding: 13px 20px;
 
-    margin-top: 20px;
-}
+            font-size: 1rem;
 
+            font-weight: bold;
+        }
 
-.botao-principal.parar {
 
-    background: #dc2626;
+        button:active {
 
-    border-color: #ef4444;
-}
+            transform: scale(0.96);
+        }
 
 
-/* =====================================================
-   COMPASSO
-   ===================================================== */
+        .botao-principal {
 
-.compasso {
+            width: 100%;
 
-    display: grid;
+            background: #2563eb;
 
-    grid-template-columns: 1fr 1fr;
+            border-color: #3b82f6;
 
-    gap: 15px;
-}
+            font-size: 1.2rem;
 
+            padding: 17px;
 
-.campo-compasso {
+            margin-top: 20px;
+        }
 
-    text-align: center;
-}
 
+        .botao-principal.parar {
 
-.valor-compasso {
+            background: #dc2626;
 
-    font-size: 2.4rem;
+            border-color: #ef4444;
+        }
 
-    font-weight: bold;
 
-    margin: 8px 0 12px;
-}
+        /* =====================================================
+           COMPASSO
+           ===================================================== */
 
+        .compasso {
 
-.botoes-pequenos {
+            display: grid;
 
-    display: flex;
+            grid-template-columns: 1fr 1fr;
 
-    justify-content: center;
+            gap: 15px;
+        }
 
-    gap: 7px;
 
-    flex-wrap: wrap;
-}
+        .campo-compasso {
 
+            text-align: center;
+        }
 
-.botoes-pequenos button {
 
-    padding: 9px 13px;
+        .valor-compasso {
 
-    font-size: 0.85rem;
-}
+            font-size: 2.4rem;
 
+            font-weight: bold;
 
-/* =====================================================
-   SUBDIVISÕES
-   ===================================================== */
+            margin: 8px 0 12px;
+        }
 
-.subdivisoes {
 
-    display: grid;
+        .botoes-pequenos {
 
-    grid-template-columns:
-        repeat(5, 1fr);
+            display: flex;
 
-    gap: 8px;
-}
+            justify-content: center;
 
+            gap: 7px;
 
-.subdivisao {
+            flex-wrap: wrap;
+        }
 
-    padding: 12px 5px;
 
-    font-size: 0.78rem;
-}
+        .botoes-pequenos button {
 
+            padding: 9px 13px;
 
-.subdivisao.ativa {
+            font-size: 0.85rem;
+        }
 
-    background: #2563eb;
 
-    border-color: #60a5fa;
-}
+        .explicacao-compasso {
 
+            text-align: center;
 
-/* =====================================================
-   INDICADOR DE BATIDA
-   ===================================================== */
+            color: #94a3b8;
 
-.batida {
+            font-size: 0.78rem;
 
-    display: flex;
+            margin-top: 18px;
 
-    justify-content: center;
+            line-height: 1.5;
+        }
 
-    gap: 10px;
 
-    margin-top: 20px;
-}
+        /* =====================================================
+           SUBDIVISÕES
+           ===================================================== */
 
+        .subdivisoes {
 
-.ponto {
+            display: grid;
 
-    width: 14px;
+            grid-template-columns:
+                repeat(5, 1fr);
 
-    height: 14px;
+            gap: 8px;
+        }
 
-    border-radius: 50%;
 
-    background: #334155;
+        .subdivisao {
 
-    transition: 0.1s;
-}
+            padding: 12px 5px;
 
+            font-size: 0.78rem;
+        }
 
-.ponto.ativo {
 
-    background: #60a5fa;
+        .subdivisao.ativa {
 
-    transform: scale(1.4);
-}
+            background: #2563eb;
 
+            border-color: #60a5fa;
+        }
 
-/* =====================================================
-   BOTÃO TELA CHEIA
-   ===================================================== */
 
-.tela-cheia-btn {
+        /* =====================================================
+           INDICADOR DE BATIDA
+           ===================================================== */
 
-    width: 100%;
+        .batida {
 
-    margin-top: 12px;
+            display: flex;
 
-    background: #0f172a;
-}
+            justify-content: center;
 
+            gap: 10px;
 
-/* =====================================================
-   TELA CHEIA
-   ===================================================== */
+            margin-top: 20px;
 
-#modoTelaCheia {
+            flex-wrap: wrap;
+        }
 
-    position: fixed;
 
-    inset: 0;
+        .ponto {
 
-    width: 100vw;
+            width: 14px;
 
-    height: 100vh;
+            height: 14px;
 
-    background: #020617;
+            border-radius: 50%;
 
-    z-index: 99999;
+            background: #334155;
 
-    display: none;
+            transition: 0.1s;
+        }
 
-    align-items: center;
 
-    justify-content: center;
+        .ponto.ativo {
 
-    overflow: hidden;
-}
+            background: #60a5fa;
 
+            transform: scale(1.4);
+        }
 
-/* =====================================================
-   NÚMERO GIGANTE
-   ===================================================== */
 
-#contadorTelaCheia {
+        .ponto.primeiro {
 
-    font-size: 82vmin;
+            background: #475569;
+        }
 
-    font-weight: 900;
 
-    line-height: 0.75;
+        .ponto.primeiro.ativo {
 
-    color: white;
+            background: #f8fafc;
+        }
 
-    text-align: center;
 
-    user-select: none;
+        /* =====================================================
+           BOTÃO TELA CHEIA
+           ===================================================== */
 
-    pointer-events: none;
-}
+        .tela-cheia-btn {
 
+            width: 100%;
 
-/* =====================================================
-   BOTÃO X
-   ===================================================== */
+            margin-top: 12px;
 
-#fecharTelaCheia {
+            background: #0f172a;
+        }
 
-    position: fixed;
 
-    top: 25px;
+        /* =====================================================
+           TELA CHEIA
+           ===================================================== */
 
-    right: 25px;
+        #modoTelaCheia {
 
-    z-index: 100000;
+            position: fixed;
 
-    width: 58px;
+            inset: 0;
 
-    height: 58px;
+            width: 100vw;
 
-    padding: 0;
+            height: 100vh;
 
-    border-radius: 50%;
+            background: #020617;
 
-    background: #1e293b;
+            z-index: 99999;
 
-    border: 1px solid #64748b;
+            display: none;
 
-    color: white;
+            align-items: center;
 
-    font-size: 2rem;
+            justify-content: center;
 
-    line-height: 1;
+            overflow: hidden;
+        }
 
-    display: flex;
 
-    align-items: center;
+        /* =====================================================
+           NÚMERO GIGANTE
+           ===================================================== */
 
-    justify-content: center;
+        #contadorTelaCheia {
 
-    cursor: pointer;
+            font-size: 100vmin;
 
-    pointer-events: auto;
-}
+            font-weight: 900;
 
+            line-height: 0.75;
 
-/* =====================================================
-   CELULAR
-   ===================================================== */
+            color: white;
 
-@media (max-width: 600px) {
+            text-align: center;
 
-    .app {
+            user-select: none;
 
-        padding: 15px;
-    }
+            pointer-events: none;
+        }
 
 
-    .card {
+        /* =====================================================
+           BOTÃO X
+           ===================================================== */
 
-        padding: 18px;
+        #fecharTelaCheia {
 
-        border-radius: 18px;
-    }
+            position: fixed;
 
+            top: 25px;
 
-    .bpm {
+            right: 25px;
 
-        font-size: 5rem;
-    }
+            z-index: 100000;
 
+            width: 58px;
 
-    .compasso {
+            height: 58px;
 
-        gap: 10px;
-    }
+            padding: 0;
 
+            border-radius: 50%;
 
-    .valor-compasso {
+            background: #1e293b;
 
-        font-size: 2rem;
-    }
+            border: 1px solid #64748b;
 
+            color: white;
 
-    .subdivisoes {
+            font-size: 2rem;
 
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
+            line-height: 1;
 
+            display: flex;
 
-    .subdivisao {
+            align-items: center;
 
-        padding: 12px;
-    }
+            justify-content: center;
 
+            cursor: pointer;
 
-    .app::before {
+            pointer-events: auto;
+        }
 
-        background-size: 150% auto;
-    }
 
+        /* =====================================================
+           CELULAR
+           ===================================================== */
 
-    /* NÚMERO AINDA MAIOR NO CELULAR */
+        @media (max-width: 600px) {
 
-    #contadorTelaCheia {
+            .app {
 
-        font-size: 88vw;
+                padding: 15px;
+            }
 
-        line-height: 0.72;
-    }
 
+            .card {
 
-    #fecharTelaCheia {
+                padding: 18px;
 
-        top: 18px;
+                border-radius: 18px;
+            }
 
-        right: 18px;
 
-        width: 52px;
+            .bpm {
 
-        height: 52px;
+                font-size: 5rem;
+            }
 
-        font-size: 1.8rem;
-    }
 
-}
+            .compasso {
 
-</style>
+                gap: 10px;
+            }
+
+
+            .valor-compasso {
+
+                font-size: 2rem;
+            }
+
+
+            .subdivisoes {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .subdivisao {
+
+                padding: 12px;
+            }
+
+
+            .app::before {
+
+                background-size: 150% auto;
+            }
+
+
+            /* NÚMERO GIGANTE NO CELULAR */
+
+            #contadorTelaCheia {
+
+                font-size: 100vw;
+
+                line-height: 0.72;
+            }
+
+
+            #fecharTelaCheia {
+
+                top: 18px;
+
+                right: 18px;
+
+                width: 52px;
+
+                height: 52px;
+
+                font-size: 1.8rem;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -594,893 +641,1608 @@ button:active {
 <body>
 
 
-<!-- =====================================================
-     APLICATIVO NORMAL
-     ===================================================== -->
+    <!-- =====================================================
+         APLICATIVO NORMAL
+         ===================================================== -->
 
-<div class="app">
-
-    <div class="conteudo">
+    <div class="app">
 
 
-        <!-- TOPO -->
-
-        <div class="topo">
-
-            <a
-                href="index.html"
-                class="voltar"
-            >
-                ← Voltar
-            </a>
+        <div class="conteudo">
 
 
-            <h1>
-                🎵 Metrônomo
-            </h1>
+            <!-- TOPO -->
 
+            <div class="topo">
 
-            <div
-                style="width:70px;"
-            ></div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             BPM
-             ================================================= -->
-
-        <div class="card">
-
-            <div class="label">
-                BPM
-            </div>
-
-
-            <div
-                class="bpm"
-                id="bpm"
-            >
-                80
-            </div>
-
-
-            <div class="controles-bpm">
-
-                <button
-                    onclick="alterarBpm(-5)"
+                <a
+                    href="index.html"
+                    class="voltar"
                 >
-                    − 5
-                </button>
+                    ← Voltar
+                </a>
 
 
-                <button
-                    onclick="alterarBpm(5)"
+                <h1>
+                    🎵 Metrônomo
+                </h1>
+
+
+                <div
+                    style="width:70px;"
+                ></div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BPM
+                 ================================================= -->
+
+            <div class="card">
+
+
+                <div class="label">
+                    BPM
+                </div>
+
+
+                <div
+                    class="bpm"
+                    id="bpm"
                 >
-                    + 5
-                </button>
-
-            </div>
+                    80
+                </div>
 
 
-            <button
-                id="botaoIniciar"
-                class="botao-principal"
-                onclick="alternarMetronomo()"
-            >
-                ▶ INICIAR
-            </button>
+                <div class="descricao-bpm">
 
-
-            <button
-                class="tela-cheia-btn"
-                onclick="abrirTelaCheia()"
-            >
-                ⛶ TELA CHEIA
-            </button>
-
-
-            <div class="batida">
-
-                <div
-                    class="ponto"
-                    id="ponto0"
-                ></div>
-
-                <div
-                    class="ponto"
-                    id="ponto1"
-                ></div>
-
-                <div
-                    class="ponto"
-                    id="ponto2"
-                ></div>
-
-                <div
-                    class="ponto"
-                    id="ponto3"
-                ></div>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             COMPASSO
-             ================================================= -->
-
-        <div class="card">
-
-            <div class="label">
-                Fórmula de Compasso
-            </div>
-
-
-            <div class="compasso">
-
-
-                <!-- NUMERADOR -->
-
-                <div class="campo-compasso">
-
-                    <div>
-                        Numerador
-                    </div>
-
-
-                    <div
-                        class="valor-compasso"
-                        id="numerador"
-                    >
-                        4
-                    </div>
-
-
-                    <div class="botoes-pequenos">
-
-                        <button
-                            onclick="alterarNumerador(-1)"
-                        >
-                            −
-                        </button>
-
-
-                        <button
-                            onclick="alterarNumerador(1)"
-                        >
-                            +
-                        </button>
-
-                    </div>
+                    BPM = semínima
 
                 </div>
 
 
+                <div class="controles-bpm">
 
-                <!-- DENOMINADOR -->
-
-                <div class="campo-compasso">
-
-                    <div>
-                        Denominador
-                    </div>
-
-
-                    <div
-                        class="valor-compasso"
-                        id="denominador"
+                    <button
+                        onclick="alterarBpm(-5)"
                     >
-                        4
-                    </div>
+                        − 5
+                    </button>
 
 
-                    <div class="botoes-pequenos">
-
-                        <button
-                            onclick="alterarDenominador(-1)"
-                        >
-                            −
-                        </button>
-
-
-                        <button
-                            onclick="alterarDenominador(1)"
-                        >
-                            +
-                        </button>
-
-                    </div>
+                    <button
+                        onclick="alterarBpm(5)"
+                    >
+                        + 5
+                    </button>
 
                 </div>
 
+
+                <button
+                    id="botaoIniciar"
+                    class="botao-principal"
+                    onclick="alternarMetronomo()"
+                >
+                    ▶ INICIAR
+                </button>
+
+
+                <button
+                    class="tela-cheia-btn"
+                    onclick="abrirTelaCheia()"
+                >
+                    ⛶ TELA CHEIA
+                </button>
+
+
+                <div
+                    class="batida"
+                    id="indicadorBatida"
+                ></div>
+
+
             </div>
+
+
+
+            <!-- =================================================
+                 COMPASSO
+                 ================================================= -->
+
+            <div class="card">
+
+
+                <div class="label">
+                    Fórmula de Compasso
+                </div>
+
+
+                <div class="compasso">
+
+
+                    <!-- NUMERADOR -->
+
+                    <div class="campo-compasso">
+
+
+                        <div>
+                            Numerador
+                        </div>
+
+
+                        <div
+                            class="valor-compasso"
+                            id="numerador"
+                        >
+                            4
+                        </div>
+
+
+                        <div class="botoes-pequenos">
+
+
+                            <button
+                                onclick="alterarNumerador(-1)"
+                            >
+                                −
+                            </button>
+
+
+                            <button
+                                onclick="alterarNumerador(1)"
+                            >
+                                +
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- DENOMINADOR -->
+
+                    <div class="campo-compasso">
+
+
+                        <div>
+                            Denominador
+                        </div>
+
+
+                        <div
+                            class="valor-compasso"
+                            id="denominador"
+                        >
+                            4
+                        </div>
+
+
+                        <div class="botoes-pequenos">
+
+
+                            <button
+                                onclick="alterarDenominador(-1)"
+                            >
+                                −
+                            </button>
+
+
+                            <button
+                                onclick="alterarDenominador(1)"
+                            >
+                                +
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="explicacao-compasso">
+
+                    O denominador define qual figura musical vale 1 pulso.
+                    <br>
+                    4 = semínima &nbsp;|&nbsp;
+                    8 = colcheia &nbsp;|&nbsp;
+                    16 = semicolcheia
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 SUBDIVISÃO
+                 ================================================= -->
+
+            <div class="card">
+
+
+                <div class="label">
+                    Subdivisão do tempo
+                </div>
+
+
+                <div class="subdivisoes">
+
+
+                    <button
+                        class="subdivisao ativa"
+                        data-valor="1"
+                        onclick="selecionarSubdivisao(1)"
+                    >
+                        Semínima
+                    </button>
+
+
+                    <button
+                        class="subdivisao"
+                        data-valor="2"
+                        onclick="selecionarSubdivisao(2)"
+                    >
+                        Colcheia
+                    </button>
+
+
+                    <button
+                        class="subdivisao"
+                        data-valor="3"
+                        onclick="selecionarSubdivisao(3)"
+                    >
+                        Tercina
+                    </button>
+
+
+                    <button
+                        class="subdivisao"
+                        data-valor="6"
+                        onclick="selecionarSubdivisao(6)"
+                    >
+                        Sextina
+                    </button>
+
+
+                    <button
+                        class="subdivisao"
+                        data-valor="8"
+                        onclick="selecionarSubdivisao(8)"
+                    >
+                        Fusa
+                    </button>
+
+
+                </div>
+
+
+            </div>
+
 
         </div>
 
-
-
-        <!-- =================================================
-             SUBDIVISÃO
-             ================================================= -->
-
-        <div class="card">
-
-            <div class="label">
-                Subdivisão do tempo
-            </div>
-
-
-            <div class="subdivisoes">
-
-
-                <button
-                    class="subdivisao ativa"
-                    data-valor="1"
-                    onclick="selecionarSubdivisao(1)"
-                >
-                    Semínima
-                </button>
-
-
-                <button
-                    class="subdivisao"
-                    data-valor="2"
-                    onclick="selecionarSubdivisao(2)"
-                >
-                    Colcheia
-                </button>
-
-
-                <button
-                    class="subdivisao"
-                    data-valor="3"
-                    onclick="selecionarSubdivisao(3)"
-                >
-                    Tercina
-                </button>
-
-
-                <button
-                    class="subdivisao"
-                    data-valor="6"
-                    onclick="selecionarSubdivisao(6)"
-                >
-                    Sextina
-                </button>
-
-
-                <button
-                    class="subdivisao"
-                    data-valor="8"
-                    onclick="selecionarSubdivisao(8)"
-                >
-                    Fusa
-                </button>
-
-            </div>
-
-        </div>
 
     </div>
 
-</div>
 
 
-
-<!-- =====================================================
-     TELA CHEIA
-     ===================================================== -->
-
-<div id="modoTelaCheia">
-
-
-    <button
-        id="fecharTelaCheia"
-        type="button"
-        onclick="fecharTelaCheia()"
-        aria-label="Fechar tela cheia"
-    >
-        ×
-    </button>
-
+    <!-- =====================================================
+         TELA CHEIA
+         ===================================================== -->
 
     <div
-        id="contadorTelaCheia"
+        id="modoTelaCheia"
     >
-        1
+
+
+        <button
+            id="fecharTelaCheia"
+            type="button"
+            onclick="fecharTelaCheia()"
+            aria-label="Fechar tela cheia"
+        >
+            ×
+        </button>
+
+
+        <div
+            id="contadorTelaCheia"
+        >
+            1
+        </div>
+
+
     </div>
 
-</div>
 
 
+    <script>
 
-<script>
 
-/* =====================================================
-   CONFIGURAÇÕES
-   ===================================================== */
+        /* =====================================================
+           CONFIGURAÇÕES
+           ===================================================== */
 
-let bpm = 80;
 
-let numerador = 4;
+        let bpm = 80;
 
-let denominadores = [
-    2,
-    4,
-    8,
-    16
-];
 
-let indiceDenominador = 1;
+        let numerador = 4;
 
-let subdivisao = 1;
 
-let tocando = false;
+        const denominadores = [
+            2,
+            4,
+            8,
+            16
+        ];
 
-let intervalo = null;
 
-let batidaAtual = 0;
+        let indiceDenominador = 1;
 
-let audioContext = null;
 
+        let subdivisao = 1;
 
-/* =====================================================
-   BPM
-   ===================================================== */
 
-function alterarBpm(valor) {
+        /* =====================================================
+           ESTADO DO METRÔNOMO
+           ===================================================== */
 
-    bpm += valor;
 
+        let tocando = false;
 
-    if (bpm < 30) {
-        bpm = 30;
-    }
 
+        let audioContext = null;
 
-    if (bpm > 240) {
-        bpm = 240;
-    }
 
+        let ganhoMestre = null;
 
-    document
-        .getElementById("bpm")
-        .innerText = bpm;
 
+        let timerScheduler = null;
 
-    if (tocando) {
 
-        pararMetronomo();
+        let proximaBatidaAudio = 0;
 
-        iniciarMetronomo();
 
-    }
+        let pulsoAtual = 0;
 
-}
 
+        let subdivisaoAtual = 0;
 
-/* =====================================================
-   NUMERADOR
-   ===================================================== */
 
-function alterarNumerador(valor) {
+        let numeroExecucao = 0;
 
-    numerador += valor;
 
+        let timersVisuais = [];
 
-    if (numerador < 1) {
-        numerador = 1;
-    }
 
+        /*
+           O scheduler trabalha com antecedência.
 
-    if (numerador > 32) {
-        numerador = 32;
-    }
+           Isso evita que o navegador atrase os sons
+           quando estiver executando outras tarefas.
+        */
 
 
-    document
-        .getElementById("numerador")
-        .innerText = numerador;
+        const LOOKAHEAD_MS = 25;
 
 
-    batidaAtual = 0;
+        const SCHEDULE_AHEAD_TIME = 0.10;
 
 
-    atualizarContadorTelaCheia();
 
-}
+        /* =====================================================
+           PREPARAR ÁUDIO
+           ===================================================== */
 
 
-/* =====================================================
-   DENOMINADOR
-   ===================================================== */
+        function prepararAudio() {
 
-function alterarDenominador(valor) {
 
-    indiceDenominador += valor;
+            if (!audioContext) {
 
 
-    if (indiceDenominador < 0) {
+                audioContext =
+                    new (
+                        window.AudioContext ||
+                        window.webkitAudioContext
+                    )();
 
-        indiceDenominador =
-            denominadores.length - 1;
 
-    }
+                ganhoMestre =
+                    audioContext.createGain();
 
 
-    if (
-        indiceDenominador >=
-        denominadores.length
-    ) {
+                ganhoMestre.gain.value = 0;
 
-        indiceDenominador = 0;
 
-    }
-
-
-    document
-        .getElementById("denominador")
-        .innerText =
-        denominadores[indiceDenominador];
-
-}
-
-
-/* =====================================================
-   SUBDIVISÃO
-   ===================================================== */
-
-function selecionarSubdivisao(valor) {
-
-    subdivisao = valor;
-
-
-    document
-        .querySelectorAll(".subdivisao")
-        .forEach(botao => {
-
-            botao.classList.remove(
-                "ativa"
-            );
-
-
-            if (
-                Number(botao.dataset.valor)
-                === valor
-            ) {
-
-                botao.classList.add(
-                    "ativa"
+                ganhoMestre.connect(
+                    audioContext.destination
                 );
 
             }
 
-        });
+        }
 
 
-    if (tocando) {
 
-        pararMetronomo();
+        /* =====================================================
+           BPM
+           ===================================================== */
 
-        iniciarMetronomo();
 
-    }
+        function alterarBpm(valor) {
 
-}
 
+            bpm += valor;
 
-/* =====================================================
-   LIGAR / DESLIGAR
-   ===================================================== */
 
-function alternarMetronomo() {
+            if (bpm < 30) {
 
-    if (tocando) {
+                bpm = 30;
 
-        pararMetronomo();
+            }
 
-    } else {
 
-        iniciarMetronomo();
+            if (bpm > 240) {
 
-    }
+                bpm = 240;
 
-}
+            }
 
 
-/* =====================================================
-   INICIAR
-   ===================================================== */
+            document
+                .getElementById("bpm")
+                .innerText = bpm;
 
-function iniciarMetronomo() {
 
-    if (!audioContext) {
+            if (tocando) {
 
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
+                reiniciarMetronomo();
 
-    }
-
-
-    if (
-        audioContext.state ===
-        "suspended"
-    ) {
-
-        audioContext.resume();
-
-    }
-
-
-    tocando = true;
-
-
-    batidaAtual = 0;
-
-
-    document
-        .getElementById("botaoIniciar")
-        .innerText =
-        "■ PARAR";
-
-
-    document
-        .getElementById("botaoIniciar")
-        .classList.add("parar");
-
-
-    tocarBatida();
-
-
-    const intervaloTempo =
-        (60000 / bpm) /
-        subdivisao;
-
-
-    intervalo = setInterval(
-        tocarBatida,
-        intervaloTempo
-    );
-
-}
-
-
-/* =====================================================
-   PARAR
-   ===================================================== */
-
-function pararMetronomo() {
-
-    tocando = false;
-
-
-    if (intervalo) {
-
-        clearInterval(intervalo);
-
-        intervalo = null;
-
-    }
-
-
-    document
-        .getElementById("botaoIniciar")
-        .innerText =
-        "▶ INICIAR";
-
-
-    document
-        .getElementById("botaoIniciar")
-        .classList.remove("parar");
-
-
-    document
-        .querySelectorAll(".ponto")
-        .forEach(p => {
-
-            p.classList.remove("ativo");
-
-        });
-
-}
-
-
-/* =====================================================
-   BATIDA
-   ===================================================== */
-
-function tocarBatida() {
-
-    let dentroDoTempo =
-        batidaAtual %
-        subdivisao === 0;
-
-
-    let tempoAtual =
-        Math.floor(
-            batidaAtual /
-            subdivisao
-        );
-
-
-    if (dentroDoTempo) {
-
-
-        /* PRIMEIRO TEMPO MAIS FORTE */
-
-        tocarSom(
-            tempoAtual === 0
-                ? 1000
-                : 700
-        );
-
-
-        mostrarBatidaVisual(
-            tempoAtual
-        );
-
-
-        atualizarContadorTelaCheia();
-
-
-        batidaAtual++;
-
-
-        if (
-            tempoAtual + 1 >=
-            numerador
-        ) {
-
-            batidaAtual = 0;
+            }
 
         }
 
-    } else {
 
 
-        /* SUBDIVISÃO */
-
-        tocarSom(500);
-
-
-        batidaAtual++;
-
-    }
-
-}
+        /* =====================================================
+           NUMERADOR
+           ===================================================== */
 
 
-/* =====================================================
-   SOM
-   ===================================================== */
-
-function tocarSom(frequencia) {
-
-    if (!audioContext) {
-        return;
-    }
+        function alterarNumerador(valor) {
 
 
-    const oscilador =
-        audioContext.createOscillator();
+            numerador += valor;
 
 
-    const ganho =
-        audioContext.createGain();
+            if (numerador < 1) {
+
+                numerador = 1;
+
+            }
 
 
-    oscilador.frequency.value =
-        frequencia;
+            if (numerador > 32) {
+
+                numerador = 32;
+
+            }
 
 
-    oscilador.type = "sine";
+            document
+                .getElementById("numerador")
+                .innerText = numerador;
 
 
-    ganho.gain.setValueAtTime(
-        0.0001,
-        audioContext.currentTime
-    );
+            atualizarIndicadores();
 
 
-    ganho.gain.exponentialRampToValueAtTime(
-        0.3,
-        audioContext.currentTime + 0.005
-    );
+            if (tocando) {
+
+                reiniciarMetronomo();
+
+            } else {
+
+                atualizarContadorTelaCheia();
+
+            }
+
+        }
 
 
-    ganho.gain.exponentialRampToValueAtTime(
-        0.0001,
-        audioContext.currentTime + 0.08
-    );
+
+        /* =====================================================
+           DENOMINADOR
+           ===================================================== */
 
 
-    oscilador.connect(ganho);
+        function alterarDenominador(valor) {
 
 
-    ganho.connect(
-        audioContext.destination
-    );
+            indiceDenominador += valor;
 
 
-    oscilador.start();
+            if (
+                indiceDenominador < 0
+            ) {
+
+                indiceDenominador =
+                    denominadores.length - 1;
+
+            }
 
 
-    oscilador.stop(
-        audioContext.currentTime + 0.1
-    );
+            if (
+                indiceDenominador >=
+                denominadores.length
+            ) {
 
-}
+                indiceDenominador = 0;
 
-
-/* =====================================================
-   INDICADOR VISUAL
-   ===================================================== */
-
-function mostrarBatidaVisual(numero) {
-
-    document
-        .querySelectorAll(".ponto")
-        .forEach(p => {
-
-            p.classList.remove("ativo");
-
-        });
+            }
 
 
-    const indice =
-        numero % 4;
+            document
+                .getElementById("denominador")
+                .innerText =
+                denominadores[
+                    indiceDenominador
+                ];
 
 
-    const ponto =
-        document.getElementById(
-            "ponto" + indice
-        );
+            /*
+               O denominador agora realmente
+               altera a duração do pulso.
+            */
 
 
-    if (ponto) {
+            if (tocando) {
 
-        ponto.classList.add("ativo");
+                reiniciarMetronomo();
+
+            }
+
+        }
 
 
-        setTimeout(() => {
 
-            ponto.classList.remove(
-                "ativo"
+        /* =====================================================
+           SUBDIVISÃO
+           ===================================================== */
+
+
+        function selecionarSubdivisao(valor) {
+
+
+            subdivisao = valor;
+
+
+            document
+                .querySelectorAll(".subdivisao")
+                .forEach(botao => {
+
+
+                    botao.classList.remove(
+                        "ativa"
+                    );
+
+
+                    if (
+                        Number(
+                            botao.dataset.valor
+                        ) === valor
+                    ) {
+
+                        botao.classList.add(
+                            "ativa"
+                        );
+
+                    }
+
+                });
+
+
+            if (tocando) {
+
+                reiniciarMetronomo();
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           OBTER DENOMINADOR
+           ===================================================== */
+
+
+        function obterDenominador() {
+
+            return denominadores[
+                indiceDenominador
+            ];
+
+        }
+
+
+
+        /* =====================================================
+           DURAÇÃO DO PULSO
+           ===================================================== */
+
+
+        function obterDuracaoDoPulso() {
+
+
+            /*
+               BPM é a referência da semínima.
+
+               4/4:
+               1 pulso = semínima
+
+               4/8:
+               1 pulso = colcheia
+
+               4/16:
+               1 pulso = semicolcheia
+
+
+               Fórmula:
+
+               duração =
+               60 / BPM
+               ×
+               4 / denominador
+            */
+
+
+            const denominador =
+                obterDenominador();
+
+
+            return (
+                60 / bpm
+            ) * (
+                4 / denominador
             );
 
-        }, 120);
-
-    }
-
-}
+        }
 
 
-/* =====================================================
-   ABRIR TELA CHEIA
-   ===================================================== */
 
-function abrirTelaCheia() {
-
-    const tela =
-        document.getElementById(
-            "modoTelaCheia"
-        );
+        /* =====================================================
+           LIGAR / DESLIGAR
+           ===================================================== */
 
 
-    tela.style.display = "flex";
+        function alternarMetronomo() {
 
 
-    atualizarContadorTelaCheia();
+            if (tocando) {
 
-}
+                pararMetronomo();
 
+            } else {
 
-/* =====================================================
-   FECHAR TELA CHEIA
-   ===================================================== */
+                iniciarMetronomo();
 
-function fecharTelaCheia() {
+            }
 
-    const tela =
-        document.getElementById(
-            "modoTelaCheia"
-        );
+        }
 
 
-    tela.style.display = "none";
 
-}
-
-
-/* =====================================================
-   CONTAGEM DO COMPASSO
-   ===================================================== */
-
-function atualizarContadorTelaCheia() {
-
-    let numero = 1;
+        /* =====================================================
+           REINICIAR
+           ===================================================== */
 
 
-    if (tocando) {
-
-        numero =
-            Math.floor(
-                batidaAtual /
-                subdivisao
-            ) + 1;
-
-    } else {
-
-        numero = 1;
-
-    }
+        function reiniciarMetronomo() {
 
 
-    if (numero > numerador) {
-
-        numero = 1;
-
-    }
+            pararMetronomo();
 
 
-    document
-        .getElementById(
-            "contadorTelaCheia"
-        )
-        .innerText = numero;
+            iniciarMetronomo();
 
-}
+        }
 
 
-/* =====================================================
-   TECLA ESC
-   ===================================================== */
 
-document.addEventListener(
-    "keydown",
-    function(event) {
+        /* =====================================================
+           INICIAR
+           ===================================================== */
 
-        if (
-            event.key === "Escape" ||
-            event.key === "Esc"
+
+        async function iniciarMetronomo() {
+
+
+            prepararAudio();
+
+
+            if (
+                audioContext.state ===
+                "suspended"
+            ) {
+
+                await audioContext.resume();
+
+            }
+
+
+            /*
+               Nova execução.
+
+               Isso invalida todos os timers
+               visuais antigos.
+            */
+
+
+            numeroExecucao++;
+
+
+            const execucaoAtual =
+                numeroExecucao;
+
+
+            limparTimersVisuais();
+
+
+            if (timerScheduler) {
+
+                clearTimeout(
+                    timerScheduler
+                );
+
+                timerScheduler = null;
+
+            }
+
+
+            /*
+               Começa sempre no pulso 1.
+            */
+
+
+            pulsoAtual = 0;
+
+
+            subdivisaoAtual = 0;
+
+
+            tocando = true;
+
+
+            /*
+               Libera o ganho mestre.
+            */
+
+
+            const agora =
+                audioContext.currentTime;
+
+
+            ganhoMestre.gain.cancelScheduledValues(
+                agora
+            );
+
+
+            ganhoMestre.gain.setValueAtTime(
+                1,
+                agora
+            );
+
+
+            /*
+               Pequena margem para o primeiro som.
+            */
+
+
+            proximaBatidaAudio =
+                agora + 0.05;
+
+
+            document
+                .getElementById(
+                    "botaoIniciar"
+                )
+                .innerText =
+                "■ PARAR";
+
+
+            document
+                .getElementById(
+                    "botaoIniciar"
+                )
+                .classList.add(
+                    "parar"
+                );
+
+
+            atualizarIndicadores();
+
+
+            /*
+               Inicia o scheduler.
+            */
+
+
+            scheduler(
+                execucaoAtual
+            );
+
+        }
+
+
+
+        /* =====================================================
+           SCHEDULER
+           ===================================================== */
+
+
+        function scheduler(execucaoAtual) {
+
+
+            if (
+                !tocando ||
+                execucaoAtual !== numeroExecucao
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+               Agenda os sons que estão próximos.
+            */
+
+
+            while (
+                proximaBatidaAudio <
+                audioContext.currentTime +
+                SCHEDULE_AHEAD_TIME
+            ) {
+
+
+                agendarSom(
+                    proximaBatidaAudio,
+                    pulsoAtual,
+                    subdivisaoAtual,
+                    execucaoAtual
+                );
+
+
+                avancarContagem();
+
+
+            }
+
+
+            timerScheduler =
+                setTimeout(
+                    () => {
+
+                        scheduler(
+                            execucaoAtual
+                        );
+
+                    },
+                    LOOKAHEAD_MS
+                );
+
+        }
+
+
+
+        /* =====================================================
+           AGENDAR SOM
+           ===================================================== */
+
+
+        function agendarSom(
+            tempo,
+            pulso,
+            sub,
+            execucaoAtual
         ) {
 
-            fecharTelaCheia();
+
+            /*
+               sub = 0 significa o pulso principal.
+
+               sub = 1, 2, 3...
+               são as subdivisões daquele pulso.
+            */
+
+
+            const pulsoPrincipal =
+                sub === 0;
+
+
+            let frequencia;
+
+
+            if (pulsoPrincipal) {
+
+
+                /*
+                   Pulso 1 é mais forte.
+                */
+
+
+                frequencia =
+                    pulso === 0
+                        ? 1000
+                        : 700;
+
+
+            } else {
+
+
+                frequencia = 500;
+
+            }
+
+
+            tocarSomEm(
+                tempo,
+                frequencia
+            );
+
+
+            /*
+               Atualização visual sincronizada
+               com o instante real do áudio.
+            */
+
+
+            const atraso =
+                Math.max(
+                    0,
+                    (
+                        tempo -
+                        audioContext.currentTime
+                    ) * 1000
+                );
+
+
+            const timer =
+                setTimeout(
+                    () => {
+
+
+                        timersVisuais =
+                            timersVisuais.filter(
+                                item =>
+                                    item !== timer
+                            );
+
+
+                        if (
+                            !tocando ||
+                            execucaoAtual !==
+                            numeroExecucao
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        /*
+                           A tela e os pontos mostram
+                           o pulso, não a subdivisão.
+                        */
+
+
+                        mostrarBatidaVisual(
+                            pulso
+                        );
+
+
+                        atualizarContadorTelaCheia(
+                            pulso
+                        );
+
+
+                    },
+                    atraso
+                );
+
+
+            timersVisuais.push(
+                timer
+            );
+
 
         }
 
-    }
-);
 
 
-/* =====================================================
-   GARANTIA EXTRA PARA O BOTÃO X
-   ===================================================== */
+        /* =====================================================
+           AVANÇAR CONTAGEM
+           ===================================================== */
 
-document
-    .getElementById("fecharTelaCheia")
-    .addEventListener(
-        "click",
-        function(event) {
 
-            event.preventDefault();
+        function avancarContagem() {
 
-            event.stopPropagation();
 
-            fecharTelaCheia();
+            /*
+               Primeiro avançamos a subdivisão.
+            */
+
+
+            subdivisaoAtual++;
+
+
+            /*
+               Quando terminamos todas as subdivisões
+               daquele pulso, passamos para o próximo pulso.
+            */
+
+
+            if (
+                subdivisaoAtual >=
+                subdivisao
+            ) {
+
+
+                subdivisaoAtual = 0;
+
+
+                pulsoAtual++;
+
+
+                /*
+                   Quando terminamos todos os pulsos
+                   do compasso, voltamos ao pulso 1.
+                */
+
+
+                if (
+                    pulsoAtual >=
+                    numerador
+                ) {
+
+                    pulsoAtual = 0;
+
+                }
+
+            }
+
+
+            /*
+               A duração de cada subdivisão é:
+
+               duração do pulso /
+               quantidade de subdivisões
+            */
+
+
+            proximaBatidaAudio +=
+                obterDuracaoDoPulso() /
+                subdivisao;
 
         }
-    );
 
-</script>
+
+
+        /* =====================================================
+           PARAR
+           ===================================================== */
+
+
+        function pararMetronomo() {
+
+
+            tocando = false;
+
+
+            /*
+               Invalida todos os timers
+               da execução anterior.
+            */
+
+
+            numeroExecucao++;
+
+
+            if (timerScheduler) {
+
+                clearTimeout(
+                    timerScheduler
+                );
+
+                timerScheduler = null;
+
+            }
+
+
+            limparTimersVisuais();
+
+
+            /*
+               Silencia inclusive os sons que
+               eventualmente já tenham sido
+               agendados pelo Web Audio.
+            */
+
+
+            if (
+                audioContext &&
+                ganhoMestre
+            ) {
+
+
+                const agora =
+                    audioContext.currentTime;
+
+
+                ganhoMestre.gain.cancelScheduledValues(
+                    agora
+                );
+
+
+                ganhoMestre.gain.setValueAtTime(
+                    0,
+                    agora
+                );
+
+            }
+
+
+            pulsoAtual = 0;
+
+
+            subdivisaoAtual = 0;
+
+
+            document
+                .getElementById(
+                    "botaoIniciar"
+                )
+                .innerText =
+                "▶ INICIAR";
+
+
+            document
+                .getElementById(
+                    "botaoIniciar"
+                )
+                .classList.remove(
+                    "parar"
+                );
+
+
+            document
+                .querySelectorAll(".ponto")
+                .forEach(ponto => {
+
+                    ponto.classList.remove(
+                        "ativo"
+                    );
+
+                });
+
+
+            atualizarContadorTelaCheia();
+
+        }
+
+
+
+        /* =====================================================
+           LIMPAR TIMERS VISUAIS
+           ===================================================== */
+
+
+        function limparTimersVisuais() {
+
+
+            timersVisuais.forEach(
+                timer => {
+
+                    clearTimeout(
+                        timer
+                    );
+
+                }
+            );
+
+
+            timersVisuais = [];
+
+        }
+
+
+
+        /* =====================================================
+           SOM
+           ===================================================== */
+
+
+        function tocarSomEm(
+            tempo,
+            frequencia
+        ) {
+
+
+            if (
+                !audioContext ||
+                !ganhoMestre
+            ) {
+
+                return;
+
+            }
+
+
+            const oscilador =
+                audioContext.createOscillator();
+
+
+            const ganho =
+                audioContext.createGain();
+
+
+            oscilador.frequency.value =
+                frequencia;
+
+
+            oscilador.type =
+                "sine";
+
+
+            /*
+               Ataque rápido.
+            */
+
+
+            ganho.gain.setValueAtTime(
+                0.0001,
+                tempo
+            );
+
+
+            ganho.gain.exponentialRampToValueAtTime(
+                0.30,
+                tempo + 0.005
+            );
+
+
+            ganho.gain.exponentialRampToValueAtTime(
+                0.0001,
+                tempo + 0.08
+            );
+
+
+            oscilador.connect(
+                ganho
+            );
+
+
+            ganho.connect(
+                ganhoMestre
+            );
+
+
+            oscilador.start(
+                tempo
+            );
+
+
+            oscilador.stop(
+                tempo + 0.10
+            );
+
+        }
+
+
+
+        /* =====================================================
+           INDICADORES
+           ===================================================== */
+
+
+        function atualizarIndicadores() {
+
+
+            const caixa =
+                document.getElementById(
+                    "indicadorBatida"
+                );
+
+
+            caixa.innerHTML = "";
+
+
+            for (
+                let i = 0;
+                i < numerador;
+                i++
+            ) {
+
+
+                const ponto =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                ponto.className =
+                    "ponto";
+
+
+                if (i === 0) {
+
+                    ponto.classList.add(
+                        "primeiro"
+                    );
+
+                }
+
+
+                ponto.id =
+                    "ponto" + i;
+
+
+                caixa.appendChild(
+                    ponto
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           INDICADOR VISUAL
+           ===================================================== */
+
+
+        function mostrarBatidaVisual(
+            numero
+        ) {
+
+
+            document
+                .querySelectorAll(
+                    ".ponto"
+                )
+                .forEach(
+                    ponto => {
+
+                        ponto.classList.remove(
+                            "ativo"
+                        );
+
+                    }
+                );
+
+
+            const ponto =
+                document.getElementById(
+                    "ponto" + numero
+                );
+
+
+            if (ponto) {
+
+
+                ponto.classList.add(
+                    "ativo"
+                );
+
+
+                setTimeout(
+                    () => {
+
+                        ponto.classList.remove(
+                            "ativo"
+                        );
+
+                    },
+                    120
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           ABRIR TELA CHEIA
+           ===================================================== */
+
+
+        function abrirTelaCheia() {
+
+
+            const tela =
+                document.getElementById(
+                    "modoTelaCheia"
+                );
+
+
+            tela.style.display =
+                "flex";
+
+
+            atualizarContadorTelaCheia();
+
+        }
+
+
+
+        /* =====================================================
+           FECHAR TELA CHEIA
+           ===================================================== */
+
+
+        function fecharTelaCheia() {
+
+
+            const tela =
+                document.getElementById(
+                    "modoTelaCheia"
+                );
+
+
+            tela.style.display =
+                "none";
+
+        }
+
+
+
+        /* =====================================================
+           CONTADOR DA TELA CHEIA
+           ===================================================== */
+
+
+        function atualizarContadorTelaCheia(
+            pulso = null
+        ) {
+
+
+            let numero = 1;
+
+
+            if (
+                tocando &&
+                pulso !== null
+            ) {
+
+
+                numero =
+                    pulso + 1;
+
+
+            } else if (tocando) {
+
+
+                numero =
+                    pulsoAtual + 1;
+
+            }
+
+
+            if (
+                numero < 1
+            ) {
+
+                numero = 1;
+
+            }
+
+
+            if (
+                numero > numerador
+            ) {
+
+                numero = 1;
+
+            }
+
+
+            document
+                .getElementById(
+                    "contadorTelaCheia"
+                )
+                .innerText =
+                numero;
+
+        }
+
+
+
+        /* =====================================================
+           TECLA ESC
+           ===================================================== */
+
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+
+                if (
+                    event.key === "Escape" ||
+                    event.key === "Esc"
+                ) {
+
+
+                    fecharTelaCheia();
+
+                }
+
+            }
+        );
+
+
+
+        /* =====================================================
+           GARANTIA DO BOTÃO X
+           ===================================================== */
+
+
+        document
+            .getElementById(
+                "fecharTelaCheia"
+            )
+            .addEventListener(
+                "click",
+                function(event) {
+
+
+                    event.preventDefault();
+
+
+                    event.stopPropagation();
+
+
+                    fecharTelaCheia();
+
+                }
+            );
+
+
+
+        /* =====================================================
+           INICIALIZAÇÃO
+           ===================================================== */
+
+
+        atualizarIndicadores();
+
+
+        document
+            .getElementById(
+                "denominador"
+            )
+            .innerText =
+            obterDenominador();
+
+
+    </script>
+
 
 </body>
 
