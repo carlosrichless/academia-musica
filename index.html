@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1db954">
+
     <title>Projeto Academia de Música</title>
 
     <style>
@@ -110,7 +111,7 @@
             display: none;
         }
 
-        /* LINK DO PAINEL */
+        /* LINK ADMIN */
         .top-admin-link {
             text-align: right;
             margin-bottom: 15px;
@@ -142,6 +143,68 @@
         .header p {
             color: var(--text-muted);
             font-size: 0.95rem;
+        }
+
+        /* APLICATIVOS */
+        .apps-musicais {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .app-musical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 190px;
+            padding: 25px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            transition: transform 0.15s ease,
+                        border-color 0.15s ease,
+                        box-shadow 0.15s ease;
+        }
+
+        .app-musical:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .app-musical:active {
+            transform: scale(0.97);
+        }
+
+        .app-icone {
+            width: 90px;
+            height: 90px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+        }
+
+        .app-musical h3 {
+            font-size: 1.2rem;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .app-musical p {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            text-align: center;
         }
 
         /* MURAL */
@@ -297,6 +360,7 @@
 
         /* CELULAR */
         @media (max-width: 900px) {
+
             .lembretes-grid {
                 grid-template-columns: 1fr;
             }
@@ -304,9 +368,11 @@
             .modulos-grid {
                 grid-template-columns: 1fr;
             }
+
         }
 
         @media (max-width: 600px) {
+
             body {
                 padding: 10px;
             }
@@ -315,16 +381,42 @@
                 font-size: 1.6rem;
             }
 
+            .apps-musicais {
+                gap: 12px;
+            }
+
+            .app-musical {
+                min-height: 155px;
+                padding: 15px 8px;
+                border-radius: 16px;
+            }
+
+            .app-icone {
+                width: 65px;
+                height: 65px;
+                border-radius: 17px;
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .app-musical h3 {
+                font-size: 1rem;
+            }
+
+            .app-musical p {
+                font-size: 0.72rem;
+            }
+
             .secao-mural {
                 padding: 15px;
             }
 
-            .modulo-box {
-                padding: 20px;
-            }
-
             .mural-caixa-interna {
                 padding: 20px 10px;
+            }
+
+            .modulo-box {
+                padding: 20px;
             }
         }
     </style>
@@ -334,7 +426,9 @@
 
     <!-- LOGIN -->
     <div id="telaLoginGeral" class="container">
+
         <div class="login-box">
+
             <h2>🎵 Academia de Música</h2>
 
             <p>
@@ -355,26 +449,34 @@
                 Entrar no Site
             </button>
 
-            <div id="erroSenhaSite" class="erro-msg">
+            <div
+                id="erroSenhaSite"
+                class="erro-msg"
+            >
                 Senha incorreta!
             </div>
+
         </div>
+
     </div>
 
 
-    <!-- CONTEÚDO DO SITE -->
+    <!-- CONTEÚDO -->
     <div id="conteudoSite" class="container">
 
-        <!-- LINK DO PAINEL -->
+        <!-- ADMIN -->
         <div class="top-admin-link">
+
             <a href="painel-admin.html">
                 ⚙️ Abrir Painel Administrativo
             </a>
+
         </div>
 
 
         <!-- CABEÇALHO -->
         <div class="header">
+
             <p>
                 Professor C. Richless - Área de Estudos e Prática
             </p>
@@ -382,10 +484,64 @@
             <h1>
                 Projeto Academia de Música
             </h1>
+
         </div>
 
 
-        <!-- MURAL ROTATIVO -->
+        <!-- ================================
+             APLICATIVOS MUSICAIS
+             ================================ -->
+
+        <div class="apps-musicais">
+
+            <!-- METRÔNOMO -->
+            <a
+                href="metronomo.html"
+                class="app-musical"
+            >
+
+                <div class="app-icone">
+                    🎵
+                </div>
+
+                <h3>
+                    METRÔNOMO
+                </h3>
+
+                <p>
+                    Ritmo e velocidade
+                </p>
+
+            </a>
+
+
+            <!-- AFINADOR -->
+            <a
+                href="afinador.html"
+                class="app-musical"
+            >
+
+                <div class="app-icone">
+                    🎸
+                </div>
+
+                <h3>
+                    AFINADOR
+                </h3>
+
+                <p>
+                    Afinador de violão
+                </p>
+
+            </a>
+
+        </div>
+
+
+        <!-- ================================
+             MURAL
+             ================================ -->
+
         <div class="secao-mural">
 
             <h2>
@@ -417,7 +573,10 @@
         </div>
 
 
-        <!-- MÓDULOS -->
+        <!-- ================================
+             MÓDULOS
+             ================================ -->
+
         <div class="modulos-grid">
 
             <div class="modulo-box">
@@ -462,10 +621,12 @@
         </div>
 
 
-        <!-- LEMBRETES DE MÍDIA -->
+        <!-- ================================
+             LEMBRETES
+             ================================ -->
+
         <div class="lembretes-grid">
 
-            <!-- IMAGEM -->
             <div class="lembrete-card">
 
                 <h3>
@@ -473,17 +634,18 @@
                 </h3>
 
                 <div class="lembrete-conteudo">
+
                     <img
                         id="midiaImg"
                         src=""
                         alt=""
                     >
+
                 </div>
 
             </div>
 
 
-            <!-- ÁUDIO -->
             <div class="lembrete-card">
 
                 <h3>
@@ -491,16 +653,17 @@
                 </h3>
 
                 <div class="lembrete-conteudo">
+
                     <audio
                         id="midiaAudio"
                         controls
                     ></audio>
+
                 </div>
 
             </div>
 
 
-            <!-- VÍDEO -->
             <div class="lembrete-card">
 
                 <h3>
@@ -508,10 +671,12 @@
                 </h3>
 
                 <div class="lembrete-conteudo">
+
                     <video
                         id="midiaVideo"
                         controls
                     ></video>
+
                 </div>
 
             </div>
@@ -523,10 +688,12 @@
 
     <!-- RODAPÉ -->
     <footer>
+
         <p>
             Projeto Academia de Música - C. Richless
             &copy; 2026 - Todos os direitos reservados.
         </p>
+
     </footer>
 
 
@@ -540,24 +707,28 @@
     <script>
 
         /* =========================================
-           VERIFICAR SENHA DO SITE
+           SENHA DO SITE
            ========================================= */
 
         async function verificarSenhaSite() {
 
             try {
 
-                let docRef = await window.firestore.getDoc(
-                    window.firestore.doc(
-                        window.db,
-                        "configuracoes",
-                        "sistema"
-                    )
-                );
+                let docRef =
+                    await window.firestore.getDoc(
+                        window.firestore.doc(
+                            window.db,
+                            "configuracoes",
+                            "sistema"
+                        )
+                    );
 
-                let dados = docRef.exists()
-                    ? docRef.data()
-                    : {};
+
+                let dados =
+                    docRef.exists()
+                        ? docRef.data()
+                        : {};
+
 
                 let senhaGeral =
                     dados.senha_site_geral || "123456";
@@ -573,9 +744,11 @@
                         'telaLoginGeral'
                     ).style.display = 'none';
 
+
                     document.getElementById(
                         'conteudoSite'
                     ).style.display = 'block';
+
 
                     inicializarSite();
 
@@ -603,9 +776,7 @@
         }
 
 
-        /* =========================================
-           ENTER NO CAMPO DE SENHA
-           ========================================= */
+        /* ENTER NA SENHA */
 
         document
             .getElementById('senhaSiteInput')
@@ -632,6 +803,7 @@
                     ? 'bateria-vip.html'
                     : 'violao-vip.html';
 
+
             window.location.href =
                 paginaDestino;
 
@@ -639,7 +811,7 @@
 
 
         /* =========================================
-           INICIALIZAR SITE
+           CARREGAR DADOS DO SITE
            ========================================= */
 
         async function inicializarSite() {
@@ -662,12 +834,11 @@
                         : {};
 
 
-                /* =================================
-                   AVISOS DO MURAL
-                   ================================= */
+                /* AVISOS */
 
                 let listaAvisos =
                     dados.admin_avisos_custom || [
+
                         {
                             titulo:
                                 "🎵 Bem-vindo ao Projeto 2026!",
@@ -675,12 +846,11 @@
                             texto:
                                 "Confira os recados importantes."
                         }
+
                     ];
 
 
-                /* =================================
-                   TEMPO DO MURAL
-                   ================================= */
+                /* TEMPO DO MURAL */
 
                 let tempoSegundos =
                     parseInt(
@@ -688,16 +858,14 @@
                     ) || 4;
 
 
-                /* =================================
-                   ELEMENTOS DO MURAL
-                   ================================= */
-
                 let indexAviso = 0;
+
 
                 const elTitulo =
                     document.getElementById(
                         'muralTitulo'
                     );
+
 
                 const elTexto =
                     document.getElementById(
@@ -705,9 +873,7 @@
                     );
 
 
-                /* =================================
-                   ATUALIZAR MURAL
-                   ================================= */
+                /* ATUALIZAR MURAL */
 
                 function atualizarMural() {
 
@@ -728,6 +894,7 @@
 
                                 elTitulo.innerText =
                                     item.titulo || "";
+
 
                                 elTexto.innerText =
                                     item.texto || "";
@@ -752,26 +919,20 @@
                 }
 
 
-                /* =================================
-                   ANIMAÇÃO
-                   ================================= */
-
                 elTitulo.style.transition =
                     "opacity 0.3s ease";
+
 
                 elTexto.style.transition =
                     "opacity 0.3s ease";
 
-
-                /* =================================
-                   INICIAR MURAL
-                   ================================= */
 
                 if (
                     listaAvisos.length > 0
                 ) {
 
                     atualizarMural();
+
 
                     setInterval(
                         atualizarMural,
@@ -781,9 +942,7 @@
                 }
 
 
-                /* =================================
-                   MÍDIA
-                   ================================= */
+                /* MÍDIA */
 
                 document.getElementById(
                     'midiaImg'
@@ -832,17 +991,19 @@
                         .register('./sw.js')
 
                         .then(
-                            reg => console.log(
-                                'Service Worker registrado com sucesso!',
-                                reg
-                            )
+                            reg =>
+                                console.log(
+                                    'Service Worker registrado com sucesso!',
+                                    reg
+                                )
                         )
 
                         .catch(
-                            err => console.log(
-                                'Falha ao registrar o Service Worker:',
-                                err
-                            )
+                            err =>
+                                console.log(
+                                    'Falha ao registrar o Service Worker:',
+                                    err
+                                )
                         );
 
                 }
