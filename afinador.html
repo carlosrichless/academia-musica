@@ -17,203 +17,121 @@
 }
 
 body {
-
     margin: 0;
-
     min-height: 100vh;
-
     background: #020617;
-
     color: white;
-
     font-family: Arial, sans-serif;
 }
 
 .app {
-
     min-height: 100vh;
-
     padding: 20px;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
 }
 
 .conteudo {
-
     width: 100%;
-
     max-width: 650px;
 }
 
 .topo {
-
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     margin-bottom: 25px;
 }
 
 .voltar {
-
     color: white;
-
     text-decoration: none;
-
     background: #0f172a;
-
     border: 1px solid #334155;
-
     padding: 10px 15px;
-
     border-radius: 12px;
-
     font-size: 0.9rem;
 }
 
 h1 {
-
     margin: 0;
-
     font-size: 1.8rem;
 }
 
 .card {
-
     background: #0f172a;
-
     border: 1px solid #334155;
-
     border-radius: 22px;
-
     padding: 25px;
-
     margin-bottom: 18px;
-
     box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
 
 .status {
-
     text-align: center;
-
     color: #94a3b8;
-
     font-size: 0.9rem;
-
     margin-bottom: 15px;
 }
 
 .nota {
-
     text-align: center;
-
     font-size: 7rem;
-
     font-weight: bold;
-
     line-height: 1;
-
     margin: 10px 0;
 }
 
 .frequencia {
-
     text-align: center;
-
     font-size: 1rem;
-
     color: #94a3b8;
-
     margin-bottom: 25px;
 }
 
-
-/* =========================
-   INDICADOR
-   ========================= */
-
 .indicador {
-
     position: relative;
-
     height: 90px;
-
     margin: 10px 0 20px;
 }
 
 .linha-central {
-
     position: absolute;
-
     left: 50%;
-
     top: 10px;
-
     width: 4px;
-
     height: 70px;
-
     transform: translateX(-50%);
-
     background: #22c55e;
-
     border-radius: 10px;
 }
 
 .ponteiro {
-
     position: absolute;
-
     left: 50%;
-
     top: 25px;
-
     width: 5px;
-
     height: 45px;
-
     transform-origin: bottom center;
-
-    transform:
-        translateX(-50%)
-        rotate(0deg);
-
+    transform: translateX(-50%) rotate(0deg);
     background: white;
-
     border-radius: 10px;
-
-    transition:
-        transform 0.15s ease;
+    transition: transform 0.15s ease;
 }
 
 .escala {
-
     display: flex;
-
     justify-content: space-between;
-
     color: #64748b;
-
     font-size: 0.75rem;
 }
 
 .mensagem {
-
     text-align: center;
-
     font-size: 1.5rem;
-
     font-weight: bold;
-
     min-height: 35px;
-
     margin-top: 10px;
 }
 
@@ -223,137 +141,87 @@ h1 {
    ========================= */
 
 .cordas-titulo {
-
     text-align: center;
-
     color: #94a3b8;
-
     font-size: 0.85rem;
-
     text-transform: uppercase;
-
     letter-spacing: 1px;
-
     margin-bottom: 15px;
 }
 
 .cordas {
-
     display: grid;
-
-    grid-template-columns:
-        repeat(6, 1fr);
-
+    grid-template-columns: repeat(6, 1fr);
     gap: 8px;
 }
 
 .corda {
-
     background: #1e293b;
-
     border: 1px solid #475569;
-
     color: white;
-
     border-radius: 14px;
-
     padding: 13px 5px;
-
     cursor: pointer;
-
     text-align: center;
 }
 
 .corda strong {
-
     display: block;
-
     font-size: 1.4rem;
 }
 
 .corda span {
-
     display: block;
-
     font-size: 0.65rem;
-
     color: #94a3b8;
-
     margin-top: 3px;
 }
 
 .corda.ativa {
-
     background: #2563eb;
-
     border-color: #60a5fa;
 }
 
 
 /* =========================
-   BOTÕES DE SOM
+   SOM DE REFERÊNCIA
    ========================= */
 
-.area-som {
-
+.referencia-titulo {
     text-align: center;
-}
-
-.titulo-som {
-
     color: #94a3b8;
-
-    font-size: 0.9rem;
-
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 12px;
 }
 
-.botao-som {
-
+.botao-referencia {
     width: 100%;
-
     padding: 17px;
-
     border-radius: 15px;
-
     border: 1px solid #22c55e;
-
     background: #166534;
-
     color: white;
-
     font-size: 1.05rem;
-
     font-weight: bold;
-
     cursor: pointer;
-
-    margin-bottom: 10px;
 }
 
-.botao-som.tocando {
-
+.botao-referencia.tocando {
     background: #b45309;
-
     border-color: #f59e0b;
 }
 
-.botao-parar-som {
-
+.botao-parar {
     width: 100%;
-
     padding: 13px;
-
+    margin-top: 10px;
     border-radius: 15px;
-
     border: 1px solid #475569;
-
     background: #1e293b;
-
     color: white;
-
     font-size: 0.95rem;
-
     cursor: pointer;
 }
 
@@ -363,30 +231,19 @@ h1 {
    ========================= */
 
 .botao-microfone {
-
     width: 100%;
-
     padding: 17px;
-
     border-radius: 15px;
-
     border: 1px solid #3b82f6;
-
     background: #2563eb;
-
     color: white;
-
     font-size: 1.1rem;
-
     font-weight: bold;
-
     cursor: pointer;
 }
 
 .botao-microfone.parar {
-
     background: #dc2626;
-
     border-color: #ef4444;
 }
 
@@ -396,52 +253,37 @@ h1 {
    ========================= */
 
 .instrucoes {
-
     text-align: center;
-
     color: #94a3b8;
-
     line-height: 1.5;
-
     font-size: 0.9rem;
 }
 
 
-/* =========================
-   CELULAR
-   ========================= */
-
 @media (max-width: 600px) {
 
     .app {
-
         padding: 15px;
     }
 
     .card {
-
         padding: 18px;
-
         border-radius: 18px;
     }
 
     .nota {
-
         font-size: 6rem;
     }
 
     .cordas {
-
         gap: 6px;
     }
 
     .corda {
-
         padding: 11px 3px;
     }
 
     .corda strong {
-
         font-size: 1.2rem;
     }
 
@@ -516,9 +358,7 @@ Microfone desligado
 <div class="linha-central"></div>
 
 <div class="ponteiro"
-     id="ponteiro">
-
-</div>
+     id="ponteiro"></div>
 
 </div>
 
@@ -553,7 +393,7 @@ Escolha uma corda
 
 <div class="cordas-titulo">
 
-Escolha a corda
+ESCOLHA A CORDA
 
 </div>
 
@@ -561,10 +401,9 @@ Escolha a corda
 <div class="cordas">
 
 
-<button
-    class="corda ativa"
-    onclick="selecionarCorda(0)"
-    id="corda0">
+<button class="corda ativa"
+        id="corda0"
+        onclick="selecionarCorda(0)">
 
 <strong>E</strong>
 
@@ -573,10 +412,9 @@ Escolha a corda
 </button>
 
 
-<button
-    class="corda"
-    onclick="selecionarCorda(1)"
-    id="corda1">
+<button class="corda"
+        id="corda1"
+        onclick="selecionarCorda(1)">
 
 <strong>A</strong>
 
@@ -585,10 +423,9 @@ Escolha a corda
 </button>
 
 
-<button
-    class="corda"
-    onclick="selecionarCorda(2)"
-    id="corda2">
+<button class="corda"
+        id="corda2"
+        onclick="selecionarCorda(2)">
 
 <strong>D</strong>
 
@@ -597,10 +434,9 @@ Escolha a corda
 </button>
 
 
-<button
-    class="corda"
-    onclick="selecionarCorda(3)"
-    id="corda3">
+<button class="corda"
+        id="corda3"
+        onclick="selecionarCorda(3)">
 
 <strong>G</strong>
 
@@ -609,10 +445,9 @@ Escolha a corda
 </button>
 
 
-<button
-    class="corda"
-    onclick="selecionarCorda(4)"
-    id="corda4">
+<button class="corda"
+        id="corda4"
+        onclick="selecionarCorda(4)">
 
 <strong>B</strong>
 
@@ -621,10 +456,9 @@ Escolha a corda
 </button>
 
 
-<button
-    class="corda"
-    onclick="selecionarCorda(5)"
-    id="corda5">
+<button class="corda"
+        id="corda5"
+        onclick="selecionarCorda(5)">
 
 <strong>E</strong>
 
@@ -645,9 +479,7 @@ Escolha a corda
 
 <div class="card">
 
-<div class="area-som">
-
-<div class="titulo-som">
+<div class="referencia-titulo">
 
 🔊 SOM DE REFERÊNCIA
 
@@ -655,8 +487,8 @@ Escolha a corda
 
 
 <button
-    class="botao-som"
-    id="botaoSom"
+    class="botao-referencia"
+    id="botaoReferencia"
     onclick="alternarSomReferencia()">
 
 🔊 OUVIR NOTA E
@@ -665,14 +497,12 @@ Escolha a corda
 
 
 <button
-    class="botao-parar-som"
+    class="botao-parar"
     onclick="pararSomReferencia()">
 
 ■ PARAR SOM
 
 </button>
-
-</div>
 
 </div>
 
@@ -713,25 +543,17 @@ Escolha a corda
 
 2. Clique em
 <strong>OUVIR NOTA</strong>
-para ouvir a referência.<br>
+para ouvir a nota de referência.<br>
 
 3. Toque a corda do violão.<br>
 
 4. Observe o ponteiro.<br><br>
 
-Se estiver para a esquerda,
-a corda está <strong>grave</strong>.
+À esquerda = <strong>grave</strong><br>
 
-<br>
+Centro = <strong>afinado</strong><br>
 
-Se estiver para a direita,
-está <strong>aguda</strong>.
-
-<br><br>
-
-Quando chegar ao centro:
-
-<strong>✓ AFINADO</strong>
+À direita = <strong>agudo</strong>
 
 </div>
 
@@ -747,9 +569,9 @@ Quando chegar ao centro:
 <script>
 
 
-/* =========================
-   CORDAS DO VIOLÃO
-   ========================= */
+/* ==================================================
+   AFINAÇÃO PADRÃO DO VIOLÃO
+   ================================================== */
 
 const cordas = [
 
@@ -792,25 +614,27 @@ const cordas = [
 ];
 
 
-
-/* =========================
-   VARIÁVEIS
-   ========================= */
-
 let cordaSelecionada = 0;
+
+
+/* ==================================================
+   AUDIO
+   ================================================== */
 
 let audioContext = null;
 
-let analisador = null;
+let streamMicrofone = null;
 
 let microfone = null;
 
-let streamMicrofone = null;
+let analisador = null;
 
 let rodando = false;
 
 
-/* SOM DE REFERÊNCIA */
+/* ==================================================
+   SOM DE REFERÊNCIA
+   ================================================== */
 
 let osciladorReferencia = null;
 
@@ -820,9 +644,31 @@ let somReferenciaTocando = false;
 
 
 
-/* =========================
+/* ==================================================
+   CRIAR AUDIO CONTEXT
+   ================================================== */
+
+function obterAudioContext() {
+
+    if (!audioContext) {
+
+        audioContext =
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+    }
+
+    return audioContext;
+
+}
+
+
+
+/* ==================================================
    ESCOLHER CORDA
-   ========================= */
+   ================================================== */
 
 function selecionarCorda(numero) {
 
@@ -853,14 +699,16 @@ function selecionarCorda(numero) {
         corda.nome;
 
 
-    document.getElementById("botaoSom")
+    document.getElementById("botaoReferencia")
         .innerText =
         "🔊 OUVIR NOTA " +
         corda.nome;
 
 
-    /* Se estava tocando outra nota,
-       muda imediatamente para a nova. */
+    /*
+       Se o som de referência estiver tocando,
+       troca automaticamente para a nova corda.
+    */
 
     if (somReferenciaTocando) {
 
@@ -872,31 +720,9 @@ function selecionarCorda(numero) {
 
 
 
-/* =========================
-   CRIAR AUDIO CONTEXT
-   ========================= */
-
-function obterAudioContext() {
-
-    if (!audioContext) {
-
-        audioContext =
-            new (
-                window.AudioContext ||
-                window.webkitAudioContext
-            )();
-
-    }
-
-    return audioContext;
-
-}
-
-
-
-/* =========================
+/* ==================================================
    SOM DE REFERÊNCIA
-   ========================= */
+   ================================================== */
 
 async function alternarSomReferencia() {
 
@@ -927,7 +753,9 @@ async function iniciarSomReferencia() {
     }
 
 
-    /* Para o som anterior */
+    /*
+       Para qualquer nota anterior.
+    */
 
     pararSomReferencia();
 
@@ -946,10 +774,11 @@ async function iniciarSomReferencia() {
 
 
     /*
-       Onda senoidal.
+       SOM DA NOTA
 
-       É uma nota limpa para servir
-       como referência de afinação.
+       Senoide limpa.
+       A frequência é exatamente
+       a frequência da corda.
     */
 
     osciladorReferencia.type =
@@ -964,8 +793,8 @@ async function iniciarSomReferencia() {
 
 
     /*
-       Volume baixo para não
-       ficar agressivo.
+       Volume inicial quase zero
+       para evitar estalo.
     */
 
     ganhoReferencia.gain
@@ -977,8 +806,8 @@ async function iniciarSomReferencia() {
 
     ganhoReferencia.gain
         .linearRampToValueAtTime(
-            0.18,
-            ctx.currentTime + 0.03
+            0.22,
+            ctx.currentTime + 0.05
         );
 
 
@@ -996,83 +825,72 @@ async function iniciarSomReferencia() {
     somReferenciaTocando = true;
 
 
-    document.getElementById("botaoSom")
-        .innerText =
-        "🔊 TOCANDO NOTA " +
-        cordas[cordaSelecionada].nome;
+    document.getElementById(
+        "botaoReferencia"
+    ).innerText =
+        "🔊 TOCANDO " +
+        cordas[cordaSelecionada].nome +
+        " — " +
+        cordas[cordaSelecionada]
+            .nomeCompleto;
 
 
-    document.getElementById("botaoSom")
-        .classList.add("tocando");
+    document.getElementById(
+        "botaoReferencia"
+    ).classList.add("tocando");
 
 }
 
 
 
+/* ==================================================
+   PARAR SOM DE REFERÊNCIA
+   ================================================== */
+
 function pararSomReferencia() {
 
-    if (
-        osciladorReferencia &&
-        ganhoReferencia
-    ) {
+    if (osciladorReferencia) {
 
         try {
 
-            const ctx =
-                obterAudioContext();
-
-
-            ganhoReferencia.gain
-                .cancelScheduledValues(
-                    ctx.currentTime
-                );
-
-
-            ganhoReferencia.gain
-                .linearRampToValueAtTime(
-                    0.0001,
-                    ctx.currentTime + 0.03
-                );
-
-
-            osciladorReferencia.stop(
-                ctx.currentTime + 0.04
-            );
+            osciladorReferencia.stop();
 
         } catch (erro) {
 
             console.log(
-                "Som já parado."
+                "Oscilador já parado."
             );
 
         }
 
+        osciladorReferencia = null;
+
     }
 
-
-    osciladorReferencia = null;
 
     ganhoReferencia = null;
 
     somReferenciaTocando = false;
 
 
-    document.getElementById("botaoSom")
-        .innerText =
+    document.getElementById(
+        "botaoReferencia"
+    ).innerText =
         "🔊 OUVIR NOTA " +
         cordas[cordaSelecionada].nome;
 
 
-    document.getElementById("botaoSom")
-        .classList.remove("tocando");
+    document.getElementById(
+        "botaoReferencia"
+    ).classList.remove("tocando");
 
 }
 
 
 
-/* =========================
+/* ==================================================
    MICROFONE
-   ========================= */
+   ================================================== */
 
 async function alternarMicrofone() {
 
@@ -1089,6 +907,10 @@ async function alternarMicrofone() {
 }
 
 
+
+/* ==================================================
+   INICIAR MICROFONE
+   ================================================== */
 
 async function iniciarMicrofone() {
 
@@ -1108,7 +930,14 @@ async function iniciarMicrofone() {
         }
 
 
-        const stream =
+        /*
+           IMPORTANTE:
+           Guardamos o stream.
+           Isso permite desligar o microfone
+           corretamente depois.
+        */
+
+        streamMicrofone =
             await navigator.mediaDevices
                 .getUserMedia({
 
@@ -1125,9 +954,6 @@ async function iniciarMicrofone() {
                 });
 
 
-        streamMicrofone = stream;
-
-
         const ctx =
             obterAudioContext();
 
@@ -1141,7 +967,7 @@ async function iniciarMicrofone() {
 
         microfone =
             ctx.createMediaStreamSource(
-                stream
+                streamMicrofone
             );
 
 
@@ -1150,11 +976,12 @@ async function iniciarMicrofone() {
 
 
         /*
-           Tamanho maior para melhorar
-           a detecção das notas graves.
+           4096 dá uma resolução melhor
+           para as cordas graves.
         */
 
-        analisador.fftSize = 4096;
+        analisador.fftSize =
+            4096;
 
 
         analisador.smoothingTimeConstant =
@@ -1171,7 +998,7 @@ async function iniciarMicrofone() {
 
         document.getElementById("status")
             .innerText =
-            "🎤 Microfone ativo";
+            "🎤 MICROFONE ATIVO";
 
 
         const botao =
@@ -1198,7 +1025,10 @@ async function iniciarMicrofone() {
 
     } catch (erro) {
 
-        console.error(erro);
+        console.error(
+            "Erro no microfone:",
+            erro
+        );
 
 
         document.getElementById("status")
@@ -1216,9 +1046,9 @@ async function iniciarMicrofone() {
 
 
 
-/* =========================
+/* ==================================================
    PARAR MICROFONE
-   ========================= */
+   ================================================== */
 
 function pararMicrofone() {
 
@@ -1250,13 +1080,15 @@ function pararMicrofone() {
         "Microfone desligado";
 
 
-    document.getElementById("botaoMicrofone")
-        .innerText =
+    document.getElementById(
+        "botaoMicrofone"
+    ).innerText =
         "🎤 INICIAR AFINADOR";
 
 
-    document.getElementById("botaoMicrofone")
-        .classList.remove("parar");
+    document.getElementById(
+        "botaoMicrofone"
+    ).classList.remove("parar");
 
 
     document.getElementById("nota")
@@ -1269,7 +1101,7 @@ function pararMicrofone() {
 
     document.getElementById("mensagem")
         .innerText =
-        "Toque uma corda";
+        "Escolha uma corda";
 
 
     document.getElementById("ponteiro")
@@ -1280,13 +1112,17 @@ function pararMicrofone() {
 
 
 
-/* =========================
-   DETECÇÃO
-   ========================= */
+/* ==================================================
+   DETECTAR SOM
+   ================================================== */
 
 function detectarSom() {
 
-    if (!rodando || !analisador) {
+    if (
+        !rodando ||
+        !analisador ||
+        !audioContext
+    ) {
 
         return;
 
@@ -1313,7 +1149,7 @@ function detectarSom() {
     if (
         frequencia > 0 &&
         frequencia >= 60 &&
-        frequencia <= 700
+        frequencia <= 400
     ) {
 
         processarNota(
@@ -1331,16 +1167,20 @@ function detectarSom() {
 
 
 
-/* =========================
-   DETECÇÃO DE FREQUÊNCIA
+/* ==================================================
+   DETECÇÃO DA FREQUÊNCIA
    AUTOCORRELAÇÃO
-   ========================= */
+   ================================================== */
 
 function encontrarFrequencia(buffer) {
 
     const tamanho =
         buffer.length;
 
+
+    /*
+       Mede o volume do sinal.
+    */
 
     let energia = 0;
 
@@ -1364,7 +1204,12 @@ function encontrarFrequencia(buffer) {
         );
 
 
-    if (energia < 0.012) {
+    /*
+       Se não há som suficiente,
+       não tenta detectar uma nota.
+    */
+
+    if (energia < 0.008) {
 
         return -1;
 
@@ -1378,7 +1223,7 @@ function encontrarFrequencia(buffer) {
 
     const minimo =
         Math.floor(
-            audioContext.sampleRate / 700
+            audioContext.sampleRate / 400
         );
 
 
@@ -1434,7 +1279,7 @@ function encontrarFrequencia(buffer) {
 
     if (
         melhorDeslocamento === -1 ||
-        melhorCorrelacao < 0.01
+        melhorCorrelacao < 0.003
     ) {
 
         return -1;
@@ -1451,9 +1296,9 @@ function encontrarFrequencia(buffer) {
 
 
 
-/* =========================
+/* ==================================================
    PROCESSAR NOTA
-   ========================= */
+   ================================================== */
 
 function processarNota(frequencia) {
 
@@ -1468,8 +1313,14 @@ function processarNota(frequencia) {
     /*
        Diferença em cents.
 
-       100 cents =
-       1 semitom.
+       0 cents =
+       exatamente afinado.
+
+       -100 cents =
+       um semitom abaixo.
+
+       +100 cents =
+       um semitom acima.
     */
 
     const cents =
@@ -1479,14 +1330,16 @@ function processarNota(frequencia) {
         );
 
 
-    document.getElementById("frequencia")
-        .innerText =
+    document.getElementById(
+        "frequencia"
+    ).innerText =
         frequencia.toFixed(2) +
         " Hz";
 
 
-    document.getElementById("nota")
-        .innerText =
+    document.getElementById(
+        "nota"
+    ).innerText =
         corda.nome;
 
 
@@ -1498,14 +1351,19 @@ function processarNota(frequencia) {
 
 
 
-/* =========================
+/* ==================================================
    INDICADOR
-   ========================= */
+   ================================================== */
 
 function atualizarIndicador(cents) {
 
-    let valor = cents;
+    let valor =
+        cents;
 
+
+    /*
+       Limita o ponteiro visual.
+    */
 
     if (valor > 50) {
 
@@ -1525,8 +1383,9 @@ function atualizarIndicador(cents) {
         (valor / 50) * 45;
 
 
-    document.getElementById("ponteiro")
-        .style.transform =
+    document.getElementById(
+        "ponteiro"
+    ).style.transform =
         "translateX(-50%) rotate(" +
         rotacao +
         "deg)";
