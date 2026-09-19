@@ -1,12 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    
     <meta charset="UTF-8">
-    <!-- Scripts do Firebase e do arquivo de senhas centralizado -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-<script src="config-senhas.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1db954">
@@ -167,7 +162,7 @@
         .lembrete-conteudo video { width: 100%; height: 100%; object-fit: contain; }
         .lembrete-conteudo audio { width: 100%; }
 
-        footer { text-align: center; margin-top: 35px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); }
+        <footer> text-align: center; margin-top: 35px; padding: 20px; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border); </footer>
 
         @media (max-width: 900px) {
             .lembretes-grid { grid-template-columns: 1fr; }
@@ -212,13 +207,13 @@
             <div class="modulo-box">
                 <h3>🥁 Bateria</h3>
                 <p>Acesse a Área exclusiva com áudios, capas e videoaulas.</p>
-                <button onclick="acessarModulo('bateria')" class="btn-modulo">Clique aui para Acessar</button>
+                <button onclick="acessarModulo('bateria')" class="btn-modulo">Clique aqui para Acessar</button>
             </div>
             
             <div class="modulo-box">
                 <h3>🎸 Violão / Guitarra</h3>
                 <p>Acesse a Área exclusiva com materiais e videoaulas práticas.</p>
-                <button onclick="AcessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Clique aui para Acessar</button>
+                <button onclick="acessarModulo('violao')" class="btn-modulo" style="background: var(--accent);">Clique aqui para Acessar</button>
             </div>
         </div>
 
@@ -243,6 +238,11 @@
         <p>Projeto Academia de Música - C. Richless &copy; 2026 - Todos os direitos reservados.</p>
     </footer>
 
+    <!-- Scripts do Firebase e do arquivo de senhas centralizado -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="config-senhas.js"></script>
+
     <script>
         function verificarSenhaSite() {
             let senhaGeral = localStorage.getItem('senha_site_geral') || "123456";
@@ -260,7 +260,6 @@
         });
 
         function acessarModulo(moduloAlvo) {
-            // Como tiramos a exigência de senha por módulo, ao clicar ele vai direto para a página VIP correspondente
             let paginaDestino = moduloAlvo === 'bateria' ? 'bateria-vip.html' : 'violao-vip.html';
             window.location.href = paginaDestino;
         }
