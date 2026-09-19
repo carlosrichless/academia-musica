@@ -224,7 +224,7 @@
                 let docRef = await window.firestore.getDoc(
     window.firestore.doc(db, "configuracoes", "sistema")
 );
-                if (docRef.exists) {
+                if (docRef.exists()) {
                     dadosGlobais = docRef.data();
                 } else {
                     dadosGlobais = {
@@ -272,7 +272,7 @@
                 let docRef = await window.firestore.getDoc(
     window.firestore.doc(db, "configuracoes", "sistema")
 );
-                if(docRef.exists) dadosGlobais = docRef.data();
+                if(docRef.exists()) dadosGlobais = docRef.data();
             } catch(e) { console.log(e); }
         });
 
