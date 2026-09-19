@@ -762,6 +762,12 @@
                     dados.senha_site_geral || "123456";
 
 
+                let versaoAtual =
+                    String(
+                        dados.versao_senha_site || 1
+                    );
+
+
                 if (
                     document.getElementById(
                         'senhaSiteInput'
@@ -775,6 +781,12 @@
                     sessionStorage.setItem(
                         "siteAutorizado",
                         "true"
+                    );
+
+
+                    sessionStorage.setItem(
+                        "versaoSenhaSite",
+                        versaoAtual
                     );
 
 
@@ -815,19 +827,110 @@
 
 
         /* =========================================
-           VERIFICAR AUTORIZAÇÃO AO ABRIR O SITE
+           VERIFICAR AUTORIZAÇÃO AO ABRIR / RECARREGAR
            ========================================= */
 
         window.addEventListener(
             "DOMContentLoaded",
-            function() {
+            async function() {
 
-                if (
+                let autorizado =
                     sessionStorage.getItem(
                         "siteAutorizado"
-                    ) === "true"
+                    );
+
+
+                let versaoSalva =
+                    sessionStorage.getItem(
+                        "versaoSenhaSite"
+                    );
+
+
+                /*
+                 * Se não existe sessão autorizada,
+                 * simplesmente permanece na tela de login.
+                 */
+                if (
+                    autorizado !== "true"
                 ) {
 
+                    return;
+
+                }
+
+
+                try {
+
+                    /*
+                     * BUSCA A VERSÃO ATUAL DIRETAMENTE
+                     * NO FIRESTORE.
+                     */
+                    let docRef =
+                        await window.firestore.getDoc(
+                            window.firestore.doc(
+                                window.db,
+                                "configuracoes",
+                                "sistema"
+                            )
+                        );
+
+
+                    let dados =
+                        docRef.exists()
+                            ? docRef.data()
+                            : {};
+
+
+                    let versaoAtual =
+                        String(
+                            dados.versao_senha_site || 1
+                        );
+
+
+                    /*
+                     * AQUI ESTÁ A PROTEÇÃO CONTRA F5.
+                     *
+                     * Se a versão salva na sessão for
+                     * diferente da versão atual do Firestore,
+                     * a senha foi alterada.
+                     *
+                     * Então a sessão é apagada e o usuário
+                     * volta para a tela de senha.
+                     */
+                    if (
+                        String(versaoSalva) !==
+                        String(versaoAtual)
+                    ) {
+
+                        sessionStorage.removeItem(
+                            "siteAutorizado"
+                        );
+
+
+                        sessionStorage.removeItem(
+                            "versaoSenhaSite"
+                        );
+
+
+                        document.getElementById(
+                            'telaLoginGeral'
+                        ).style.display = 'flex';
+
+
+                        document.getElementById(
+                            'conteudoSite'
+                        ).style.display = 'none';
+
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * VERSÃO IGUAL:
+                     * mantém a sessão normalmente.
+                     */
                     document.getElementById(
                         'telaLoginGeral'
                     ).style.display = 'none';
@@ -839,6 +942,38 @@
 
 
                     inicializarSite();
+
+
+                } catch (erro) {
+
+                    console.error(
+                        "Erro ao verificar versão da senha:",
+                        erro
+                    );
+
+                    /*
+                     * Por segurança, se não conseguirmos
+                     * confirmar a versão no Firestore,
+                     * NÃO liberamos automaticamente.
+                     */
+                    sessionStorage.removeItem(
+                        "siteAutorizado"
+                    );
+
+
+                    sessionStorage.removeItem(
+                        "versaoSenhaSite"
+                    );
+
+
+                    document.getElementById(
+                        'telaLoginGeral'
+                    ).style.display = 'flex';
+
+
+                    document.getElementById(
+                        'conteudoSite'
+                    ).style.display = 'none';
 
                 }
 
