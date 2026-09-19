@@ -2,17 +2,18 @@
 <html lang="pt-BR">
 <head>
 
-    
     <meta charset="UTF-8">
-    <!-- Scripts do Firebase e do arquivo de senhas centralizado -->
+
+    <!-- Firebase e arquivo centralizado de senhas -->
     <script type="module" src="config-senhas.js"></script>
-    
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1db954">
-    <title>Painel Administrativo - Projeto Academia de Música</title>    
-    
+
+    <title>Painel Administrativo - Projeto Academia de Música</title>
 
     <style>
+
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -23,11 +24,31 @@
             --success: #34d399;
             --danger: #f87171;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
 
-        .container { max-width: 900px; margin: 0 auto; }
-        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family:
+                'Segoe UI',
+                Tahoma,
+                Geneva,
+                Verdana,
+                sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         #telaLogin {
             display: flex;
             flex-direction: column;
@@ -36,6 +57,7 @@
             height: 80vh;
             text-align: center;
         }
+
         .login-box {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -45,8 +67,19 @@
             max-width: 400px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .login-box h2 { color: var(--accent); margin-bottom: 15px; font-size: 1.5rem; }
-        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
+
+        .login-box h2 {
+            color: var(--accent);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .login-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
         .login-input {
             width: 100%;
             padding: 12px;
@@ -58,7 +91,12 @@
             font-size: 1rem;
             margin-bottom: 15px;
         }
-        .login-input:focus { outline: none; border-color: var(--accent); }
+
+        .login-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
         .btn-login {
             width: 100%;
             background: var(--success);
@@ -70,14 +108,48 @@
             font-size: 1rem;
             cursor: pointer;
         }
-        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none; }
 
-        #conteudoPainel { display: none; }
+        .erro-msg {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
 
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
-        .top-nav a { color: var(--accent); text-decoration: none; font-size: 0.9rem; background: var(--card-bg); padding: 8px 15px; border: 1px solid var(--border); border-radius: 6px; }
+        #conteudoPainel {
+            display: none;
+        }
 
-        .header p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+            gap: 15px;
+        }
+
+        .top-nav h1 {
+            font-size: 1.5rem;
+        }
+
+        .top-nav a {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            background: var(--card-bg);
+            padding: 8px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
 
         .card-painel {
             background-color: var(--card-bg);
@@ -86,10 +158,23 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        .card-painel h3 { color: var(--accent); margin-bottom: 12px; font-size: 1.2rem; }
-        
-        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
-        input[type="text"], input[type="number"], input[type="password"] {
+
+        .card-painel h3 {
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"] {
             width: 100%;
             padding: 10px;
             background: #0f172a;
@@ -99,7 +184,22 @@
             margin-bottom: 15px;
             font-size: 0.95rem;
         }
-        input:focus { outline: none; border-color: var(--accent); }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
 
         .btn-acao {
             background: var(--success);
@@ -110,8 +210,16 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .btn-acao:hover { opacity: 0.9; }
-        
+
+        .btn-acao:hover {
+            opacity: 0.9;
+        }
+
+        .btn-acao:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         .btn-remover {
             background: var(--danger);
             color: #fff;
@@ -133,7 +241,10 @@
             gap: 10px;
             align-items: center;
         }
-        .aviso-item-box input { margin-bottom: 0 !important; }
+
+        .aviso-item-box input {
+            margin-bottom: 0 !important;
+        }
 
         .sucesso-alerta {
             background: rgba(52, 211, 153, 0.15);
@@ -146,169 +257,724 @@
             text-align: center;
             font-weight: bold;
         }
+
+        .info-midia {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 18px;
+        }
+
+        .bloco-upload {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .bloco-upload:last-child {
+            margin-bottom: 0;
+        }
+
+        .bloco-upload h4 {
+            color: var(--text-main);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .status-upload {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-top: 8px;
+            min-height: 20px;
+        }
+
+        .url-atual {
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            word-break: break-all;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .top-nav h1 {
+                font-size: 1.25rem;
+            }
+
+            .top-nav a {
+                text-align: center;
+            }
+
+            .aviso-item-box {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-remover {
+                width: 100%;
+            }
+        }
+
     </style>
 </head>
+
 <body>
 
+    <!-- =========================================
+         TELA DE LOGIN
+         ========================================= -->
+
     <div id="telaLogin" class="container">
+
         <div class="login-box">
+
             <h2>🔒 Área Restrita</h2>
-            <p>Digite a senha de administrador:</p>
-            <input type="password" id="senhaAdminInput" class="login-input" placeholder="Senha...">
-            <button onclick="verificarSenha()" class="btn-login">Entrar</button>
-            <div id="erroSenha" class="erro-msg">Senha incorreta!</div>
-            <div style="margin-top: 15px;">
-                <a href="index.html" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">← Voltar ao site</a>
+
+            <p>
+                Digite a senha de administrador:
+            </p>
+
+            <input
+                type="password"
+                id="senhaAdminInput"
+                class="login-input"
+                placeholder="Senha..."
+            >
+
+            <button
+                onclick="verificarSenha()"
+                class="btn-login"
+            >
+                Entrar
+            </button>
+
+            <div
+                id="erroSenha"
+                class="erro-msg"
+            >
+                Senha incorreta!
             </div>
+
+            <div style="margin-top: 15px;">
+
+                <a
+                    href="index.html"
+                    style="
+                        color: var(--text-muted);
+                        font-size: 0.85rem;
+                        text-decoration: none;
+                    "
+                >
+                    ← Voltar ao site
+                </a>
+
+            </div>
+
         </div>
+
     </div>
 
-    <div id="conteudoPainel" class="container">
+
+    <!-- =========================================
+         CONTEÚDO DO PAINEL
+         ========================================= -->
+
+    <div
+        id="conteudoPainel"
+        class="container"
+    >
+
         <div class="top-nav">
-            <h1>⚙️ Painel de Controle Admin</h1>
-            <a href="index.html">← Ver Site Principal</a>
+
+            <h1>
+                ⚙️ Painel de Controle Admin
+            </h1>
+
+            <a href="index.html">
+                ← Ver Site Principal
+            </a>
+
         </div>
+
 
         <div class="header">
-            <p>Gerencie senhas globais, mídias e avisos em tempo real.</p>
+
+            <p>
+                Gerencie senhas globais, mídias e avisos em tempo real.
+            </p>
+
         </div>
 
-        <div id="alertaSucesso" class="sucesso-alerta">Alterações salvas globalmente na nuvem!</div>
 
-        <!-- Senhas Principais do Sistema -->
-        <div class="card-painel">
-            <h3>🔑 Senhas Globais do Sistema</h3>
-            <label>Senha de Acesso Geral do Site (Alunos):</label>
-            <input type="text" id="passSiteGeral" placeholder="Ex: 123456">
-
-            <label>Senha do Painel Administrativo:</label>
-            <input type="text" id="passAdmin" placeholder="Ex: admin123">
-            
-            <button onclick="salvarSenhasPrincipais()" class="btn-acao">Salvar Senhas Globais</button>
+        <div
+            id="alertaSucesso"
+            class="sucesso-alerta"
+        >
+            Alterações salvas globalmente na nuvem!
         </div>
 
-        <!-- Links Locais das Mídias -->
+
+        <!-- =========================================
+             SENHAS PRINCIPAIS
+             ========================================= -->
+
         <div class="card-painel">
-            <h3>📁 Caminhos dos Lembretes</h3>
-            <label>Caminho/Link da Imagem:</label>
-            <input type="text" id="inputImg" placeholder="Ex: assets/foto.jpg">
-            <label>Caminho/Link do Áudio:</label>
-            <input type="text" id="inputAudio" placeholder="Ex: assets/audio.mp3">
-            <label>Caminho/Link do Vídeo:</label>
-            <input type="text" id="inputVideo" placeholder="Ex: assets/video.mp4">
-            <button onclick="salvarLinks()" class="btn-acao">Salvar Caminhos</button>
+
+            <h3>
+                🔑 Senhas Globais do Sistema
+            </h3>
+
+            <label>
+                Senha de Acesso Geral do Site (Alunos):
+            </label>
+
+            <input
+                type="text"
+                id="passSiteGeral"
+                placeholder="Ex: 123456"
+            >
+
+            <label>
+                Senha do Painel Administrativo:
+            </label>
+
+            <input
+                type="text"
+                id="passAdmin"
+                placeholder="Ex: admin123"
+            >
+
+            <button
+                onclick="salvarSenhasPrincipais()"
+                class="btn-acao"
+            >
+                Salvar Senhas Globais
+            </button>
+
         </div>
 
-        <!-- Mural de Avisos Dinâmico -->
+
+        <!-- =========================================
+             CAMINHOS DAS MÍDIAS
+             ========================================= -->
+
         <div class="card-painel">
-            <h3>📢 Mural de Avisos</h3>
-            <label>Tempo de duração de cada aviso (segundos):</label>
-            <input type="number" id="inputTempo" min="1" max="60" value="4" style="max-width: 150px;">
 
-            <label style="margin-top: 15px; margin-bottom: 8px;">Lista de Avisos:</label>
-            <div id="listaAvisosContainer"></div>
+            <h3>
+                📁 Caminhos dos Lembretes
+            </h3>
 
-            <button onclick="adicionarNovoAviso()" class="btn-acao" style="background: #334155; color: #fff; margin-top: 10px; margin-bottom: 15px;">+ Adicionar Aviso</button>
-            
+            <label>
+                Caminho/Link da Imagem:
+            </label>
+
+            <input
+                type="text"
+                id="inputImg"
+                placeholder="Ex: https://..."
+            >
+
+            <label>
+                Caminho/Link do Áudio:
+            </label>
+
+            <input
+                type="text"
+                id="inputAudio"
+                placeholder="Ex: https://..."
+            >
+
+            <label>
+                Caminho/Link do Vídeo:
+            </label>
+
+            <input
+                type="text"
+                id="inputVideo"
+                placeholder="Ex: https://..."
+            >
+
+            <button
+                onclick="salvarLinks()"
+                class="btn-acao"
+            >
+                Salvar Caminhos
+            </button>
+
+        </div>
+
+
+        <!-- =========================================
+             UPLOAD DOS LEMBRETES
+             ========================================= -->
+
+        <div class="card-painel">
+
+            <h3>
+                📁 Lembretes - Envio de Arquivos
+            </h3>
+
+            <p class="info-midia">
+
+                Envie um arquivo por categoria.
+                Ao enviar um novo arquivo, o sistema deverá
+                substituir o arquivo anterior daquela categoria.
+
+            </p>
+
+
+            <!-- IMAGEM -->
+
+            <div class="bloco-upload">
+
+                <h4>
+                    🖼️ Imagem do Lembrete
+                </h4>
+
+                <label>
+                    Escolha a imagem:
+                </label>
+
+                <input
+                    type="file"
+                    id="arquivoImg"
+                    accept="image/*"
+                >
+
+                <button
+                    id="btnUploadImg"
+                    onclick="enviarArquivo('imagem')"
+                    class="btn-acao"
+                >
+                    Enviar Nova Imagem
+                </button>
+
+                <div
+                    id="statusUploadImg"
+                    class="status-upload"
+                ></div>
+
+                <div
+                    id="urlAtualImg"
+                    class="url-atual"
+                ></div>
+
+            </div>
+
+
+            <!-- AUDIO -->
+
+            <div class="bloco-upload">
+
+                <h4>
+                    🎵 Áudio do Lembrete
+                </h4>
+
+                <label>
+                    Escolha o áudio:
+                </label>
+
+                <input
+                    type="file"
+                    id="arquivoAudio"
+                    accept="audio/*"
+                >
+
+                <button
+                    id="btnUploadAudio"
+                    onclick="enviarArquivo('audio')"
+                    class="btn-acao"
+                >
+                    Enviar Novo Áudio
+                </button>
+
+                <div
+                    id="statusUploadAudio"
+                    class="status-upload"
+                ></div>
+
+                <div
+                    id="urlAtualAudio"
+                    class="url-atual"
+                ></div>
+
+            </div>
+
+
+            <!-- VIDEO -->
+
+            <div class="bloco-upload">
+
+                <h4>
+                    🎬 Vídeo do Lembrete
+                </h4>
+
+                <label>
+                    Escolha o vídeo:
+                </label>
+
+                <input
+                    type="file"
+                    id="arquivoVideo"
+                    accept="video/*"
+                >
+
+                <button
+                    id="btnUploadVideo"
+                    onclick="enviarArquivo('video')"
+                    class="btn-acao"
+                >
+                    Enviar Novo Vídeo
+                </button>
+
+                <div
+                    id="statusUploadVideo"
+                    class="status-upload"
+                ></div>
+
+                <div
+                    id="urlAtualVideo"
+                    class="url-atual"
+                ></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================================
+             MURAL DE AVISOS
+             ========================================= -->
+
+        <div class="card-painel">
+
+            <h3>
+                📢 Mural de Avisos
+            </h3>
+
+            <label>
+                Tempo de duração de cada aviso (segundos):
+            </label>
+
+            <input
+                type="number"
+                id="inputTempo"
+                min="1"
+                max="60"
+                value="4"
+                style="max-width: 150px;"
+            >
+
+            <label
+                style="
+                    margin-top: 15px;
+                    margin-bottom: 8px;
+                "
+            >
+                Lista de Avisos:
+            </label>
+
+            <div
+                id="listaAvisosContainer"
+            ></div>
+
+            <button
+                onclick="adicionarNovoAviso()"
+                class="btn-acao"
+                style="
+                    background: #334155;
+                    color: #fff;
+                    margin-top: 10px;
+                    margin-bottom: 15px;
+                "
+            >
+                + Adicionar Aviso
+            </button>
+
             <br>
-            <button onclick="salvarMuralCompleto()" class="btn-acao">💾 Salvar Mural</button>
+
+            <button
+                onclick="salvarMuralCompleto()"
+                class="btn-acao"
+            >
+                💾 Salvar Mural
+            </button>
+
         </div>
+
     </div>
 
+
+    <!-- =========================================
+         JAVASCRIPT
+         ========================================= -->
+
     <script>
+
+        /*
+         * Dados atuais carregados do Firestore.
+         */
+
         let dadosGlobais = {};
 
-        // Carrega dados da nuvem ao iniciar
+
+        /*
+         * =====================================================
+         * CONFIGURAÇÃO DO SERVIÇO DE UPLOAD
+         * =====================================================
+         *
+         * IMPORTANTE:
+         *
+         * O HTML público NÃO deve possuir um token do GitHub.
+         *
+         * Quando criarmos a ponte segura de upload,
+         * colocaremos aqui o endereço dela.
+         *
+         * Exemplo:
+         *
+         * const UPLOAD_API_URL =
+         *     "https://seu-endpoint-de-upload...";
+         *
+         * Por enquanto deixamos vazio para não fingir
+         * que o GitHub já está sendo acessado.
+         */
+
+        const UPLOAD_API_URL = "";
+
+
+        /*
+         * =====================================================
+         * CARREGAR DADOS DO FIRESTORE
+         * =====================================================
+         */
+
         async function carregarDadosPainel() {
+
             try {
-                let docRef = await window.firestore.getDoc(
-                    window.firestore.doc(db, "configuracoes", "sistema")
-                );
+
+                let docRef =
+                    await window.firestore.getDoc(
+                        window.firestore.doc(
+                            db,
+                            "configuracoes",
+                            "sistema"
+                        )
+                    );
+
 
                 if (docRef.exists()) {
-                    dadosGlobais = docRef.data();
+
+                    dadosGlobais =
+                        docRef.data();
+
                 } else {
+
                     dadosGlobais = {
-                        senha_site_geral: "123456",
-                        senha_admin_sistema: "admin123",
-                        versao_senha_site: 1,
-                        admin_img: "",
-                        admin_audio: "",
-                        admin_video: "",
-                        admin_tempo_mural: 4,
+
+                        senha_site_geral:
+                            "123456",
+
+                        senha_admin_sistema:
+                            "admin123",
+
+                        versao_senha_site:
+                            1,
+
+                        admin_img:
+                            "",
+
+                        admin_audio:
+                            "",
+
+                        admin_video:
+                            "",
+
+                        admin_tempo_mural:
+                            4,
+
                         admin_avisos_custom: [
+
                             {
-                                titulo: "🎵 Bem-vindo ao Projeto 2026!",
-                                texto: "Confira os recados importantes."
+                                titulo:
+                                    "🎵 Bem-vindo ao Projeto 2026!",
+
+                                texto:
+                                    "Confira os recados importantes."
                             }
+
                         ]
+
                     };
+
                 }
 
-                document.getElementById('passSiteGeral').value =
-                    dadosGlobais.senha_site_geral || "123456";
 
-                document.getElementById('passAdmin').value =
-                    dadosGlobais.senha_admin_sistema || "admin123";
+                /*
+                 * Preenche os campos.
+                 */
 
-                document.getElementById('inputImg').value =
-                    dadosGlobais.admin_img || "";
+                document.getElementById(
+                    'passSiteGeral'
+                ).value =
+                    dadosGlobais.senha_site_geral ||
+                    "123456";
 
-                document.getElementById('inputAudio').value =
-                    dadosGlobais.admin_audio || "";
 
-                document.getElementById('inputVideo').value =
-                    dadosGlobais.admin_video || "";
+                document.getElementById(
+                    'passAdmin'
+                ).value =
+                    dadosGlobais.senha_admin_sistema ||
+                    "admin123";
 
-                document.getElementById('inputTempo').value =
-                    dadosGlobais.admin_tempo_mural || 4;
+
+                document.getElementById(
+                    'inputImg'
+                ).value =
+                    dadosGlobais.admin_img ||
+                    "";
+
+
+                document.getElementById(
+                    'inputAudio'
+                ).value =
+                    dadosGlobais.admin_audio ||
+                    "";
+
+
+                document.getElementById(
+                    'inputVideo'
+                ).value =
+                    dadosGlobais.admin_video ||
+                    "";
+
+
+                document.getElementById(
+                    'inputTempo'
+                ).value =
+                    dadosGlobais.admin_tempo_mural ||
+                    4;
+
+
+                /*
+                 * Mostra URLs atuais.
+                 */
+
+                atualizarUrlsAtuais();
+
+
+                /*
+                 * Renderiza mural.
+                 */
 
                 renderizarListaAvisos(
-                    dadosGlobais.admin_avisos_custom || []
+                    dadosGlobais.admin_avisos_custom ||
+                    []
                 );
 
+
             } catch (erro) {
+
                 console.error(
-                    "Erro ao carregar dados da nuvem: ",
+                    "Erro ao carregar dados da nuvem:",
                     erro
                 );
 
-                alert("Erro ao conectar com a nuvem.");
+                alert(
+                    "Erro ao conectar com a nuvem."
+                );
+
             }
+
         }
 
+
+        /*
+         * =====================================================
+         * LOGIN
+         * =====================================================
+         */
+
         async function verificarSenha() {
+
             let senhaMestreSalva =
-                (dadosGlobais || {}).senha_admin_sistema ||
+                (dadosGlobais || {})
+                    .senha_admin_sistema ||
                 "admin123";
 
+
             if (
-                document.getElementById('senhaAdminInput').value ===
+                document.getElementById(
+                    'senhaAdminInput'
+                ).value ===
                 senhaMestreSalva
             ) {
-                document.getElementById('telaLogin').style.display = 'none';
-                document.getElementById('conteudoPainel').style.display = 'block';
+
+                document.getElementById(
+                    'telaLogin'
+                ).style.display = 'none';
+
+
+                document.getElementById(
+                    'conteudoPainel'
+                ).style.display = 'block';
+
 
                 await carregarDadosPainel();
 
+
             } else {
-                document.getElementById('erroSenha').style.display = 'block';
+
+                document.getElementById(
+                    'erroSenha'
+                ).style.display = 'block';
+
             }
+
         }
 
-        document.getElementById('senhaAdminInput').addEventListener(
+
+        /*
+         * Enter na senha.
+         */
+
+        document.getElementById(
+            'senhaAdminInput'
+        ).addEventListener(
             "keypress",
             function(event) {
+
                 if (event.key === "Enter") {
+
                     verificarSenha();
+
                 }
+
             }
         );
+
+
+        /*
+         * =====================================================
+         * CARREGAMENTO INICIAL DA SENHA
+         * =====================================================
+         */
 
         window.addEventListener(
             'DOMContentLoaded',
             async () => {
+
                 try {
+
                     let docRef =
                         await window.firestore.getDoc(
                             window.firestore.doc(
@@ -318,64 +984,149 @@
                             )
                         );
 
+
                     if (docRef.exists()) {
-                        dadosGlobais = docRef.data();
+
+                        dadosGlobais =
+                            docRef.data();
+
                     }
 
-                } catch(e) {
+                } catch (e) {
+
                     console.log(e);
+
                 }
+
             }
         );
 
+
+        /*
+         * =====================================================
+         * LISTA DE AVISOS
+         * =====================================================
+         */
+
         function renderizarListaAvisos(avisos) {
+
             let container =
                 document.getElementById(
                     'listaAvisosContainer'
                 );
+
 
             container.innerHTML = "";
 
-            avisos.forEach(item => {
-                let div =
-                    document.createElement('div');
 
-                div.className = 'aviso-item-box';
+            avisos.forEach(
+                item => {
 
-                div.innerHTML = `
-                    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
-                        <input type="text" class="aviso-titulo" value="${item.titulo}" placeholder="Título...">
-                        <input type="text" class="aviso-texto" value="${item.texto}" placeholder="Texto...">
-                    </div>
+                    let div =
+                        document.createElement(
+                            'div'
+                        );
 
-                    <button
-                        type="button"
-                        class="btn-remover"
-                        onclick="this.parentElement.remove()"
-                    >
-                        Excluir
-                    </button>
-                `;
 
-                container.appendChild(div);
-            });
+                    div.className =
+                        'aviso-item-box';
+
+
+                    div.innerHTML = `
+
+                        <div
+                            style="
+                                flex-grow: 1;
+                                display: flex;
+                                flex-direction: column;
+                                gap: 6px;
+                            "
+                        >
+
+                            <input
+                                type="text"
+                                class="aviso-titulo"
+                                value="${escaparHTML(item.titulo || '')}"
+                                placeholder="Título..."
+                            >
+
+                            <input
+                                type="text"
+                                class="aviso-texto"
+                                value="${escaparHTML(item.texto || '')}"
+                                placeholder="Texto..."
+                            >
+
+                        </div>
+
+                        <button
+                            type="button"
+                            class="btn-remover"
+                            onclick="this.parentElement.remove()"
+                        >
+                            Excluir
+                        </button>
+
+                    `;
+
+
+                    container.appendChild(
+                        div
+                    );
+
+                }
+            );
+
         }
 
+
+        /*
+         * Adicionar novo aviso.
+         */
+
         function adicionarNovoAviso() {
+
             let container =
                 document.getElementById(
                     'listaAvisosContainer'
                 );
 
-            let div =
-                document.createElement('div');
 
-            div.className = 'aviso-item-box';
+            let div =
+                document.createElement(
+                    'div'
+                );
+
+
+            div.className =
+                'aviso-item-box';
+
 
             div.innerHTML = `
-                <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
-                    <input type="text" class="aviso-titulo" value="" placeholder="Título...">
-                    <input type="text" class="aviso-texto" value="" placeholder="Texto...">
+
+                <div
+                    style="
+                        flex-grow: 1;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                    "
+                >
+
+                    <input
+                        type="text"
+                        class="aviso-titulo"
+                        value=""
+                        placeholder="Título..."
+                    >
+
+                    <input
+                        type="text"
+                        class="aviso-texto"
+                        value=""
+                        placeholder="Texto..."
+                    >
+
                 </div>
 
                 <button
@@ -385,41 +1136,79 @@
                 >
                     Excluir
                 </button>
+
             `;
 
-            container.appendChild(div);
+
+            container.appendChild(
+                div
+            );
+
         }
 
-        async function salvarNaNuvem(novosDados) {
+
+        /*
+         * =====================================================
+         * SALVAR NA NUVEM
+         * =====================================================
+         */
+
+        async function salvarNaNuvem(
+            novosDados
+        ) {
+
             try {
 
                 await window.firestore.setDoc(
+
                     window.firestore.doc(
                         db,
                         "configuracoes",
                         "sistema"
                     ),
+
                     novosDados,
-                    { merge: true }
+
+                    {
+                        merge: true
+                    }
+
                 );
 
+
                 dadosGlobais = {
+
                     ...dadosGlobais,
+
                     ...novosDados
+
                 };
 
+
                 mostrarAlerta();
+
 
             } catch (e) {
 
                 console.error(
-                    "Erro ao salvar: ",
+                    "Erro ao salvar:",
                     e
                 );
 
-                alert("Erro ao salvar na nuvem.");
+                alert(
+                    "Erro ao salvar na nuvem."
+                );
+
             }
+
         }
+
+
+        /*
+         * =====================================================
+         * SALVAR SENHAS
+         * =====================================================
+         */
 
         async function salvarSenhasPrincipais() {
 
@@ -428,45 +1217,71 @@
                     'passSiteGeral'
                 ).value;
 
+
             let novaSenhaAdmin =
                 document.getElementById(
                     'passAdmin'
                 ).value;
 
+
             let senhaSiteAtual =
                 dadosGlobais.senha_site_geral ||
                 "123456";
 
+
             let versaoAtual =
                 Number(
-                    dadosGlobais.versao_senha_site || 1
+                    dadosGlobais.versao_senha_site ||
+                    1
                 );
+
 
             let novaVersao =
                 versaoAtual;
 
+
             /*
-             * SOMENTE quando a senha geral do site
-             * realmente mudar, aumentamos a versão.
-             *
-             * Isso fará com que todos os aparelhos
-             * autenticados anteriormente sejam obrigados
-             * a informar a nova senha quando carregarem
-             * novamente o site.
+             * Só aumenta a versão quando
+             * a senha geral realmente mudar.
              */
-            if (novaSenhaSite !== senhaSiteAtual) {
-                novaVersao = versaoAtual + 1;
+
+            if (
+                novaSenhaSite !==
+                senhaSiteAtual
+            ) {
+
+                novaVersao =
+                    versaoAtual + 1;
+
             }
 
+
             await salvarNaNuvem({
-                senha_site_geral: novaSenhaSite,
-                senha_admin_sistema: novaSenhaAdmin,
-                versao_senha_site: novaVersao
+
+                senha_site_geral:
+                    novaSenhaSite,
+
+                senha_admin_sistema:
+                    novaSenhaAdmin,
+
+                versao_senha_site:
+                    novaVersao
+
             });
+
         }
 
-        function salvarLinks() {
-            salvarNaNuvem({
+
+        /*
+         * =====================================================
+         * SALVAR LINKS MANUALMENTE
+         * =====================================================
+         */
+
+        async function salvarLinks() {
+
+            await salvarNaNuvem({
+
                 admin_img:
                     document.getElementById(
                         'inputImg'
@@ -481,45 +1296,587 @@
                     document.getElementById(
                         'inputVideo'
                     ).value
+
             });
+
+            atualizarUrlsAtuais();
+
         }
 
-        function salvarMuralCompleto() {
+
+        /*
+         * =====================================================
+         * MOSTRAR URLS ATUAIS
+         * =====================================================
+         */
+
+        function atualizarUrlsAtuais() {
+
+            let img =
+                document.getElementById(
+                    'urlAtualImg'
+                );
+
+            let audio =
+                document.getElementById(
+                    'urlAtualAudio'
+                );
+
+            let video =
+                document.getElementById(
+                    'urlAtualVideo'
+                );
+
+
+            if (img) {
+
+                img.textContent =
+                    dadosGlobais.admin_img
+                        ? "Atual: " +
+                          dadosGlobais.admin_img
+                        : "Nenhuma imagem cadastrada.";
+
+            }
+
+
+            if (audio) {
+
+                audio.textContent =
+                    dadosGlobais.admin_audio
+                        ? "Atual: " +
+                          dadosGlobais.admin_audio
+                        : "Nenhum áudio cadastrado.";
+
+            }
+
+
+            if (video) {
+
+                video.textContent =
+                    dadosGlobais.admin_video
+                        ? "Atual: " +
+                          dadosGlobais.admin_video
+                        : "Nenhum vídeo cadastrado.";
+
+            }
+
+        }
+
+
+        /*
+         * =====================================================
+         * SELECIONAR CAMPO DE ARQUIVO
+         * =====================================================
+         */
+
+        function obterInputArquivo(tipo) {
+
+            if (tipo === "imagem") {
+
+                return document.getElementById(
+                    "arquivoImg"
+                );
+
+            }
+
+
+            if (tipo === "audio") {
+
+                return document.getElementById(
+                    "arquivoAudio"
+                );
+
+            }
+
+
+            if (tipo === "video") {
+
+                return document.getElementById(
+                    "arquivoVideo"
+                );
+
+            }
+
+
+            return null;
+
+        }
+
+
+        /*
+         * =====================================================
+         * BOTÃO / STATUS DO UPLOAD
+         * =====================================================
+         */
+
+        function obterElementosUpload(tipo) {
+
+            if (tipo === "imagem") {
+
+                return {
+
+                    botao:
+                        document.getElementById(
+                            "btnUploadImg"
+                        ),
+
+                    status:
+                        document.getElementById(
+                            "statusUploadImg"
+                        )
+
+                };
+
+            }
+
+
+            if (tipo === "audio") {
+
+                return {
+
+                    botao:
+                        document.getElementById(
+                            "btnUploadAudio"
+                        ),
+
+                    status:
+                        document.getElementById(
+                            "statusUploadAudio"
+                        )
+
+                };
+
+            }
+
+
+            if (tipo === "video") {
+
+                return {
+
+                    botao:
+                        document.getElementById(
+                            "btnUploadVideo"
+                        ),
+
+                    status:
+                        document.getElementById(
+                            "statusUploadVideo"
+                        )
+
+                };
+
+            }
+
+
+            return {
+
+                botao: null,
+
+                status: null
+
+            };
+
+        }
+
+
+        /*
+         * =====================================================
+         * ENVIO DO ARQUIVO
+         * =====================================================
+         *
+         * Esta função já está organizada para conversar
+         * com a futura ponte segura de upload.
+         *
+         * Não colocamos token do GitHub aqui.
+         */
+
+        async function enviarArquivo(tipo) {
+
+            let inputArquivo =
+                obterInputArquivo(tipo);
+
+
+            let elementos =
+                obterElementosUpload(tipo);
+
+
+            if (!inputArquivo) {
+
+                alert(
+                    "Campo de arquivo não encontrado."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !inputArquivo.files ||
+                inputArquivo.files.length === 0
+            ) {
+
+                alert(
+                    "Escolha um arquivo primeiro."
+                );
+
+                return;
+
+            }
+
+
+            let arquivo =
+                inputArquivo.files[0];
+
+
+            /*
+             * Verificação básica do tipo.
+             */
+
+            if (
+                tipo === "imagem" &&
+                !arquivo.type.startsWith("image/")
+            ) {
+
+                alert(
+                    "Escolha um arquivo de imagem."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                tipo === "audio" &&
+                !arquivo.type.startsWith("audio/")
+            ) {
+
+                alert(
+                    "Escolha um arquivo de áudio."
+                );
+
+                return;
+
+            }
+
+
+            if (
+                tipo === "video" &&
+                !arquivo.type.startsWith("video/")
+            ) {
+
+                alert(
+                    "Escolha um arquivo de vídeo."
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * Se ainda não existe a ponte segura,
+             * não fingimos que o upload funcionou.
+             */
+
+            if (!UPLOAD_API_URL) {
+
+                alert(
+                    "O painel está pronto para o envio, " +
+                    "mas a conexão segura com o GitHub ainda " +
+                    "não foi configurada."
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * Desabilita o botão durante o envio.
+             */
+
+            if (elementos.botao) {
+
+                elementos.botao.disabled =
+                    true;
+
+            }
+
+
+            if (elementos.status) {
+
+                elementos.status.textContent =
+                    "Enviando arquivo...";
+
+            }
+
+
+            try {
+
+                /*
+                 * FormData leva o arquivo ao servidor
+                 * seguro.
+                 */
+
+                let formulario =
+                    new FormData();
+
+
+                formulario.append(
+                    "arquivo",
+                    arquivo
+                );
+
+
+                formulario.append(
+                    "tipo",
+                    tipo
+                );
+
+
+                /*
+                 * O servidor deverá identificar:
+                 *
+                 * imagem -> lembrete-imagem
+                 * audio  -> lembrete-audio
+                 * video  -> lembrete-video
+                 *
+                 * e substituir o arquivo anterior.
+                 */
+
+                let resposta =
+                    await fetch(
+                        UPLOAD_API_URL,
+                        {
+
+                            method: "POST",
+
+                            body: formulario
+
+                        }
+                    );
+
+
+                if (!resposta.ok) {
+
+                    throw new Error(
+                        "Falha no servidor de upload."
+                    );
+
+                }
+
+
+                let resultado =
+                    await resposta.json();
+
+
+                if (
+                    !resultado ||
+                    !resultado.url
+                ) {
+
+                    throw new Error(
+                        "O servidor não retornou a URL pública."
+                    );
+
+                }
+
+
+                /*
+                 * Salva a URL no Firestore.
+                 */
+
+                await salvarEnderecoMidia(
+                    tipo,
+                    resultado.url
+                );
+
+
+                /*
+                 * Atualiza os campos.
+                 */
+
+                if (tipo === "imagem") {
+
+                    document.getElementById(
+                        "inputImg"
+                    ).value =
+                        resultado.url;
+
+                }
+
+
+                if (tipo === "audio") {
+
+                    document.getElementById(
+                        "inputAudio"
+                    ).value =
+                        resultado.url;
+
+                }
+
+
+                if (tipo === "video") {
+
+                    document.getElementById(
+                        "inputVideo"
+                    ).value =
+                        resultado.url;
+
+                }
+
+
+                atualizarUrlsAtuais();
+
+
+                if (elementos.status) {
+
+                    elementos.status.textContent =
+                        "Arquivo enviado com sucesso.";
+
+                }
+
+
+                /*
+                 * Limpa o campo.
+                 */
+
+                inputArquivo.value = "";
+
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro no upload:",
+                    erro
+                );
+
+
+                if (elementos.status) {
+
+                    elementos.status.textContent =
+                        "Erro ao enviar o arquivo.";
+
+                }
+
+
+                alert(
+                    "Não foi possível enviar o arquivo."
+                );
+
+
+            } finally {
+
+                if (elementos.botao) {
+
+                    elementos.botao.disabled =
+                        false;
+
+                }
+
+            }
+
+        }
+
+
+        /*
+         * =====================================================
+         * SALVAR ENDEREÇO DA MÍDIA
+         * =====================================================
+         */
+
+        async function salvarEnderecoMidia(
+            tipo,
+            endereco
+        ) {
+
+            let dados = {};
+
+
+            if (tipo === "imagem") {
+
+                dados.admin_img =
+                    endereco;
+
+            }
+
+
+            if (tipo === "audio") {
+
+                dados.admin_audio =
+                    endereco;
+
+            }
+
+
+            if (tipo === "video") {
+
+                dados.admin_video =
+                    endereco;
+
+            }
+
+
+            await salvarNaNuvem(
+                dados
+            );
+
+        }
+
+
+        /*
+         * =====================================================
+         * SALVAR MURAL COMPLETO
+         * =====================================================
+         */
+
+        async function salvarMuralCompleto() {
 
             let titulos =
                 document.querySelectorAll(
                     '.aviso-titulo'
                 );
 
+
             let textos =
                 document.querySelectorAll(
                     '.aviso-texto'
                 );
 
+
             let novaLista = [];
 
-            for(
+
+            for (
                 let i = 0;
                 i < titulos.length;
                 i++
             ) {
 
-                if(
+                if (
                     titulos[i].value.trim() !== "" ||
                     textos[i].value.trim() !== ""
                 ) {
 
                     novaLista.push({
+
                         titulo:
                             titulos[i].value,
 
                         texto:
                             textos[i].value
+
                     });
+
                 }
+
             }
 
-            salvarNaNuvem({
+
+            await salvarNaNuvem({
+
                 admin_avisos_custom:
                     novaLista,
 
@@ -529,8 +1886,17 @@
                             'inputTempo'
                         ).value
                     ) || 4
+
             });
+
         }
+
+
+        /*
+         * =====================================================
+         * ALERTA DE SUCESSO
+         * =====================================================
+         */
 
         function mostrarAlerta() {
 
@@ -539,15 +1905,42 @@
                     'alertaSucesso'
                 );
 
-            alerta.style.display = 'block';
+
+            alerta.style.display =
+                'block';
+
 
             setTimeout(
                 () => {
-                    alerta.style.display = 'none';
+
+                    alerta.style.display =
+                        'none';
+
                 },
                 3000
             );
+
         }
+
+
+        /*
+         * =====================================================
+         * ESCAPAR TEXTO PARA O HTML
+         * =====================================================
+         */
+
+        function escaparHTML(texto) {
+
+            return String(texto)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
     </script>
+
 </body>
 </html>
