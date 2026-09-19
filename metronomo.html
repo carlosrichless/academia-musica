@@ -1,396 +1,796 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
 <title>Metrônomo</title>
 
-<style>
-    * {
-        box-sizing: border-box;
-    }
 
-    body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-        background: #020617;
-        color: white;
-    }
+<style>
+
+/* =====================================================
+   BASE
+   ===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+
+    background: #020617;
+    color: white;
+}
+
+
+/* =====================================================
+   APLICATIVO
+   ===================================================== */
+
+.app {
+
+    min-height: 100vh;
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+/* =====================================================
+   LOGO GRANDE NO FUNDO
+   ===================================================== */
+
+.app::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background-image: url(
+        "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/logo%20c.richless.png"
+    );
+
+    background-repeat: no-repeat;
+
+    background-position: center center;
+
+    background-size: 125% auto;
+
+    opacity: 0.14;
+
+    z-index: 0;
+
+    pointer-events: none;
+}
+
+
+.app::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(2, 6, 23, 0.30);
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   CONTEÚDO
+   ===================================================== */
+
+.conteudo {
+
+    width: 100%;
+
+    max-width: 700px;
+
+    position: relative;
+
+    z-index: 2;
+}
+
+
+/* =====================================================
+   TOPO
+   ===================================================== */
+
+.topo {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+}
+
+
+.voltar {
+
+    text-decoration: none;
+
+    color: white;
+
+    background: rgba(15, 23, 42, 0.9);
+
+    border: 1px solid #334155;
+
+    padding: 10px 16px;
+
+    border-radius: 12px;
+
+    font-size: 0.9rem;
+}
+
+
+h1 {
+
+    margin: 0;
+
+    text-align: center;
+
+    font-size: 1.8rem;
+}
+
+
+/* =====================================================
+   CARDS
+   ===================================================== */
+
+.card {
+
+    background: rgba(15, 23, 42, 0.88);
+
+    border: 1px solid #334155;
+
+    border-radius: 22px;
+
+    padding: 25px;
+
+    margin-bottom: 18px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.3);
+}
+
+
+.label {
+
+    text-align: center;
+
+    color: #94a3b8;
+
+    font-size: 0.85rem;
+
+    margin-bottom: 8px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+
+/* =====================================================
+   BPM
+   ===================================================== */
+
+.bpm {
+
+    text-align: center;
+
+    font-size: 6rem;
+
+    font-weight: bold;
+
+    line-height: 1;
+
+    margin: 10px 0 20px;
+}
+
+
+.controles-bpm {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 12px;
+}
+
+
+button {
+
+    border: none;
+
+    cursor: pointer;
+
+    color: white;
+
+    background: #1e293b;
+
+    border: 1px solid #475569;
+
+    border-radius: 14px;
+
+    padding: 13px 20px;
+
+    font-size: 1rem;
+
+    font-weight: bold;
+}
+
+
+button:active {
+
+    transform: scale(0.96);
+}
+
+
+.botao-principal {
+
+    width: 100%;
+
+    background: #2563eb;
+
+    border-color: #3b82f6;
+
+    font-size: 1.2rem;
+
+    padding: 17px;
+
+    margin-top: 20px;
+}
+
+
+.botao-principal.parar {
+
+    background: #dc2626;
+
+    border-color: #ef4444;
+}
+
+
+/* =====================================================
+   COMPASSO
+   ===================================================== */
+
+.compasso {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+}
+
+
+.campo-compasso {
+
+    text-align: center;
+}
+
+
+.valor-compasso {
+
+    font-size: 2.4rem;
+
+    font-weight: bold;
+
+    margin: 8px 0 12px;
+}
+
+
+.botoes-pequenos {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    flex-wrap: wrap;
+}
+
+
+.botoes-pequenos button {
+
+    padding: 9px 13px;
+
+    font-size: 0.85rem;
+}
+
+
+/* =====================================================
+   SUBDIVISÕES
+   ===================================================== */
+
+.subdivisoes {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, 1fr);
+
+    gap: 8px;
+}
+
+
+.subdivisao {
+
+    padding: 12px 5px;
+
+    font-size: 0.78rem;
+}
+
+
+.subdivisao.ativa {
+
+    background: #2563eb;
+
+    border-color: #60a5fa;
+}
+
+
+/* =====================================================
+   INDICADOR DE BATIDA
+   ===================================================== */
+
+.batida {
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+.ponto {
+
+    width: 14px;
+
+    height: 14px;
+
+    border-radius: 50%;
+
+    background: #334155;
+
+    transition: 0.1s;
+}
+
+
+.ponto.ativo {
+
+    background: #60a5fa;
+
+    transform: scale(1.4);
+}
+
+
+/* =====================================================
+   BOTÃO TELA CHEIA
+   ===================================================== */
+
+.tela-cheia-btn {
+
+    width: 100%;
+
+    margin-top: 12px;
+
+    background: #0f172a;
+}
+
+
+/* =====================================================
+   TELA CHEIA
+   ===================================================== */
+
+#modoTelaCheia {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100vw;
+
+    height: 100vh;
+
+    background: #020617;
+
+    z-index: 99999;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   NÚMERO GIGANTE
+   ===================================================== */
+
+#contadorTelaCheia {
+
+    font-size: 82vmin;
+
+    font-weight: 900;
+
+    line-height: 0.75;
+
+    color: white;
+
+    text-align: center;
+
+    user-select: none;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   BOTÃO X
+   ===================================================== */
+
+#fecharTelaCheia {
+
+    position: fixed;
+
+    top: 25px;
+
+    right: 25px;
+
+    z-index: 100000;
+
+    width: 58px;
+
+    height: 58px;
+
+    padding: 0;
+
+    border-radius: 50%;
+
+    background: #1e293b;
+
+    border: 1px solid #64748b;
+
+    color: white;
+
+    font-size: 2rem;
+
+    line-height: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+}
+
+
+/* =====================================================
+   CELULAR
+   ===================================================== */
+
+@media (max-width: 600px) {
 
     .app {
-        min-height: 100vh;
-        position: relative;
-        overflow: hidden;
-        padding: 25px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+
+        padding: 15px;
     }
 
-    /* LOGO GRANDE NO FUNDO */
+
+    .card {
+
+        padding: 18px;
+
+        border-radius: 18px;
+    }
+
+
+    .bpm {
+
+        font-size: 5rem;
+    }
+
+
+    .compasso {
+
+        gap: 10px;
+    }
+
+
+    .valor-compasso {
+
+        font-size: 2rem;
+    }
+
+
+    .subdivisoes {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .subdivisao {
+
+        padding: 12px;
+    }
+
+
     .app::before {
-        content: "";
-        position: absolute;
-        inset: 0;
 
-        background-image: url("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/logo%20c.richless.png");
-
-        background-repeat: no-repeat;
-        background-position: center center;
-        background-size: 125% auto;
-
-        opacity: 0.14;
-
-        z-index: 0;
-        pointer-events: none;
+        background-size: 150% auto;
     }
 
-    /* Escurece um pouco a logo para manter os controles legíveis */
-    .app::after {
-        content: "";
-        position: absolute;
-        inset: 0;
 
-        background: rgba(2, 6, 23, 0.30);
+    /* NÚMERO AINDA MAIOR NO CELULAR */
 
-        z-index: 1;
-        pointer-events: none;
+    #contadorTelaCheia {
+
+        font-size: 88vw;
+
+        line-height: 0.72;
     }
 
-    .conteudo {
-        width: 100%;
-        max-width: 700px;
-        position: relative;
-        z-index: 2;
-    }
 
-    .topo {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 25px;
-    }
+    #fecharTelaCheia {
 
-    .voltar {
-        text-decoration: none;
-        color: white;
-        background: rgba(15, 23, 42, 0.9);
-        border: 1px solid #334155;
-        padding: 10px 16px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-    }
+        top: 18px;
 
-    h1 {
-        margin: 0;
-        text-align: center;
+        right: 18px;
+
+        width: 52px;
+
+        height: 52px;
+
         font-size: 1.8rem;
     }
 
-    .card {
-        background: rgba(15, 23, 42, 0.88);
-        border: 1px solid #334155;
-        border-radius: 22px;
-        padding: 25px;
-        margin-bottom: 18px;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-    }
-
-    .label {
-        text-align: center;
-        color: #94a3b8;
-        font-size: 0.85rem;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-
-    .bpm {
-        text-align: center;
-        font-size: 6rem;
-        font-weight: bold;
-        line-height: 1;
-        margin: 10px 0 20px;
-    }
-
-    .controles-bpm {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-    }
-
-    button {
-        border: none;
-        cursor: pointer;
-        color: white;
-        background: #1e293b;
-        border: 1px solid #475569;
-        border-radius: 14px;
-        padding: 13px 20px;
-        font-size: 1rem;
-        font-weight: bold;
-    }
-
-    button:active {
-        transform: scale(0.96);
-    }
-
-    .botao-principal {
-        width: 100%;
-        background: #2563eb;
-        border-color: #3b82f6;
-        font-size: 1.2rem;
-        padding: 17px;
-        margin-top: 20px;
-    }
-
-    .botao-principal.parar {
-        background: #dc2626;
-        border-color: #ef4444;
-    }
-
-    .compasso {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
-
-    .campo-compasso {
-        text-align: center;
-    }
-
-    .valor-compasso {
-        font-size: 2.4rem;
-        font-weight: bold;
-        margin: 8px 0 12px;
-    }
-
-    .botoes-pequenos {
-        display: flex;
-        justify-content: center;
-        gap: 7px;
-        flex-wrap: wrap;
-    }
-
-    .botoes-pequenos button {
-        padding: 9px 13px;
-        font-size: 0.85rem;
-    }
-
-    .subdivisoes {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-    }
-
-    .subdivisao {
-        padding: 12px 5px;
-        font-size: 0.78rem;
-    }
-
-    .subdivisao.ativa {
-        background: #2563eb;
-        border-color: #60a5fa;
-    }
-
-    .batida {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
-    }
-
-    .ponto {
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: #334155;
-        transition: 0.1s;
-    }
-
-    .ponto.ativo {
-        background: #60a5fa;
-        transform: scale(1.4);
-    }
-
-    .tela-cheia-btn {
-        width: 100%;
-        margin-top: 12px;
-        background: #0f172a;
-    }
-
-    /* =========================
-       TELA CHEIA
-       A LOGO NÃO APARECE AQUI
-       ========================= */
-
-    #modoTelaCheia {
-        position: fixed;
-        inset: 0;
-        background: #020617;
-        z-index: 9999;
-
-        display: none;
-
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    #modoTelaCheia.ativo {
-        display: flex;
-    }
-
-    #contadorTelaCheia {
-    font-size: 70vmin;
-    font-weight: bold;
-    line-height: 0.8;
-    color: white;
 }
-    }
 
-    #fecharTelaCheia {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-
-        width: 50px;
-        height: 50px;
-
-        border-radius: 50%;
-        padding: 0;
-
-        font-size: 1.5rem;
-        background: #1e293b;
-    }
-
-    @media (max-width: 600px) {
-
-        .app {
-            padding: 15px;
-        }
-
-        .card {
-            padding: 18px;
-            border-radius: 18px;
-        }
-
-        .bpm {
-            font-size: 5rem;
-        }
-
-        .compasso {
-            gap: 10px;
-        }
-
-        .valor-compasso {
-            font-size: 2rem;
-        }
-
-        .subdivisoes {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .subdivisao {
-            padding: 12px;
-        }
-
-        .app::before {
-            background-size: 150% auto;
-        }
-    }
 </style>
+
 </head>
 
+
 <body>
+
+
+<!-- =====================================================
+     APLICATIVO NORMAL
+     ===================================================== -->
 
 <div class="app">
 
     <div class="conteudo">
 
+
+        <!-- TOPO -->
+
         <div class="topo">
-            <a href="index.html" class="voltar">← Voltar</a>
-            <h1>🎵 Metrônomo</h1>
-            <div style="width:70px;"></div>
+
+            <a
+                href="index.html"
+                class="voltar"
+            >
+                ← Voltar
+            </a>
+
+
+            <h1>
+                🎵 Metrônomo
+            </h1>
+
+
+            <div
+                style="width:70px;"
+            ></div>
+
         </div>
 
-        <!-- BPM -->
+
+
+        <!-- =================================================
+             BPM
+             ================================================= -->
+
         <div class="card">
 
-            <div class="label">BPM</div>
+            <div class="label">
+                BPM
+            </div>
 
-            <div class="bpm" id="bpm">80</div>
+
+            <div
+                class="bpm"
+                id="bpm"
+            >
+                80
+            </div>
+
 
             <div class="controles-bpm">
-                <button onclick="alterarBpm(-5)">− 5</button>
-                <button onclick="alterarBpm(5)">+ 5</button>
+
+                <button
+                    onclick="alterarBpm(-5)"
+                >
+                    − 5
+                </button>
+
+
+                <button
+                    onclick="alterarBpm(5)"
+                >
+                    + 5
+                </button>
+
             </div>
+
 
             <button
                 id="botaoIniciar"
                 class="botao-principal"
-                onclick="alternarMetronomo()">
+                onclick="alternarMetronomo()"
+            >
                 ▶ INICIAR
             </button>
 
+
             <button
                 class="tela-cheia-btn"
-                onclick="abrirTelaCheia()">
+                onclick="abrirTelaCheia()"
+            >
                 ⛶ TELA CHEIA
             </button>
 
+
             <div class="batida">
-                <div class="ponto" id="ponto0"></div>
-                <div class="ponto" id="ponto1"></div>
-                <div class="ponto" id="ponto2"></div>
-                <div class="ponto" id="ponto3"></div>
+
+                <div
+                    class="ponto"
+                    id="ponto0"
+                ></div>
+
+                <div
+                    class="ponto"
+                    id="ponto1"
+                ></div>
+
+                <div
+                    class="ponto"
+                    id="ponto2"
+                ></div>
+
+                <div
+                    class="ponto"
+                    id="ponto3"
+                ></div>
+
             </div>
 
         </div>
 
-        <!-- COMPASSO -->
+
+
+        <!-- =================================================
+             COMPASSO
+             ================================================= -->
+
         <div class="card">
 
-            <div class="label">Fórmula de Compasso</div>
+            <div class="label">
+                Fórmula de Compasso
+            </div>
+
 
             <div class="compasso">
 
+
+                <!-- NUMERADOR -->
+
                 <div class="campo-compasso">
 
-                    <div>Numerador</div>
+                    <div>
+                        Numerador
+                    </div>
+
 
                     <div
                         class="valor-compasso"
-                        id="numerador">
+                        id="numerador"
+                    >
                         4
                     </div>
 
+
                     <div class="botoes-pequenos">
-                        <button onclick="alterarNumerador(-1)">−</button>
-                        <button onclick="alterarNumerador(1)">+</button>
+
+                        <button
+                            onclick="alterarNumerador(-1)"
+                        >
+                            −
+                        </button>
+
+
+                        <button
+                            onclick="alterarNumerador(1)"
+                        >
+                            +
+                        </button>
+
                     </div>
 
                 </div>
 
+
+
+                <!-- DENOMINADOR -->
+
                 <div class="campo-compasso">
 
-                    <div>Denominador</div>
+                    <div>
+                        Denominador
+                    </div>
+
 
                     <div
                         class="valor-compasso"
-                        id="denominador">
+                        id="denominador"
+                    >
                         4
                     </div>
 
+
                     <div class="botoes-pequenos">
 
-                        <button onclick="alterarDenominador(-1)">
+                        <button
+                            onclick="alterarDenominador(-1)"
+                        >
                             −
                         </button>
 
-                        <button onclick="alterarDenominador(1)">
+
+                        <button
+                            onclick="alterarDenominador(1)"
+                        >
                             +
                         </button>
 
@@ -402,45 +802,63 @@
 
         </div>
 
-        <!-- SUBDIVISÃO -->
+
+
+        <!-- =================================================
+             SUBDIVISÃO
+             ================================================= -->
+
         <div class="card">
 
-            <div class="label">Subdivisão do tempo</div>
+            <div class="label">
+                Subdivisão do tempo
+            </div>
+
 
             <div class="subdivisoes">
+
 
                 <button
                     class="subdivisao ativa"
                     data-valor="1"
-                    onclick="selecionarSubdivisao(1)">
+                    onclick="selecionarSubdivisao(1)"
+                >
                     Semínima
                 </button>
+
 
                 <button
                     class="subdivisao"
                     data-valor="2"
-                    onclick="selecionarSubdivisao(2)">
+                    onclick="selecionarSubdivisao(2)"
+                >
                     Colcheia
                 </button>
+
 
                 <button
                     class="subdivisao"
                     data-valor="3"
-                    onclick="selecionarSubdivisao(3)">
+                    onclick="selecionarSubdivisao(3)"
+                >
                     Tercina
                 </button>
+
 
                 <button
                     class="subdivisao"
                     data-valor="6"
-                    onclick="selecionarSubdivisao(6)">
+                    onclick="selecionarSubdivisao(6)"
+                >
                     Sextina
                 </button>
+
 
                 <button
                     class="subdivisao"
                     data-valor="8"
-                    onclick="selecionarSubdivisao(8)">
+                    onclick="selecionarSubdivisao(8)"
+                >
                     Fusa
                 </button>
 
@@ -453,32 +871,50 @@
 </div>
 
 
-<!-- =========================
+
+<!-- =====================================================
      TELA CHEIA
-     ========================= -->
+     ===================================================== -->
 
 <div id="modoTelaCheia">
 
+
     <button
         id="fecharTelaCheia"
-        onclick="fecharTelaCheia()">
-        ✕
+        type="button"
+        onclick="fecharTelaCheia()"
+        aria-label="Fechar tela cheia"
+    >
+        ×
     </button>
 
-    <div id="contadorTelaCheia">
+
+    <div
+        id="contadorTelaCheia"
+    >
         1
     </div>
 
 </div>
 
 
+
 <script>
+
+/* =====================================================
+   CONFIGURAÇÕES
+   ===================================================== */
 
 let bpm = 80;
 
 let numerador = 4;
 
-let denominadores = [2, 4, 8, 16];
+let denominadores = [
+    2,
+    4,
+    8,
+    16
+];
 
 let indiceDenominador = 1;
 
@@ -493,19 +929,29 @@ let batidaAtual = 0;
 let audioContext = null;
 
 
-/* =========================
+/* =====================================================
    BPM
-   ========================= */
+   ===================================================== */
 
 function alterarBpm(valor) {
 
     bpm += valor;
 
-    if (bpm < 30) bpm = 30;
 
-    if (bpm > 240) bpm = 240;
+    if (bpm < 30) {
+        bpm = 30;
+    }
 
-    document.getElementById("bpm").innerText = bpm;
+
+    if (bpm > 240) {
+        bpm = 240;
+    }
+
+
+    document
+        .getElementById("bpm")
+        .innerText = bpm;
+
 
     if (tocando) {
 
@@ -514,67 +960,108 @@ function alterarBpm(valor) {
         iniciarMetronomo();
 
     }
+
 }
 
 
-/* =========================
+/* =====================================================
    NUMERADOR
-   ========================= */
+   ===================================================== */
 
 function alterarNumerador(valor) {
 
     numerador += valor;
 
-    if (numerador < 1) numerador = 1;
 
-    if (numerador > 32) numerador = 32;
+    if (numerador < 1) {
+        numerador = 1;
+    }
 
-    document.getElementById("numerador").innerText = numerador;
+
+    if (numerador > 32) {
+        numerador = 32;
+    }
+
+
+    document
+        .getElementById("numerador")
+        .innerText = numerador;
+
 
     batidaAtual = 0;
 
+
     atualizarContadorTelaCheia();
+
 }
 
 
-/* =========================
+/* =====================================================
    DENOMINADOR
-   ========================= */
+   ===================================================== */
 
 function alterarDenominador(valor) {
 
     indiceDenominador += valor;
 
+
     if (indiceDenominador < 0) {
-        indiceDenominador = denominadores.length - 1;
+
+        indiceDenominador =
+            denominadores.length - 1;
+
     }
 
-    if (indiceDenominador >= denominadores.length) {
+
+    if (
+        indiceDenominador >=
+        denominadores.length
+    ) {
+
         indiceDenominador = 0;
+
     }
 
-    document.getElementById("denominador").innerText =
+
+    document
+        .getElementById("denominador")
+        .innerText =
         denominadores[indiceDenominador];
+
 }
 
 
-/* =========================
+/* =====================================================
    SUBDIVISÃO
-   ========================= */
+   ===================================================== */
 
 function selecionarSubdivisao(valor) {
 
     subdivisao = valor;
 
-    document.querySelectorAll(".subdivisao").forEach(botao => {
 
-        botao.classList.remove("ativa");
+    document
+        .querySelectorAll(".subdivisao")
+        .forEach(botao => {
 
-        if (Number(botao.dataset.valor) === valor) {
-            botao.classList.add("ativa");
-        }
+            botao.classList.remove(
+                "ativa"
+            );
 
-    });
+
+            if (
+                Number(botao.dataset.valor)
+                === valor
+            ) {
+
+                botao.classList.add(
+                    "ativa"
+                );
+
+            }
+
+        });
+
 
     if (tocando) {
 
@@ -583,12 +1070,13 @@ function selecionarSubdivisao(valor) {
         iniciarMetronomo();
 
     }
+
 }
 
 
-/* =========================
-   METRÔNOMO
-   ========================= */
+/* =====================================================
+   LIGAR / DESLIGAR
+   ===================================================== */
 
 function alternarMetronomo() {
 
@@ -601,48 +1089,78 @@ function alternarMetronomo() {
         iniciarMetronomo();
 
     }
+
 }
 
+
+/* =====================================================
+   INICIAR
+   ===================================================== */
 
 function iniciarMetronomo() {
 
     if (!audioContext) {
 
         audioContext =
-            new (window.AudioContext ||
-            window.webkitAudioContext)();
+            new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
 
     }
 
-    if (audioContext.state === "suspended") {
+
+    if (
+        audioContext.state ===
+        "suspended"
+    ) {
+
         audioContext.resume();
+
     }
+
 
     tocando = true;
 
+
     batidaAtual = 0;
 
-    document.getElementById("botaoIniciar").innerText =
+
+    document
+        .getElementById("botaoIniciar")
+        .innerText =
         "■ PARAR";
 
-    document.getElementById("botaoIniciar")
+
+    document
+        .getElementById("botaoIniciar")
         .classList.add("parar");
+
 
     tocarBatida();
 
+
     const intervaloTempo =
-        (60000 / bpm) / subdivisao;
+        (60000 / bpm) /
+        subdivisao;
+
 
     intervalo = setInterval(
         tocarBatida,
         intervaloTempo
     );
+
 }
 
+
+/* =====================================================
+   PARAR
+   ===================================================== */
 
 function pararMetronomo() {
 
     tocando = false;
+
 
     if (intervalo) {
 
@@ -652,26 +1170,51 @@ function pararMetronomo() {
 
     }
 
-    document.getElementById("botaoIniciar").innerText =
+
+    document
+        .getElementById("botaoIniciar")
+        .innerText =
         "▶ INICIAR";
 
-    document.getElementById("botaoIniciar")
+
+    document
+        .getElementById("botaoIniciar")
         .classList.remove("parar");
 
-    document.querySelectorAll(".ponto")
-        .forEach(p => p.classList.remove("ativo"));
+
+    document
+        .querySelectorAll(".ponto")
+        .forEach(p => {
+
+            p.classList.remove("ativo");
+
+        });
+
 }
 
+
+/* =====================================================
+   BATIDA
+   ===================================================== */
 
 function tocarBatida() {
 
     let dentroDoTempo =
-        batidaAtual % subdivisao === 0;
+        batidaAtual %
+        subdivisao === 0;
+
 
     let tempoAtual =
-        Math.floor(batidaAtual / subdivisao);
+        Math.floor(
+            batidaAtual /
+            subdivisao
+        );
+
 
     if (dentroDoTempo) {
+
+
+        /* PRIMEIRO TEMPO MAIS FORTE */
 
         tocarSom(
             tempoAtual === 0
@@ -679,136 +1222,199 @@ function tocarBatida() {
                 : 700
         );
 
+
         mostrarBatidaVisual(
             tempoAtual
         );
 
+
         atualizarContadorTelaCheia();
+
 
         batidaAtual++;
 
-        if (tempoAtual + 1 >= numerador) {
+
+        if (
+            tempoAtual + 1 >=
+            numerador
+        ) {
+
             batidaAtual = 0;
+
         }
 
     } else {
 
+
+        /* SUBDIVISÃO */
+
         tocarSom(500);
+
 
         batidaAtual++;
 
     }
+
 }
 
 
-/* =========================
+/* =====================================================
    SOM
-   ========================= */
+   ===================================================== */
 
 function tocarSom(frequencia) {
 
-    if (!audioContext) return;
+    if (!audioContext) {
+        return;
+    }
+
 
     const oscilador =
         audioContext.createOscillator();
 
+
     const ganho =
         audioContext.createGain();
+
 
     oscilador.frequency.value =
         frequencia;
 
+
     oscilador.type = "sine";
+
 
     ganho.gain.setValueAtTime(
         0.0001,
         audioContext.currentTime
     );
 
+
     ganho.gain.exponentialRampToValueAtTime(
         0.3,
         audioContext.currentTime + 0.005
     );
+
 
     ganho.gain.exponentialRampToValueAtTime(
         0.0001,
         audioContext.currentTime + 0.08
     );
 
+
     oscilador.connect(ganho);
 
-    ganho.connect(audioContext.destination);
+
+    ganho.connect(
+        audioContext.destination
+    );
+
 
     oscilador.start();
+
 
     oscilador.stop(
         audioContext.currentTime + 0.1
     );
+
 }
 
 
-/* =========================
+/* =====================================================
    INDICADOR VISUAL
-   ========================= */
+   ===================================================== */
 
 function mostrarBatidaVisual(numero) {
 
-    document.querySelectorAll(".ponto")
-        .forEach(p => p.classList.remove("ativo"));
+    document
+        .querySelectorAll(".ponto")
+        .forEach(p => {
+
+            p.classList.remove("ativo");
+
+        });
+
 
     const indice =
         numero % 4;
+
 
     const ponto =
         document.getElementById(
             "ponto" + indice
         );
 
+
     if (ponto) {
 
         ponto.classList.add("ativo");
 
+
         setTimeout(() => {
 
-            ponto.classList.remove("ativo");
+            ponto.classList.remove(
+                "ativo"
+            );
 
         }, 120);
 
     }
+
 }
 
 
-/* =========================
-   TELA CHEIA
-   ========================= */
+/* =====================================================
+   ABRIR TELA CHEIA
+   ===================================================== */
 
 function abrirTelaCheia() {
 
-    document
-        .getElementById("modoTelaCheia")
-        .classList.add("ativo");
+    const tela =
+        document.getElementById(
+            "modoTelaCheia"
+        );
+
+
+    tela.style.display = "flex";
+
 
     atualizarContadorTelaCheia();
+
 }
 
+
+/* =====================================================
+   FECHAR TELA CHEIA
+   ===================================================== */
 
 function fecharTelaCheia() {
 
-    document
-        .getElementById("modoTelaCheia")
-        .classList.remove("ativo");
+    const tela =
+        document.getElementById(
+            "modoTelaCheia"
+        );
+
+
+    tela.style.display = "none";
+
 }
 
+
+/* =====================================================
+   CONTAGEM DO COMPASSO
+   ===================================================== */
 
 function atualizarContadorTelaCheia() {
 
     let numero = 1;
 
+
     if (tocando) {
 
         numero =
             Math.floor(
-                batidaAtual / subdivisao
+                batidaAtual /
+                subdivisao
             ) + 1;
 
     } else {
@@ -817,30 +1423,65 @@ function atualizarContadorTelaCheia() {
 
     }
 
+
     if (numero > numerador) {
+
         numero = 1;
+
     }
 
+
     document
-        .getElementById("contadorTelaCheia")
+        .getElementById(
+            "contadorTelaCheia"
+        )
         .innerText = numero;
+
 }
 
 
-/* ESC = SAIR DA TELA CHEIA */
+/* =====================================================
+   TECLA ESC
+   ===================================================== */
 
 document.addEventListener(
     "keydown",
     function(event) {
 
-        if (event.key === "Escape") {
+        if (
+            event.key === "Escape" ||
+            event.key === "Esc"
+        ) {
+
             fecharTelaCheia();
+
         }
 
     }
 );
 
+
+/* =====================================================
+   GARANTIA EXTRA PARA O BOTÃO X
+   ===================================================== */
+
+document
+    .getElementById("fecharTelaCheia")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            fecharTelaCheia();
+
+        }
+    );
+
 </script>
 
 </body>
+
 </html>
