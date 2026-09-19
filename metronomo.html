@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Metrônomo - Academia de Música</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #020617;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .app {
+            width: 100%;
+            max-width: 500px;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .voltar {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            background: #111827;
+            border: 1px solid #334155;
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        .titulo {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .visor {
+            flex: 1;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rotulo {
+            color: #94a3b8;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .bpm {
+            font-size: 7rem;
+            font-weight: bold;
+            line-height: 1;
+            margin: 10px 0;
+        }
+
+        .bpm-label {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .controles-bpm {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-bpm {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 1px solid #334155;
+            background: #111827;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .btn-bpm:active {
+            transform: scale(0.94);
+        }
+
+        .compasso-area {
+            margin-top: 25px;
+        }
+
+        .compasso-titulo {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 12px;
+        }
+
+        .compassos {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .btn-compasso {
+            padding: 13px 5px;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: #111827;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn-compasso.ativo {
+            background: #2563eb;
+            border-color: #3b82f6;
+        }
+
+        .botao-iniciar {
+            width: 100%;
+            margin-top: 25px;
+            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            background: #16a34a;
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .botao-iniciar.parado {
+            background: #dc2626;
+        }
+
+        .batida {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #334155;
+            margin: 25px auto 0;
+            transition: 0.08s;
+        }
+
+        .batida.ativa {
+            background: #ffffff;
+            transform: scale(1.4);
+        }
+
+        @media (max-width: 600px) {
+
+            .app {
+                padding: 15px;
+            }
+
+            .bpm {
+                font-size: 6rem;
+            }
+
+            .btn-bpm {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="topo">
+
+        <a href="index.html" class="voltar">
+            ← Voltar
+        </a>
+
+        <div class="titulo">
+            🎵 Metrônomo
+        </div>
+
+        <div style="width: 75px;"></div>
+
+    </div>
+
+
+    <div class="visor">
+
+        <div class="rotulo">
+            TEMPO
+        </div>
+
+        <div id="bpm" class="bpm">
+            80
+        </div>
+
+        <div class="bpm-label">
+            BPM
+        </div>
+
+
+        <div class="controles-bpm">
+
+            <button class="btn-bpm" onclick="alterarBpm(-5)">
+                −
+            </button>
+
+            <button class="btn-bpm" onclick="alterarBpm(5)">
+                +
+            </button>
+
+        </div>
+
+
+        <div class="compasso-area">
+
+            <div class="compasso-titulo">
+                Fórmula de compasso
+            </div>
+
+            <div class="compassos">
+
+                <button class="btn-compasso ativo" onclick="alterarCompasso(2, this)">
+                    2/4
+                </button>
+
+                <button class="btn-compasso" onclick="alterarCompasso(3, this)">
+                    3/4
+                </button>
+
+                <button class="btn-compasso" onclick="alterarCompasso(4, this)">
+                    4/4
+                </button>
+
+                <button class="btn-compasso" onclick="alterarCompasso(6, this)">
+                    6/8
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <button id="botaoIniciar"
+                class="botao-iniciar"
+                onclick="alternarMetronomo()">
+
+            ▶ INICIAR
+
+        </button>
+
+
+        <div id="batida" class="batida"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let bpm = 80;
+
+    let batidasPorCompasso = 2;
+
+    let batidaAtual = 0;
+
+    let intervalo = null;
+
+    let tocando = false;
+
+
+    function atualizarBpm() {
+
+        document.getElementById("bpm").textContent = bpm;
+
+    }
+
+
+    function alterarBpm(valor) {
+
+        bpm += valor;
+
+        if (bpm < 30) {
+            bpm = 30;
+        }
+
+        if (bpm > 240) {
+            bpm = 240;
+        }
+
+        atualizarBpm();
+
+        if (tocando) {
+
+            pararMetronomo();
+
+            iniciarMetronomo();
+
+        }
+
+    }
+
+
+    function alterarCompasso(valor, botao) {
+
+        batidasPorCompasso = valor;
+
+        document.querySelectorAll(".btn-compasso")
+            .forEach(function(btn) {
+                btn.classList.remove("ativo");
+            });
+
+        botao.classList.add("ativo");
+
+        batidaAtual = 0;
+
+    }
+
+
+    function tocarBatida() {
+
+        const elemento = document.getElementById("batida");
+
+        elemento.classList.add("ativa");
+
+        setTimeout(function() {
+            elemento.classList.remove("ativa");
+        }, 100);
+
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContext) {
+            return;
+        }
+
+        if (!window.audioContext) {
+            window.audioContext = new AudioContext();
+        }
+
+        const contexto = window.audioContext;
+
+        const oscilador = contexto.createOscillator();
+
+        const ganho = contexto.createGain();
+
+        oscilador.connect(ganho);
+
+        ganho.connect(contexto.destination);
+
+
+        if (batidaAtual === 0) {
+
+            oscilador.frequency.value = 1000;
+
+        } else {
+
+            oscilador.frequency.value = 700;
+
+        }
+
+
+        ganho.gain.setValueAtTime(
+            0.3,
+            contexto.currentTime
+        );
+
+        ganho.gain.exponentialRampToValueAtTime(
+            0.001,
+            contexto.currentTime + 0.08
+        );
+
+
+        oscilador.start();
+
+        oscilador.stop(
+            contexto.currentTime + 0.08
+        );
+
+
+        batidaAtual++;
+
+        if (batidaAtual >= batidasPorCompasso) {
+
+            batidaAtual = 0;
+
+        }
+
+    }
+
+
+    function iniciarMetronomo() {
+
+        tocando = true;
+
+        batidaAtual = 0;
+
+        tocarBatida();
+
+
+        const intervaloMs =
+            60000 / bpm;
+
+
+        intervalo = setInterval(
+            tocarBatida,
+            intervaloMs
+        );
+
+
+        const botao =
+            document.getElementById("botaoIniciar");
+
+        botao.textContent = "■ PARAR";
+
+        botao.classList.add("parado");
+
+    }
+
+
+    function pararMetronomo() {
+
+        tocando = false;
+
+        clearInterval(intervalo);
+
+        intervalo = null;
+
+        batidaAtual = 0;
+
+
+        const botao =
+            document.getElementById("botaoIniciar");
+
+        botao.textContent = "▶ INICIAR";
+
+        botao.classList.remove("parado");
+
+    }
+
+
+    function alternarMetronomo() {
+
+        if (tocando) {
+
+            pararMetronomo();
+
+        } else {
+
+            iniciarMetronomo();
+
+        }
+
+    }
+
+
+    atualizarBpm();
+
+</script>
+
+</body>
+</html>
