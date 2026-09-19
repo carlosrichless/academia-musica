@@ -239,22 +239,32 @@
     </footer>
 
     <!-- Scripts do Firebase e do arquivo de senhas centralizado -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
     <script type="module" src="config-senhas.js"></script>
 
     <script>
-        function verificarSenhaSite() {
-            let senhaGeral = localStorage.getItem('senha_site_geral') || "123456";
-            if (document.getElementById('senhaSiteInput').value === senhaGeral) {
-                document.getElementById('telaLoginGeral').style.display = 'none';
-                document.getElementById('conteudoSite').style.display = 'block';
-                inicializarSite();
-            } else {
-                document.getElementById('erroSenhaSite').style.display = 'block';
-            }
+        async function verificarSenhaSite() {
+    try {
+        let docRef = await window.firestore.getDoc(
+            window.firestore.doc(window.db, "configuracoes", "sistema")
+        );
+
+        let dados = docRef.exists() ? docRef.data() : {};
+        let senhaGeral = dados.senha_site_geral || "123456";
+
+        if (document.getElementById('senhaSiteInput').value === senhaGeral) {
+            document.getElementById('telaLoginGeral').style.display = 'none';
+            document.getElementById('conteudoSite').style.display = 'block';
+            inicializarSite();
+        } else {
+            document.getElementById('erroSenhaSite').style.display = 'block';
         }
 
+    } catch (erro) {
+        console.error("Erro ao verificar senha do site:", erro);
+        alert("Erro ao conectar com a nuvem.");
+    }
+}
         document.getElementById('senhaSiteInput').addEventListener("keypress", function(event) {
             if (event.key === "Enter") verificarSenhaSite();
         });
