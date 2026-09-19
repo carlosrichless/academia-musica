@@ -2,16 +2,17 @@
 <html lang="pt-BR">
 <head>
 
+    
     <meta charset="UTF-8">
+    <!-- Scripts do Firebase e do arquivo de senhas centralizado -->
     <script type="module" src="config-senhas.js"></script>
-
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1db954">
-
-    <title>Painel Administrativo - Projeto Academia de Música</title>
+    <title>Painel Administrativo - Projeto Academia de Música</title>    
+    
 
     <style>
-
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
@@ -22,26 +23,11 @@
             --success: #34d399;
             --danger: #f87171;
         }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding: 20px; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
+        .container { max-width: 900px; margin: 0 auto; }
+        
         #telaLogin {
             display: flex;
             flex-direction: column;
@@ -50,7 +36,6 @@
             height: 80vh;
             text-align: center;
         }
-
         .login-box {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -60,19 +45,8 @@
             max-width: 400px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-
-        .login-box h2 {
-            color: var(--accent);
-            margin-bottom: 15px;
-            font-size: 1.5rem;
-        }
-
-        .login-box p {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
+        .login-box h2 { color: var(--accent); margin-bottom: 15px; font-size: 1.5rem; }
+        .login-box p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
         .login-input {
             width: 100%;
             padding: 12px;
@@ -84,12 +58,7 @@
             font-size: 1rem;
             margin-bottom: 15px;
         }
-
-        .login-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
+        .login-input:focus { outline: none; border-color: var(--accent); }
         .btn-login {
             width: 100%;
             background: var(--success);
@@ -101,48 +70,14 @@
             font-size: 1rem;
             cursor: pointer;
         }
+        .erro-msg { color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none; }
 
-        .erro-msg {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 10px;
-            display: none;
-        }
+        #conteudoPainel { display: none; }
 
-        #conteudoPainel {
-            display: none;
-        }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+        .top-nav a { color: var(--accent); text-decoration: none; font-size: 0.9rem; background: var(--card-bg); padding: 8px 15px; border: 1px solid var(--border); border-radius: 6px; }
 
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-            gap: 15px;
-        }
-
-        .top-nav h1 {
-            font-size: 1.5rem;
-        }
-
-        .top-nav a {
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 0.9rem;
-            background: var(--card-bg);
-            padding: 8px 15px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            white-space: nowrap;
-        }
-
-        .header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-bottom: 25px;
-        }
+        .header p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
 
         .card-painel {
             background-color: var(--card-bg);
@@ -151,23 +86,10 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-
-        .card-painel h3 {
-            color: var(--accent);
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="password"] {
+        .card-painel h3 { color: var(--accent); margin-bottom: 12px; font-size: 1.2rem; }
+        
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="password"] {
             width: 100%;
             padding: 10px;
             background: #0f172a;
@@ -177,22 +99,7 @@
             margin-bottom: 15px;
             font-size: 0.95rem;
         }
-
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--text-main);
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
+        input:focus { outline: none; border-color: var(--accent); }
 
         .btn-acao {
             background: var(--success);
@@ -203,16 +110,8 @@
             font-weight: bold;
             cursor: pointer;
         }
-
-        .btn-acao:hover {
-            opacity: 0.9;
-        }
-
-        .btn-acao:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
+        .btn-acao:hover { opacity: 0.9; }
+        
         .btn-remover {
             background: var(--danger);
             color: #fff;
@@ -234,10 +133,7 @@
             gap: 10px;
             align-items: center;
         }
-
-        .aviso-item-box input {
-            margin-bottom: 0 !important;
-        }
+        .aviso-item-box input { margin-bottom: 0 !important; }
 
         .sucesso-alerta {
             background: rgba(52, 211, 153, 0.15);
@@ -250,932 +146,217 @@
             text-align: center;
             font-weight: bold;
         }
-
-        .info-midia {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            margin-bottom: 18px;
-        }
-
-        .bloco-upload {
-            background: #0f172a;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .bloco-upload:last-child {
-            margin-bottom: 0;
-        }
-
-        .bloco-upload h4 {
-            color: var(--text-main);
-            margin-bottom: 8px;
-            font-size: 1rem;
-        }
-
-        .status-upload {
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            margin-top: 8px;
-            min-height: 20px;
-        }
-
-        .url-atual {
-            color: var(--text-muted);
-            font-size: 0.78rem;
-            word-break: break-all;
-            margin-top: 8px;
-        }
-
-        @media (max-width: 600px) {
-
-            body {
-                padding: 12px;
-            }
-
-            .top-nav {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .top-nav h1 {
-                font-size: 1.25rem;
-            }
-
-            .top-nav a {
-                text-align: center;
-            }
-
-            .aviso-item-box {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .btn-remover {
-                width: 100%;
-            }
-        }
-
     </style>
 </head>
-
 <body>
 
     <div id="telaLogin" class="container">
-
         <div class="login-box">
-
             <h2>🔒 Área Restrita</h2>
-
-            <p>
-                Digite a senha de administrador:
-            </p>
-
-            <input
-                type="password"
-                id="senhaAdminInput"
-                class="login-input"
-                placeholder="Senha..."
-            >
-
-            <button
-                onclick="verificarSenha()"
-                class="btn-login"
-            >
-                Entrar
-            </button>
-
-            <div
-                id="erroSenha"
-                class="erro-msg"
-            >
-                Senha incorreta!
-            </div>
-
+            <p>Digite a senha de administrador:</p>
+            <input type="password" id="senhaAdminInput" class="login-input" placeholder="Senha...">
+            <button onclick="verificarSenha()" class="btn-login">Entrar</button>
+            <div id="erroSenha" class="erro-msg">Senha incorreta!</div>
             <div style="margin-top: 15px;">
-
-                <a
-                    href="index.html"
-                    style="
-                        color: var(--text-muted);
-                        font-size: 0.85rem;
-                        text-decoration: none;
-                    "
-                >
-                    ← Voltar ao site
-                </a>
-
+                <a href="index.html" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">← Voltar ao site</a>
             </div>
-
         </div>
-
     </div>
 
-
-    <div
-        id="conteudoPainel"
-        class="container"
-    >
-
+    <div id="conteudoPainel" class="container">
         <div class="top-nav">
-
-            <h1>
-                ⚙️ Painel de Controle Admin
-            </h1>
-
-            <a href="index.html">
-                ← Ver Site Principal
-            </a>
-
+            <h1>⚙️ Painel de Controle Admin</h1>
+            <a href="index.html">← Ver Site Principal</a>
         </div>
-
 
         <div class="header">
-
-            <p>
-                Gerencie senhas globais, mídias e avisos em tempo real.
-            </p>
-
+            <p>Gerencie senhas globais, mídias e avisos em tempo real.</p>
         </div>
 
+        <div id="alertaSucesso" class="sucesso-alerta">Alterações salvas globalmente na nuvem!</div>
 
-        <div
-            id="alertaSucesso"
-            class="sucesso-alerta"
-        >
-            Alterações salvas globalmente na nuvem!
-        </div>
-
-
-        <!-- SENHAS PRINCIPAIS -->
-
+        <!-- Senhas Principais do Sistema -->
         <div class="card-painel">
+            <h3>🔑 Senhas Globais do Sistema</h3>
+            <label>Senha de Acesso Geral do Site (Alunos):</label>
+            <input type="text" id="passSiteGeral" placeholder="Ex: 123456">
 
-            <h3>
-                🔑 Senhas Globais do Sistema
-            </h3>
-
-            <label>
-                Senha de Acesso Geral do Site (Alunos):
-            </label>
-
-            <input
-                type="text"
-                id="passSiteGeral"
-                placeholder="Ex: 123456"
-            >
-
-            <label>
-                Senha do Painel Administrativo:
-            </label>
-
-            <input
-                type="text"
-                id="passAdmin"
-                placeholder="Ex: admin123"
-            >
-
-            <button
-                onclick="salvarSenhasPrincipais()"
-                class="btn-acao"
-            >
-                Salvar Senhas Globais
-            </button>
-
+            <label>Senha do Painel Administrativo:</label>
+            <input type="text" id="passAdmin" placeholder="Ex: admin123">
+            
+            <button onclick="salvarSenhasPrincipais()" class="btn-acao">Salvar Senhas Globais</button>
         </div>
 
-
-
-
-        <!-- MURAL DE AVISOS -->
-
+        <!-- Links Locais das Mídias -->
         <div class="card-painel">
+            <h3>📁 Caminhos dos Lembretes</h3>
+            <label>Caminho/Link da Imagem:</label>
+            <input type="text" id="inputImg" placeholder="Ex: assets/foto.jpg">
+            <label>Caminho/Link do Áudio:</label>
+            <input type="text" id="inputAudio" placeholder="Ex: assets/audio.mp3">
+            <label>Caminho/Link do Vídeo:</label>
+            <input type="text" id="inputVideo" placeholder="Ex: assets/video.mp4">
+            <button onclick="salvarLinks()" class="btn-acao">Salvar Caminhos</button>
+        </div>
 
-            <h3>
-                📢 Mural de Avisos
-            </h3>
+        <!-- Mural de Avisos Dinâmico -->
+        <div class="card-painel">
+            <h3>📢 Mural de Avisos</h3>
+            <label>Tempo de duração de cada aviso (segundos):</label>
+            <input type="number" id="inputTempo" min="1" max="60" value="4" style="max-width: 150px;">
 
-            <label>
-                Tempo de duração de cada aviso (segundos):
-            </label>
+            <label style="margin-top: 15px; margin-bottom: 8px;">Lista de Avisos:</label>
+            <div id="listaAvisosContainer"></div>
 
-            <input
-                type="number"
-                id="inputTempo"
-                min="1"
-                max="60"
-                value="4"
-                style="max-width: 150px;"
-            >
-
-            <label
-                style="
-                    margin-top: 15px;
-                    margin-bottom: 8px;
-                "
-            >
-                Lista de Avisos:
-            </label>
-
-            <div
-                id="listaAvisosContainer"
-            ></div>
-
-            <button
-                onclick="adicionarNovoAviso()"
-                class="btn-acao"
-                style="
-                    background: #334155;
-                    color: #fff;
-                    margin-top: 10px;
-                    margin-bottom: 15px;
-                "
-            >
-                + Adicionar Aviso
-            </button>
-
+            <button onclick="adicionarNovoAviso()" class="btn-acao" style="background: #334155; color: #fff; margin-top: 10px; margin-bottom: 15px;">+ Adicionar Aviso</button>
+            
             <br>
-
-            <button
-                onclick="salvarMuralCompleto()"
-                class="btn-acao"
-            >
-                💾 Salvar Mural
-            </button>
-
+            <button onclick="salvarMuralCompleto()" class="btn-acao">💾 Salvar Mural</button>
         </div>
-
     </div>
 
-
     <script>
-
         let dadosGlobais = {};
 
-
-        /*
-         * ENDEREÇO DA FUTURA PONTE SEGURA DE UPLOAD.
-         *
-         * Não colocar token do GitHub neste HTML.
-         */
-/* =========================================
-           CARREGAR DADOS DO FIRESTORE
-           ========================================= */
-
+        // Carrega dados da nuvem ao iniciar
         async function carregarDadosPainel() {
-
             try {
-
-                let docRef =
-                    await window.firestore.getDoc(
-                        window.firestore.doc(
-                            db,
-                            "configuracoes",
-                            "sistema"
-                        )
-                    );
-
-
+                let docRef = await window.firestore.getDoc(
+    window.firestore.doc(db, "configuracoes", "sistema")
+);
                 if (docRef.exists()) {
-
-                    dadosGlobais =
-                        docRef.data();
-
+                    dadosGlobais = docRef.data();
                 } else {
-
                     dadosGlobais = {
-
-                        senha_site_geral:
-                            "123456",
-
-                        senha_admin_sistema:
-                            "admin123",
-
-                        versao_senha_site:
-                            1,
-
-                        admin_img:
-                            "",
-
-                        admin_audio:
-                            "",
-
-                        admin_video:
-                            "",
-
-                        admin_tempo_mural:
-                            4,
-
-                        admin_avisos_custom: [
-
-                            {
-                                titulo:
-                                    "🎵 Bem-vindo ao Projeto 2026!",
-
-                                texto:
-                                    "Confira os recados importantes."
-                            }
-
-                        ]
-
+                        senha_site_geral: "123456",
+                        senha_admin_sistema: "admin123",
+                        admin_img: "",
+                        admin_audio: "",
+                        admin_video: "",
+                        admin_tempo_mural: 4,
+                        admin_avisos_custom: [{ titulo: "🎵 Bem-vindo ao Projeto 2026!", texto: "Confira os recados importantes." }]
                     };
-
                 }
 
+                document.getElementById('passSiteGeral').value = dadosGlobais.senha_site_geral || "123456";
+                document.getElementById('passAdmin').value = dadosGlobais.senha_admin_sistema || "admin123";
+                document.getElementById('inputImg').value = dadosGlobais.admin_img || "";
+                document.getElementById('inputAudio').value = dadosGlobais.admin_audio || "";
+                document.getElementById('inputVideo').value = dadosGlobais.admin_video || "";
+                document.getElementById('inputTempo').value = dadosGlobais.admin_tempo_mural || 4;
 
-                document.getElementById(
-                    'passSiteGeral'
-                ).value =
-                    dadosGlobais.senha_site_geral ||
-                    "123456";
-
-
-                document.getElementById(
-                    'passAdmin'
-                ).value =
-                    dadosGlobais.senha_admin_sistema ||
-                    "admin123";
-
-
-                document.getElementById(
-                    'inputTempo'
-                ).value =
-                    dadosGlobais.admin_tempo_mural ||
-                    4;
-
-
-                atualizarUrlsAtuais();
-
-
-                renderizarListaAvisos(
-                    dadosGlobais.admin_avisos_custom ||
-                    []
-                );
-
-
+                renderizarListaAvisos(dadosGlobais.admin_avisos_custom || []);
             } catch (erro) {
-
-                console.error(
-                    "Erro ao carregar dados da nuvem:",
-                    erro
-                );
-
-                alert(
-                    "Erro ao conectar com a nuvem."
-                );
-
+                console.error("Erro ao carregar dados da nuvem: ", erro);
+                alert("Erro ao conectar com a nuvem.");
             }
-
         }
-
-
-        /* =========================================
-           LOGIN
-           ========================================= */
 
         async function verificarSenha() {
-
-            let senhaMestreSalva =
-                (dadosGlobais || {})
-                    .senha_admin_sistema ||
-                "admin123";
-
-
-            if (
-                document.getElementById(
-                    'senhaAdminInput'
-                ).value ===
-                senhaMestreSalva
-            ) {
-
-                document.getElementById(
-                    'telaLogin'
-                ).style.display = 'none';
-
-
-                document.getElementById(
-                    'conteudoPainel'
-                ).style.display = 'block';
-
-
-                await carregarDadosPainel();
-
-
+            let senhaMestreSalva = (dadosGlobais || {}).senha_admin_sistema || "admin123";
+            if(document.getElementById('senhaAdminInput').value === senhaMestreSalva) {
+                document.getElementById('telaLogin').style.display = 'none';
+                document.getElementById('conteudoPainel').style.display = 'block';
+                await carregarDadosPainel(); // <-- Adicione esta linha exata aqui
             } else {
-
-                document.getElementById(
-                    'erroSenha'
-                ).style.display = 'block';
-
+                document.getElementById('erroSenha').style.display = 'block';
             }
-
         }
 
+        document.getElementById('senhaAdminInput').addEventListener("keypress", function(event) {
+            if (event.key === "Enter") verificarSenha();
+        });
 
-        document.getElementById(
-            'senhaAdminInput'
-        ).addEventListener(
-            "keypress",
-            function(event) {
-
-                if (event.key === "Enter") {
-
-                    verificarSenha();
-
-                }
-
-            }
-        );
-
-
-        window.addEventListener(
-            'DOMContentLoaded',
-            async () => {
-
-                try {
-
-                    let docRef =
-                        await window.firestore.getDoc(
-                            window.firestore.doc(
-                                db,
-                                "configuracoes",
-                                "sistema"
-                            )
-                        );
-
-
-                    if (docRef.exists()) {
-
-                        dadosGlobais =
-                            docRef.data();
-
-                    }
-
-                } catch(e) {
-
-                    console.log(e);
-
-                }
-
-            }
-        );
-
-
-        /* =========================================
-           LISTA DE AVISOS
-           ========================================= */
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                let docRef = await window.firestore.getDoc(
+    window.firestore.doc(db, "configuracoes", "sistema")
+);
+                if(docRef.exists()) dadosGlobais = docRef.data();
+            } catch(e) { console.log(e); }
+        });
 
         function renderizarListaAvisos(avisos) {
-
-            let container =
-                document.getElementById(
-                    'listaAvisosContainer'
-                );
-
-
+            let container = document.getElementById('listaAvisosContainer');
             container.innerHTML = "";
-
-
-            avisos.forEach(
-                item => {
-
-                    let div =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    div.className =
-                        'aviso-item-box';
-
-
-                    let bloco =
-                        document.createElement(
-                            'div'
-                        );
-
-                    bloco.style.flexGrow =
-                        "1";
-
-                    bloco.style.display =
-                        "flex";
-
-                    bloco.style.flexDirection =
-                        "column";
-
-                    bloco.style.gap =
-                        "6px";
-
-
-                    let titulo =
-                        document.createElement(
-                            'input'
-                        );
-
-                    titulo.type =
-                        "text";
-
-                    titulo.className =
-                        "aviso-titulo";
-
-                    titulo.value =
-                        item.titulo || "";
-
-                    titulo.placeholder =
-                        "Título...";
-
-
-                    let texto =
-                        document.createElement(
-                            'input'
-                        );
-
-                    texto.type =
-                        "text";
-
-                    texto.className =
-                        "aviso-texto";
-
-                    texto.value =
-                        item.texto || "";
-
-                    texto.placeholder =
-                        "Texto...";
-
-
-                    bloco.appendChild(
-                        titulo
-                    );
-
-                    bloco.appendChild(
-                        texto
-                    );
-
-
-                    let botao =
-                        document.createElement(
-                            'button'
-                        );
-
-                    botao.type =
-                        "button";
-
-                    botao.className =
-                        "btn-remover";
-
-                    botao.textContent =
-                        "Excluir";
-
-                    botao.onclick =
-                        function() {
-
-                            div.remove();
-
-                        };
-
-
-                    div.appendChild(
-                        bloco
-                    );
-
-                    div.appendChild(
-                        botao
-                    );
-
-
-                    container.appendChild(
-                        div
-                    );
-
-                }
-            );
-
+            avisos.forEach(item => {
+                let div = document.createElement('div');
+                div.className = 'aviso-item-box';
+                div.innerHTML = `
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
+                        <input type="text" class="aviso-titulo" value="${item.titulo}" placeholder="Título...">
+                        <input type="text" class="aviso-texto" value="${item.texto}" placeholder="Texto...">
+                    </div>
+                    <button type="button" class="btn-remover" onclick="this.parentElement.remove()">Excluir</button>
+                `;
+                container.appendChild(div);
+            });
         }
-
 
         function adicionarNovoAviso() {
-
-            let container =
-                document.getElementById(
-                    'listaAvisosContainer'
-                );
-
-
-            let div =
-                document.createElement(
-                    'div'
-                );
-
-
-            div.className =
-                'aviso-item-box';
-
-
-            let bloco =
-                document.createElement(
-                    'div'
-                );
-
-            bloco.style.flexGrow =
-                "1";
-
-            bloco.style.display =
-                "flex";
-
-            bloco.style.flexDirection =
-                "column";
-
-            bloco.style.gap =
-                "6px";
-
-
-            let titulo =
-                document.createElement(
-                    'input'
-                );
-
-            titulo.type =
-                "text";
-
-            titulo.className =
-                "aviso-titulo";
-
-            titulo.placeholder =
-                "Título...";
-
-
-            let texto =
-                document.createElement(
-                    'input'
-                );
-
-            texto.type =
-                "text";
-
-            texto.className =
-                "aviso-texto";
-
-            texto.placeholder =
-                "Texto...";
-
-
-            bloco.appendChild(
-                titulo
-            );
-
-            bloco.appendChild(
-                texto
-            );
-
-
-            let botao =
-                document.createElement(
-                    'button'
-                );
-
-            botao.type =
-                "button";
-
-            botao.className =
-                "btn-remover";
-
-            botao.textContent =
-                "Excluir";
-
-            botao.onclick =
-                function() {
-
-                    div.remove();
-
-                };
-
-
-            div.appendChild(
-                bloco
-            );
-
-            div.appendChild(
-                botao
-            );
-
-
-            container.appendChild(
-                div
-            );
-
+            let container = document.getElementById('listaAvisosContainer');
+            let div = document.createElement('div');
+            div.className = 'aviso-item-box';
+            div.innerHTML = `
+                <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <input type="text" class="aviso-titulo" value="" placeholder="Título...">
+                    <input type="text" class="aviso-texto" value="" placeholder="Texto...">
+                </div>
+                <button type="button" class="btn-remover" onclick="this.parentElement.remove()">Excluir</button>
+            `;
+            container.appendChild(div);
         }
 
-
-        /* =========================================
-           SALVAR NA NUVEM
-           ========================================= */
-
-        async function salvarNaNuvem(
-            novosDados
-        ) {
-
+        async function salvarNaNuvem(novosDados) {
             try {
-
                 await window.firestore.setDoc(
-
-                    window.firestore.doc(
-                        db,
-                        "configuracoes",
-                        "sistema"
-                    ),
-
-                    novosDados,
-
-                    {
-                        merge: true
-                    }
-
-                );
-
-
-                dadosGlobais = {
-
-                    ...dadosGlobais,
-
-                    ...novosDados
-
-                };
-
-
+    window.firestore.doc(db, "configuracoes", "sistema"),
+    novosDados,
+    { merge: true }
+);
+                dadosGlobais = { ...dadosGlobais, ...novosDados };
                 mostrarAlerta();
-
-
             } catch (e) {
-
-                console.error(
-                    "Erro ao salvar:",
-                    e
-                );
-
-                alert(
-                    "Erro ao salvar na nuvem."
-                );
-
+                console.error("Erro ao salvar: ", e);
+                alert("Erro ao salvar na nuvem.");
             }
-
         }
 
-
-        /* =========================================
-           SALVAR SENHAS
-           ========================================= */
-
-        async function salvarSenhasPrincipais() {
-
-            let novaSenhaSite =
-                document.getElementById(
-                    'passSiteGeral'
-                ).value;
-
-
-            let novaSenhaAdmin =
-                document.getElementById(
-                    'passAdmin'
-                ).value;
-
-
-            let senhaSiteAtual =
-                dadosGlobais.senha_site_geral ||
-                "123456";
-
-
-            let versaoAtual =
-                Number(
-                    dadosGlobais.versao_senha_site ||
-                    1
-                );
-
-
-            let novaVersao =
-                versaoAtual;
-
-
-            if (
-                novaSenhaSite !==
-                senhaSiteAtual
-            ) {
-
-                novaVersao =
-                    versaoAtual + 1;
-
-            }
-
-
-            await salvarNaNuvem({
-
-                senha_site_geral:
-                    novaSenhaSite,
-
-                senha_admin_sistema:
-                    novaSenhaAdmin,
-
-                versao_senha_site:
-                    novaVersao
-
+        function salvarSenhasPrincipais() {
+            salvarNaNuvem({
+                senha_site_geral: document.getElementById('passSiteGeral').value,
+                senha_admin_sistema: document.getElementById('passAdmin').value
             });
-
         }
 
-/* =========================================
-           SALVAR MURAL
-           ========================================= */
+        function salvarLinks() {
+            salvarNaNuvem({
+                admin_img: document.getElementById('inputImg').value,
+                admin_audio: document.getElementById('inputAudio').value,
+                admin_video: document.getElementById('inputVideo').value
+            });
+        }
 
-        async function salvarMuralCompleto() {
-
-            let titulos =
-                document.querySelectorAll(
-                    '.aviso-titulo'
-                );
-
-
-            let textos =
-                document.querySelectorAll(
-                    '.aviso-texto'
-                );
-
-
+        function salvarMuralCompleto() {
+            let titulos = document.querySelectorAll('.aviso-titulo');
+            let textos = document.querySelectorAll('.aviso-texto');
             let novaLista = [];
-
-
-            for (
-                let i = 0;
-                i < titulos.length;
-                i++
-            ) {
-
-                if (
-                    titulos[i].value.trim() !== "" ||
-                    textos[i].value.trim() !== ""
-                ) {
-
-                    novaLista.push({
-
-                        titulo:
-                            titulos[i].value,
-
-                        texto:
-                            textos[i].value
-
-                    });
-
+            for(let i = 0; i < titulos.length; i++) {
+                if(titulos[i].value.trim() !== "" || textos[i].value.trim() !== "") {
+                    novaLista.push({ titulo: titulos[i].value, texto: textos[i].value });
                 }
-
             }
-
-
-            await salvarNaNuvem({
-
-                admin_avisos_custom:
-                    novaLista,
-
-                admin_tempo_mural:
-                    parseInt(
-                        document.getElementById(
-                            'inputTempo'
-                        ).value
-                    ) || 4
-
+            salvarNaNuvem({
+                admin_avisos_custom: novaLista,
+                admin_tempo_mural: parseInt(document.getElementById('inputTempo').value) || 4
             });
-
         }
-
-
-        /* =========================================
-           ALERTA
-           ========================================= */
 
         function mostrarAlerta() {
-
-            let alerta =
-                document.getElementById(
-                    'alertaSucesso'
-                );
-
-
-            alerta.style.display =
-                'block';
-
-
-            setTimeout(
-                () => {
-
-                    alerta.style.display =
-                        'none';
-
-                },
-                3000
-            );
-
+            let alerta = document.getElementById('alertaSucesso');
+            alerta.style.display = 'block';
+            setTimeout(() => { alerta.style.display = 'none'; }, 3000);
         }
-
     </script>
-
 </body>
 </html>
