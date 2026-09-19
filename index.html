@@ -768,6 +768,12 @@
                     ).value === senhaGeral
                 ) {
 
+                    /* AUTORIZAÇÃO LOCAL */
+                    localStorage.setItem(
+                        "siteAutorizado",
+                        "true"
+                    );
+
                     document.getElementById(
                         'telaLoginGeral'
                     ).style.display = 'none';
@@ -802,6 +808,38 @@
             }
 
         }
+
+
+        /* =========================================
+           VERIFICAR AUTORIZAÇÃO AO ABRIR O SITE
+           ========================================= */
+
+        window.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                if (
+                    localStorage.getItem(
+                        "siteAutorizado"
+                    ) === "true"
+                ) {
+
+                    document.getElementById(
+                        'telaLoginGeral'
+                    ).style.display = 'none';
+
+
+                    document.getElementById(
+                        'conteudoSite'
+                    ).style.display = 'block';
+
+
+                    inicializarSite();
+
+                }
+
+            }
+        );
 
 
         /* ENTER NA SENHA */
