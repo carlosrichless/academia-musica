@@ -499,7 +499,7 @@
     </div>
 
     <script>
-        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-videovip/";
+        const mediaApiUrl = "https://academia-musica-one.vercel.app/api/media.js";
 
         const videos = [
             "10 - LEVADAS.mp4", "100 - OUTRAS LEVADAS 6 POR 9.mp4", "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.mp4",
@@ -588,20 +588,41 @@
             });
         }
 
-        function tocarVideo(index) {
+        async function tocarVideo(index) {
             currentIndex = index;
             const filename = videos[currentIndex];
-            videoPlayer.src = baseUrl + encodeURIComponent(filename);
             npTitle.textContent = filename.replace('.mp4', '');
-            
+
             pointA = null;
             pointB = null;
             btnA.classList.remove('active-marker');
             btnB.classList.remove('active-marker');
 
-            videoPlayer.play().then(() => {
+            try {
+                videoPlayer.pause();
+                videoPlayer.removeAttribute('src');
+                videoPlayer.load();
+
+                const resposta = await fetch(`${mediaApiUrl}?file=${encodeURIComponent(filename)}`);
+                if (!resposta.ok) {
+                    throw new Error(`Erro HTTP ${resposta.status}`);
+                }
+
+                const dados = await resposta.json();
+                if (!dados.url) {
+                    throw new Error('URL do vídeo não recebida');
+                }
+
+                videoPlayer.src = dados.url;
+                videoPlayer.load();
+
+                await videoPlayer.play();
                 playPauseBtn.innerHTML = '&#10074;&#10074;';
-            }).catch(e => console.log(e));
+            } catch (e) {
+                console.error('Erro ao carregar vídeo:', e);
+                playPauseBtn.innerHTML = '&#9654;';
+                alert('Não foi possível carregar este vídeo.');
+            }
 
             carregarLista(searchInput.value);
         }
