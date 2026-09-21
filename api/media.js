@@ -20,6 +20,14 @@ function getSignatureKey(key, dateStamp, region, service) {
 }
 
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "https://carlosrichless.github.io");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
   try {
     const file = req.query.file;
 
@@ -43,7 +51,6 @@ export default async function handler(req, res) {
 
     const amzDate = now.toISOString()
       .replace(/[:-]|\.\d{3}/g, "");
-
     const dateStamp = amzDate.substring(0, 8);
     const expires = 300;
     const service = "s3";
