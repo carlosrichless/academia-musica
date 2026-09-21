@@ -325,7 +325,8 @@
     </div>
 
     <script>
-        const urlPdf = "https://carlosrichless.github.io/apostila-vip/APOSTILA%20DE%20AULAS%20DE%20BATERIA%20VOL1%20C.RICHLESS%202%C2%AA%20EDI%C3%87%C3%83O%20REVISTA%20E%20ATUALIZADA%202026.pdf";
+        const nomeArquivoApostila = "APOSTILA DE AULAS DE BATERIA VOL1 C.RICHLESS 2ª EDIÇÃO REVISTA E ATUALIZADA 2026.pdf";
+        const urlApiApostila = "https://academia-musica-one.vercel.app/api/apostila.js";
 
         let pdfDoc = null;
         let pageNum = 1;
@@ -354,8 +355,21 @@
         const bookViewport = document.getElementById('bookViewport');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-        // Carregar PDF
-        pdfjsLib.getDocument(urlPdf).promise.then(function(pdfDoc_) {
+        // Carregar PDF privado através do endpoint Vercel
+        fetch(`${urlApiApostila}?file=${encodeURIComponent(nomeArquivoApostila)}`)
+            .then(function(response) {
+                if (!response.ok) {
+                    throw new Error("Erro ao obter acesso à apostila.");
+                }
+                return response.json();
+            })
+            .then(function(data) {
+                if (!data.url) {
+                    throw new Error("URL da apostila não recebida.");
+                }
+                return pdfjsLib.getDocument(data.url).promise;
+            })
+            .then(function(pdfDoc_) {
             pdfDoc = pdfDoc_;
             pageIndicator.textContent = `Página ${pageNum} / ${pdfDoc.numPages}`;
             renderPage(pageNum);
