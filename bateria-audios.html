@@ -467,7 +467,7 @@
     <audio id="audioPlayer"></audio>
 
     <script>
-        const baseUrl = "https://carlosrichless.github.io/bateria-arquivos-som/";
+        const AUDIO_API = "https://academia-musica-one.vercel.app/api/audio.js";
 
         const audios = [
             "10 - LEVADAS.wav", "100 - OUTRAS LEVADAS 6 POR 9.wav", "101 - OUTRAS LEVADAS E NOTAS FANTASMAS.wav",
@@ -556,27 +556,51 @@
             });
         }
 
-        function tocarFaixa(index) {
+        let carregamentoAudio = 0;
+
+        async function tocarFaixa(index) {
             currentIndex = index;
             const filename = audios[currentIndex];
-            audioPlayer.src = baseUrl + encodeURIComponent(filename);
+            const carregamentoAtual = ++carregamentoAudio;
+
             npTitle.textContent = filename.replace('.wav', '');
-            
             pointA = null;
             pointB = null;
             btnA.classList.remove('active-marker');
             btnB.classList.remove('active-marker');
+            playPauseBtn.innerHTML = '&#8987;';
 
-            audioPlayer.play().then(() => {
+            try {
+                const resposta = await fetch(
+                    `${AUDIO_API}?file=${encodeURIComponent(filename)}`
+                );
+
+                if (!resposta.ok) {
+                    throw new Error(`Erro HTTP ${resposta.status}`);
+                }
+
+                const dados = await resposta.json();
+
+                if (carregamentoAtual !== carregamentoAudio) return;
+
+                audioPlayer.src = dados.url;
+                audioPlayer.load();
+
+                await audioPlayer.play();
                 playPauseBtn.innerHTML = '&#10074;&#10074;';
-            }).catch(e => console.log(e));
+            } catch (erro) {
+                if (carregamentoAtual !== carregamentoAudio) return;
+                console.error('Erro ao carregar áudio:', erro);
+                playPauseBtn.innerHTML = '&#9654;';
+                alert('Não foi possível carregar este áudio.');
+            }
 
             carregarLista(searchInput.value);
         }
 
         playPauseBtn.addEventListener('click', () => {
             if (audioPlayer.paused) {
-                if (!audioPlayer.src && audios.length > 0) tocarFaixa(0);
+                if (!audioPlayer.src && audios.length > 0) tocarFaixa(currentIndex);
                 else {
                     audioPlayer.play();
                     playPauseBtn.innerHTML = '&#10074;&#10074;';
