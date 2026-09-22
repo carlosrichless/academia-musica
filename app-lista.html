@@ -95,6 +95,41 @@
       flex-wrap: wrap;
     }
 
+    .lista-alunos {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 9px;
+    }
+
+    .lista-alunos-titulo {
+      margin-top: 18px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .aluno-salvo {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .aluno-salvo:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .lista-alunos-vazia {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 8px 0;
+    }
+
     .campo {
       flex: 1;
       min-width: 220px;
@@ -363,6 +398,8 @@
 
 <body>
 
+  <script type="module" src="config-senhas.js"></script>
+
   <div class="container">
 
     <div class="topo">
@@ -394,13 +431,10 @@
           <input
             type="text"
             id="nomeAluno"
-            list="nomesAlunosSalvos"
-            placeholder="Digite seu nome ou escolha um nome salvo"
+            placeholder="Digite seu nome"
             autocomplete="off"
             maxlength="100"
           >
-
-          <datalist id="nomesAlunosSalvos"></datalist>
         </div>
 
         <button
@@ -412,6 +446,15 @@
         </button>
 
       </div>
+
+      <div class="lista-alunos-titulo">
+        Alunos com dados salvos:
+      </div>
+
+      <div
+        id="listaAlunosSalvos"
+        class="lista-alunos"
+      ></div>
 
       <div id="mensagemLogin" class="mensagem"></div>
 
@@ -552,13 +595,6 @@
   </div>
 
 
-  <!-- FIREBASE -->
-  <script
-    type="module"
-    src="config-senhas.js"
-  ></script>
-
-
   <script>
 
     /*
@@ -610,148 +646,6 @@
     let alunoAtual = "";
 
     let musicas = [];
-
-    let nomesAlunosSalvos = [];
-
-
-    /*
-      ============================================================
-      NOMES DE ALUNOS SALVOS
-      ============================================================
-    */
-
-    const CHAVE_NOMES_ALUNOS =
-      "app_lista_bpm_nomes_alunos";
-
-
-    function carregarNomesAlunosSalvos() {
-
-      try {
-
-        const dados =
-          localStorage.getItem(
-            CHAVE_NOMES_ALUNOS
-          );
-
-
-        nomesAlunosSalvos =
-          dados
-            ? JSON.parse(dados)
-            : [];
-
-
-        if (
-          !Array.isArray(
-            nomesAlunosSalvos
-          )
-        ) {
-
-          nomesAlunosSalvos = [];
-
-        }
-
-      } catch (erro) {
-
-        console.error(
-          "Erro ao carregar nomes salvos:",
-          erro
-        );
-
-        nomesAlunosSalvos = [];
-
-      }
-
-
-      renderizarNomesAlunosSalvos();
-
-    }
-
-
-    function salvarNomeAlunoNaLista(nome) {
-
-      const nomeNormalizado =
-        normalizarNome(nome);
-
-
-      if (!nomeNormalizado) {
-        return;
-      }
-
-
-      nomesAlunosSalvos =
-        nomesAlunosSalvos.filter(
-          item =>
-            item.toLowerCase() !==
-            nomeNormalizado.toLowerCase()
-        );
-
-
-      nomesAlunosSalvos.unshift(
-        nomeNormalizado
-      );
-
-
-      if (
-        nomesAlunosSalvos.length > 30
-      ) {
-
-        nomesAlunosSalvos =
-          nomesAlunosSalvos.slice(
-            0,
-            30
-          );
-
-      }
-
-
-      localStorage.setItem(
-        CHAVE_NOMES_ALUNOS,
-        JSON.stringify(
-          nomesAlunosSalvos
-        )
-      );
-
-
-      renderizarNomesAlunosSalvos();
-
-    }
-
-
-    function renderizarNomesAlunosSalvos() {
-
-      const lista =
-        document.getElementById(
-          "nomesAlunosSalvos"
-        );
-
-
-      if (!lista) {
-        return;
-      }
-
-
-      lista.innerHTML = "";
-
-
-      nomesAlunosSalvos.forEach(
-        nome => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-          option.value =
-            nome;
-
-          lista.appendChild(
-            option
-          );
-
-        }
-      );
-
-    }
 
 
     /*
@@ -815,6 +709,107 @@
 
       elemento.className =
         "mensagem";
+
+    }
+
+
+    /*
+      ============================================================
+      LISTAR ALUNOS SALVOS NO GOOGLE DRIVE
+      ============================================================
+    */
+
+    async function carregarNomesAlunosSalvos() {
+
+      const lista =
+        document.getElementById(
+          "listaAlunosSalvos"
+        );
+
+      if (!lista) {
+        return;
+      }
+
+      lista.innerHTML =
+        '<div class="lista-alunos-vazia">Carregando alunos...</div>';
+
+      if (
+        !CONFIG.API_URL ||
+        CONFIG.usarModoLocal
+      ) {
+
+        lista.innerHTML =
+          '<div class="lista-alunos-vazia">Nenhum aluno com dados salvos ainda.</div>';
+
+        return;
+      }
+
+      try {
+
+        const resposta =
+          await fetch(
+            CONFIG.API_URL +
+            "?acao=listarAlunos"
+          );
+
+        if (!resposta.ok) {
+          throw new Error(
+            "Erro ao consultar os alunos salvos."
+          );
+        }
+
+        const dados =
+          await resposta.json();
+
+        const alunos =
+          Array.isArray(dados.alunos)
+            ? dados.alunos
+            : [];
+
+        lista.innerHTML = "";
+
+        if (alunos.length === 0) {
+
+          lista.innerHTML =
+            '<div class="lista-alunos-vazia">Nenhum aluno com dados salvos ainda.</div>';
+
+          return;
+        }
+
+        alunos.forEach(
+          function(nome) {
+
+            const botao =
+              document.createElement("button");
+
+            botao.type = "button";
+            botao.className = "aluno-salvo";
+            botao.textContent = nome;
+
+            botao.onclick =
+              function() {
+
+                document
+                  .getElementById("nomeAluno")
+                  .value = nome;
+
+                carregarAluno();
+
+              };
+
+            lista.appendChild(botao);
+
+          }
+        );
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        lista.innerHTML =
+          '<div class="lista-alunos-vazia">Não foi possível carregar a lista de alunos.</div>';
+
+      }
 
     }
 
@@ -908,11 +903,6 @@
           .classList.remove("carregando");
 
       }
-
-
-      salvarNomeAlunoNaLista(
-        alunoAtual
-      );
 
 
       renderizarLista();
@@ -1242,6 +1232,8 @@
 
         renderizarLista();
 
+        carregarNomesAlunosSalvos();
+
 
         mostrarMensagem(
           "mensagemMusica",
@@ -1262,6 +1254,150 @@
           "mensagemMusica",
           "Não foi possível salvar a música.",
           "erro"
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      EXCLUIR MÚSICA
+      ============================================================
+    */
+
+    async function verificarSenhaAdministrativa() {
+
+      const senha =
+        prompt("Digite a senha administrativa para excluir esta música:");
+
+      if (senha === null) {
+        return false;
+      }
+
+      if (!senha) {
+        alert("Senha administrativa não informada.");
+        return false;
+      }
+
+      try {
+
+        if (!window.db || !window.firestore) {
+          alert("Não foi possível acessar a configuração de segurança.");
+          return false;
+        }
+
+        const referencia =
+          window.firestore.doc(
+            window.db,
+            "configuracoes",
+            "sistema"
+          );
+
+        const resultado =
+          await window.firestore.getDoc(
+            referencia
+          );
+
+        if (!resultado.exists()) {
+          alert("Configuração da senha administrativa não encontrada.");
+          return false;
+        }
+
+        const dados =
+          resultado.data();
+
+        if (
+          String(dados.senha_admin_sistema || "") !==
+          senha
+        ) {
+          alert("Senha administrativa incorreta.");
+          return false;
+        }
+
+        return true;
+
+      } catch (erro) {
+
+        console.error(erro);
+        alert("Não foi possível verificar a senha administrativa.");
+        return false;
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      EXCLUIR MÚSICA
+      ============================================================
+    */
+
+    async function excluirMusica(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const senhaValida =
+        await verificarSenhaAdministrativa();
+
+      if (!senhaValida) {
+        return;
+      }
+
+
+      const confirmar =
+        confirm(
+          'Excluir a música "' +
+          musica.nome +
+          '"?'
+        );
+
+
+      if (!confirmar) {
+        return;
+      }
+
+
+      const listaAnterior =
+        [...musicas];
+
+
+      musicas =
+        musicas.filter(
+          item => item.id !== id
+        );
+
+
+      try {
+
+        await salvarLista();
+
+        renderizarLista();
+
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        musicas =
+          listaAnterior;
+
+        renderizarLista();
+
+
+        alert(
+          "Não foi possível excluir a música."
         );
 
       }
@@ -1319,7 +1455,7 @@
 
     /*
       ============================================================
-      EDITAR MÚSICA COMPLETAMENTE
+      EDITAR MÚSICA COMPLETA
       ============================================================
     */
 
@@ -1339,9 +1475,8 @@
       const novoNome =
         prompt(
           "Nome da música:",
-          musica.nome || ""
+          musica.nome
         );
-
 
       if (novoNome === null) {
         return;
@@ -1351,15 +1486,9 @@
       const nome =
         novoNome.trim();
 
-
       if (!nome) {
-
-        alert(
-          "O nome da música não pode ficar vazio."
-        );
-
+        alert("Digite o nome da música.");
         return;
-
       }
 
 
@@ -1368,7 +1497,6 @@
           "BPM:",
           musica.bpm
         );
-
 
       if (novoBpm === null) {
         return;
@@ -1381,28 +1509,23 @@
           10
         );
 
-
       if (
         !Number.isInteger(bpm) ||
         bpm < 30 ||
         bpm > 240
       ) {
-
         alert(
           "O BPM deve estar entre 30 e 240."
         );
-
         return;
-
       }
 
 
       const novoCompasso =
         prompt(
-          "Fórmula de compasso:",
-          musica.compasso || "4/4"
+          "Compasso:",
+          musica.compasso
         );
-
 
       if (novoCompasso === null) {
         return;
@@ -1412,44 +1535,23 @@
       const compasso =
         novoCompasso.trim();
 
-
-      if (
-        !/^\d+\/(2|4|8|16)$/.test(
-          compasso
-        )
-      ) {
-
+      if (!/^\d+\/(2|4|8|16)$/.test(compasso)) {
         alert(
           "Compasso inválido.\n\nUse, por exemplo: 4/4, 3/4, 6/8."
         );
-
         return;
-
       }
 
 
-      const musicaAnterior = {
-
-        nome:
-          musica.nome,
-
-        bpm:
-          musica.bpm,
-
-        compasso:
-          musica.compasso
-
+      const anterior = {
+        nome: musica.nome,
+        bpm: musica.bpm,
+        compasso: musica.compasso
       };
 
-
-      musica.nome =
-        nome;
-
-      musica.bpm =
-        bpm;
-
-      musica.compasso =
-        compasso;
+      musica.nome = nome;
+      musica.bpm = bpm;
+      musica.compasso = compasso;
 
 
       try {
@@ -1462,199 +1564,14 @@
 
         console.error(erro);
 
-
-        musica.nome =
-          musicaAnterior.nome;
-
-        musica.bpm =
-          musicaAnterior.bpm;
-
-        musica.compasso =
-          musicaAnterior.compasso;
-
+        musica.nome = anterior.nome;
+        musica.bpm = anterior.bpm;
+        musica.compasso = anterior.compasso;
 
         renderizarLista();
-
 
         alert(
           "Não foi possível salvar a alteração."
-        );
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
-      SENHA ADMINISTRATIVA FIREBASE
-      ============================================================
-    */
-
-    async function verificarSenhaAdministrativa() {
-
-      const senhaDigitada =
-        prompt(
-          "Digite a senha administrativa:"
-        );
-
-
-      if (
-        senhaDigitada === null
-      ) {
-
-        return false;
-
-      }
-
-
-      if (
-        !window.db ||
-        !window.firestore
-      ) {
-
-        alert(
-          "Não foi possível conectar ao Firebase."
-        );
-
-        return false;
-
-      }
-
-
-      try {
-
-        const referencia =
-          window.firestore.doc(
-            window.db,
-            "configuracoes",
-            "sistema"
-          );
-
-
-        const documento =
-          await window.firestore.getDoc(
-            referencia
-          );
-
-
-        const dados =
-          documento.exists()
-            ? documento.data()
-            : {};
-
-
-        const senhaAdministrativa =
-          dados.senha_admin_sistema || "";
-
-
-        if (
-          senhaAdministrativa &&
-          senhaDigitada ===
-            senhaAdministrativa
-        ) {
-
-          return true;
-
-        }
-
-
-        alert(
-          "Senha administrativa incorreta."
-        );
-
-
-        return false;
-
-      } catch (erro) {
-
-        console.error(
-          "Erro ao verificar senha administrativa:",
-          erro
-        );
-
-
-        alert(
-          "Erro ao conectar com a nuvem."
-        );
-
-
-        return false;
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
-      EXCLUIR MÚSICA
-      ============================================================
-    */
-
-    async function excluirMusica(id) {
-
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
-
-
-      if (!musica) {
-        return;
-      }
-
-
-      const autorizado =
-        await verificarSenhaAdministrativa();
-
-
-      if (!autorizado) {
-        return;
-      }
-
-
-      const confirmar =
-        confirm(
-          'Excluir a música "' +
-          musica.nome +
-          '"?'
-        );
-
-
-      if (!confirmar) {
-        return;
-      }
-
-
-      const listaAnterior =
-        [...musicas];
-
-
-      musicas =
-        musicas.filter(
-          item => item.id !== id
-        );
-
-
-      try {
-
-        await salvarLista();
-
-        renderizarLista();
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        musicas =
-          listaAnterior;
-
-        renderizarLista();
-
-
-        alert(
-          "Não foi possível excluir a música."
         );
 
       }
@@ -1776,17 +1693,17 @@
 
 
           /*
-            💾 EDITAR COMPLETAMENTE
+            💾 EDITAR MÚSICA
           */
 
           const botaoEditar =
             document.createElement("button");
 
           botaoEditar.className =
-            "acao editar";
+            "acao";
 
           botaoEditar.title =
-            "Editar música, BPM e compasso";
+            "Editar música";
 
           botaoEditar.textContent =
             "💾";
@@ -1924,15 +1841,6 @@
 
     /*
       ============================================================
-      INICIALIZAÇÃO DOS NOMES SALVOS
-      ============================================================
-    */
-
-    carregarNomesAlunosSalvos();
-
-
-    /*
-      ============================================================
       ENTER NO CAMPO DO ALUNO
       ============================================================
     */
@@ -1977,6 +1885,15 @@
 
         }
       );
+
+
+    /*
+      ============================================================
+      CARREGAR NOMES DOS ALUNOS AO ABRIR O APP
+      ============================================================
+    */
+
+    carregarNomesAlunosSalvos();
 
 
   </script>
