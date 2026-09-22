@@ -574,26 +574,20 @@
       /*
         ENDPOINT DO SERVIDOR
 
-        IMPORTANTE:
-        O Google Drive NÃO será acessado diretamente pelo HTML.
-
-        Quando criarmos o servidor/Google Apps Script,
-        colocaremos aqui a URL dele.
-
-        Exemplo:
-        https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+        GOOGLE APPS SCRIPT
       */
 
       API_URL:
-        "",
+        "https://script.google.com/macros/s/AKfycbxLrQt5bAzNJBjLdjwrXPSDuDULVa-JmGc-frslsrI4p8w1_W7XpOXWoQgZlydFz0et/exec",
 
       /*
-        Caso a API ainda não esteja configurada,
-        o sistema funciona localmente durante os testes.
+        API ATIVA.
+        O sistema passa a usar o Google Drive
+        como armazenamento central.
       */
 
       usarModoLocal:
-        true
+        false
     };
 
 
