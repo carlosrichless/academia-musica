@@ -297,6 +297,30 @@
 
 
         /* =====================================================
+           BOTÃO NO >
+           ===================================================== */
+
+        .botao-no {
+
+            width: 100%;
+
+            margin-top: 12px;
+
+            background: #1e293b;
+
+            border-color: #475569;
+        }
+
+
+        .botao-no.ativo {
+
+            background: #2563eb;
+
+            border-color: #60a5fa;
+        }
+
+
+        /* =====================================================
            COMPASSO
            ===================================================== */
 
@@ -731,6 +755,15 @@
 
 
                 <button
+                    id="botaoNo"
+                    class="botao-no"
+                    onclick="alternarNo()"
+                >
+                    NO &gt;
+                </button>
+
+
+                <button
                     class="tela-cheia-btn"
                     onclick="abrirTelaCheia()"
                 >
@@ -995,6 +1028,17 @@
         let subdivisao = 1;
 
 
+        /*
+           FALSE = tempo 1 com acento normal.
+
+           TRUE = tempo 1 com exatamente
+           o mesmo som dos demais tempos.
+        */
+
+
+        let noAtivo = false;
+
+
         /* =====================================================
            ESTADO DO METRÔNOMO
            ===================================================== */
@@ -1253,6 +1297,55 @@
                     }
 
                 });
+
+
+            if (tocando) {
+
+                reiniciarMetronomo();
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           BOTÃO NO >
+           ===================================================== */
+
+
+        function alternarNo() {
+
+
+            noAtivo = !noAtivo;
+
+
+            const botao =
+                document.getElementById(
+                    "botaoNo"
+                );
+
+
+            if (noAtivo) {
+
+                botao.classList.add(
+                    "ativo"
+                );
+
+            } else {
+
+                botao.classList.remove(
+                    "ativo"
+                );
+
+            }
+
+
+            /*
+               Se o metrônomo estiver tocando,
+               reinicia para aplicar a mudança
+               imediatamente.
+            */
 
 
             if (tocando) {
@@ -1581,14 +1674,23 @@
 
 
                 /*
-                   Pulso 1 é mais forte.
+                   Pulso 1 é mais forte,
+                   exceto quando NO > está ativo.
                 */
 
 
-                frequencia =
-                    pulso === 0
-                        ? 1000
-                        : 700;
+                if (noAtivo) {
+
+                    frequencia = 700;
+
+                } else {
+
+                    frequencia =
+                        pulso === 0
+                            ? 1000
+                            : 700;
+
+                }
 
 
             } else {
