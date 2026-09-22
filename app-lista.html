@@ -262,16 +262,8 @@
 
     .acoes {
       display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .acao-item {
-      display: flex;
-      flex-direction: column;
+      gap: 7px;
       align-items: center;
-      gap: 4px;
-      min-width: 38px;
     }
 
     .acao {
@@ -295,14 +287,6 @@
     .acao.excluir:hover {
       border-color: var(--danger);
       color: var(--danger);
-    }
-
-    .acao-legenda {
-      color: var(--text-muted);
-      font-size: 0.68rem;
-      line-height: 1;
-      white-space: nowrap;
-      text-align: center;
     }
 
     .rodape-info {
@@ -410,10 +394,13 @@
           <input
             type="text"
             id="nomeAluno"
-            placeholder="Digite seu nome"
+            list="nomesAlunosSalvos"
+            placeholder="Digite seu nome ou escolha um nome salvo"
             autocomplete="off"
             maxlength="100"
           >
+
+          <datalist id="nomesAlunosSalvos"></datalist>
         </div>
 
         <button
@@ -565,6 +552,13 @@
   </div>
 
 
+  <!-- FIREBASE -->
+  <script
+    type="module"
+    src="config-senhas.js"
+  ></script>
+
+
   <script>
 
     /*
@@ -617,6 +611,148 @@
 
     let musicas = [];
 
+    let nomesAlunosSalvos = [];
+
+
+    /*
+      ============================================================
+      NOMES DE ALUNOS SALVOS
+      ============================================================
+    */
+
+    const CHAVE_NOMES_ALUNOS =
+      "app_lista_bpm_nomes_alunos";
+
+
+    function carregarNomesAlunosSalvos() {
+
+      try {
+
+        const dados =
+          localStorage.getItem(
+            CHAVE_NOMES_ALUNOS
+          );
+
+
+        nomesAlunosSalvos =
+          dados
+            ? JSON.parse(dados)
+            : [];
+
+
+        if (
+          !Array.isArray(
+            nomesAlunosSalvos
+          )
+        ) {
+
+          nomesAlunosSalvos = [];
+
+        }
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar nomes salvos:",
+          erro
+        );
+
+        nomesAlunosSalvos = [];
+
+      }
+
+
+      renderizarNomesAlunosSalvos();
+
+    }
+
+
+    function salvarNomeAlunoNaLista(nome) {
+
+      const nomeNormalizado =
+        normalizarNome(nome);
+
+
+      if (!nomeNormalizado) {
+        return;
+      }
+
+
+      nomesAlunosSalvos =
+        nomesAlunosSalvos.filter(
+          item =>
+            item.toLowerCase() !==
+            nomeNormalizado.toLowerCase()
+        );
+
+
+      nomesAlunosSalvos.unshift(
+        nomeNormalizado
+      );
+
+
+      if (
+        nomesAlunosSalvos.length > 30
+      ) {
+
+        nomesAlunosSalvos =
+          nomesAlunosSalvos.slice(
+            0,
+            30
+          );
+
+      }
+
+
+      localStorage.setItem(
+        CHAVE_NOMES_ALUNOS,
+        JSON.stringify(
+          nomesAlunosSalvos
+        )
+      );
+
+
+      renderizarNomesAlunosSalvos();
+
+    }
+
+
+    function renderizarNomesAlunosSalvos() {
+
+      const lista =
+        document.getElementById(
+          "nomesAlunosSalvos"
+        );
+
+
+      if (!lista) {
+        return;
+      }
+
+
+      lista.innerHTML = "";
+
+
+      nomesAlunosSalvos.forEach(
+        nome => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value =
+            nome;
+
+          lista.appendChild(
+            option
+          );
+
+        }
+      );
+
+    }
+
 
     /*
       ============================================================
@@ -644,7 +780,7 @@
       return normalizarNome(nome)
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9\s\_-]/g, "")
+        .replace(/[^a-zA-Z0-9\s_-]/g, "")
         .replace(/\s+/g, "_")
         .toLowerCase();
 
@@ -772,6 +908,11 @@
           .classList.remove("carregando");
 
       }
+
+
+      salvarNomeAlunoNaLista(
+        alunoAtual
+      );
 
 
       renderizarLista();
@@ -936,7 +1077,7 @@
 
             headers: {
               "Content-Type":
-                "text/plain;charset=utf-8"
+          "text/plain;charset=utf-8"
             },
 
             body:
@@ -1130,74 +1271,6 @@
 
     /*
       ============================================================
-      EXCLUIR MÚSICA
-      ============================================================
-    */
-
-    async function excluirMusica(id) {
-
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
-
-
-      if (!musica) {
-        return;
-      }
-
-
-      const confirmar =
-        confirm(
-          'Excluir a música "' +
-          musica.nome +
-          '"?'
-        );
-
-
-      if (!confirmar) {
-        return;
-      }
-
-
-      const listaAnterior =
-        [...musicas];
-
-
-      musicas =
-        musicas.filter(
-          item => item.id !== id
-        );
-
-
-      try {
-
-        await salvarLista();
-
-        renderizarLista();
-
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        musicas =
-          listaAnterior;
-
-        renderizarLista();
-
-
-        alert(
-          "Não foi possível excluir a música."
-        );
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
       ABRIR METRÔNOMO
       ============================================================
     */
@@ -1246,11 +1319,11 @@
 
     /*
       ============================================================
-      EDITAR BPM
+      EDITAR MÚSICA COMPLETAMENTE
       ============================================================
     */
 
-    async function editarBpm(id) {
+    async function editarMusica(id) {
 
       const musica =
         musicas.find(
@@ -1263,9 +1336,36 @@
       }
 
 
+      const novoNome =
+        prompt(
+          "Nome da música:",
+          musica.nome || ""
+        );
+
+
+      if (novoNome === null) {
+        return;
+      }
+
+
+      const nome =
+        novoNome.trim();
+
+
+      if (!nome) {
+
+        alert(
+          "O nome da música não pode ficar vazio."
+        );
+
+        return;
+
+      }
+
+
       const novoBpm =
         prompt(
-          "Digite o novo BPM:",
+          "BPM:",
           musica.bpm
         );
 
@@ -1293,62 +1393,14 @@
         );
 
         return;
-      }
 
-
-      const bpmAnterior =
-        musica.bpm;
-
-
-      musica.bpm =
-        bpm;
-
-
-      try {
-
-        await salvarLista();
-
-        renderizarLista();
-
-      } catch (erro) {
-
-        musica.bpm =
-          bpmAnterior;
-
-        renderizarLista();
-
-        alert(
-          "Não foi possível salvar a alteração."
-        );
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
-      EDITAR COMPASSO
-      ============================================================
-    */
-
-    async function editarCompasso(id) {
-
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
-
-
-      if (!musica) {
-        return;
       }
 
 
       const novoCompasso =
         prompt(
-          "Digite o compasso:",
-          musica.compasso
+          "Fórmula de compasso:",
+          musica.compasso || "4/4"
         );
 
 
@@ -1361,19 +1413,40 @@
         novoCompasso.trim();
 
 
-      if (!/^\d+\/(2|4|8|16)$/.test(compasso)) {
+      if (
+        !/^\d+\/(2|4|8|16)$/.test(
+          compasso
+        )
+      ) {
 
         alert(
           "Compasso inválido.\n\nUse, por exemplo: 4/4, 3/4, 6/8."
         );
 
         return;
+
       }
 
 
-      const compassoAnterior =
-        musica.compasso;
+      const musicaAnterior = {
 
+        nome:
+          musica.nome,
+
+        bpm:
+          musica.bpm,
+
+        compasso:
+          musica.compasso
+
+      };
+
+
+      musica.nome =
+        nome;
+
+      musica.bpm =
+        bpm;
 
       musica.compasso =
         compasso;
@@ -1387,13 +1460,201 @@
 
       } catch (erro) {
 
+        console.error(erro);
+
+
+        musica.nome =
+          musicaAnterior.nome;
+
+        musica.bpm =
+          musicaAnterior.bpm;
+
         musica.compasso =
-          compassoAnterior;
+          musicaAnterior.compasso;
+
 
         renderizarLista();
 
+
         alert(
           "Não foi possível salvar a alteração."
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      SENHA ADMINISTRATIVA FIREBASE
+      ============================================================
+    */
+
+    async function verificarSenhaAdministrativa() {
+
+      const senhaDigitada =
+        prompt(
+          "Digite a senha administrativa:"
+        );
+
+
+      if (
+        senhaDigitada === null
+      ) {
+
+        return false;
+
+      }
+
+
+      if (
+        !window.db ||
+        !window.firestore
+      ) {
+
+        alert(
+          "Não foi possível conectar ao Firebase."
+        );
+
+        return false;
+
+      }
+
+
+      try {
+
+        const referencia =
+          window.firestore.doc(
+            window.db,
+            "configuracoes",
+            "sistema"
+          );
+
+
+        const documento =
+          await window.firestore.getDoc(
+            referencia
+          );
+
+
+        const dados =
+          documento.exists()
+            ? documento.data()
+            : {};
+
+
+        const senhaAdministrativa =
+          dados.senha_admin_sistema || "";
+
+
+        if (
+          senhaAdministrativa &&
+          senhaDigitada ===
+            senhaAdministrativa
+        ) {
+
+          return true;
+
+        }
+
+
+        alert(
+          "Senha administrativa incorreta."
+        );
+
+
+        return false;
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao verificar senha administrativa:",
+          erro
+        );
+
+
+        alert(
+          "Erro ao conectar com a nuvem."
+        );
+
+
+        return false;
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      EXCLUIR MÚSICA
+      ============================================================
+    */
+
+    async function excluirMusica(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const autorizado =
+        await verificarSenhaAdministrativa();
+
+
+      if (!autorizado) {
+        return;
+      }
+
+
+      const confirmar =
+        confirm(
+          'Excluir a música "' +
+          musica.nome +
+          '"?'
+        );
+
+
+      if (!confirmar) {
+        return;
+      }
+
+
+      const listaAnterior =
+        [...musicas];
+
+
+      musicas =
+        musicas.filter(
+          item => item.id !== id
+        );
+
+
+      try {
+
+        await salvarLista();
+
+        renderizarLista();
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        musicas =
+          listaAnterior;
+
+        renderizarLista();
+
+
+        alert(
+          "Não foi possível excluir a música."
         );
 
       }
@@ -1492,13 +1753,6 @@
             ▶ METRÔNOMO
           */
 
-          const itemPlay =
-            document.createElement("div");
-
-          itemPlay.className =
-            "acao-item";
-
-
           const botaoPlay =
             document.createElement("button");
 
@@ -1521,44 +1775,18 @@
             };
 
 
-          const legendaPlay =
-            document.createElement("span");
-
-          legendaPlay.className =
-            "acao-legenda";
-
-          legendaPlay.textContent =
-            "PLAY";
-
-
-          itemPlay.appendChild(
-            botaoPlay
-          );
-
-          itemPlay.appendChild(
-            legendaPlay
-          );
-
-
           /*
-            💾 EDITAR BPM
+            💾 EDITAR COMPLETAMENTE
           */
-
-          const itemEditar =
-            document.createElement("div");
-
-          itemEditar.className =
-            "acao-item";
-
 
           const botaoEditar =
             document.createElement("button");
 
           botaoEditar.className =
-            "acao";
+            "acao editar";
 
           botaoEditar.title =
-            "Editar BPM";
+            "Editar música, BPM e compasso";
 
           botaoEditar.textContent =
             "💾";
@@ -1566,42 +1794,16 @@
           botaoEditar.onclick =
             function() {
 
-              editarBpm(
+              editarMusica(
                 musica.id
               );
 
             };
 
 
-          const legendaEditar =
-            document.createElement("span");
-
-          legendaEditar.className =
-            "acao-legenda";
-
-          legendaEditar.textContent =
-            "EDITAR BPM";
-
-
-          itemEditar.appendChild(
-            botaoEditar
-          );
-
-          itemEditar.appendChild(
-            legendaEditar
-          );
-
-
           /*
             🗑️ EXCLUIR
           */
-
-          const itemExcluir =
-            document.createElement("div");
-
-          itemExcluir.className =
-            "acao-item";
-
 
           const botaoExcluir =
             document.createElement("button");
@@ -1625,35 +1827,16 @@
             };
 
 
-          const legendaExcluir =
-            document.createElement("span");
+          acoes.appendChild(
+            botaoPlay
+          );
 
-          legendaExcluir.className =
-            "acao-legenda";
+          acoes.appendChild(
+            botaoEditar
+          );
 
-          legendaExcluir.textContent =
-            "EXCLUIR";
-
-
-          itemExcluir.appendChild(
+          acoes.appendChild(
             botaoExcluir
-          );
-
-          itemExcluir.appendChild(
-            legendaExcluir
-          );
-
-
-          acoes.appendChild(
-            itemPlay
-          );
-
-          acoes.appendChild(
-            itemEditar
-          );
-
-          acoes.appendChild(
-            itemExcluir
           );
 
 
@@ -1737,6 +1920,15 @@
         .focus();
 
     }
+
+
+    /*
+      ============================================================
+      INICIALIZAÇÃO DOS NOMES SALVOS
+      ============================================================
+    */
+
+    carregarNomesAlunosSalvos();
 
 
     /*
