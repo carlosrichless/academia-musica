@@ -321,6 +321,68 @@
 
 
         /* =====================================================
+           LATÊNCIA BLUETOOTH
+           ===================================================== */
+
+        .latencia-bluetooth {
+
+            margin-top: 16px;
+
+            text-align: center;
+        }
+
+
+        .latencia-titulo {
+
+            color: #94a3b8;
+
+            font-size: 0.82rem;
+
+            margin-bottom: 8px;
+        }
+
+
+        .controles-latencia {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+        }
+
+
+        .botao-latencia {
+
+            width: 42px;
+
+            height: 34px;
+
+            padding: 0;
+
+            border-radius: 10px;
+
+            font-size: 1.1rem;
+
+            line-height: 1;
+        }
+
+
+        .valor-latencia {
+
+            min-width: 75px;
+
+            color: #e2e8f0;
+
+            font-size: 0.9rem;
+
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
            COMPASSO
            ===================================================== */
 
@@ -763,6 +825,44 @@
                 </button>
 
 
+                <div class="latencia-bluetooth">
+
+                    <div class="latencia-titulo">
+                        Alterar latência Bluetooth
+                    </div>
+
+                    <div class="controles-latencia">
+
+                        <button
+                            type="button"
+                            class="botao-latencia"
+                            onclick="alterarLatencia(-10)"
+                            aria-label="Diminuir latência Bluetooth"
+                        >
+                            ←
+                        </button>
+
+                        <div
+                            class="valor-latencia"
+                            id="valorLatencia"
+                        >
+                            0 ms
+                        </div>
+
+                        <button
+                            type="button"
+                            class="botao-latencia"
+                            onclick="alterarLatencia(10)"
+                            aria-label="Aumentar latência Bluetooth"
+                        >
+                            →
+                        </button>
+
+                    </div>
+
+                </div>
+
+
                 <button
                     class="tela-cheia-btn"
                     onclick="abrirTelaCheia()"
@@ -1040,6 +1140,46 @@
 
 
         /* =====================================================
+           LATÊNCIA BLUETOOTH
+           ===================================================== */
+
+
+        /*
+           A compensação é somente da sessão atual.
+
+           0 ms = sem compensação.
+
+           Valores positivos antecipam o áudio,
+           compensando parte da latência de saída.
+
+           Valores negativos atrasam o áudio.
+
+           O valor NÃO é salvo em localStorage,
+           portanto volta automaticamente para 0 ms
+           quando esta página é aberta novamente.
+        */
+
+
+        let latenciaBluetooth = 0;
+
+
+        const PASSO_LATENCIA_BLUETOOTH = 10;
+
+
+        /*
+           Limites amplos apenas para evitar valores
+           absurdos. O ajuste continua sendo de 10 em 10 ms.
+        */
+
+
+        const MIN_LATENCIA_BLUETOOTH = -500;
+
+
+        const MAX_LATENCIA_BLUETOOTH = 500;
+
+
+
+        /* =====================================================
            ESTADO DO METRÔNOMO
            ===================================================== */
 
@@ -1116,6 +1256,67 @@
                 );
 
             }
+
+        }
+
+
+
+        /* =====================================================
+           LATÊNCIA BLUETOOTH
+           ===================================================== */
+
+
+        function alterarLatencia(valor) {
+
+
+            latenciaBluetooth += valor;
+
+
+            if (
+                latenciaBluetooth <
+                MIN_LATENCIA_BLUETOOTH
+            ) {
+
+                latenciaBluetooth =
+                    MIN_LATENCIA_BLUETOOTH;
+
+            }
+
+
+            if (
+                latenciaBluetooth >
+                MAX_LATENCIA_BLUETOOTH
+            ) {
+
+                latenciaBluetooth =
+                    MAX_LATENCIA_BLUETOOTH;
+
+            }
+
+
+            atualizarValorLatencia();
+
+
+            /*
+               Não reinicia o metrônomo.
+
+               O novo valor será usado pelos próximos
+               sons agendados.
+            */
+
+        }
+
+
+
+        function atualizarValorLatencia() {
+
+
+            document
+                .getElementById(
+                    "valorLatencia"
+                )
+                .innerText =
+                latenciaBluetooth + " ms";
 
         }
 
@@ -1701,15 +1902,33 @@
             }
 
 
+            /*
+               A compensação positiva antecipa o áudio.
+
+               Exemplo:
+               40 ms = o som é programado 40 ms antes.
+
+               A compensação negativa faz o contrário.
+            */
+
+
+            const tempoCompensado =
+                tempo -
+                (
+                    latenciaBluetooth /
+                    1000
+                );
+
+
             tocarSomEm(
-                tempo,
+                tempoCompensado,
                 frequencia
             );
 
 
             /*
-               Atualização visual sincronizada
-               com o instante real do áudio.
+               A indicação visual continua seguindo
+               o tempo musical original, sem deslocamento.
             */
 
 
@@ -2633,6 +2852,7 @@
            TECLADO
            ===================================================== */
 
+
         document.addEventListener(
             "keydown",
             function(event) {
@@ -2774,6 +2994,9 @@
             )
             .innerText =
             obterDenominador();
+
+
+        atualizarValorLatencia();
 
 
         /*
