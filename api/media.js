@@ -40,12 +40,12 @@ export default async function handler(req, res) {
       });
     }
 
-   const keyId = process.env.B2_KEY_ID;
-   const secret = process.env.B2_APPLICATION_KEY;
+    const keyId = process.env.B2_KEY_ID;
+    const secret = process.env.B2_APPLICATION_KEY;
 
     if (!keyId || !secret) {
       return res.status(500).json({
-        error: "Configuração B2 de vídeo ausente"
+        error: "Configuração B2 ausente"
       });
     }
 
@@ -93,11 +93,13 @@ export default async function handler(req, res) {
       `host\n` +
       `UNSIGNED-PAYLOAD`;
 
+    const canonicalRequestHash = sha256(canonicalRequest);
+
     const stringToSign =
       `AWS4-HMAC-SHA256\n` +
       `${amzDate}\n` +
       `${credentialScope}\n` +
-      `${sha256(canonicalRequest)}`;
+      `${canonicalRequestHash}`;
 
     const signingKey =
       getSignatureKey(
@@ -115,6 +117,29 @@ export default async function handler(req, res) {
     const url =
       `https://${HOST}${encodedPath}?` +
       `${canonicalQuery}&X-Amz-Signature=${signature}`;
+
+    // DIAGNÓSTICO — não expõe o Application Key Secret
+    if (req.query.debug === "1") {
+      return res.status(200).json({
+        debug: true,
+        bucket: BUCKET,
+        region: REGION,
+        host: HOST,
+        file,
+        encodedPath,
+        keyId,
+        amzDate,
+        dateStamp,
+        expires,
+        service,
+        credentialScope,
+        canonicalQuery,
+        canonicalRequestHash,
+        stringToSign,
+        signature,
+        generatedUrl: url
+      });
+    }
 
     return res.status(200).json({ url });
 
