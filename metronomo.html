@@ -220,6 +220,38 @@
         }
 
 
+        .bpm-controles-1 {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 18px;
+        }
+
+
+        .botao-bpm-1 {
+
+            width: 48px;
+
+            height: 48px;
+
+            padding: 0;
+
+            border-radius: 12px;
+
+            font-size: 1.8rem;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+
         .descricao-bpm {
 
             text-align: center;
@@ -775,10 +807,34 @@
 
 
                 <div
-                    class="bpm"
-                    id="bpm"
+                    class="bpm-controles-1"
                 >
-                    80
+
+                    <button
+                        type="button"
+                        class="botao-bpm-1"
+                        onclick="alterarBpm(-1)"
+                        aria-label="Diminuir 1 BPM"
+                    >
+                        −
+                    </button>
+
+                    <div
+                        class="bpm"
+                        id="bpm"
+                    >
+                        80
+                    </div>
+
+                    <button
+                        type="button"
+                        class="botao-bpm-1"
+                        onclick="alterarBpm(1)"
+                        aria-label="Aumentar 1 BPM"
+                    >
+                        +
+                    </button>
+
                 </div>
 
 
