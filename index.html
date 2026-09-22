@@ -108,12 +108,13 @@
         }
 
         #conteudoSite {
-    display: none;
-}
+            display: none;
+        }
 
-#telaLoginGeral {
-    display: none;
-}
+        #telaLoginGeral {
+            display: none;
+        }
+
         /* LINK ADMIN */
         .top-admin-link {
             text-align: right;
@@ -321,7 +322,6 @@
             font-size: 0.95rem;
         }
 
-
         /* RODAPÉ */
         footer {
             text-align: center;
@@ -514,6 +514,27 @@
 
             </a>
 
+
+            <!-- APP LISTA -->
+            <a
+                href="app-lista.html"
+                class="app-musical"
+            >
+
+                <div class="app-icone">
+                    📝
+                </div>
+
+                <h3>
+                    APP LISTA
+                </h3>
+
+                <p>
+                    Músicas e BPM
+                </p>
+
+            </a>
+
         </div>
 
 
@@ -599,8 +620,6 @@
 
         </div>
 
-
-        </div>
 
     </div>
 
@@ -722,105 +741,105 @@
            ========================================= */
 
         window.addEventListener(
-    "DOMContentLoaded",
-    async function() {
+            "DOMContentLoaded",
+            async function() {
 
-        const conteudo =
-            document.getElementById(
-                'conteudoSite'
-            );
+                const conteudo =
+                    document.getElementById(
+                        'conteudoSite'
+                    );
 
-        const login =
-            document.getElementById(
-                'telaLoginGeral'
-            );
-
-
-        let autorizado =
-            sessionStorage.getItem(
-                "siteAutorizado"
-            );
+                const login =
+                    document.getElementById(
+                        'telaLoginGeral'
+                    );
 
 
-        let versaoSalva =
-            sessionStorage.getItem(
-                "versaoSenhaSite"
-            );
+                let autorizado =
+                    sessionStorage.getItem(
+                        "siteAutorizado"
+                    );
 
 
-        try {
-
-            let docRef =
-                await window.firestore.getDoc(
-                    window.firestore.doc(
-                        window.db,
-                        "configuracoes",
-                        "sistema"
-                    )
-                );
+                let versaoSalva =
+                    sessionStorage.getItem(
+                        "versaoSenhaSite"
+                    );
 
 
-            let dados =
-                docRef.exists()
-                    ? docRef.data()
-                    : {};
+                try {
+
+                    let docRef =
+                        await window.firestore.getDoc(
+                            window.firestore.doc(
+                                window.db,
+                                "configuracoes",
+                                "sistema"
+                            )
+                        );
 
 
-            let versaoAtual =
-                dados.versao_senha_site || 1;
+                    let dados =
+                        docRef.exists()
+                            ? docRef.data()
+                            : {};
 
 
-            if (
-                autorizado === "true" &&
-                String(versaoSalva) === String(versaoAtual)
-            ) {
+                    let versaoAtual =
+                        dados.versao_senha_site || 1;
 
 
-                login.style.display = "none";
-
-                conteudo.style.display = "block";
-
-
-                inicializarSite();
+                    if (
+                        autorizado === "true" &&
+                        String(versaoSalva) === String(versaoAtual)
+                    ) {
 
 
-            } else {
+                        login.style.display = "none";
+
+                        conteudo.style.display = "block";
 
 
-                sessionStorage.removeItem(
-                    "siteAutorizado"
-                );
+                        inicializarSite();
 
 
-                sessionStorage.removeItem(
-                    "versaoSenhaSite"
-                );
+                    } else {
 
 
-                login.style.display = "flex";
+                        sessionStorage.removeItem(
+                            "siteAutorizado"
+                        );
 
-                conteudo.style.display = "none";
 
+                        sessionStorage.removeItem(
+                            "versaoSenhaSite"
+                        );
+
+
+                        login.style.display = "flex";
+
+                        conteudo.style.display = "none";
+
+
+                    }
+
+
+                } catch(erro) {
+
+                    console.error(
+                        "Erro ao validar sessão:",
+                        erro
+                    );
+
+
+                    login.style.display = "flex";
+
+                    conteudo.style.display = "none";
+
+                }
 
             }
-
-
-        } catch(erro) {
-
-            console.error(
-                "Erro ao validar sessão:",
-                erro
-            );
-
-
-            login.style.display = "flex";
-
-            conteudo.style.display = "none";
-
-        }
-
-    }
-);
+        );
 
         /* =========================================
            ENTER NA SENHA
