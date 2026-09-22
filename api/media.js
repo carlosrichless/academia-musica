@@ -20,7 +20,10 @@ function getSignatureKey(key, dateStamp, region, service) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "https://carlosrichless.github.io");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://carlosrichless.github.io"
+  );
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
@@ -32,28 +35,37 @@ export default async function handler(req, res) {
     const file = req.query.file;
 
     if (!file || typeof file !== "string") {
-      return res.status(400).json({ error: "Arquivo não informado" });
+      return res.status(400).json({
+        error: "Arquivo não informado"
+      });
     }
 
-    const keyId = process.env.B2_KEY_ID;
-    const secret = process.env.B2_APPLICATION_KEY;
+    const keyId = process.env.B2_VIDEO_KEY_ID;
+    const secret = process.env.B2_VIDEO_APPLICATION_KEY;
 
     if (!keyId || !secret) {
-      return res.status(500).json({ error: "Configuração B2 ausente" });
+      return res.status(500).json({
+        error: "Configuração B2 de vídeo ausente"
+      });
     }
 
-    const encodedPath = "/" + file
-      .split("/")
-      .map(encodeURIComponent)
-      .join("/");
+    const encodedPath =
+      "/" +
+      file
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/");
 
     const now = new Date();
 
-    const amzDate = now.toISOString()
+    const amzDate = now
+      .toISOString()
       .replace(/[:-]|\.\d{3}/g, "");
+
     const dateStamp = amzDate.substring(0, 8);
     const expires = 300;
     const service = "s3";
+
     const credentialScope =
       `${dateStamp}/${REGION}/${service}/aws4_request`;
 
@@ -73,13 +85,27 @@ export default async function handler(req, res) {
       .join("&");
 
     const canonicalRequest =
-      `GET\n${encodedPath}\n${canonicalQuery}\nhost:${HOST}\n\nhost\nUNSIGNED-PAYLOAD`;
+      `GET\n` +
+      `${encodedPath}\n` +
+      `${canonicalQuery}\n` +
+      `host:${HOST}\n` +
+      `\n` +
+      `host\n` +
+      `UNSIGNED-PAYLOAD`;
 
     const stringToSign =
-      `AWS4-HMAC-SHA256\n${amzDate}\n${credentialScope}\n${sha256(canonicalRequest)}`;
+      `AWS4-HMAC-SHA256\n` +
+      `${amzDate}\n` +
+      `${credentialScope}\n` +
+      `${sha256(canonicalRequest)}`;
 
     const signingKey =
-      getSignatureKey(secret, dateStamp, REGION, service);
+      getSignatureKey(
+        secret,
+        dateStamp,
+        REGION,
+        service
+      );
 
     const signature = crypto
       .createHmac("sha256", signingKey)
@@ -87,12 +113,16 @@ export default async function handler(req, res) {
       .digest("hex");
 
     const url =
-      `https://${HOST}${encodedPath}?${canonicalQuery}&X-Amz-Signature=${signature}`;
+      `https://${HOST}${encodedPath}?` +
+      `${canonicalQuery}&X-Amz-Signature=${signature}`;
 
     return res.status(200).json({ url });
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Erro ao gerar acesso ao arquivo" });
+
+    return res.status(500).json({
+      error: "Erro ao gerar acesso ao arquivo"
+    });
   }
 }
