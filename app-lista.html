@@ -95,41 +95,6 @@
       flex-wrap: wrap;
     }
 
-    .lista-alunos {
-      margin-top: 18px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 9px;
-    }
-
-    .lista-alunos-titulo {
-      margin-top: 18px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    .aluno-salvo {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      text-align: left;
-      font-size: 0.95rem;
-    }
-
-    .aluno-salvo:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .lista-alunos-vazia {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 8px 0;
-    }
-
     .campo {
       flex: 1;
       min-width: 220px;
@@ -324,6 +289,107 @@
       color: var(--danger);
     }
 
+
+    .nome-musica {
+      color: var(--accent);
+      cursor: pointer;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .nome-musica:hover {
+      text-decoration: underline;
+    }
+
+    .bloco-notas {
+      margin-top: 12px;
+      padding: 14px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: none;
+    }
+
+    .bloco-notas.aberto {
+      display: block;
+    }
+
+    .bloco-notas-titulo {
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .campo-notas {
+      width: 100%;
+      min-height: 150px;
+      resize: vertical;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #020617;
+      color: var(--text-main);
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      outline: none;
+    }
+
+    .campo-notas:focus {
+      border-color: var(--accent);
+    }
+
+    .notas-status {
+      margin-top: 7px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      min-height: 16px;
+    }
+
+    .botao-foto {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      font-size: 0.85rem;
+    }
+
+    .botao-foto:hover {
+      border-color: var(--accent);
+    }
+
+    .input-foto {
+      display: none;
+    }
+
+    .foto-nota {
+      display: block;
+      max-width: 100%;
+      max-height: 350px;
+      margin-top: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .remover-foto {
+      margin-top: 8px;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .remover-foto:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
     .rodape-info {
       color: var(--text-muted);
       text-align: center;
@@ -398,8 +464,6 @@
 
 <body>
 
-  <script type="module" src="config-senhas.js"></script>
-
   <div class="container">
 
     <div class="topo">
@@ -431,10 +495,13 @@
           <input
             type="text"
             id="nomeAluno"
-            placeholder="Digite seu nome"
+            list="nomesAlunosSalvos"
+            placeholder="Digite seu nome ou escolha um nome salvo"
             autocomplete="off"
             maxlength="100"
           >
+
+          <datalist id="nomesAlunosSalvos"></datalist>
         </div>
 
         <button
@@ -446,15 +513,6 @@
         </button>
 
       </div>
-
-      <div class="lista-alunos-titulo">
-        Alunos com dados salvos:
-      </div>
-
-      <div
-        id="listaAlunosSalvos"
-        class="lista-alunos"
-      ></div>
 
       <div id="mensagemLogin" class="mensagem"></div>
 
@@ -595,6 +653,13 @@
   </div>
 
 
+  <!-- FIREBASE -->
+  <script
+    type="module"
+    src="config-senhas.js"
+  ></script>
+
+
   <script>
 
     /*
@@ -624,7 +689,7 @@
       */
 
       API_URL:
-  "https://script.google.com/macros/s/AKfycbzKzOg6AVBXdk6mt4BlEDD6p8qAmsBjuNWQsw0xo5KiCQ39EFwwg-fuYzwlExh0xwb2/exec",
+        "https://script.google.com/macros/s/AKfycbzKzOg6AVBXdk6mt4BlEDD6p8qAmsBjuNWQsw0xo5KiCQ39EFwwg-fuYzwlExh0xwb2/exec",
 
       /*
         API ATIVA.
@@ -646,6 +711,223 @@
     let alunoAtual = "";
 
     let musicas = [];
+
+    let notaAbertaId = null;
+
+    let temporizadoresNotas = {};
+
+    let nomesAlunosSalvos = [];
+
+
+    /*
+      ============================================================
+      NOMES DE ALUNOS SALVOS
+      ============================================================
+    */
+
+    const CHAVE_NOMES_ALUNOS =
+      "app_lista_bpm_nomes_alunos";
+
+
+    function carregarNomesAlunosSalvos() {
+
+      try {
+
+        const dados =
+          localStorage.getItem(
+            CHAVE_NOMES_ALUNOS
+          );
+
+
+        nomesAlunosSalvos =
+          dados
+            ? JSON.parse(dados)
+            : [];
+
+
+        if (
+          !Array.isArray(
+            nomesAlunosSalvos
+          )
+        ) {
+
+          nomesAlunosSalvos = [];
+
+        }
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar nomes salvos:",
+          erro
+        );
+
+        nomesAlunosSalvos = [];
+
+      }
+
+
+      renderizarNomesAlunosSalvos();
+
+    }
+
+
+    function salvarNomeAlunoNaLista(nome) {
+
+      const nomeNormalizado =
+        normalizarNome(nome);
+
+
+      if (!nomeNormalizado) {
+        return;
+      }
+
+
+      nomesAlunosSalvos =
+        nomesAlunosSalvos.filter(
+          item =>
+            item.toLowerCase() !==
+            nomeNormalizado.toLowerCase()
+        );
+
+
+      nomesAlunosSalvos.unshift(
+        nomeNormalizado
+      );
+
+
+      localStorage.setItem(
+        CHAVE_NOMES_ALUNOS,
+        JSON.stringify(
+          nomesAlunosSalvos
+        )
+      );
+
+
+      renderizarNomesAlunosSalvos();
+
+    }
+
+
+    async function carregarNomesAlunosDoGoogleDrive() {
+
+      if (
+        !CONFIG.API_URL ||
+        CONFIG.usarModoLocal
+      ) {
+        return;
+      }
+
+
+      try {
+
+        const resposta =
+          await fetch(
+            CONFIG.API_URL +
+            "?acao=listarAlunos"
+          );
+
+
+        if (!resposta.ok) {
+          throw new Error(
+            "Erro ao consultar os alunos salvos."
+          );
+        }
+
+
+        const dados =
+          await resposta.json();
+
+
+        if (
+          !dados ||
+          !dados.sucesso ||
+          !Array.isArray(dados.alunos)
+        ) {
+          return;
+        }
+
+
+        const nomesDaNuvem =
+          dados.alunos
+            .map(
+              nome => normalizarNome(String(nome))
+            )
+            .filter(Boolean);
+
+
+        nomesAlunosSalvos =
+          Array.from(
+            new Map(
+              nomesAlunosSalvos
+                .concat(nomesDaNuvem)
+                .map(
+                  nome => [
+                    nome.toLowerCase(),
+                    nome
+                  ]
+                )
+            ).values()
+          );
+
+
+        localStorage.setItem(
+          CHAVE_NOMES_ALUNOS,
+          JSON.stringify(
+            nomesAlunosSalvos
+          )
+        );
+
+
+        renderizarNomesAlunosSalvos();
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar nomes dos alunos do Google Drive:",
+          erro
+        );
+
+      }
+
+    }
+
+
+    function renderizarNomesAlunosSalvos() {
+
+      const lista =
+        document.getElementById(
+          "nomesAlunosSalvos"
+        );
+
+
+      if (!lista) {
+        return;
+      }
+
+
+      lista.innerHTML = "";
+
+
+      nomesAlunosSalvos.forEach(
+        nome => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+          option.value =
+            nome;
+
+          lista.appendChild(
+            option
+          );
+
+        }
+      );
+
+    }
 
 
     /*
@@ -715,107 +997,6 @@
 
     /*
       ============================================================
-      LISTAR ALUNOS SALVOS NO GOOGLE DRIVE
-      ============================================================
-    */
-
-    async function carregarNomesAlunosSalvos() {
-
-      const lista =
-        document.getElementById(
-          "listaAlunosSalvos"
-        );
-
-      if (!lista) {
-        return;
-      }
-
-      lista.innerHTML =
-        '<div class="lista-alunos-vazia">Carregando alunos...</div>';
-
-      if (
-        !CONFIG.API_URL ||
-        CONFIG.usarModoLocal
-      ) {
-
-        lista.innerHTML =
-          '<div class="lista-alunos-vazia">Nenhum aluno com dados salvos ainda.</div>';
-
-        return;
-      }
-
-      try {
-
-        const resposta =
-          await fetch(
-            CONFIG.API_URL +
-            "?acao=listarAlunos"
-          );
-
-        if (!resposta.ok) {
-          throw new Error(
-            "Erro ao consultar os alunos salvos."
-          );
-        }
-
-        const dados =
-          await resposta.json();
-
-        const alunos =
-          Array.isArray(dados.alunos)
-            ? dados.alunos
-            : [];
-
-        lista.innerHTML = "";
-
-        if (alunos.length === 0) {
-
-          lista.innerHTML =
-            '<div class="lista-alunos-vazia">Nenhum aluno com dados salvos ainda.</div>';
-
-          return;
-        }
-
-        alunos.forEach(
-          function(nome) {
-
-            const botao =
-              document.createElement("button");
-
-            botao.type = "button";
-            botao.className = "aluno-salvo";
-            botao.textContent = nome;
-
-            botao.onclick =
-              function() {
-
-                document
-                  .getElementById("nomeAluno")
-                  .value = nome;
-
-                carregarAluno();
-
-              };
-
-            lista.appendChild(botao);
-
-          }
-        );
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        lista.innerHTML =
-          '<div class="lista-alunos-vazia">Não foi possível carregar a lista de alunos.</div>';
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
       ENTRAR COMO ALUNO
       ============================================================
     */
@@ -845,6 +1026,7 @@
 
 
       alunoAtual = nome;
+      notaAbertaId = null;
 
       document
         .getElementById("nomeAlunoAtual")
@@ -903,6 +1085,11 @@
           .classList.remove("carregando");
 
       }
+
+
+      salvarNomeAlunoNaLista(
+        alunoAtual
+      );
 
 
       renderizarLista();
@@ -1213,7 +1400,13 @@
           bpm,
 
         compasso:
-          compasso
+          compasso,
+
+        anotacao:
+          "",
+
+        foto:
+          ""
 
       };
 
@@ -1231,8 +1424,6 @@
 
 
         renderizarLista();
-
-        carregarNomesAlunosSalvos();
 
 
         mostrarMensagem(
@@ -1254,150 +1445,6 @@
           "mensagemMusica",
           "Não foi possível salvar a música.",
           "erro"
-        );
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
-      EXCLUIR MÚSICA
-      ============================================================
-    */
-
-    async function verificarSenhaAdministrativa() {
-
-      const senha =
-        prompt("Digite a senha administrativa para excluir esta música:");
-
-      if (senha === null) {
-        return false;
-      }
-
-      if (!senha) {
-        alert("Senha administrativa não informada.");
-        return false;
-      }
-
-      try {
-
-        if (!window.db || !window.firestore) {
-          alert("Não foi possível acessar a configuração de segurança.");
-          return false;
-        }
-
-        const referencia =
-          window.firestore.doc(
-            window.db,
-            "configuracoes",
-            "sistema"
-          );
-
-        const resultado =
-          await window.firestore.getDoc(
-            referencia
-          );
-
-        if (!resultado.exists()) {
-          alert("Configuração da senha administrativa não encontrada.");
-          return false;
-        }
-
-        const dados =
-          resultado.data();
-
-        if (
-          String(dados.senha_admin_sistema || "") !==
-          senha
-        ) {
-          alert("Senha administrativa incorreta.");
-          return false;
-        }
-
-        return true;
-
-      } catch (erro) {
-
-        console.error(erro);
-        alert("Não foi possível verificar a senha administrativa.");
-        return false;
-
-      }
-
-    }
-
-
-    /*
-      ============================================================
-      EXCLUIR MÚSICA
-      ============================================================
-    */
-
-    async function excluirMusica(id) {
-
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
-
-
-      if (!musica) {
-        return;
-      }
-
-
-      const senhaValida =
-        await verificarSenhaAdministrativa();
-
-      if (!senhaValida) {
-        return;
-      }
-
-
-      const confirmar =
-        confirm(
-          'Excluir a música "' +
-          musica.nome +
-          '"?'
-        );
-
-
-      if (!confirmar) {
-        return;
-      }
-
-
-      const listaAnterior =
-        [...musicas];
-
-
-      musicas =
-        musicas.filter(
-          item => item.id !== id
-        );
-
-
-      try {
-
-        await salvarLista();
-
-        renderizarLista();
-
-
-      } catch (erro) {
-
-        console.error(erro);
-
-        musicas =
-          listaAnterior;
-
-        renderizarLista();
-
-
-        alert(
-          "Não foi possível excluir a música."
         );
 
       }
@@ -1455,7 +1502,7 @@
 
     /*
       ============================================================
-      EDITAR MÚSICA COMPLETA
+      EDITAR MÚSICA COMPLETAMENTE
       ============================================================
     */
 
@@ -1475,8 +1522,9 @@
       const novoNome =
         prompt(
           "Nome da música:",
-          musica.nome
+          musica.nome || ""
         );
+
 
       if (novoNome === null) {
         return;
@@ -1486,9 +1534,15 @@
       const nome =
         novoNome.trim();
 
+
       if (!nome) {
-        alert("Digite o nome da música.");
+
+        alert(
+          "O nome da música não pode ficar vazio."
+        );
+
         return;
+
       }
 
 
@@ -1497,6 +1551,7 @@
           "BPM:",
           musica.bpm
         );
+
 
       if (novoBpm === null) {
         return;
@@ -1509,23 +1564,28 @@
           10
         );
 
+
       if (
         !Number.isInteger(bpm) ||
         bpm < 30 ||
         bpm > 240
       ) {
+
         alert(
           "O BPM deve estar entre 30 e 240."
         );
+
         return;
+
       }
 
 
       const novoCompasso =
         prompt(
-          "Compasso:",
-          musica.compasso
+          "Fórmula de compasso:",
+          musica.compasso || "4/4"
         );
+
 
       if (novoCompasso === null) {
         return;
@@ -1535,23 +1595,44 @@
       const compasso =
         novoCompasso.trim();
 
-      if (!/^\d+\/(2|4|8|16)$/.test(compasso)) {
+
+      if (
+        !/^\d+\/(2|4|8|16)$/.test(
+          compasso
+        )
+      ) {
+
         alert(
           "Compasso inválido.\n\nUse, por exemplo: 4/4, 3/4, 6/8."
         );
+
         return;
+
       }
 
 
-      const anterior = {
-        nome: musica.nome,
-        bpm: musica.bpm,
-        compasso: musica.compasso
+      const musicaAnterior = {
+
+        nome:
+          musica.nome,
+
+        bpm:
+          musica.bpm,
+
+        compasso:
+          musica.compasso
+
       };
 
-      musica.nome = nome;
-      musica.bpm = bpm;
-      musica.compasso = compasso;
+
+      musica.nome =
+        nome;
+
+      musica.bpm =
+        bpm;
+
+      musica.compasso =
+        compasso;
 
 
       try {
@@ -1564,17 +1645,436 @@
 
         console.error(erro);
 
-        musica.nome = anterior.nome;
-        musica.bpm = anterior.bpm;
-        musica.compasso = anterior.compasso;
+
+        musica.nome =
+          musicaAnterior.nome;
+
+        musica.bpm =
+          musicaAnterior.bpm;
+
+        musica.compasso =
+          musicaAnterior.compasso;
+
 
         renderizarLista();
+
 
         alert(
           "Não foi possível salvar a alteração."
         );
 
       }
+
+    }
+
+
+    /*
+      ============================================================
+      SENHA ADMINISTRATIVA FIREBASE
+      ============================================================
+    */
+
+    async function verificarSenhaAdministrativa() {
+
+      const senhaDigitada =
+        prompt(
+          "Digite a senha administrativa:"
+        );
+
+
+      if (
+        senhaDigitada === null
+      ) {
+
+        return false;
+
+      }
+
+
+      if (
+        !window.db ||
+        !window.firestore
+      ) {
+
+        alert(
+          "Não foi possível conectar ao Firebase."
+        );
+
+        return false;
+
+      }
+
+
+      try {
+
+        const referencia =
+          window.firestore.doc(
+            window.db,
+            "configuracoes",
+            "sistema"
+          );
+
+
+        const documento =
+          await window.firestore.getDoc(
+            referencia
+          );
+
+
+        const dados =
+          documento.exists()
+            ? documento.data()
+            : {};
+
+
+        const senhaAdministrativa =
+          dados.senha_admin_sistema || "";
+
+
+        if (
+          senhaAdministrativa &&
+          senhaDigitada ===
+            senhaAdministrativa
+        ) {
+
+          return true;
+
+        }
+
+
+        alert(
+          "Senha administrativa incorreta."
+        );
+
+
+        return false;
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao verificar senha administrativa:",
+          erro
+        );
+
+
+        alert(
+          "Erro ao conectar com a nuvem."
+        );
+
+
+        return false;
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      EXCLUIR MÚSICA
+      ============================================================
+    */
+
+    async function excluirMusica(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const autorizado =
+        await verificarSenhaAdministrativa();
+
+
+      if (!autorizado) {
+        return;
+      }
+
+
+      const confirmar =
+        confirm(
+          'Excluir a música "' +
+          musica.nome +
+          '"?'
+        );
+
+
+      if (!confirmar) {
+        return;
+      }
+
+
+      const listaAnterior =
+        [...musicas];
+
+
+      musicas =
+        musicas.filter(
+          item => item.id !== id
+        );
+
+
+      try {
+
+        await salvarLista();
+
+        renderizarLista();
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        musicas =
+          listaAnterior;
+
+        renderizarLista();
+
+
+        alert(
+          "Não foi possível excluir a música."
+        );
+
+      }
+
+    }
+
+
+
+    /*
+      ============================================================
+      BLOCO DE NOTAS INDIVIDUAL DA MÚSICA
+      ============================================================
+    */
+
+    function abrirBlocoNotas(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+      if (!musica) {
+        return;
+      }
+
+      notaAbertaId =
+        notaAbertaId === id
+          ? null
+          : id;
+
+      renderizarLista();
+
+      if (notaAbertaId !== null) {
+
+        setTimeout(
+          function() {
+
+            const campo =
+              document.querySelector(
+                '.campo-notas[data-id="' +
+                id +
+                '"]'
+              );
+
+            if (campo) {
+
+              campo.focus();
+
+              campo.setSelectionRange(
+                campo.value.length,
+                campo.value.length
+              );
+
+            }
+
+          },
+          0
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      SALVAMENTO AUTOMÁTICO DAS ANOTAÇÕES
+      ============================================================
+    */
+
+    function agendarSalvamentoNota(id) {
+
+      clearTimeout(
+        temporizadoresNotas[id]
+      );
+
+      const status =
+        document.querySelector(
+          '.notas-status[data-id="' +
+          id +
+          '"]'
+        );
+
+      if (status) {
+        status.textContent =
+          "Salvando...";
+      }
+
+      temporizadoresNotas[id] =
+        setTimeout(
+          async function() {
+
+            try {
+
+              await salvarLista();
+
+              const statusAtual =
+                document.querySelector(
+                  '.notas-status[data-id="' +
+                  id +
+                  '"]'
+                );
+
+              if (statusAtual) {
+                statusAtual.textContent =
+                  "Salvo automaticamente.";
+              }
+
+            } catch (erro) {
+
+              console.error(erro);
+
+              const statusAtual =
+                document.querySelector(
+                  '.notas-status[data-id="' +
+                  id +
+                  '"]'
+                );
+
+              if (statusAtual) {
+                statusAtual.textContent =
+                  "Erro ao salvar.";
+              }
+
+            }
+
+          },
+          700
+        );
+
+    }
+
+
+    function alterarAnotacao(id, valor) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+      if (!musica) {
+        return;
+      }
+
+      musica.anotacao =
+        valor;
+
+      agendarSalvamentoNota(id);
+
+    }
+
+
+    /*
+      ============================================================
+      FOTO DA ANOTAÇÃO
+      ============================================================
+    */
+
+    function selecionarFoto(id) {
+
+      const input =
+        document.querySelector(
+          '.input-foto[data-id="' +
+          id +
+          '"]'
+        );
+
+      if (input) {
+        input.click();
+      }
+
+    }
+
+
+    function adicionarFotoNota(id, arquivo) {
+
+      if (!arquivo) {
+        return;
+      }
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+      if (!musica) {
+        return;
+      }
+
+      if (!arquivo.type.startsWith("image/")) {
+
+        alert(
+          "Selecione uma imagem."
+        );
+
+        return;
+      }
+
+      const leitor =
+        new FileReader();
+
+      leitor.onload =
+        function(evento) {
+
+          musica.foto =
+            evento.target.result;
+
+          renderizarLista();
+
+          agendarSalvamentoNota(id);
+
+        };
+
+      leitor.readAsDataURL(
+        arquivo
+      );
+
+    }
+
+
+    function removerFotoNota(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+      if (!musica) {
+        return;
+      }
+
+      musica.foto =
+        "";
+
+      renderizarLista();
+
+      agendarSalvamentoNota(id);
 
     }
 
@@ -1637,8 +2137,250 @@
           const tdNome =
             document.createElement("td");
 
-          tdNome.textContent =
+
+          /*
+            O NOME DA MÚSICA É O ÚNICO PONTO
+            QUE ABRE O BLOCO DE NOTAS.
+          */
+
+          const nomeMusica =
+            document.createElement("span");
+
+          nomeMusica.className =
+            "nome-musica";
+
+          nomeMusica.textContent =
             musica.nome;
+
+          nomeMusica.title =
+            "Clique para abrir as anotações";
+
+          nomeMusica.onclick =
+            function() {
+
+              abrirBlocoNotas(
+                musica.id
+              );
+
+            };
+
+          tdNome.appendChild(
+            nomeMusica
+          );
+
+
+          /*
+            BLOCO DE NOTAS INDIVIDUAL
+          */
+
+          if (
+            notaAbertaId === musica.id
+          ) {
+
+            const bloco =
+              document.createElement("div");
+
+            bloco.className =
+              "bloco-notas aberto";
+
+
+            const titulo =
+              document.createElement("div");
+
+            titulo.className =
+              "bloco-notas-titulo";
+
+            titulo.textContent =
+              "📝 Anotações de " +
+              musica.nome;
+
+
+            const campo =
+              document.createElement("textarea");
+
+            campo.className =
+              "campo-notas";
+
+            campo.dataset.id =
+              musica.id;
+
+            campo.placeholder =
+              "Escreva aqui suas anotações para esta música...";
+
+            campo.value =
+              musica.anotacao || "";
+
+            campo.addEventListener(
+              "input",
+              function() {
+
+                alterarAnotacao(
+                  musica.id,
+                  campo.value
+                );
+
+              }
+            );
+
+
+            const botaoFoto =
+              document.createElement("button");
+
+            botaoFoto.type =
+              "button";
+
+            botaoFoto.className =
+              "botao-foto";
+
+            botaoFoto.textContent =
+              "📷 Adicionar foto";
+
+            botaoFoto.onclick =
+              function() {
+
+                selecionarFoto(
+                  musica.id
+                );
+
+              };
+
+
+            const inputFoto =
+              document.createElement("input");
+
+            inputFoto.type =
+              "file";
+
+            inputFoto.accept =
+              "image/*";
+
+            inputFoto.className =
+              "input-foto";
+
+            inputFoto.dataset.id =
+              musica.id;
+
+            inputFoto.addEventListener(
+              "change",
+              function() {
+
+                adicionarFotoNota(
+                  musica.id,
+                  inputFoto.files[0]
+                );
+
+                inputFoto.value = "";
+
+              }
+            );
+
+
+            const status =
+              document.createElement("div");
+
+            status.className =
+              "notas-status";
+
+            status.dataset.id =
+              musica.id;
+
+            if (
+              musica.anotacao ||
+              musica.foto
+            ) {
+
+              status.textContent =
+                "Anotações salvas.";
+
+            }
+
+
+            bloco.appendChild(
+              titulo
+            );
+
+            bloco.appendChild(
+              campo
+            );
+
+            bloco.appendChild(
+              botaoFoto
+            );
+
+            bloco.appendChild(
+              inputFoto
+            );
+
+
+            if (musica.foto) {
+
+              const imagem =
+                document.createElement("img");
+
+              imagem.className =
+                "foto-nota";
+
+              imagem.src =
+                musica.foto;
+
+              imagem.alt =
+                "Foto da anotação de " +
+                musica.nome;
+
+              imagem.title =
+                "Clique para ampliar";
+
+              imagem.onclick =
+                function() {
+
+                  window.open(
+                    musica.foto,
+                    "_blank"
+                  );
+
+                };
+
+              bloco.appendChild(
+                imagem
+              );
+
+
+              const remover =
+                document.createElement("button");
+
+              remover.type =
+                "button";
+
+              remover.className =
+                "remover-foto";
+
+              remover.textContent =
+                "Remover foto";
+
+              remover.onclick =
+                function() {
+
+                  removerFotoNota(
+                    musica.id
+                  );
+
+                };
+
+              bloco.appendChild(
+                remover
+              );
+
+            }
+
+            bloco.appendChild(
+              status
+            );
+
+            tdNome.appendChild(
+              bloco
+            );
+
+          }
 
 
           const tdBpm =
@@ -1693,17 +2435,17 @@
 
 
           /*
-            💾 EDITAR MÚSICA
+            💾 EDITAR COMPLETAMENTE
           */
 
           const botaoEditar =
             document.createElement("button");
 
           botaoEditar.className =
-            "acao";
+            "acao editar";
 
           botaoEditar.title =
-            "Editar música";
+            "Editar música, BPM e compasso";
 
           botaoEditar.textContent =
             "💾";
@@ -1797,9 +2539,25 @@
 
     function sairAluno() {
 
+      Object.keys(
+        temporizadoresNotas
+      ).forEach(
+        function(id) {
+
+          clearTimeout(
+            temporizadoresNotas[id]
+          );
+
+        }
+      );
+
+      temporizadoresNotas = {};
+
       alunoAtual = "";
 
       musicas = [];
+
+      notaAbertaId = null;
 
 
       document
@@ -1837,6 +2595,16 @@
         .focus();
 
     }
+
+
+    /*
+      ============================================================
+      INICIALIZAÇÃO DOS NOMES SALVOS
+      ============================================================
+    */
+
+    carregarNomesAlunosSalvos();
+    carregarNomesAlunosDoGoogleDrive();
 
 
     /*
@@ -1885,15 +2653,6 @@
 
         }
       );
-
-
-    /*
-      ============================================================
-      CARREGAR NOMES DOS ALUNOS AO ABRIR O APP
-      ============================================================
-    */
-
-    carregarNomesAlunosSalvos();
 
 
   </script>
