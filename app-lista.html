@@ -262,8 +262,16 @@
 
     .acoes {
       display: flex;
-      gap: 7px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .acao-item {
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      gap: 4px;
+      min-width: 38px;
     }
 
     .acao {
@@ -287,6 +295,14 @@
     .acao.excluir:hover {
       border-color: var(--danger);
       color: var(--danger);
+    }
+
+    .acao-legenda {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      line-height: 1;
+      white-space: nowrap;
+      text-align: center;
     }
 
     .rodape-info {
@@ -628,7 +644,7 @@
       return normalizarNome(nome)
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9\s_-]/g, "")
+        .replace(/[^a-zA-Z0-9\s\_-]/g, "")
         .replace(/\s+/g, "_")
         .toLowerCase();
 
@@ -920,7 +936,7 @@
 
             headers: {
               "Content-Type":
-          "text/plain;charset=utf-8"
+                "text/plain;charset=utf-8"
             },
 
             body:
@@ -1476,6 +1492,13 @@
             ▶ METRÔNOMO
           */
 
+          const itemPlay =
+            document.createElement("div");
+
+          itemPlay.className =
+            "acao-item";
+
+
           const botaoPlay =
             document.createElement("button");
 
@@ -1498,9 +1521,35 @@
             };
 
 
+          const legendaPlay =
+            document.createElement("span");
+
+          legendaPlay.className =
+            "acao-legenda";
+
+          legendaPlay.textContent =
+            "PLAY";
+
+
+          itemPlay.appendChild(
+            botaoPlay
+          );
+
+          itemPlay.appendChild(
+            legendaPlay
+          );
+
+
           /*
             💾 EDITAR BPM
           */
+
+          const itemEditar =
+            document.createElement("div");
+
+          itemEditar.className =
+            "acao-item";
+
 
           const botaoEditar =
             document.createElement("button");
@@ -1524,9 +1573,35 @@
             };
 
 
+          const legendaEditar =
+            document.createElement("span");
+
+          legendaEditar.className =
+            "acao-legenda";
+
+          legendaEditar.textContent =
+            "EDITAR BPM";
+
+
+          itemEditar.appendChild(
+            botaoEditar
+          );
+
+          itemEditar.appendChild(
+            legendaEditar
+          );
+
+
           /*
             🗑️ EXCLUIR
           */
+
+          const itemExcluir =
+            document.createElement("div");
+
+          itemExcluir.className =
+            "acao-item";
+
 
           const botaoExcluir =
             document.createElement("button");
@@ -1550,16 +1625,35 @@
             };
 
 
-          acoes.appendChild(
-            botaoPlay
-          );
+          const legendaExcluir =
+            document.createElement("span");
 
-          acoes.appendChild(
-            botaoEditar
-          );
+          legendaExcluir.className =
+            "acao-legenda";
 
-          acoes.appendChild(
+          legendaExcluir.textContent =
+            "EXCLUIR";
+
+
+          itemExcluir.appendChild(
             botaoExcluir
+          );
+
+          itemExcluir.appendChild(
+            legendaExcluir
+          );
+
+
+          acoes.appendChild(
+            itemPlay
+          );
+
+          acoes.appendChild(
+            itemEditar
+          );
+
+          acoes.appendChild(
+            itemExcluir
           );
 
 
