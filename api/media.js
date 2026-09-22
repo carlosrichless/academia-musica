@@ -40,8 +40,8 @@ export default async function handler(req, res) {
       });
     }
 
-    const keyId = process.env.B2_VIDEO_KEY_ID;
-    const secret = process.env.B2_VIDEO_APPLICATION_KEY;
+   const keyId = process.env.B2_KEY_ID;
+   const secret = process.env.B2_APPLICATION_KEY;
 
     if (!keyId || !secret) {
       return res.status(500).json({
