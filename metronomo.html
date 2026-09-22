@@ -2431,6 +2431,205 @@
 
 
         /* =====================================================
+           PARÂMETROS RECEBIDOS DO APP LISTA
+           ===================================================== */
+
+
+        function inicializarParametrosUrl() {
+
+
+            const parametros =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            /*
+               BPM
+            */
+
+            const bpmUrl =
+                Number(
+                    parametros.get("bpm")
+                );
+
+
+            if (
+                Number.isFinite(bpmUrl)
+            ) {
+
+
+                bpm =
+                    Math.min(
+                        240,
+                        Math.max(
+                            30,
+                            Math.round(bpmUrl)
+                        )
+                    );
+
+
+                document
+                    .getElementById("bpm")
+                    .innerText =
+                    bpm;
+
+            }
+
+
+
+            /*
+               COMPASSO
+
+               Exemplo:
+
+               ?compasso=4/4
+
+               ?compasso=3/4
+
+               ?compasso=6/8
+            */
+
+
+            const compassoUrl =
+                parametros.get(
+                    "compasso"
+                );
+
+
+            if (
+                compassoUrl
+            ) {
+
+
+                const partes =
+                    compassoUrl
+                        .split("/");
+
+
+                if (
+                    partes.length === 2
+                ) {
+
+
+                    const novoNumerador =
+                        Number(
+                            partes[0]
+                        );
+
+
+                    const novoDenominador =
+                        Number(
+                            partes[1]
+                        );
+
+
+                    if (
+                        Number.isFinite(
+                            novoNumerador
+                        )
+                    ) {
+
+
+                        numerador =
+                            Math.min(
+                                32,
+                                Math.max(
+                                    1,
+                                    Math.round(
+                                        novoNumerador
+                                    )
+                                )
+                            );
+
+                    }
+
+
+                    const indice =
+                        denominadores.indexOf(
+                            novoDenominador
+                        );
+
+
+                    if (
+                        indice !== -1
+                    ) {
+
+                        indiceDenominador =
+                            indice;
+
+                    }
+
+                }
+
+            }
+
+
+            /*
+               Atualiza os valores mostrados
+               na tela.
+            */
+
+
+            document
+                .getElementById(
+                    "numerador"
+                )
+                .innerText =
+                numerador;
+
+
+            document
+                .getElementById(
+                    "denominador"
+                )
+                .innerText =
+                obterDenominador();
+
+
+            atualizarIndicadores();
+
+
+            /*
+               Verifica se o APP LISTA pediu
+               início automático.
+
+               auto=1
+            */
+
+
+            const iniciarAutomaticamente =
+                parametros.get("auto") === "1";
+
+
+            if (
+                iniciarAutomaticamente
+            ) {
+
+
+                /*
+                   Pequeno atraso para garantir
+                   que toda a página esteja pronta
+                   antes de iniciar o áudio.
+                */
+
+
+                setTimeout(
+                    () => {
+
+                        iniciarMetronomo();
+
+                    },
+                    100
+                );
+
+            }
+
+        }
+
+
+
+        /* =====================================================
            TECLADO
            ===================================================== */
 
@@ -2576,6 +2775,17 @@
             )
             .innerText =
             obterDenominador();
+
+
+        /*
+           Lê os parâmetros enviados pelo
+           APP LISTA.
+
+           Se houver auto=1, o metrônomo
+           também inicia automaticamente.
+        */
+
+        inicializarParametrosUrl();
 
 
     </script>
