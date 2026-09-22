@@ -2174,7 +2174,162 @@
 
 
         /* =====================================================
-           TECLA ESC
+           ATALHOS DE TECLADO
+           ===================================================== */
+
+        let temposTap = [];
+
+        const MAX_TAPS = 8;
+
+        const TEMPO_MAXIMO_TAP = 2000;
+
+
+        function tapTempo() {
+
+
+            const agora =
+                performance.now();
+
+
+            /*
+               Se demorou mais de 2 segundos
+               desde o último toque, começa
+               uma nova sequência.
+            */
+
+
+            if (
+                temposTap.length > 0 &&
+                agora -
+                temposTap[
+                    temposTap.length - 1
+                ] >
+                TEMPO_MAXIMO_TAP
+            ) {
+
+                temposTap = [];
+
+            }
+
+
+            temposTap.push(
+                agora
+            );
+
+
+            /*
+               Mantém somente os últimos 8 toques.
+            */
+
+
+            if (
+                temposTap.length >
+                MAX_TAPS
+            ) {
+
+                temposTap.shift();
+
+            }
+
+
+            /*
+               Um toque sozinho ainda não
+               consegue calcular BPM.
+            */
+
+
+            if (
+                temposTap.length < 2
+            ) {
+
+                return;
+
+            }
+
+
+            let somaIntervalos = 0;
+
+
+            for (
+                let i = 1;
+                i < temposTap.length;
+                i++
+            ) {
+
+                somaIntervalos +=
+                    temposTap[i] -
+                    temposTap[i - 1];
+
+            }
+
+
+            const media =
+                somaIntervalos /
+                (
+                    temposTap.length - 1
+                );
+
+
+            let novoBpm =
+                60000 / media;
+
+
+            novoBpm =
+                Math.round(
+                    novoBpm
+                );
+
+
+            /*
+               Respeita os mesmos limites
+               usados pelos botões do metrônomo.
+            */
+
+
+            if (
+                novoBpm < 30
+            ) {
+
+                novoBpm = 30;
+
+            }
+
+
+            if (
+                novoBpm > 240
+            ) {
+
+                novoBpm = 240;
+
+            }
+
+
+            bpm = novoBpm;
+
+
+            document
+                .getElementById("bpm")
+                .innerText = bpm;
+
+
+            /*
+               Se o metrônomo já estiver tocando,
+               reinicia para aplicar o novo BPM.
+            */
+
+
+            if (tocando) {
+
+                reiniciarMetronomo();
+
+            }
+
+        }
+
+
+
+        /* =====================================================
+           TECLADO
            ===================================================== */
 
 
@@ -2183,13 +2338,93 @@
             function(event) {
 
 
+                /*
+                   Não interfere caso o foco esteja
+                   em algum campo de edição.
+                */
+
+
+                const alvo =
+                    event.target;
+
+
+                const digitando =
+                    alvo instanceof
+                        HTMLInputElement ||
+                    alvo instanceof
+                        HTMLTextAreaElement ||
+                    alvo instanceof
+                        HTMLSelectElement ||
+                    alvo.isContentEditable;
+
+
+                if (digitando) {
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   ESC → SAIR DA TELA CHEIA
+                   ================================================= */
+
+
                 if (
                     event.key === "Escape" ||
                     event.key === "Esc"
                 ) {
 
 
+                    event.preventDefault();
+
+
                     fecharTelaCheia();
+
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   ESPAÇO → PLAY / PAUSE
+                   ================================================= */
+
+
+                if (
+                    event.code === "Space"
+                ) {
+
+
+                    event.preventDefault();
+
+
+                    alternarMetronomo();
+
+
+                    return;
+
+                }
+
+
+                /* =================================================
+                   T → TAP TEMPO
+                   ================================================= */
+
+
+                if (
+                    event.key.toLowerCase() === "t"
+                ) {
+
+
+                    event.preventDefault();
+
+
+                    tapTempo();
+
+
+                    return;
 
                 }
 
