@@ -616,8 +616,12 @@
                 videoPlayer.src = dados.url;
                 videoPlayer.load();
 
-                await videoPlayer.play();
-                playPauseBtn.innerHTML = '&#10074;&#10074;';
+                videoPlayer.play().then(() => {
+                    playPauseBtn.innerHTML = '&#10074;&#10074;';
+                }).catch((e) => {
+                    console.log('Reprodução automática bloqueada pelo navegador:', e);
+                    playPauseBtn.innerHTML = '&#9654;';
+                });
             } catch (e) {
                 console.error('Erro ao carregar vídeo:', e);
                 playPauseBtn.innerHTML = '&#9654;';
