@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1db954">
+
+  <title>APP LISTA BPM</title>
+
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --success: #34d399;
+      --danger: #f87171;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      background: var(--bg-color);
+      color: var(--text-main);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .topo {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .voltar {
+      color: var(--text-main);
+      text-decoration: none;
+      font-size: 0.95rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
+    .voltar:hover {
+      border-color: var(--accent);
+    }
+
+    .titulo {
+      text-align: center;
+      flex: 1;
+    }
+
+    .titulo h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    .titulo p {
+      margin: 6px 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 18px;
+      font-size: 1.15rem;
+    }
+
+    .aluno-area {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .campo {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .botao-principal {
+      padding: 13px 20px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #020617;
+      font-weight: bold;
+      font-size: 0.95rem;
+      align-self: end;
+      min-height: 47px;
+    }
+
+    .botao-principal:hover {
+      filter: brightness(1.08);
+    }
+
+    .mensagem {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+      font-size: 0.9rem;
+    }
+
+    .mensagem.sucesso {
+      display: block;
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      color: var(--success);
+    }
+
+    .mensagem.erro {
+      display: block;
+      background: rgba(248, 113, 113, 0.12);
+      border: 1px solid rgba(248, 113, 113, 0.35);
+      color: var(--danger);
+    }
+
+    .info-aluno {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 15px 18px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .info-aluno.ativo {
+      display: flex;
+    }
+
+    .info-aluno strong {
+      color: var(--accent);
+    }
+
+    .botao-sair {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 13px;
+      border-radius: 8px;
+    }
+
+    .botao-sair:hover {
+      color: var(--text-main);
+      border-color: var(--accent);
+    }
+
+    .adicionar-grid {
+      display: grid;
+      grid-template-columns: 1fr 130px 130px auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .botao-adicionar {
+      min-height: 47px;
+      padding: 0 18px;
+      border-radius: 10px;
+      background: var(--success);
+      color: #022c22;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .botao-adicionar:hover {
+      filter: brightness(1.08);
+    }
+
+    .tabela-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th,
+    td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.025);
+    }
+
+    .vazio {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 35px 15px;
+    }
+
+    .acoes {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .acao {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .acao:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .acao.excluir:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    .rodape-info {
+      color: var(--text-muted);
+      text-align: center;
+      font-size: 0.75rem;
+      margin-top: 25px;
+      line-height: 1.5;
+    }
+
+    .carregando {
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    @media (max-width: 750px) {
+      body {
+        padding: 10px;
+      }
+
+      .topo {
+        align-items: flex-start;
+      }
+
+      .titulo h1 {
+        font-size: 1.4rem;
+      }
+
+      .adicionar-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .adicionar-grid .campo-musica {
+        grid-column: 1 / -1;
+      }
+
+      .botao-adicionar {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topo {
+        flex-direction: column;
+      }
+
+      .voltar {
+        width: 100%;
+        text-align: center;
+      }
+
+      .titulo {
+        width: 100%;
+      }
+
+      .adicionar-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .adicionar-grid .campo-musica {
+        grid-column: auto;
+      }
+
+      .campo {
+        min-width: 100%;
+      }
+
+      .botao-principal {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="topo">
+
+      <a href="index.html" class="voltar">
+        ← Voltar
+      </a>
+
+      <div class="titulo">
+        <h1>📝 APP LISTA BPM</h1>
+        <p>Lista de músicas e metrônomo</p>
+      </div>
+
+    </div>
+
+
+    <!-- IDENTIFICAÇÃO DO ALUNO -->
+    <div class="card">
+
+      <h2>👤 ALUNO(A)</h2>
+
+      <div class="aluno-area">
+
+        <div class="campo">
+          <label for="nomeAluno">
+            Nome do aluno
+          </label>
+
+          <input
+            type="text"
+            id="nomeAluno"
+            placeholder="Digite seu nome"
+            autocomplete="off"
+            maxlength="100"
+          >
+        </div>
+
+        <button
+          class="botao-principal"
+          id="botaoEntrar"
+          onclick="carregarAluno()"
+        >
+          ENTRAR
+        </button>
+
+      </div>
+
+      <div id="mensagemLogin" class="mensagem"></div>
+
+    </div>
+
+
+    <!-- INFORMAÇÃO DO ALUNO -->
+    <div
+      id="infoAluno"
+      class="info-aluno"
+    >
+
+      <div>
+        Aluno(a):
+        <strong id="nomeAlunoAtual"></strong>
+      </div>
+
+      <button
+        class="botao-sair"
+        onclick="sairAluno()"
+      >
+        Trocar aluno
+      </button>
+
+    </div>
+
+
+    <!-- ADICIONAR MÚSICA -->
+    <div
+      class="card"
+      id="cardAdicionar"
+      style="display:none;"
+    >
+
+      <h2>➕ Adicionar música</h2>
+
+      <div class="adicionar-grid">
+
+        <div class="campo campo-musica">
+          <label for="nomeMusica">
+            Música
+          </label>
+
+          <input
+            type="text"
+            id="nomeMusica"
+            placeholder="Nome da música"
+            maxlength="200"
+          >
+        </div>
+
+
+        <div class="campo">
+          <label for="bpmMusica">
+            BPM
+          </label>
+
+          <input
+            type="number"
+            id="bpmMusica"
+            min="30"
+            max="240"
+            value="80"
+          >
+        </div>
+
+
+        <div class="campo">
+          <label for="compassoMusica">
+            Compasso
+          </label>
+
+          <select id="compassoMusica">
+            <option value="2/4">2/4</option>
+            <option value="3/4">3/4</option>
+            <option value="4/4" selected>4/4</option>
+            <option value="5/4">5/4</option>
+            <option value="6/8">6/8</option>
+            <option value="7/8">7/8</option>
+            <option value="9/8">9/8</option>
+            <option value="12/8">12/8</option>
+          </select>
+        </div>
+
+
+        <button
+          class="botao-adicionar"
+          onclick="adicionarMusica()"
+        >
+          + ADICIONAR
+        </button>
+
+      </div>
+
+      <div id="mensagemMusica" class="mensagem"></div>
+
+    </div>
+
+
+    <!-- LISTA -->
+    <div
+      class="card"
+      id="cardLista"
+      style="display:none;"
+    >
+
+      <h2>🎵 Minhas músicas</h2>
+
+      <div class="tabela-container">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Música</th>
+              <th>BPM</th>
+              <th>Compasso</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+
+          <tbody id="listaMusicas">
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+
+    <div class="rodape-info">
+      APP LISTA BPM<br>
+      As músicas ficam associadas ao nome informado pelo aluno.
+    </div>
+
+  </div>
+
+
+  <script>
+
+    /*
+      ============================================================
+      CONFIGURAÇÃO DO APP LISTA
+      ============================================================
+    */
+
+    const CONFIG = {
+
+      // ID DA PASTA PRINCIPAL DO GOOGLE DRIVE
+      pastaDriveId:
+        "1Oo7xW6Gi-Nr_bgb2L9wNO3okEDtXm6_G",
+
+      // Nome da pasta principal
+      nomePasta:
+        "APP LISTA BPM",
+
+      // Conta utilizada no Google Drive
+      contaDrive:
+        "applistabpm@gmail.com",
+
+      /*
+        ENDPOINT DO SERVIDOR
+
+        IMPORTANTE:
+        O Google Drive NÃO será acessado diretamente pelo HTML.
+
+        Quando criarmos o servidor/Google Apps Script,
+        colocaremos aqui a URL dele.
+
+        Exemplo:
+        https://script.google.com/macros/s/XXXXXXXXXXXX/exec
+      */
+
+      API_URL:
+        "",
+
+      /*
+        Caso a API ainda não esteja configurada,
+        o sistema funciona localmente durante os testes.
+      */
+
+      usarModoLocal:
+        true
+    };
+
+
+    /*
+      ============================================================
+      ESTADO DO APP
+      ============================================================
+    */
+
+    let alunoAtual = "";
+
+    let musicas = [];
+
+
+    /*
+      ============================================================
+      NORMALIZAÇÃO DO NOME
+      ============================================================
+    */
+
+    function normalizarNome(nome) {
+
+      return nome
+        .trim()
+        .replace(/\s+/g, " ");
+
+    }
+
+
+    /*
+      ============================================================
+      NOME PARA ARQUIVO
+      ============================================================
+    */
+
+    function nomeArquivoAluno(nome) {
+
+      return normalizarNome(nome)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-zA-Z0-9\s_-]/g, "")
+        .replace(/\s+/g, "_")
+        .toLowerCase();
+
+    }
+
+
+    /*
+      ============================================================
+      MENSAGENS
+      ============================================================
+    */
+
+    function mostrarMensagem(elementoId, texto, tipo) {
+
+      const elemento =
+        document.getElementById(elementoId);
+
+      elemento.textContent = texto;
+
+      elemento.className =
+        "mensagem " + tipo;
+
+    }
+
+
+    function esconderMensagem(elementoId) {
+
+      const elemento =
+        document.getElementById(elementoId);
+
+      elemento.textContent = "";
+
+      elemento.className =
+        "mensagem";
+
+    }
+
+
+    /*
+      ============================================================
+      ENTRAR COMO ALUNO
+      ============================================================
+    */
+
+    async function carregarAluno() {
+
+      const campo =
+        document.getElementById("nomeAluno");
+
+      const nome =
+        normalizarNome(campo.value);
+
+      esconderMensagem("mensagemLogin");
+
+      if (!nome) {
+
+        mostrarMensagem(
+          "mensagemLogin",
+          "Digite o nome do aluno.",
+          "erro"
+        );
+
+        campo.focus();
+
+        return;
+      }
+
+
+      alunoAtual = nome;
+
+      document
+        .getElementById("nomeAlunoAtual")
+        .textContent = alunoAtual;
+
+
+      document
+        .getElementById("infoAluno")
+        .classList.add("ativo");
+
+
+      document
+        .getElementById("cardAdicionar")
+        .style.display = "block";
+
+
+      document
+        .getElementById("cardLista")
+        .style.display = "block";
+
+
+      document
+        .getElementById("botaoEntrar")
+        .classList.add("carregando");
+
+
+      try {
+
+        if (
+          CONFIG.API_URL &&
+          !CONFIG.usarModoLocal
+        ) {
+
+          await carregarDoGoogleDrive();
+
+        } else {
+
+          carregarDoNavegador();
+
+        }
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        mostrarMensagem(
+          "mensagemLogin",
+          "Não foi possível carregar a lista.",
+          "erro"
+        );
+
+      } finally {
+
+        document
+          .getElementById("botaoEntrar")
+          .classList.remove("carregando");
+
+      }
+
+
+      renderizarLista();
+
+    }
+
+
+    /*
+      ============================================================
+      MODO LOCAL TEMPORÁRIO
+      ============================================================
+    */
+
+    function chaveLocal() {
+
+      return (
+        "app_lista_bpm_" +
+        nomeArquivoAluno(alunoAtual)
+      );
+
+    }
+
+
+    function carregarDoNavegador() {
+
+      const dados =
+        localStorage.getItem(chaveLocal());
+
+      if (!dados) {
+
+        musicas = [];
+
+        return;
+      }
+
+
+      try {
+
+        const objeto =
+          JSON.parse(dados);
+
+        if (
+          objeto &&
+          Array.isArray(objeto.musicas)
+        ) {
+
+          musicas =
+            objeto.musicas;
+
+        } else {
+
+          musicas = [];
+
+        }
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao ler lista local:",
+          erro
+        );
+
+        musicas = [];
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      SALVAR MODO LOCAL TEMPORÁRIO
+      ============================================================
+    */
+
+    function salvarNoNavegador() {
+
+      const dados = {
+
+        aluno:
+          alunoAtual,
+
+        musicas:
+          musicas
+
+      };
+
+
+      localStorage.setItem(
+        chaveLocal(),
+        JSON.stringify(dados)
+      );
+
+    }
+
+
+    /*
+      ============================================================
+      GOOGLE DRIVE
+      ============================================================
+    */
+
+    async function carregarDoGoogleDrive() {
+
+      const resposta =
+        await fetch(
+          CONFIG.API_URL +
+          "?acao=carregar" +
+          "&aluno=" +
+          encodeURIComponent(alunoAtual)
+        );
+
+
+      if (!resposta.ok) {
+
+        throw new Error(
+          "Erro ao consultar o servidor."
+        );
+
+      }
+
+
+      const dados =
+        await resposta.json();
+
+
+      if (
+        dados &&
+        Array.isArray(dados.musicas)
+      ) {
+
+        musicas =
+          dados.musicas;
+
+      } else {
+
+        musicas = [];
+
+      }
+
+    }
+
+
+    async function salvarNoGoogleDrive() {
+
+      const dados = {
+
+        aluno:
+          alunoAtual,
+
+        musicas:
+          musicas
+
+      };
+
+
+      const resposta =
+        await fetch(
+          CONFIG.API_URL,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                acao:
+                  "salvar",
+
+                aluno:
+                  alunoAtual,
+
+                musicas:
+                  musicas
+              })
+          }
+        );
+
+
+      if (!resposta.ok) {
+
+        throw new Error(
+          "Erro ao salvar no servidor."
+        );
+
+      }
+
+
+      return await resposta.json();
+
+    }
+
+
+    /*
+      ============================================================
+      SALVAR LISTA
+      ============================================================
+    */
+
+    async function salvarLista() {
+
+      if (!alunoAtual) {
+        return;
+      }
+
+
+      if (
+        CONFIG.API_URL &&
+        !CONFIG.usarModoLocal
+      ) {
+
+        await salvarNoGoogleDrive();
+
+      } else {
+
+        salvarNoNavegador();
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      ADICIONAR MÚSICA
+      ============================================================
+    */
+
+    async function adicionarMusica() {
+
+      esconderMensagem("mensagemMusica");
+
+
+      if (!alunoAtual) {
+
+        mostrarMensagem(
+          "mensagemMusica",
+          "Primeiro informe o nome do aluno.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      const nome =
+        document
+          .getElementById("nomeMusica")
+          .value
+          .trim();
+
+
+      const bpm =
+        parseInt(
+          document
+            .getElementById("bpmMusica")
+            .value,
+          10
+        );
+
+
+      const compasso =
+        document
+          .getElementById("compassoMusica")
+          .value;
+
+
+      if (!nome) {
+
+        mostrarMensagem(
+          "mensagemMusica",
+          "Digite o nome da música.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      if (
+        !Number.isInteger(bpm) ||
+        bpm < 30 ||
+        bpm > 240
+      ) {
+
+        mostrarMensagem(
+          "mensagemMusica",
+          "O BPM deve estar entre 30 e 240.",
+          "erro"
+        );
+
+        return;
+      }
+
+
+      const musica = {
+
+        id:
+          Date.now(),
+
+        nome:
+          nome,
+
+        bpm:
+          bpm,
+
+        compasso:
+          compasso
+
+      };
+
+
+      musicas.push(musica);
+
+
+      try {
+
+        await salvarLista();
+
+        document
+          .getElementById("nomeMusica")
+          .value = "";
+
+
+        renderizarLista();
+
+
+        mostrarMensagem(
+          "mensagemMusica",
+          "Música adicionada com sucesso.",
+          "sucesso"
+        );
+
+
+      } catch (erro) {
+
+        console.error(erro);
+
+
+        musicas.pop();
+
+
+        mostrarMensagem(
+          "mensagemMusica",
+          "Não foi possível salvar a música.",
+          "erro"
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      EXCLUIR MÚSICA
+      ============================================================
+    */
+
+    async function excluirMusica(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const confirmar =
+        confirm(
+          'Excluir a música "' +
+          musica.nome +
+          '"?'
+        );
+
+
+      if (!confirmar) {
+        return;
+      }
+
+
+      const listaAnterior =
+        [...musicas];
+
+
+      musicas =
+        musicas.filter(
+          item => item.id !== id
+        );
+
+
+      try {
+
+        await salvarLista();
+
+        renderizarLista();
+
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        musicas =
+          listaAnterior;
+
+        renderizarLista();
+
+
+        alert(
+          "Não foi possível excluir a música."
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      ABRIR METRÔNOMO
+      ============================================================
+    */
+
+    function abrirMetronomo(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const bpm =
+        Math.max(
+          30,
+          Math.min(
+            240,
+            parseInt(musica.bpm, 10) || 80
+          )
+        );
+
+
+      const compasso =
+        musica.compasso || "4/4";
+
+
+      const url =
+        "metronomo.html" +
+        "?bpm=" +
+        encodeURIComponent(bpm) +
+        "&compasso=" +
+        encodeURIComponent(compasso) +
+        "&auto=1";
+
+
+      window.location.href =
+        url;
+
+    }
+
+
+    /*
+      ============================================================
+      EDITAR BPM
+      ============================================================
+    */
+
+    async function editarBpm(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const novoBpm =
+        prompt(
+          "Digite o novo BPM:",
+          musica.bpm
+        );
+
+
+      if (novoBpm === null) {
+        return;
+      }
+
+
+      const bpm =
+        parseInt(
+          novoBpm,
+          10
+        );
+
+
+      if (
+        !Number.isInteger(bpm) ||
+        bpm < 30 ||
+        bpm > 240
+      ) {
+
+        alert(
+          "O BPM deve estar entre 30 e 240."
+        );
+
+        return;
+      }
+
+
+      const bpmAnterior =
+        musica.bpm;
+
+
+      musica.bpm =
+        bpm;
+
+
+      try {
+
+        await salvarLista();
+
+        renderizarLista();
+
+      } catch (erro) {
+
+        musica.bpm =
+          bpmAnterior;
+
+        renderizarLista();
+
+        alert(
+          "Não foi possível salvar a alteração."
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      EDITAR COMPASSO
+      ============================================================
+    */
+
+    async function editarCompasso(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+
+      if (!musica) {
+        return;
+      }
+
+
+      const novoCompasso =
+        prompt(
+          "Digite o compasso:",
+          musica.compasso
+        );
+
+
+      if (novoCompasso === null) {
+        return;
+      }
+
+
+      const compasso =
+        novoCompasso.trim();
+
+
+      if (!/^\d+\/(2|4|8|16)$/.test(compasso)) {
+
+        alert(
+          "Compasso inválido.\n\nUse, por exemplo: 4/4, 3/4, 6/8."
+        );
+
+        return;
+      }
+
+
+      const compassoAnterior =
+        musica.compasso;
+
+
+      musica.compasso =
+        compasso;
+
+
+      try {
+
+        await salvarLista();
+
+        renderizarLista();
+
+      } catch (erro) {
+
+        musica.compasso =
+          compassoAnterior;
+
+        renderizarLista();
+
+        alert(
+          "Não foi possível salvar a alteração."
+        );
+
+      }
+
+    }
+
+
+    /*
+      ============================================================
+      RENDERIZAR LISTA
+      ============================================================
+    */
+
+    function renderizarLista() {
+
+      const tbody =
+        document.getElementById(
+          "listaMusicas"
+        );
+
+
+      tbody.innerHTML = "";
+
+
+      if (
+        !musicas ||
+        musicas.length === 0
+      ) {
+
+        const tr =
+          document.createElement("tr");
+
+
+        const td =
+          document.createElement("td");
+
+
+        td.colSpan = 4;
+
+        td.className =
+          "vazio";
+
+
+        td.textContent =
+          "Nenhuma música cadastrada ainda.";
+
+
+        tr.appendChild(td);
+
+        tbody.appendChild(tr);
+
+        return;
+      }
+
+
+      musicas.forEach(
+        musica => {
+
+          const tr =
+            document.createElement("tr");
+
+
+          const tdNome =
+            document.createElement("td");
+
+          tdNome.textContent =
+            musica.nome;
+
+
+          const tdBpm =
+            document.createElement("td");
+
+          tdBpm.textContent =
+            musica.bpm;
+
+
+          const tdCompasso =
+            document.createElement("td");
+
+          tdCompasso.textContent =
+            musica.compasso;
+
+
+          const tdAcoes =
+            document.createElement("td");
+
+
+          const acoes =
+            document.createElement("div");
+
+          acoes.className =
+            "acoes";
+
+
+          /*
+            ▶ METRÔNOMO
+          */
+
+          const botaoPlay =
+            document.createElement("button");
+
+          botaoPlay.className =
+            "acao";
+
+          botaoPlay.title =
+            "Abrir metrônomo";
+
+          botaoPlay.textContent =
+            "▶";
+
+          botaoPlay.onclick =
+            function() {
+
+              abrirMetronomo(
+                musica.id
+              );
+
+            };
+
+
+          /*
+            💾 EDITAR BPM
+          */
+
+          const botaoEditar =
+            document.createElement("button");
+
+          botaoEditar.className =
+            "acao";
+
+          botaoEditar.title =
+            "Editar BPM";
+
+          botaoEditar.textContent =
+            "💾";
+
+          botaoEditar.onclick =
+            function() {
+
+              editarBpm(
+                musica.id
+              );
+
+            };
+
+
+          /*
+            🗑️ EXCLUIR
+          */
+
+          const botaoExcluir =
+            document.createElement("button");
+
+          botaoExcluir.className =
+            "acao excluir";
+
+          botaoExcluir.title =
+            "Excluir música";
+
+          botaoExcluir.textContent =
+            "🗑️";
+
+          botaoExcluir.onclick =
+            function() {
+
+              excluirMusica(
+                musica.id
+              );
+
+            };
+
+
+          acoes.appendChild(
+            botaoPlay
+          );
+
+          acoes.appendChild(
+            botaoEditar
+          );
+
+          acoes.appendChild(
+            botaoExcluir
+          );
+
+
+          tdAcoes.appendChild(
+            acoes
+          );
+
+
+          tr.appendChild(
+            tdNome
+          );
+
+          tr.appendChild(
+            tdBpm
+          );
+
+          tr.appendChild(
+            tdCompasso
+          );
+
+          tr.appendChild(
+            tdAcoes
+          );
+
+
+          tbody.appendChild(
+            tr
+          );
+
+        }
+      );
+
+    }
+
+
+    /*
+      ============================================================
+      TROCAR ALUNO
+      ============================================================
+    */
+
+    function sairAluno() {
+
+      alunoAtual = "";
+
+      musicas = [];
+
+
+      document
+        .getElementById("nomeAluno")
+        .value = "";
+
+
+      document
+        .getElementById("nomeAlunoAtual")
+        .textContent = "";
+
+
+      document
+        .getElementById("infoAluno")
+        .classList.remove("ativo");
+
+
+      document
+        .getElementById("cardAdicionar")
+        .style.display = "none";
+
+
+      document
+        .getElementById("cardLista")
+        .style.display = "none";
+
+
+      esconderMensagem(
+        "mensagemLogin"
+      );
+
+
+      document
+        .getElementById("nomeAluno")
+        .focus();
+
+    }
+
+
+    /*
+      ============================================================
+      ENTER NO CAMPO DO ALUNO
+      ============================================================
+    */
+
+    document
+      .getElementById("nomeAluno")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            carregarAluno();
+
+          }
+
+        }
+      );
+
+
+    /*
+      ============================================================
+      ENTER NO CAMPO DA MÚSICA
+      ============================================================
+    */
+
+    document
+      .getElementById("nomeMusica")
+      .addEventListener(
+        "keydown",
+        function(event) {
+
+          if (
+            event.key === "Enter"
+          ) {
+
+            adicionarMusica();
+
+          }
+
+        }
+      );
+
+
+  </script>
+
+</body>
+</html>
