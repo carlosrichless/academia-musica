@@ -390,6 +390,97 @@
       color: var(--danger);
     }
 
+    .visualizador-foto {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #000;
+    }
+
+    .visualizador-foto.aberto {
+      display: flex;
+    }
+
+    .visualizador-foto img {
+      max-width: 100%;
+      max-height: calc(100vh - 70px);
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .botao-voltar-foto {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      z-index: 2;
+      padding: 10px 14px;
+      border-radius: 9px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #475569;
+      color: #f8fafc;
+      font-size: 0.9rem;
+    }
+
+    .botao-voltar-foto:hover {
+      border-color: var(--accent);
+    }
+
+    /* ============================================================
+       METRÔNOMO INTERNO
+       ============================================================ */
+
+    .metronomo-interno {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      background: #020617;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .metronomo-status {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-left: 2px;
+    }
+
+    .metronomo-controle {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+    }
+
+    .metronomo-controle:hover {
+      border-color: var(--accent);
+    }
+
+    .metronomo-indicador {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      margin-left: 2px;
+    }
+
+    .metronomo-indicador.tocando {
+      background: var(--success);
+      box-shadow: 0 0 10px rgba(52, 211, 153, 0.75);
+    }
+
     .rodape-info {
       color: var(--text-muted);
       text-align: center;
@@ -463,6 +554,28 @@
 </head>
 
 <body>
+
+  <div
+    id="visualizadorFoto"
+    class="visualizador-foto"
+  >
+
+    <button
+      type="button"
+      class="botao-voltar-foto"
+      onclick="fecharFotoTelaCheia()"
+    >
+      ← Voltar
+    </button>
+
+    <img
+      id="imagemTelaCheia"
+      src=""
+      alt="Foto ampliada"
+    >
+
+  </div>
+
 
   <div class="container">
 
@@ -717,6 +830,24 @@
     let temporizadoresNotas = {};
 
     let nomesAlunosSalvos = [];
+
+    let contextoAudioMetronomo = null;
+
+    let osciladorMetronomo = null;
+
+    let ganhoMetronomo = null;
+
+    let temporizadorMetronomo = null;
+
+    let metronomoTocandoId = null;
+
+    let proximoTempoMetronomo = 0;
+
+    let batidaMetronomo = 0;
+
+    const AHEAD_TIME_METRONOMO = 0.10;
+
+    const LOOKAHEAD_METRONOMO = 25;
 
 
     /*
@@ -1454,22 +1585,117 @@
 
     /*
       ============================================================
-      ABRIR METRÔNOMO
+      METRÔNOMO INTERNO
       ============================================================
     */
 
-    function abrirMetronomo(id) {
+    function obterNumeradorCompasso(compasso) {
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+      const partes =
+        String(compasso || "4/4").split("/");
+
+      const numerador =
+        parseInt(partes[0], 10);
+
+      return Number.isInteger(numerador) &&
+        numerador > 0
+        ? numerador
+        : 4;
+
+    }
 
 
-      if (!musica) {
+    function obterContextoAudioMetronomo() {
+
+      if (!contextoAudioMetronomo) {
+
+        const AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext;
+
+        if (!AudioContext) {
+          throw new Error(
+            "O navegador não suporta áudio."
+          );
+        }
+
+        contextoAudioMetronomo =
+          new AudioContext();
+
+      }
+
+      return contextoAudioMetronomo;
+
+    }
+
+
+    function tocarBatidaMetronomo(
+      contexto,
+      tempo,
+      batida,
+      numerador
+    ) {
+
+      const oscilador =
+        contexto.createOscillator();
+
+      const ganho =
+        contexto.createGain();
+
+      const primeiraBatida =
+        batida % numerador === 0;
+
+      oscilador.type =
+        "sine";
+
+      oscilador.frequency.setValueAtTime(
+        primeiraBatida ? 1500 : 1000,
+        tempo
+      );
+
+      ganho.gain.setValueAtTime(
+        0.0001,
+        tempo
+      );
+
+      ganho.gain.exponentialRampToValueAtTime(
+        0.22,
+        tempo + 0.002
+      );
+
+      ganho.gain.exponentialRampToValueAtTime(
+        0.0001,
+        tempo + 0.055
+      );
+
+      oscilador.connect(ganho);
+      ganho.connect(contexto.destination);
+
+      oscilador.start(tempo);
+      oscilador.stop(tempo + 0.06);
+
+    }
+
+
+    function agendarBatidasMetronomo() {
+
+      if (
+        metronomoTocandoId === null ||
+        !contextoAudioMetronomo
+      ) {
         return;
       }
 
+      const musica =
+        musicas.find(
+          item =>
+            item.id === metronomoTocandoId
+        );
+
+      if (!musica) {
+        pararMetronomo();
+        return;
+      }
 
       const bpm =
         Math.max(
@@ -1480,22 +1706,148 @@
           )
         );
 
+      const numerador =
+        obterNumeradorCompasso(
+          musica.compasso
+        );
 
-      const compasso =
-        musica.compasso || "4/4";
+      const intervalo =
+        60 / bpm;
+
+      const limite =
+        contextoAudioMetronomo.currentTime +
+        AHEAD_TIME_METRONOMO;
+
+      while (
+        proximoTempoMetronomo <
+        limite
+      ) {
+
+        tocarBatidaMetronomo(
+          contextoAudioMetronomo,
+          proximoTempoMetronomo,
+          batidaMetronomo,
+          numerador
+        );
+
+        proximoTempoMetronomo +=
+          intervalo;
+
+        batidaMetronomo++;
+
+      }
+
+    }
 
 
-      const url =
-        "metronomo.html" +
-        "?bpm=" +
-        encodeURIComponent(bpm) +
-        "&compasso=" +
-        encodeURIComponent(compasso) +
-        "&auto=1";
+    async function tocarMetronomo(id) {
+
+      const musica =
+        musicas.find(
+          item => item.id === id
+        );
+
+      if (!musica) {
+        return;
+      }
+
+      try {
+
+        const contexto =
+          obterContextoAudioMetronomo();
+
+        if (
+          contexto.state === "suspended"
+        ) {
+
+          await contexto.resume();
+
+        }
+
+        if (
+          metronomoTocandoId !== null &&
+          metronomoTocandoId !== id
+        ) {
+
+          pararMetronomo();
+
+        }
+
+        metronomoTocandoId =
+          id;
+
+        batidaMetronomo = 0;
+
+        proximoTempoMetronomo =
+          contexto.currentTime +
+          0.05;
+
+        clearInterval(
+          temporizadorMetronomo
+        );
+
+        agendarBatidasMetronomo();
+
+        temporizadorMetronomo =
+          setInterval(
+            agendarBatidasMetronomo,
+            LOOKAHEAD_METRONOMO
+          );
+
+        renderizarLista();
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao iniciar metrônomo:",
+          erro
+        );
+
+        alert(
+          "Não foi possível iniciar o metrônomo neste navegador."
+        );
+
+      }
+
+    }
 
 
-      window.location.href =
-        url;
+    function pararMetronomo() {
+
+      clearInterval(
+        temporizadorMetronomo
+      );
+
+      temporizadorMetronomo =
+        null;
+
+      metronomoTocandoId =
+        null;
+
+      proximoTempoMetronomo =
+        0;
+
+      batidaMetronomo =
+        0;
+
+      renderizarLista();
+
+    }
+
+
+    function alternarMetronomo(id) {
+
+      if (
+        metronomoTocandoId === id
+      ) {
+
+        pararMetronomo();
+
+        return;
+
+      }
+
+      tocarMetronomo(id);
 
     }
 
@@ -2058,6 +2410,51 @@
     }
 
 
+    function abrirFotoTelaCheia(foto, nome) {
+
+      const visualizador =
+        document.getElementById("visualizadorFoto");
+
+      const imagem =
+        document.getElementById("imagemTelaCheia");
+
+      if (!visualizador || !imagem || !foto) {
+        return;
+      }
+
+      imagem.src = foto;
+      imagem.alt =
+        "Foto ampliada de " +
+        (nome || "anotação");
+
+      visualizador.classList.add("aberto");
+      document.body.style.overflow = "hidden";
+
+    }
+
+
+    function fecharFotoTelaCheia() {
+
+      const visualizador =
+        document.getElementById("visualizadorFoto");
+
+      const imagem =
+        document.getElementById("imagemTelaCheia");
+
+      if (!visualizador) {
+        return;
+      }
+
+      visualizador.classList.remove("aberto");
+      document.body.style.overflow = "";
+
+      if (imagem) {
+        imagem.src = "";
+      }
+
+    }
+
+
     function removerFotoNota(id) {
 
       const musica =
@@ -2328,20 +2725,47 @@
                 musica.nome;
 
               imagem.title =
-                "Clique para ampliar";
+                "Clique para abrir em tela cheia";
 
               imagem.onclick =
                 function() {
 
-                  window.open(
+                  abrirFotoTelaCheia(
                     musica.foto,
-                    "_blank"
+                    musica.nome
                   );
 
                 };
 
               bloco.appendChild(
                 imagem
+              );
+
+
+              const botaoTelaCheia =
+                document.createElement("button");
+
+              botaoTelaCheia.type =
+                "button";
+
+              botaoTelaCheia.className =
+                "botao-foto";
+
+              botaoTelaCheia.textContent =
+                "⛶ Tela cheia";
+
+              botaoTelaCheia.onclick =
+                function() {
+
+                  abrirFotoTelaCheia(
+                    musica.foto,
+                    musica.nome
+                  );
+
+                };
+
+              bloco.appendChild(
+                botaoTelaCheia
               );
 
 
@@ -2419,15 +2843,19 @@
             "acao";
 
           botaoPlay.title =
-            "Abrir metrônomo";
+            metronomoTocandoId === musica.id
+              ? "Pausar metrônomo"
+              : "Tocar metrônomo";
 
           botaoPlay.textContent =
-            "▶";
+            metronomoTocandoId === musica.id
+              ? "⏸"
+              : "▶";
 
           botaoPlay.onclick =
             function() {
 
-              abrirMetronomo(
+              alternarMetronomo(
                 musica.id
               );
 
@@ -2504,6 +2932,87 @@
           );
 
 
+          if (
+            metronomoTocandoId === musica.id
+          ) {
+
+            const painelMetronomo =
+              document.createElement(
+                "div"
+              );
+
+            painelMetronomo.className =
+              "metronomo-interno";
+
+
+            const indicador =
+              document.createElement(
+                "span"
+              );
+
+            indicador.className =
+              "metronomo-indicador tocando";
+
+
+            const status =
+              document.createElement(
+                "span"
+              );
+
+            status.className =
+              "metronomo-status";
+
+            status.textContent =
+              musica.bpm +
+              " BPM • " +
+              (musica.compasso || "4/4") +
+              " • Tocando";
+
+
+            const botaoPausa =
+              document.createElement(
+                "button"
+              );
+
+            botaoPausa.type =
+              "button";
+
+            botaoPausa.className =
+              "metronomo-controle";
+
+            botaoPausa.title =
+              "Pausar metrônomo";
+
+            botaoPausa.textContent =
+              "⏸";
+
+            botaoPausa.onclick =
+              function() {
+
+                pararMetronomo();
+
+              };
+
+
+            painelMetronomo.appendChild(
+              indicador
+            );
+
+            painelMetronomo.appendChild(
+              status
+            );
+
+            painelMetronomo.appendChild(
+              botaoPausa
+            );
+
+            tdAcoes.appendChild(
+              painelMetronomo
+            );
+
+          }
+
+
           tr.appendChild(
             tdNome
           );
@@ -2538,6 +3047,8 @@
     */
 
     function sairAluno() {
+
+      pararMetronomo();
 
       Object.keys(
         temporizadoresNotas
@@ -2602,6 +3113,18 @@
       INICIALIZAÇÃO DOS NOMES SALVOS
       ============================================================
     */
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (event.key === "Escape") {
+          fecharFotoTelaCheia();
+        }
+
+      }
+    );
+
 
     carregarNomesAlunosSalvos();
     carregarNomesAlunosDoGoogleDrive();
