@@ -7,7 +7,7 @@
 <title>APP ACORDES</title>
 <style>
 :root{--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--text:#f8fafc;--muted:#94a3b8;--border:#334155;--ok:#34d399;--gold:#fbbf24;--purple:#a78bfa;--danger:#f87171}
-*{box-sizing:border-box}body{margin:0;padding:20px;min-height:100vh;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}.container{width:100%;max-width:1100px;margin:auto}.topo{display:flex;align-items:center;gap:15px;margin-bottom:25px}.voltar{color:var(--text);text-decoration:none;background:var(--card);border:1px solid var(--border);padding:10px 14px;border-radius:10px;font-size:.95rem}.voltar:hover{border-color:var(--accent)}.titulo{text-align:center;flex:1}.titulo h1{margin:0;font-size:1.8rem}.titulo p{margin:6px 0 0;color:var(--muted);font-size:.9rem}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px}.card h2{margin:0 0 18px;font-size:1.15rem}.pesquisa{position:relative}.pesquisa input{width:100%;padding:15px 16px 15px 45px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1rem;outline:none}.pesquisa input:focus{border-color:var(--accent)}.icone-pesquisa{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.filtro{padding:9px 13px;border-radius:9px;background:var(--bg);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:bold}.filtro:hover,.filtro.ativo{border-color:var(--accent);color:var(--text);background:rgba(56,189,248,.1)}.legendas{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.marcador{display:inline-flex;padding:6px 9px;border-radius:8px;font-size:.72rem;font-weight:bold;border:1px solid var(--border);background:var(--bg)}.marcador.simples{color:var(--ok);border-color:rgba(52,211,153,.35)}.marcador.pestana{color:var(--gold);border-color:rgba(251,191,36,.35)}.marcador.baixo{color:var(--purple);border-color:rgba(167,139,250,.35)}.resumo{margin-top:14px;color:var(--muted);font-size:.82rem}.grade{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.acorde{background:#172235;border:1px solid var(--border);border-radius:15px;padding:16px;min-width:0}.cab{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:7px;text-align:center;position:relative}.nome{font-size:1.5rem;font-weight:bold;text-align:center;width:100%}.tipo{font-size:.67rem;padding:5px 7px;border-radius:7px;background:var(--bg);color:var(--muted);border:1px solid var(--border);white-space:nowrap}.desc{min-height:32px;color:var(--muted);font-size:.75rem;margin-bottom:5px;line-height:1.35}.diagrama{width:100%;min-height:275px;display:flex;justify-content:center;align-items:center;padding:8px 0}.diagrama{cursor:pointer;border-radius:12px;transition:transform .15s ease,background .15s ease}.diagrama:hover{background:rgba(56,189,248,.05);transform:scale(1.02)}.diagrama svg{width:250px;height:270px;max-width:100%;overflow:hidden}.vazio{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--muted);border:1px dashed var(--border);border-radius:15px}.info{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:20px}.rodape{text-align:center;color:var(--muted);font-size:.75rem;margin-top:25px;line-height:1.5}.acorde-modal{position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,.96);display:none;align-items:center;justify-content:center;padding:25px}.acorde-modal.ativo{display:flex}.modal-conteudo{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}.modal-fechar{position:absolute;top:10px;right:10px;width:48px;height:48px;border-radius:12px;background:#1e293b;border:1px solid #475569;color:#f8fafc;font-size:28px;cursor:pointer;z-index:2}.modal-nome{font-size:clamp(2.2rem,6vw,4.5rem);font-weight:bold;text-align:center;margin-bottom:8px}.modal-tipo{color:#94a3b8;font-size:clamp(.9rem,2vw,1.2rem);margin-bottom:12px;text-align:center}.modal-diagrama{width:min(92vw,760px);height:min(76vh,720px);display:flex;align-items:center;justify-content:center;cursor:pointer}.modal-diagrama svg{width:min(92vw,700px);height:min(76vh,680px);max-width:100%;max-height:100%;overflow:hidden}.modal-dica{color:#94a3b8;font-size:.85rem;text-align:center;margin-top:10px}@media(max-width:600px){.acorde-modal{padding:12px}.modal-fechar{top:4px;right:4px}.modal-diagrama{width:96vw;height:72vh}.modal-diagrama svg{width:96vw;height:72vh}}@media(max-width:1000px){.grade{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){body{padding:10px}.topo{align-items:flex-start}.titulo h1{font-size:1.4rem}.grade{grid-template-columns:1fr}.diagrama svg{width:250px;height:270px}}@media(max-width:480px){.topo{flex-direction:column}.voltar{width:100%;text-align:center}.titulo{width:100%}.grade{grid-template-columns:1fr}}
+*{box-sizing:border-box}body{margin:0;padding:20px;min-height:100vh;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}.container{width:100%;max-width:1100px;margin:auto}.topo{display:flex;align-items:center;gap:15px;margin-bottom:25px}.voltar{color:var(--text);text-decoration:none;background:var(--card);border:1px solid var(--border);padding:10px 14px;border-radius:10px;font-size:.95rem}.voltar:hover{border-color:var(--accent)}.titulo{text-align:center;flex:1}.titulo h1{margin:0;font-size:1.8rem}.titulo p{margin:6px 0 0;color:var(--muted);font-size:.9rem}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px}.card h2{margin:0 0 18px;font-size:1.15rem}.pesquisa{position:relative}.pesquisa input{width:100%;padding:15px 16px 15px 45px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1rem;outline:none}.pesquisa input:focus{border-color:var(--accent)}.icone-pesquisa{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.filtro{padding:9px 13px;border-radius:9px;background:var(--bg);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:bold}.filtro:hover,.filtro.ativo{border-color:var(--accent);color:var(--text);background:rgba(56,189,248,.1)}.legendas{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.marcador{display:inline-flex;padding:6px 9px;border-radius:8px;font-size:.72rem;font-weight:bold;border:1px solid var(--border);background:var(--bg)}.marcador.simples{color:var(--ok);border-color:rgba(52,211,153,.35)}.marcador.pestana{color:var(--gold);border-color:rgba(251,191,36,.35)}.marcador.baixo{color:var(--purple);border-color:rgba(167,139,250,.35)}.resumo{margin-top:14px;color:var(--muted);font-size:.82rem}.grade{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.acorde{background:#172235;border:1px solid var(--border);border-radius:15px;padding:16px;min-width:0}.cab{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:7px;text-align:center;position:relative}.nome{font-size:1.5rem;font-weight:bold;text-align:center;width:100%}.tipo{font-size:.67rem;padding:5px 7px;border-radius:7px;background:var(--bg);color:var(--muted);border:1px solid var(--border);white-space:nowrap}.desc{min-height:32px;color:var(--muted);font-size:.75rem;margin-bottom:5px;line-height:1.35}.diagrama{width:100%;min-height:275px;display:flex;justify-content:center;align-items:center;padding:8px 0}.diagrama{cursor:pointer;border-radius:12px;transition:transform .15s ease,background .15s ease}.diagrama:hover{background:rgba(56,189,248,.05);transform:scale(1.02)}.diagrama svg{width:250px;height:270px;max-width:100%;overflow:hidden}.vazio{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--muted);border:1px dashed var(--border);border-radius:15px}.info{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:20px}.rodape{text-align:center;color:var(--muted);font-size:.75rem;margin-top:25px;line-height:1.5}.acorde-modal{position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,.96);display:none;align-items:center;justify-content:center;padding:25px}.acorde-modal.ativo{display:flex}.modal-conteudo{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}.modal-fechar{position:absolute;top:10px;right:10px;width:48px;height:48px;border-radius:12px;background:#1e293b;border:1px solid #475569;color:#f8fafc;font-size:28px;cursor:pointer;z-index:2}.modal-nome{font-size:clamp(2.2rem,6vw,4.5rem);font-weight:bold;text-align:center;margin-bottom:8px}.modal-tipo{color:#94a3b8;font-size:clamp(.9rem,2vw,1.2rem);margin-bottom:12px;text-align:center}.modal-diagrama{width:min(92vw,760px);height:min(76vh,720px);display:flex;align-items:center;justify-content:center;cursor:pointer}.modal-diagrama svg{width:min(92vw,700px);height:min(76vh,680px);max-width:100%;max-height:100%;overflow:hidden}.modal-dica{color:#94a3b8;font-size:.85rem;text-align:center;margin-top:10px}@media(max-width:600px){.acorde-modal{padding:12px}.modal-fechar{top:4px;right:4px}.modal-diagrama{width:96vw;height:72vh}.modal-diagrama svg{width:96vw;height:72vh}}@media(max-width:1000px){.grade{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){body{padding:10px}.topo{align-items:flex-start}.titulo h1{font-size:1.4rem}.grade{grid-template-columns:1fr}.diagrama svg{width:300px;height:300px}}@media(max-width:480px){.topo{flex-direction:column}.voltar{width:100%;text-align:center}.titulo{width:100%}.grade{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -44,60 +44,131 @@ const A=[
 
 let filtro='todos';
 function diagrama(d){
-  const s=d[4],f=d[5],bar=d[6];
-  const x0=55,yt=48,dx=31,dy=34;
-  const pos=s.filter(v=>v>0);
-  const start=pos.length&&Math.min(...pos)>=5?Math.min(...pos):1;
-  const largura=250, altura=270;
-  let z=`<svg viewBox="0 0 ${largura} ${altura}" xmlns="http://www.w3.org/2000/svg">`;
+  const s=d[4];
+  const f=d[5];
+  const bar=d[6];
 
-  /* indicação da casa: sempre à esquerda, alinhada exatamente com a primeira casa */
-  if(start>1){
-    z+=`<text x="8" y="${yt+dy/2+5}" fill="#fbbf24" font-size="14" font-weight="bold" font-family="Arial">${start}ª</text>`;
-    z+=`<path d="M39 ${yt+dy/2} H51" stroke="#fbbf24" stroke-width="2" fill="none"/>`;
-    z+=`<path d="M51 ${yt+dy/2} l-6 -4 M51 ${yt+dy/2} l-6 4" stroke="#fbbf24" stroke-width="2" fill="none"/>`;
+  /*
+    DESENHO DO BRAÇO
+    6 cordas = linhas verticais
+    4 casas visíveis = linhas horizontais
+  */
+  const x0 = 82;
+  const y0 = 58;
+  const dx = 32;
+  const dy = 38;
+  const largura = 300;
+  const altura = 300;
+
+  const positivas = s.filter(v => v > 0);
+  let inicioCasa = 1;
+
+  if (positivas.length) {
+    const menor = Math.min(...positivas);
+    const maior = Math.max(...positivas);
+
+    /*
+      A primeira casa desenhada deve conter todas as notas.
+      Assim G# (4,6,6,5,4,4) começa na 4ª casa,
+      C# começa na 4ª e D# começa na 6ª.
+    */
+    inicioCasa = menor;
+
+    if (maior - inicioCasa > 3) {
+      inicioCasa = maior - 3;
+    }
   }
 
-  /* casas e cordas */
-  for(let i=0;i<6;i++){
-    const x=x0+i*dx;
-    z+=`<line x1="${x}" y1="${yt}" x2="${x}" y2="${yt+4*dy}" stroke="#94a3b8" stroke-width="2"/>`;
-  }
-  for(let i=0;i<=4;i++){
-    const y=yt+i*dy;
-    z+=`<line x1="${x0}" y1="${y}" x2="${x0+5*dx}" y2="${y}" stroke="#94a3b8" stroke-width="${i===0&&start===1?5:2}"/>`;
+  let z = `<svg viewBox="0 0 ${largura} ${altura}" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama do acorde ${d[0]}">`;
+
+  /* INDICAÇÃO DA CASA: número à esquerda + seta apontando para a primeira casa */
+  if (inicioCasa > 1) {
+    const ySeta = y0 + dy / 2;
+
+    z += `
+      <text
+        x="8"
+        y="${ySeta + 5}"
+        fill="#fbbf24"
+        font-size="15"
+        font-weight="bold"
+        font-family="Arial, Helvetica, sans-serif"
+      >${inicioCasa}ª</text>
+
+      <path
+        d="M48 ${ySeta} H70"
+        stroke="#fbbf24"
+        stroke-width="2.5"
+        fill="none"
+      />
+
+      <path
+        d="M70 ${ySeta} L62 ${ySeta - 5} M70 ${ySeta} L62 ${ySeta + 5}"
+        stroke="#fbbf24"
+        stroke-width="2.5"
+        fill="none"
+      />
+    `;
   }
 
-  /* cordas não tocadas / abertas ficam abaixo do desenho, sem sobrepor os nomes */
-  s.forEach((v,i)=>{
-    const x=x0+i*dx;
-    if(v===-1) z+=`<text x="${x}" y="${yt+4*dy+23}" text-anchor="middle" fill="#f87171" font-size="22" font-weight="bold" font-family="Arial">×</text>`;
-    else if(v===0) z+=`<circle cx="${x}" cy="${yt+4*dy+19}" r="7" fill="none" stroke="#34d399" stroke-width="2"/>`;
+  /* LINHAS VERTICAIS DAS 6 CORDAS */
+  for (let i = 0; i < 6; i++) {
+    const x = x0 + i * dx;
+    z += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + 4 * dy}" stroke="#94a3b8" stroke-width="2"/>`;
+  }
+
+  /* LINHAS HORIZONTAIS DAS 4 CASAS */
+  for (let i = 0; i <= 4; i++) {
+    const y = y0 + i * dy;
+    z += `<line x1="${x0}" y1="${y}" x2="${x0 + 5 * dx}" y2="${y}" stroke="#94a3b8" stroke-width="${i === 0 && inicioCasa === 1 ? 5 : 2}"/>`;
+  }
+
+  /* PESTANA: fica exatamente sobre a casa correspondente */
+  if (bar) {
+    const x1 = x0 + bar.a * dx;
+    const x2 = x0 + bar.b * dx;
+    const y = y0 + (bar.f - inicioCasa + 0.5) * dy;
+
+    z += `<rect x="${x1 - 10}" y="${y - 10}" width="${x2 - x1 + 20}" height="20" rx="10" fill="#fbbf24"/>`;
+  }
+
+  /* DIGITAÇÃO: todas as notas ficam obrigatoriamente dentro das casas */
+  s.forEach((v, i) => {
+    const x = x0 + i * dx;
+
+    if (v <= 0) return;
+
+    let y = y0 + (v - inicioCasa + 0.5) * dy;
+
+    /* proteção para nunca deixar uma nota sair do desenho */
+    y = Math.max(y0 + dy * 0.5, Math.min(y0 + dy * 3.5, y));
+
+    z += `<circle cx="${x}" cy="${y}" r="12" fill="#38bdf8"/>`;
+
+    if (f[i]) {
+      z += `<text x="${x}" y="${y + 5}" text-anchor="middle" fill="#020617" font-size="13" font-weight="bold" font-family="Arial, Helvetica, sans-serif">${f[i]}</text>`;
+    }
   });
 
-  /* nomes das cordas ficam abaixo dos símbolos */
-  ['E','A','D','G','B','e'].forEach((n,i)=>{
-    const x=x0+i*dx;
-    z+=`<text x="${x}" y="${yt+4*dy+51}" text-anchor="middle" fill="#94a3b8" font-size="13" font-family="Arial">${n}</text>`;
+  /* X = corda não tocada / O = corda solta */
+  s.forEach((v, i) => {
+    const x = x0 + i * dx;
+    const y = y0 + 4 * dy + 25;
+
+    if (v === -1) {
+      z += `<text x="${x}" y="${y}" text-anchor="middle" fill="#f87171" font-size="23" font-weight="bold" font-family="Arial, Helvetica, sans-serif">×</text>`;
+    } else if (v === 0) {
+      z += `<circle cx="${x}" cy="${y - 7}" r="7" fill="none" stroke="#34d399" stroke-width="2"/>`;
+    }
   });
 
-  /* pestana */
-  if(bar){
-    const x1=x0+bar.a*dx,x2=x0+bar.b*dx;
-    const y=yt+(bar.f-start+.5)*dy;
-    z+=`<rect x="${x1-10}" y="${y-10}" width="${x2-x1+20}" height="20" rx="10" fill="#fbbf24"/>`;
-  }
-
-  /* dedos */
-  s.forEach((v,i)=>{
-    if(v<=0)return;
-    const x=x0+i*dx;
-    const y=yt+(v-start+.5)*dy;
-    z+=`<circle cx="${x}" cy="${y}" r="12" fill="#38bdf8"/>`;
-    if(f[i]) z+=`<text x="${x}" y="${y+5}" text-anchor="middle" fill="#020617" font-size="13" font-weight="bold" font-family="Arial">${f[i]}</text>`;
+  /* NOMES DAS CORDAS: separados dos X/O e nunca recebem números de dedos */
+  ['E','A','D','G','B','e'].forEach((n, i) => {
+    const x = x0 + i * dx;
+    z += `<text x="${x}" y="${y0 + 4 * dy + 52}" text-anchor="middle" fill="#94a3b8" font-size="13" font-family="Arial, Helvetica, sans-serif">${n}</text>`;
   });
 
-  z+='</svg>';
+  z += '</svg>';
   return z;
 }
 function abrirAcorde(d){
