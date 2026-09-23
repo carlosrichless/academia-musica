@@ -907,41 +907,74 @@
     /*
       ============================================================
       NOMES DE ALUNOS SALVOS
-
-      Os nomes exibidos aqui vêm SOMENTE do Google Drive.
-      O navegador não mantém uma lista própria de alunos.
       ============================================================
     */
 
-    let nomesAlunosSalvos = [];
+    const CHAVE_NOMES_ALUNOS =
+      "app_lista_bpm_nomes_alunos";
+
+
+    function carregarNomesAlunosSalvos() {
+
+      try {
+
+        const dados =
+          localStorage.getItem(
+            CHAVE_NOMES_ALUNOS
+          );
+
+
+        nomesAlunosSalvos =
+          dados
+            ? JSON.parse(dados)
+            : [];
+
+
+        if (
+          !Array.isArray(
+            nomesAlunosSalvos
+          )
+        ) {
+
+          nomesAlunosSalvos = [];
+
+        }
+
+      } catch (erro) {
+
+        console.error(
+          "Erro ao carregar nomes salvos:",
+          erro
+        );
+
+        nomesAlunosSalvos = [];
+
+      }
+
+
+      renderizarNomesAlunosSalvos();
+
+    }
 
 
     async function carregarNomesAlunosDoGoogleDrive() {
-
-      const lista =
-        document.getElementById("nomesAlunosSalvos");
-
-      if (!lista) {
-        return;
-      }
 
       if (
         !CONFIG.API_URL ||
         CONFIG.usarModoLocal
       ) {
-        nomesAlunosSalvos = [];
-        renderizarNomesAlunosSalvos();
         return;
       }
+
 
       try {
 
         const resposta =
           await fetch(
             CONFIG.API_URL +
-            "?acao=listarAlunos&_=" +
-            Date.now()
+            "?acao=listarAlunos"
           );
+
 
         if (!resposta.ok) {
           throw new Error(
@@ -949,27 +982,39 @@
           );
         }
 
+
         const dados =
           await resposta.json();
+
 
         if (
           !dados ||
           !dados.sucesso ||
           !Array.isArray(dados.alunos)
         ) {
-          throw new Error(
-            dados && dados.erro
-              ? dados.erro
-              : "Resposta inválida do servidor."
-          );
+          return;
         }
 
-        nomesAlunosSalvos =
+
+        const nomesDaNuvem =
           dados.alunos
             .map(
               nome => normalizarNome(String(nome))
             )
             .filter(Boolean);
+
+
+        nomesAlunosSalvos =
+          nomesDaNuvem;
+
+
+        localStorage.setItem(
+          CHAVE_NOMES_ALUNOS,
+          JSON.stringify(
+            nomesAlunosSalvos
+          )
+        );
+
 
         renderizarNomesAlunosSalvos();
 
@@ -979,9 +1024,6 @@
           "Erro ao carregar nomes dos alunos do Google Drive:",
           erro
         );
-
-        nomesAlunosSalvos = [];
-        renderizarNomesAlunosSalvos();
 
       }
 
@@ -995,11 +1037,14 @@
           "nomesAlunosSalvos"
         );
 
+
       if (!lista) {
         return;
       }
 
+
       lista.innerHTML = "";
+
 
       const campo =
         document.getElementById("nomeAluno");
@@ -1015,6 +1060,7 @@
             !busca ||
             nome.toLowerCase().includes(busca)
         );
+
 
       if (nomesFiltrados.length === 0) {
 
@@ -1033,6 +1079,7 @@
 
         return;
       }
+
 
       nomesFiltrados.forEach(
         nome => {
@@ -1141,6 +1188,9 @@
       const campo =
         document.getElementById("nomeAluno");
 
+      const botao =
+        document.getElementById("botaoEntrar");
+
       const nome =
         normalizarNome(campo.value);
 
@@ -1159,34 +1209,14 @@
         return;
       }
 
+      if (botao) {
+        botao.disabled = true;
+        botao.classList.add("carregando");
+      }
 
       alunoAtual = nome;
       notaAbertaId = null;
-
-      document
-        .getElementById("nomeAlunoAtual")
-        .textContent = alunoAtual;
-
-
-      document
-        .getElementById("infoAluno")
-        .classList.add("ativo");
-
-
-      document
-        .getElementById("cardAdicionar")
-        .style.display = "block";
-
-
-      document
-        .getElementById("cardLista")
-        .style.display = "block";
-
-
-      document
-        .getElementById("botaoEntrar")
-        .classList.add("carregando");
-
+      musicas = [];
 
       try {
 
@@ -1197,63 +1227,76 @@
 
           await carregarDoGoogleDrive();
 
+          /*
+            O arquivo do aluno é criado no Google Drive
+            mesmo que ele ainda não tenha nenhuma música.
+          */
+          await salvarNoGoogleDrive();
+
+          await carregarNomesAlunosDoGoogleDrive();
+
         } else {
 
           carregarDoNavegador();
 
         }
 
+        document
+          .getElementById("nomeAlunoAtual")
+          .textContent = alunoAtual;
+
+        document
+          .getElementById("infoAluno")
+          .classList.add("ativo");
+
+        document
+          .getElementById("cardAdicionar")
+          .style.display = "block";
+
+        document
+          .getElementById("cardLista")
+          .style.display = "block";
+
+        renderizarLista();
+
       } catch (erro) {
 
-        console.error(erro);
+        console.error(
+          "Erro ao entrar como aluno:",
+          erro
+        );
+
+        alunoAtual = "";
+        musicas = [];
+
+        document
+          .getElementById("infoAluno")
+          .classList.remove("ativo");
+
+        document
+          .getElementById("cardAdicionar")
+          .style.display = "none";
+
+        document
+          .getElementById("cardLista")
+          .style.display = "none";
 
         mostrarMensagem(
           "mensagemLogin",
-          "Não foi possível carregar a lista.",
+          "Não foi possível conectar ao Google Drive. Tente novamente.",
           "erro"
         );
 
       } finally {
 
-        document
-          .getElementById("botaoEntrar")
-          .classList.remove("carregando");
-
-      }
-
-
-      /*
-        REGISTRA O ALUNO NO GOOGLE DRIVE.
-        Se o arquivo ainda não existir, ele é criado mesmo
-        que o aluno ainda não tenha nenhuma música.
-      */
-      if (
-        CONFIG.API_URL &&
-        !CONFIG.usarModoLocal
-      ) {
-
-        try {
-
-          await salvarNoGoogleDrive();
-
-          await carregarNomesAlunosDoGoogleDrive();
-
-        } catch (erro) {
-
-          console.error(
-            "Não foi possível registrar o aluno no Google Drive:",
-            erro
-          );
-
+        if (botao) {
+          botao.disabled = false;
+          botao.classList.remove("carregando");
         }
 
       }
 
-
-      renderizarLista();
-
     }
-
 
     /*
       ============================================================
@@ -3153,6 +3196,7 @@
     );
 
 
+    carregarNomesAlunosSalvos();
     carregarNomesAlunosDoGoogleDrive();
 
 
