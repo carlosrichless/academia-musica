@@ -907,111 +907,41 @@
     /*
       ============================================================
       NOMES DE ALUNOS SALVOS
+
+      Os nomes exibidos aqui vêm SOMENTE do Google Drive.
+      O navegador não mantém uma lista própria de alunos.
       ============================================================
     */
 
-    const CHAVE_NOMES_ALUNOS =
-      "app_lista_bpm_nomes_alunos";
-
-
-    function carregarNomesAlunosSalvos() {
-
-      try {
-
-        const dados =
-          localStorage.getItem(
-            CHAVE_NOMES_ALUNOS
-          );
-
-
-        nomesAlunosSalvos =
-          dados
-            ? JSON.parse(dados)
-            : [];
-
-
-        if (
-          !Array.isArray(
-            nomesAlunosSalvos
-          )
-        ) {
-
-          nomesAlunosSalvos = [];
-
-        }
-
-      } catch (erro) {
-
-        console.error(
-          "Erro ao carregar nomes salvos:",
-          erro
-        );
-
-        nomesAlunosSalvos = [];
-
-      }
-
-
-      renderizarNomesAlunosSalvos();
-
-    }
-
-
-    function salvarNomeAlunoNaLista(nome) {
-
-      const nomeNormalizado =
-        normalizarNome(nome);
-
-
-      if (!nomeNormalizado) {
-        return;
-      }
-
-
-      nomesAlunosSalvos =
-        nomesAlunosSalvos.filter(
-          item =>
-            item.toLowerCase() !==
-            nomeNormalizado.toLowerCase()
-        );
-
-
-      nomesAlunosSalvos.unshift(
-        nomeNormalizado
-      );
-
-
-      localStorage.setItem(
-        CHAVE_NOMES_ALUNOS,
-        JSON.stringify(
-          nomesAlunosSalvos
-        )
-      );
-
-
-      renderizarNomesAlunosSalvos();
-
-    }
+    let nomesAlunosSalvos = [];
 
 
     async function carregarNomesAlunosDoGoogleDrive() {
+
+      const lista =
+        document.getElementById("nomesAlunosSalvos");
+
+      if (!lista) {
+        return;
+      }
 
       if (
         !CONFIG.API_URL ||
         CONFIG.usarModoLocal
       ) {
+        nomesAlunosSalvos = [];
+        renderizarNomesAlunosSalvos();
         return;
       }
-
 
       try {
 
         const resposta =
           await fetch(
             CONFIG.API_URL +
-            "?acao=listarAlunos"
+            "?acao=listarAlunos&_=" +
+            Date.now()
           );
-
 
         if (!resposta.ok) {
           throw new Error(
@@ -1019,50 +949,27 @@
           );
         }
 
-
         const dados =
           await resposta.json();
-
 
         if (
           !dados ||
           !dados.sucesso ||
           !Array.isArray(dados.alunos)
         ) {
-          return;
+          throw new Error(
+            dados && dados.erro
+              ? dados.erro
+              : "Resposta inválida do servidor."
+          );
         }
 
-
-        const nomesDaNuvem =
+        nomesAlunosSalvos =
           dados.alunos
             .map(
               nome => normalizarNome(String(nome))
             )
             .filter(Boolean);
-
-
-        nomesAlunosSalvos =
-          Array.from(
-            new Map(
-              nomesAlunosSalvos
-                .concat(nomesDaNuvem)
-                .map(
-                  nome => [
-                    nome.toLowerCase(),
-                    nome
-                  ]
-                )
-            ).values()
-          );
-
-
-        localStorage.setItem(
-          CHAVE_NOMES_ALUNOS,
-          JSON.stringify(
-            nomesAlunosSalvos
-          )
-        );
-
 
         renderizarNomesAlunosSalvos();
 
@@ -1072,6 +979,9 @@
           "Erro ao carregar nomes dos alunos do Google Drive:",
           erro
         );
+
+        nomesAlunosSalvos = [];
+        renderizarNomesAlunosSalvos();
 
       }
 
@@ -1085,14 +995,11 @@
           "nomesAlunosSalvos"
         );
 
-
       if (!lista) {
         return;
       }
 
-
       lista.innerHTML = "";
-
 
       const campo =
         document.getElementById("nomeAluno");
@@ -1108,7 +1015,6 @@
             !busca ||
             nome.toLowerCase().includes(busca)
         );
-
 
       if (nomesFiltrados.length === 0) {
 
@@ -1127,7 +1033,6 @@
 
         return;
       }
-
 
       nomesFiltrados.forEach(
         nome => {
@@ -1317,9 +1222,32 @@
       }
 
 
-      salvarNomeAlunoNaLista(
-        alunoAtual
-      );
+      /*
+        REGISTRA O ALUNO NO GOOGLE DRIVE.
+        Se o arquivo ainda não existir, ele é criado mesmo
+        que o aluno ainda não tenha nenhuma música.
+      */
+      if (
+        CONFIG.API_URL &&
+        !CONFIG.usarModoLocal
+      ) {
+
+        try {
+
+          await salvarNoGoogleDrive();
+
+          await carregarNomesAlunosDoGoogleDrive();
+
+        } catch (erro) {
+
+          console.error(
+            "Não foi possível registrar o aluno no Google Drive:",
+            erro
+          );
+
+        }
+
+      }
 
 
       renderizarLista();
@@ -3225,7 +3153,6 @@
     );
 
 
-    carregarNomesAlunosSalvos();
     carregarNomesAlunosDoGoogleDrive();
 
 
