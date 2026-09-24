@@ -1,71 +1,875 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <meta name="theme-color" content="#1db954">
+
 <title>APP ACORDES</title>
+
 <style>
-:root{--bg:#0f172a;--card:#1e293b;--accent:#38bdf8;--text:#f8fafc;--muted:#94a3b8;--border:#334155;--ok:#34d399;--gold:#fbbf24;--purple:#a78bfa;--danger:#f87171}
-*{box-sizing:border-box}body{margin:0;padding:20px;min-height:100vh;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}.container{width:100%;max-width:1100px;margin:auto}.topo{display:flex;align-items:center;gap:15px;margin-bottom:25px}.voltar{color:var(--text);text-decoration:none;background:var(--card);border:1px solid var(--border);padding:10px 14px;border-radius:10px;font-size:.95rem}.voltar:hover{border-color:var(--accent)}.titulo{text-align:center;flex:1}.titulo h1{margin:0;font-size:1.8rem}.titulo p{margin:6px 0 0;color:var(--muted);font-size:.9rem}.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:20px}.card h2{margin:0 0 18px;font-size:1.15rem}.pesquisa{position:relative}.pesquisa input{width:100%;padding:15px 16px 15px 45px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:1rem;outline:none}.pesquisa input:focus{border-color:var(--accent)}.icone-pesquisa{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}.filtros{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.filtro{padding:9px 13px;border-radius:9px;background:var(--bg);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:.82rem;font-weight:bold}.filtro:hover,.filtro.ativo{border-color:var(--accent);color:var(--text);background:rgba(56,189,248,.1)}.legendas{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.marcador{display:inline-flex;padding:6px 9px;border-radius:8px;font-size:.72rem;font-weight:bold;border:1px solid var(--border);background:var(--bg)}.marcador.simples{color:var(--ok);border-color:rgba(52,211,153,.35)}.marcador.pestana{color:var(--gold);border-color:rgba(251,191,36,.35)}.marcador.baixo{color:var(--purple);border-color:rgba(167,139,250,.35)}.resumo{margin-top:14px;color:var(--muted);font-size:.82rem}.grade{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.acorde{background:#172235;border:1px solid var(--border);border-radius:15px;padding:16px;min-width:0}.cab{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:7px;text-align:center;position:relative}.nome{font-size:1.5rem;font-weight:bold;text-align:center;width:100%}.tipo{font-size:.67rem;padding:5px 7px;border-radius:7px;background:var(--bg);color:var(--muted);border:1px solid var(--border);white-space:nowrap}.desc{min-height:32px;color:var(--muted);font-size:.75rem;margin-bottom:5px;line-height:1.35}.diagrama{width:100%;min-height:275px;display:flex;justify-content:center;align-items:center;padding:8px 0}.diagrama{cursor:pointer;border-radius:12px;transition:transform .15s ease,background .15s ease}.diagrama:hover{background:rgba(56,189,248,.05);transform:scale(1.02)}.diagrama svg{width:250px;height:270px;max-width:100%;overflow:hidden}.vazio{grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--muted);border:1px dashed var(--border);border-radius:15px}.info{color:var(--muted);font-size:.78rem;line-height:1.5;margin-top:20px}.rodape{text-align:center;color:var(--muted);font-size:.75rem;margin-top:25px;line-height:1.5}.acorde-modal{position:fixed;inset:0;z-index:9999;background:rgba(2,6,23,.96);display:none;align-items:center;justify-content:center;padding:25px}.acorde-modal.ativo{display:flex}.modal-conteudo{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}.modal-fechar{position:absolute;top:10px;right:10px;width:48px;height:48px;border-radius:12px;background:#1e293b;border:1px solid #475569;color:#f8fafc;font-size:28px;cursor:pointer;z-index:2}.modal-nome{font-size:clamp(2.2rem,6vw,4.5rem);font-weight:bold;text-align:center;margin-bottom:8px}.modal-tipo{color:#94a3b8;font-size:clamp(.9rem,2vw,1.2rem);margin-bottom:12px;text-align:center}.modal-diagrama{width:min(92vw,760px);height:min(76vh,720px);display:flex;align-items:center;justify-content:center;cursor:pointer}.modal-diagrama svg{width:min(92vw,700px);height:min(76vh,680px);max-width:100%;max-height:100%;overflow:hidden}.modal-dica{color:#94a3b8;font-size:.85rem;text-align:center;margin-top:10px}@media(max-width:600px){.acorde-modal{padding:12px}.modal-fechar{top:4px;right:4px}.modal-diagrama{width:96vw;height:72vh}.modal-diagrama svg{width:96vw;height:72vh}}@media(max-width:1000px){.grade{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){body{padding:10px}.topo{align-items:flex-start}.titulo h1{font-size:1.4rem}.grade{grid-template-columns:1fr}.diagrama svg{width:300px;height:300px}}@media(max-width:480px){.topo{flex-direction:column}.voltar{width:100%;text-align:center}.titulo{width:100%}.grade{grid-template-columns:1fr}}
+:root {
+    --bg:#0f172a;
+    --card:#1e293b;
+    --accent:#38bdf8;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --border:#334155;
+    --ok:#34d399;
+    --gold:#fbbf24;
+    --purple:#a78bfa;
+    --danger:#f87171}
+
+* {
+    box-sizing:border-box}
+
+body {
+    margin:0;
+    padding:20px;
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial,Helvetica,sans-serif}
+
+.container {
+    width:100%;
+    max-width:1100px;
+    margin:auto}
+
+.topo {
+    display:flex;
+    align-items:center;
+    gap:15px;
+    margin-bottom:25px}
+
+.voltar {
+    color:var(--text);
+    text-decoration:none;
+    background:var(--card);
+    border:1px solid var(--border);
+    padding:10px 14px;
+    border-radius:10px;
+    font-size:.95rem}
+
+.voltar:hover {
+    border-color:var(--accent)}
+
+.titulo {
+    text-align:center;
+    flex:1}
+
+.titulo h1 {
+    margin:0;
+    font-size:1.8rem}
+
+.titulo p {
+    margin:6px 0 0;
+    color:var(--muted);
+    font-size:.9rem}
+
+.card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:22px;
+    margin-bottom:20px}
+
+.card h2 {
+    margin:0 0 18px;
+    font-size:1.15rem}
+
+.pesquisa {
+    position:relative}
+
+.pesquisa input {
+    width:100%;
+    padding:15px 16px 15px 45px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    font-size:1rem;
+    outline:none}
+
+.pesquisa input:focus {
+    border-color:var(--accent)}
+
+.icone-pesquisa {
+    position:absolute;
+    left:16px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--muted);
+    pointer-events:none}
+
+.filtros {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:14px}
+
+.filtro {
+    padding:9px 13px;
+    border-radius:9px;
+    background:var(--bg);
+    border:1px solid var(--border);
+    color:var(--muted);
+    cursor:pointer;
+    font-size:.82rem;
+    font-weight:bold}
+
+.filtro:hover,.filtro.ativo {
+    border-color:var(--accent);
+    color:var(--text);
+    background:rgba(56,189,248,.1)}
+
+.legendas {
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:16px}
+
+.marcador {
+    display:inline-flex;
+    padding:6px 9px;
+    border-radius:8px;
+    font-size:.72rem;
+    font-weight:bold;
+    border:1px solid var(--border);
+    background:var(--bg)}
+
+.marcador.simples {
+    color:var(--ok);
+    border-color:rgba(52,211,153,.35)}
+
+.marcador.pestana {
+    color:var(--gold);
+    border-color:rgba(251,191,36,.35)}
+
+.marcador.baixo {
+    color:var(--purple);
+    border-color:rgba(167,139,250,.35)}
+
+.resumo {
+    margin-top:14px;
+    color:var(--muted);
+    font-size:.82rem}
+
+.grade {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:18px}
+
+.acorde {
+    background:#172235;
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:16px;
+    min-width:0}
+
+.cab {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:7px;
+    text-align:center;
+    position:relative}
+
+.nome {
+    font-size:1.5rem;
+    font-weight:bold;
+    text-align:center;
+    width:100%}
+
+.tipo {
+    font-size:.67rem;
+    padding:5px 7px;
+    border-radius:7px;
+    background:var(--bg);
+    color:var(--muted);
+    border:1px solid var(--border);
+    white-space:nowrap}
+
+.desc {
+    min-height:32px;
+    color:var(--muted);
+    font-size:.75rem;
+    margin-bottom:5px;
+    line-height:1.35}
+
+.diagrama {
+    width:100%;
+    min-height:275px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:8px 0}
+
+.diagrama {
+    cursor:pointer;
+    border-radius:12px;
+    transition:transform .15s ease,background .15s ease}
+
+.diagrama:hover {
+    background:rgba(56,189,248,.05);
+    transform:scale(1.02)}
+
+.diagrama svg {
+    width:250px;
+    height:270px;
+    max-width:100%;
+    overflow:hidden}
+
+.vazio {
+    grid-column:1/-1;
+    text-align:center;
+    padding:50px 20px;
+    color:var(--muted);
+    border:1px dashed var(--border);
+    border-radius:15px}
+
+.info {
+    color:var(--muted);
+    font-size:.78rem;
+    line-height:1.5;
+    margin-top:20px}
+
+.rodape {
+    text-align:center;
+    color:var(--muted);
+    font-size:.75rem;
+    margin-top:25px;
+    line-height:1.5}
+
+.acorde-modal {
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:rgba(2,6,23,.96);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:25px}
+
+.acorde-modal.ativo {
+    display:flex}
+
+.modal-conteudo {
+    width:100%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative}
+
+.modal-fechar {
+    position:absolute;
+    top:10px;
+    right:10px;
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:#1e293b;
+    border:1px solid #475569;
+    color:#f8fafc;
+    font-size:28px;
+    cursor:pointer;
+    z-index:2}
+
+.modal-nome {
+    font-size:clamp(2.2rem,6vw,4.5rem);
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:8px}
+
+.modal-tipo {
+    color:#94a3b8;
+    font-size:clamp(.9rem,2vw,1.2rem);
+    margin-bottom:12px;
+    text-align:center}
+
+.modal-diagrama {
+    width:min(92vw,760px);
+    height:min(76vh,720px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer}
+
+.modal-diagrama svg {
+    width:min(92vw,700px);
+    height:min(76vh,680px);
+    max-width:100%;
+    max-height:100%;
+    overflow:hidden}
+
+.modal-dica {
+    color:#94a3b8;
+    font-size:.85rem;
+    text-align:center;
+    margin-top:10px}
+
+@media(max-width:600px) {
+    .acorde-modal {
+    padding:12px}
+
+.modal-fechar {
+    top:4px;
+    right:4px}
+
+.modal-diagrama {
+    width:96vw;
+    height:72vh}
+
+.modal-diagrama svg {
+    width:96vw;
+    height:72vh}
+
+}
+
+@media(max-width:1000px) {
+    .grade {
+    grid-template-columns:repeat(2,minmax(0,1fr))}
+
+}
+
+@media(max-width:680px) {
+    body {
+    padding:10px}
+
+.topo {
+    align-items:flex-start}
+
+.titulo h1 {
+    font-size:1.4rem}
+
+.grade {
+    grid-template-columns:1fr}
+
+.diagrama svg {
+    width:300px;
+    height:300px}
+
+}
+
+@media(max-width:480px) {
+    .topo {
+    flex-direction:column}
+
+.voltar {
+    width:100%;
+    text-align:center}
+
+.titulo {
+    width:100%}
+
+.grade {
+    grid-template-columns:1fr}
+
+}
+
+
 </style>
 </head>
 <body>
-<div class="container">
-<div class="acorde-modal" id="acordeModal" role="dialog" aria-modal="true" aria-label="Acorde em tela cheia"><div class="modal-conteudo"><button class="modal-fechar" id="modalFechar" aria-label="Fechar">×</button><div class="modal-nome" id="modalNome"></div><div class="modal-tipo" id="modalTipo"></div><div class="modal-diagrama" id="modalDiagrama"></div><div class="modal-dica">Toque/clique fora ou no × para fechar</div></div></div>
+</head>
+<body>
 
-<div class="topo"><a href="index.html" class="voltar">← Voltar</a><div class="titulo"><h1>🎸 APP ACORDES</h1><p>Dicionário visual de acordes para violão e guitarra</p></div></div>
+<div class="container">
+
+<div class="acorde-modal" id="acordeModal" role="dialog" aria-modal="true" aria-label="Acorde em tela cheia">
+<div class="modal-conteudo">
+<button class="modal-fechar" id="modalFechar" aria-label="Fechar">×
+</button>
+<div class="modal-nome" id="modalNome">
+</div>
+<div class="modal-tipo" id="modalTipo">
+</div>
+<div class="modal-diagrama" id="modalDiagrama">
+</div>
+<div class="modal-dica">Toque/clique fora ou no × para fechar
+</div>
+</div>
+</div>
+
+
+<div class="topo">
+<a href="index.html" class="voltar">← Voltar
+</a>
+<div class="titulo">
+<h1>🎸 APP ACORDES
+</h1>
+<p>Dicionário visual de acordes para violão e guitarra
+</p>
+</div>
+</div>
+
 <div class="card">
-<h2>🔎 Encontrar acorde</h2>
-<div class="pesquisa"><span class="icone-pesquisa">🔍</span><input id="pesquisa" type="text" placeholder="Digite o acorde. Ex.: C, Am, F, G7, Bm, D/F#..." autocomplete="off"></div>
+
+<h2>🔎 Encontrar acorde
+</h2>
+
+<div class="pesquisa"><span class="icone-pesquisa">🔍</span><input id="pesquisa" type="text" placeholder="Digite o acorde. Ex.: C, Am, F, G7, Bm, D/F#..." autocomplete="off">
+</div>
+
 <div class="filtros">
-<button class="filtro ativo" data-f="todos">TODOS</button><button class="filtro" data-f="simples">ACORDES SIMPLES</button><button class="filtro" data-f="pestana">COM PESTANA</button><button class="filtro" data-f="baixo">COM BAIXA</button>
+
+<button class="filtro ativo" data-f="todos">TODOS
+</button>
+<button class="filtro" data-f="simples">ACORDES SIMPLES
+</button>
+<button class="filtro" data-f="pestana">COM PESTANA
+</button>
+<button class="filtro" data-f="baixo">COM BAIXA
+</button>
+
 </div>
-<div class="legendas"><span class="marcador simples">● SIMPLES</span><span class="marcador pestana">● PESTANA</span><span class="marcador baixo">● ACORDE COM BAIXA</span></div>
-<div class="resumo" id="resumo"></div>
+
+<div class="legendas"><span class="marcador simples">● SIMPLES</span><span class="marcador pestana">● PESTANA</span><span class="marcador baixo">● ACORDE COM BAIXA</span>
 </div>
-<div class="card"><div class="grade" id="grade"></div><div class="info"><strong>Como ler:</strong> as 6 linhas verticais representam as cordas da 6ª corda (E grave) para a 1ª corda (E agudo). <strong>●</strong> dedo, <strong>○</strong> corda solta e <strong>×</strong> corda não tocada. O número dentro do círculo indica o dedo.</div></div>
-<div class="rodape">APP ACORDES<br>Dicionário visual de acordes para violão e guitarra.</div>
+
+<div class="resumo" id="resumo">
+</div>
+
+</div>
+
+<div class="card">
+<div class="grade" id="grade">
+</div>
+<div class="info"><strong>Como ler:</strong> as 6 linhas verticais representam as cordas da 6ª corda (E grave) para a 1ª corda (E agudo). <strong>●</strong> dedo, <strong>○</strong> corda solta e <strong>×</strong> corda não tocada. O número dentro do círculo indica o dedo.
+</div>
+</div>
+
+<div class="rodape">APP ACORDES<br>Dicionário visual de acordes para violão e guitarra.
+</div>
+
 </div>
 <script>
+
+/* =====================================================
+   BANCO COMPLETO DE ACORDES
+   ===================================================== */
+
 /* strings: E A D G B e. 0=aberta, -1=não tocar. */
+
 const A=[
-['A','a la maior','simples','SIMPLES',[-1,0,2,2,2,0],[0,0,1,2,3,0]],['C','c do maior','simples','SIMPLES',[-1,3,2,0,1,0],[0,3,2,0,1,0]],['D','d re maior','simples','SIMPLES',[-1,-1,0,2,3,2],[0,0,0,1,3,2]],['E','e mi maior','simples','SIMPLES',[0,2,2,1,0,0],[0,2,3,1,0,0]],['G','g sol maior','simples','SIMPLES',[3,2,0,0,0,3],[2,1,0,0,0,3]],
-['Am','am la menor','simples','SIMPLES',[-1,0,2,2,1,0],[0,0,2,3,1,0]],['Dm','dm re menor','simples','SIMPLES',[-1,-1,0,2,3,1],[0,0,0,2,3,1]],['Em','em mi menor','simples','SIMPLES',[0,2,2,0,0,0],[0,2,3,0,0,0]],
-['A7','a7 la sete','simples','SIMPLES',[-1,0,2,0,2,0],[0,0,2,0,3,0]],['B7','b7 si sete','simples','SIMPLES',[-1,2,1,2,0,2],[0,2,1,3,0,4]],['C7','c7 do sete','simples','SIMPLES',[-1,3,2,3,1,0],[0,3,2,4,1,0]],['D7','d7 re sete','simples','SIMPLES',[-1,-1,0,2,1,2],[0,0,0,2,1,3]],['E7','e7 mi sete','simples','SIMPLES',[0,2,0,1,0,0],[0,2,0,1,0,0]],['G7','g7 sol sete','simples','SIMPLES',[3,2,0,0,0,1],[3,2,0,0,0,1]],
-['Amaj7','amaj7 la maior sete maior','simples','SIMPLES',[-1,0,2,1,2,0],[0,0,2,1,3,0]],['Cmaj7','cmaj7 do maior sete maior','simples','SIMPLES',[-1,3,2,0,0,0],[0,3,2,0,0,0]],['Dmaj7','dmaj7 re maior sete maior','simples','SIMPLES',[-1,-1,0,2,2,2],[0,0,0,1,2,3]],['Emaj7','emaj7 mi maior sete maior','simples','SIMPLES',[0,2,1,1,0,0],[0,3,1,2,0,0]],
-['Am7','am7 la menor sete','simples','SIMPLES',[-1,0,2,0,1,0],[0,0,2,0,1,0]],['Dm7','dm7 re menor sete','simples','SIMPLES',[-1,-1,0,2,1,1],[0,0,0,2,1,1]],['Em7','em7 mi menor sete','simples','SIMPLES',[0,2,0,0,0,0],[0,2,0,0,0,0]],
-['Asus2','asus2 la suspenso dois','simples','SIMPLES',[-1,0,2,2,0,0],[0,0,1,2,0,0]],['Asus4','asus4 la suspenso quatro','simples','SIMPLES',[-1,0,2,2,3,0],[0,0,1,2,3,0]],['Dsus2','dsus2 re suspenso dois','simples','SIMPLES',[-1,-1,0,2,3,0],[0,0,0,1,3,0]],['Dsus4','dsus4 re suspenso quatro','simples','SIMPLES',[-1,-1,0,2,3,3],[0,0,0,1,2,3]],['Esus4','esus4 mi suspenso quatro','simples','SIMPLES',[0,2,2,2,0,0],[0,1,2,3,0,0]],
-['F','f fa maior pestana','pestana','PESTANA',[1,3,3,2,1,1],[1,3,4,2,1,1],{f:1,a:0,b:5}],['F#','f# fa sustenido maior pestana','pestana','PESTANA',[2,4,4,3,2,2],[1,3,4,2,1,1],{f:2,a:0,b:5}],['Bb','bb sib si bemol maior pestana','pestana','PESTANA',[-1,1,3,3,3,1],[0,1,3,4,2,1],{f:1,a:1,b:5}],['B','b si maior pestana','pestana','PESTANA',[-1,2,4,4,4,2],[0,1,3,4,2,1],{f:2,a:1,b:5}],['C#','c# do sustenido maior pestana','pestana','PESTANA',[-1,4,6,6,6,4],[0,1,3,4,2,1],{f:4,a:1,b:5}],['D#','d# re sustenido maior pestana','pestana','PESTANA',[-1,6,8,8,8,6],[0,1,3,4,2,1],{f:6,a:1,b:5}],['G#','g# sol sustenido maior pestana','pestana','PESTANA',[4,6,6,5,4,4],[1,3,4,2,1,1],{f:4,a:0,b:5}],
-['Fm','fm fa menor pestana','pestana','PESTANA',[1,3,3,1,1,1],[1,3,4,1,1,1],{f:1,a:0,b:5}],['F#m','f#m fa sustenido menor pestana','pestana','PESTANA',[2,4,4,2,2,2],[1,3,4,1,1,1],{f:2,a:0,b:5}],['Bm','bm si menor pestana','pestana','PESTANA',[-1,2,4,4,3,2],[0,1,3,4,2,1],{f:2,a:1,b:5}],['Cm','cm do menor pestana','pestana','PESTANA',[-1,3,5,5,4,3],[0,1,3,4,2,1],{f:3,a:1,b:5}],['C#m','c#m do sustenido menor pestana','pestana','PESTANA',[-1,4,6,6,5,4],[0,1,3,4,2,1],{f:4,a:1,b:5}],['D#m','d#m re sustenido menor pestana','pestana','PESTANA',[-1,6,8,8,7,6],[0,1,3,4,2,1],{f:6,a:1,b:5}],['Gm','gm sol menor pestana','pestana','PESTANA',[3,5,5,3,3,3],[1,3,4,1,1,1],{f:3,a:0,b:5}],
-['F7','f7 fa sete pestana','pestana','PESTANA',[1,3,1,2,1,1],[1,3,1,2,1,1],{f:1,a:0,b:5}],['Bb7','bb7 sib si bemol sete pestana','pestana','PESTANA',[-1,1,3,1,3,1],[0,1,3,1,4,1],{f:1,a:1,b:5}],['Bm7','bm7 si menor sete pestana','pestana','PESTANA',[-1,2,4,2,3,2],[0,1,3,1,2,1],{f:2,a:1,b:5}],
-['A/C#','a/c# la com baixo do sustenido','baixo','COM BAIXA',[-1,4,2,2,2,0],[0,4,1,2,3,0]],['C/G','c/g do com baixo sol','baixo','COM BAIXA',[3,3,2,0,1,0],[3,4,2,0,1,0]],['D/F#','d/f# re com baixo fa sustenido','baixo','COM BAIXA',[2,-1,0,2,3,2],[1,0,0,2,3,2]],['E/G#','e/g# mi com baixo sol sustenido','baixo','COM BAIXA',[4,2,2,1,0,0],[4,2,3,1,0,0]],['G/B','g/b sol com baixo si','baixo','COM BAIXA',[-1,2,0,0,0,3],[0,1,0,0,0,3]],['F/A','f/a fa com baixo la','baixo','COM BAIXA',[-1,0,3,2,1,1],[0,0,4,3,1,1],{f:1,a:4,b:5}],['C/E','c/e do com baixo mi','baixo','COM BAIXA',[0,3,2,0,1,0],[0,3,2,0,1,0]]
+['A','a la maior','simples','SIMPLES',[-1,0,2,2,2,0],
+
+[0,0,1,2,3,0]],
+
+['C','c do maior','simples','SIMPLES',[-1,3,2,0,1,0],
+
+[0,3,2,0,1,0]],
+
+['D','d re maior','simples','SIMPLES',[-1,-1,0,2,3,2],
+
+[0,0,0,1,3,2]],
+
+['E','e mi maior','simples','SIMPLES',[0,2,2,1,0,0],
+
+[0,2,3,1,0,0]],
+
+['G','g sol maior','simples','SIMPLES',[3,2,0,0,0,3],
+
+[2,1,0,0,0,3]],
+['Am','am la menor','simples','SIMPLES',[-1,0,2,2,1,0],
+
+[0,0,2,3,1,0]],
+
+['Dm','dm re menor','simples','SIMPLES',[-1,-1,0,2,3,1],
+
+[0,0,0,2,3,1]],
+
+['Em','em mi menor','simples','SIMPLES',[0,2,2,0,0,0],
+
+[0,2,3,0,0,0]],
+['A7','a7 la sete','simples','SIMPLES',[-1,0,2,0,2,0],
+
+[0,0,2,0,3,0]],
+
+['B7','b7 si sete','simples','SIMPLES',[-1,2,1,2,0,2],
+
+[0,2,1,3,0,4]],
+
+['E7','e7 mi sete','simples','SIMPLES',[0,2,0,1,0,0],
+
+[0,2,0,1,0,0]],
+['Amaj7','amaj7 la maior sete maior','simples','SIMPLES',[-1,0,2,1,2,0],
+
+[0,0,2,1,3,0]],
+['Am7','am7 la menor sete','simples','SIMPLES',[-1,0,2,0,1,0],
+
+[0,0,2,0,1,0]],
+['Asus2','asus2 la suspenso dois','simples','SIMPLES',[-1,0,2,2,0,0],
+
+[0,0,1,2,0,0]],
+
+['Asus4','asus4 la suspenso quatro','simples','SIMPLES',[-1,0,2,2,3,0],
+
+[0,0,1,2,3,0]],
+
+['Dsus2','dsus2 re suspenso dois','simples','SIMPLES',[-1,-1,0,2,3,0],
+
+[0,0,0,1,3,0]],
+
+['Dsus4','dsus4 re suspenso quatro','simples','SIMPLES',[-1,-1,0,2,3,3],
+
+[0,0,0,1,2,3]],
+
+['Esus4','esus4 mi suspenso quatro','simples','SIMPLES',[0,2,2,2,0,0],
+
+[0,1,2,3,0,0]],
+['F','f fa maior pestana','pestana','PESTANA',[1,3,3,2,1,1],
+
+[1,3,4,2,1,1],{f:1,a:0,b:5}],
+
+['F#','f# fa sustenido maior pestana','pestana','PESTANA',[2,4,4,3,2,2],
+
+[1,3,4,2,1,1],{f:2,a:0,b:5}],
+
+['Bb','bb sib si bemol maior pestana','pestana','PESTANA',[-1,1,3,3,3,1],
+
+[0,1,3,4,2,1],{f:1,a:1,b:5}],
+
+['B','b si maior pestana','pestana','PESTANA',[-1,2,4,4,4,2],
+
+[0,1,3,4,2,1],{f:2,a:1,b:5}],
+
+['C#','c# do sustenido maior pestana','pestana','PESTANA',[-1,4,6,6,6,4],
+
+[0,1,3,4,2,1],{f:4,a:1,b:5}],
+
+['D#','d# re sustenido maior pestana','pestana','PESTANA',[-1,6,8,8,8,6],
+
+[0,1,3,4,2,1],{f:6,a:1,b:5}],
+
+['G#','g# sol sustenido maior pestana','pestana','PESTANA',[4,6,6,5,4,4],
+
+[1,3,4,2,1,1],{f:4,a:0,b:5}],
+['Fm','fm fa menor pestana','pestana','PESTANA',[1,3,3,1,1,1],
+
+[1,3,4,1,1,1],{f:1,a:0,b:5}],
+
+['F#m','f#m fa sustenido menor pestana','pestana','PESTANA',[2,4,4,2,2,2],
+
+[1,3,4,1,1,1],{f:2,a:0,b:5}],
+
+['Bm','bm si menor pestana','pestana','PESTANA',[-1,2,4,4,3,2],
+
+[0,1,3,4,2,1],{f:2,a:1,b:5}],
+
+['Cm','cm do menor pestana','pestana','PESTANA',[-1,3,5,5,4,3],
+
+[0,1,3,4,2,1],{f:3,a:1,b:5}],
+
+['C#m','c#m do sustenido menor pestana','pestana','PESTANA',[-1,4,6,6,5,4],
+
+[0,1,3,4,2,1],{f:4,a:1,b:5}],
+
+['D#m','d#m re sustenido menor pestana','pestana','PESTANA',[-1,6,8,8,7,6],
+
+[0,1,3,4,2,1],{f:6,a:1,b:5}],
+
+['Gm','gm sol menor pestana','pestana','PESTANA',[3,5,5,3,3,3],
+
+[1,3,4,1,1,1],{f:3,a:0,b:5}],
+['F7','f7 fa sete pestana','pestana','PESTANA',[1,3,1,2,1,1],
+
+[1,3,1,2,1,1],{f:1,a:0,b:5}],
+
+['Bb7','bb7 sib si bemol sete pestana','pestana','PESTANA',[-1,1,3,1,3,1],
+
+[0,1,3,1,4,1],{f:1,a:1,b:5}],
+
+['Bm7','bm7 si menor sete pestana','pestana','PESTANA',[-1,2,4,2,3,2],
+
+[0,1,3,1,2,1],{f:2,a:1,b:5}],
+['A/C#','a/c# la com baixo do sustenido','baixo','COM BAIXA',[-1,4,2,2,2,0],
+
+[0,4,1,2,3,0]],
+
+['C/G','c/g do com baixo sol','baixo','COM BAIXA',[3,3,2,0,1,0],
+
+[3,4,2,0,1,0]],
+
+['D/F#','d/f# re com baixo fa sustenido','baixo','COM BAIXA',[2,-1,0,2,3,2],
+
+[1,0,0,2,3,2]],
+
+['E/G#','e/g# mi com baixo sol sustenido','baixo','COM BAIXA',[4,2,2,1,0,0],
+
+[4,2,3,1,0,0]],
+
+['G/B','g/b sol com baixo si','baixo','COM BAIXA',[-1,2,0,0,0,3],
+
+[0,1,0,0,0,3]],
+
+['F/A','f/a fa com baixo la','baixo','COM BAIXA',[-1,0,3,2,1,1],
+
+[0,0,4,3,1,1],{f:1,a:4,b:5}],
+
+['C/E','c/e do com baixo mi','baixo','COM BAIXA',[0,3,2,0,1,0],
+
+[0,3,2,0,1,0]]
+
+/* =====================================================
+   ACORDES ADICIONAIS — FORMAS MÓVEIS E VARIAÇÕES
+   ===================================================== */
+
+/* Maiores, menores, 7, m7 e maj7 — formas móveis na 6ª corda */
+['A#','a# la sustenido maior / sib','pestana','PESTANA',[6,8,8,7,6,6],
+
+[1,3,4,2,1,1],{f:6,a:0,b:5}],
+['A#m','a#m la sustenido menor / sib menor','pestana','PESTANA',[6,8,8,6,6,6],
+
+[1,3,4,1,1,1],{f:6,a:0,b:5}],
+['A#7','a# la sustenido sete / sib7','pestana','PESTANA',[6,8,6,7,6,6],
+
+[1,3,1,2,1,1],{f:6,a:0,b:5}],
+['A#m7','a#m la sustenido menor sete / sibm7','pestana','PESTANA',[6,8,6,6,6,6],
+
+[1,3,1,1,1,1],{f:6,a:0,b:5}],
+['A#maj7','a# la sustenido maior sete maior / sibmaj7','pestana','PESTANA',[6,8,7,7,6,6],
+
+[1,3,2,2,1,1],{f:6,a:0,b:5}],
+['A#sus2','a# la sustenido suspenso dois','pestana','PESTANA',[6,8,8,8,6,6],
+
+[1,3,3,4,1,1],{f:6,a:0,b:5}],
+['A#sus4','a# la sustenido suspenso quatro','pestana','PESTANA',[6,8,8,8,9,6],
+
+[1,2,3,4,4,1],{f:6,a:0,b:5}],
+
+['Bmaj7','b si maior sete maior','pestana','PESTANA',[7,9,8,8,7,7],
+
+[1,3,2,2,1,1],{f:7,a:0,b:5}],
+['Bm7b5','bm7b5 si menor sete bemol cinco','pestana','PESTANA',[7,8,9,7,8,7],
+
+[1,2,3,1,2,1],{f:7,a:0,b:5}],
+['Cmaj7','c do maior sete maior','simples','SIMPLES',[-1,3,2,0,0,0],
+
+[0,3,2,0,0,0]],
+['C7','c7 do sete','simples','SIMPLES',[-1,3,2,3,1,0],
+
+[0,3,2,4,1,0]],
+['Cm7','cm7 do menor sete','pestana','PESTANA',[-1,3,5,3,4,3],
+
+[0,1,3,1,2,1],{f:3,a:1,b:5}],
+['C#7','c#7 do sustenido sete','pestana','PESTANA',[-1,4,6,4,6,4],
+
+[0,1,3,1,4,1],{f:4,a:1,b:5}],
+['C#maj7','c#maj7 do sustenido maior sete maior','pestana','PESTANA',[-1,4,6,5,6,4],
+
+[0,1,3,2,4,1],{f:4,a:1,b:5}],
+['C#m7','c#m7 do sustenido menor sete','pestana','PESTANA',[-1,4,6,4,5,4],
+
+[0,1,3,1,2,1],{f:4,a:1,b:5}],
+['D7','d7 re sete','simples','SIMPLES',[-1,-1,0,2,1,2],
+
+[0,0,0,2,1,3]],
+['Dmaj7','dmaj7 re maior sete maior','simples','SIMPLES',[-1,-1,0,2,2,2],
+
+[0,0,0,1,2,3]],
+['Dm7','dm7 re menor sete','simples','SIMPLES',[-1,-1,0,2,1,1],
+
+[0,0,0,2,1,1]],
+['D#7','d#7 re sustenido sete','pestana','PESTANA',[-1,6,8,6,8,6],
+
+[0,1,3,1,4,1],{f:6,a:1,b:5}],
+['D#maj7','d#maj7 re sustenido maior sete maior','pestana','PESTANA',[-1,6,8,7,8,6],
+
+[0,1,3,2,4,1],{f:6,a:1,b:5}],
+['D#m7','d#m7 re sustenido menor sete','pestana','PESTANA',[-1,6,8,6,7,6],
+
+[0,1,3,1,2,1],{f:6,a:1,b:5}],
+['Emaj7','emaj7 mi maior sete maior','simples','SIMPLES',[0,2,1,1,0,0],
+
+[0,3,1,2,0,0]],
+['Em7','em7 mi menor sete','simples','SIMPLES',[0,2,0,0,0,0],
+
+[0,2,0,0,0,0]],
+['E7sus4','e7sus4 mi sete suspenso quatro','simples','SIMPLES',[0,2,0,2,0,0],
+
+[0,2,0,3,0,0]],
+['Fmaj7','fmaj7 fa maior sete maior','pestana','PESTANA',[1,3,2,2,1,1],
+
+[1,3,2,2,1,1],{f:1,a:0,b:5}],
+['Fm7','fm7 fa menor sete','pestana','PESTANA',[1,3,1,1,1,1],
+
+[1,3,1,1,1,1],{f:1,a:0,b:5}],
+
+['F#7','f#7 fa sustenido sete','pestana','PESTANA',[2,4,2,3,2,2],
+
+[1,3,1,2,1,1],{f:2,a:0,b:5}],
+['F#maj7','f#maj7 fa sustenido maior sete maior','pestana','PESTANA',[2,4,3,3,2,2],
+
+[1,3,2,2,1,1],{f:2,a:0,b:5}],
+['F#m7','f#m7 fa sustenido menor sete','pestana','PESTANA',[2,4,2,2,2,2],
+
+[1,3,1,1,1,1],{f:2,a:0,b:5}],
+['Gmaj7','gmaj7 sol maior sete maior','simples','SIMPLES',[3,2,0,0,0,2],
+
+[2,1,0,0,0,3]],
+['Gm7','gm7 sol menor sete','pestana','PESTANA',[3,5,3,3,3,3],
+
+[1,3,1,1,1,1],{f:3,a:0,b:5}],
+['G7','g7 sol sete','simples','SIMPLES',[3,2,0,0,0,1],
+
+[3,2,0,0,0,1]],
+['G#7','g#7 sol sustenido sete','pestana','PESTANA',[4,6,4,5,4,4],
+
+[1,3,1,2,1,1],{f:4,a:0,b:5}],
+['G#maj7','g#maj7 sol sustenido maior sete maior','pestana','PESTANA',[4,6,5,5,4,4],
+
+[1,3,2,2,1,1],{f:4,a:0,b:5}],
+['G#m7','g#m7 sol sustenido menor sete','pestana','PESTANA',[4,6,4,4,4,4],
+
+[1,3,1,1,1,1],{f:4,a:0,b:5}],
+
+/* Sus2 / Sus4 adicionais */
+['A#sus4','a# la sustenido suspenso quatro','pestana','PESTANA',[6,8,8,8,9,6],
+
+[1,2,3,4,4,1],{f:6,a:0,b:5}],
+['Bsus2','bsus2 si suspenso dois','pestana','PESTANA',[-1,2,4,4,2,2],
+
+[0,1,3,4,1,1],{f:2,a:1,b:5}],
+['Bsus4','bsus4 si suspenso quatro','pestana','PESTANA',[-1,2,4,4,5,5],
+
+[0,1,3,3,4,4],{f:2,a:1,b:5}],
+['Csus2','csus2 do suspenso dois','simples','SIMPLES',[-1,3,0,0,1,3],
+
+[0,3,0,0,1,4]],
+['Csus4','csus4 do suspenso quatro','simples','SIMPLES',[-1,3,3,0,1,1],
+
+[0,2,3,0,1,1]],
+['D#sus2','d#sus2 re sustenido suspenso dois','pestana','PESTANA',[-1,6,8,8,6,6],
+
+[0,1,3,4,1,1],{f:6,a:1,b:5}],
+['D#sus4','d#sus4 re sustenido suspenso quatro','pestana','PESTANA',[-1,6,8,8,9,6],
+
+[0,1,3,4,4,1],{f:6,a:1,b:5}],
+['F#sus2','f#sus2 fa sustenido suspenso dois','pestana','PESTANA',[2,4,4,3,2,2],
+
+[1,3,4,2,1,1],{f:2,a:0,b:5}],
+['F#sus4','f#sus4 fa sustenido suspenso quatro','pestana','PESTANA',[2,4,4,4,5,2],
+
+[1,2,3,4,4,1],{f:2,a:0,b:5}],
+['G#sus2','g#sus2 sol sustenido suspenso dois','pestana','PESTANA',[4,6,6,5,4,4],
+
+[1,3,4,2,1,1],{f:4,a:0,b:5}],
+['G#sus4','g#sus4 sol sustenido suspenso quatro','pestana','PESTANA',[4,6,6,6,7,4],
+
+[1,2,3,4,4,1],{f:4,a:0,b:5}],
+
+/* Diminutos e aumentados — formas compactas */
+['Adim','adim la diminuto','simples','SIMPLES',[-1,0,1,2,1,2],
+
+[0,0,1,3,2,4]],
+['Bdim','bdim si diminuto','simples','SIMPLES',[-1,2,0,1,0,1],
+
+[0,2,0,1,0,1]],
+['Cdim','cdim do diminuto','simples','SIMPLES',[-1,3,4,2,4,2],
+
+[0,2,3,1,4,1]],
+['Ddim','ddim re diminuto','simples','SIMPLES',[-1,-1,0,1,0,1],
+
+[0,0,0,1,0,2]],
+['Edim','edim mi diminuto','simples','SIMPLES',[0,1,2,0,2,0],
+
+[0,1,3,0,2,0]],
+['Fdim','fdim fa diminuto','simples','SIMPLES',[1,2,3,1,3,1],
+
+[1,2,3,1,4,1]],
+['Gdim','gdim sol diminuto','simples','SIMPLES',[3,4,5,3,5,3],
+
+[1,2,3,1,4,1]],
+['A#dim','a#dim la sustenido diminuto / sib dim','simples','SIMPLES',[-1,1,2,0,2,0],
+
+[0,1,2,0,3,0]],
+['C#dim','c#dim do sustenido diminuto','simples','SIMPLES',[-1,4,5,3,5,3],
+
+[0,1,2,1,3,1]],
+['D#dim','d#dim re sustenido diminuto','simples','SIMPLES',[-1,6,7,5,7,5],
+
+[0,1,2,1,3,1]],
+['F#dim','f#dim fa sustenido diminuto','simples','SIMPLES',[2,3,4,2,4,2],
+
+[1,2,3,1,4,1]],
+['G#dim','g#dim sol sustenido diminuto','simples','SIMPLES',[4,5,6,4,6,4],
+
+[1,2,3,1,4,1]],
+
+['Aaug','aaug la aumentado','simples','SIMPLES',[-1,0,3,2,2,1],
+
+[0,0,4,2,3,1]],
+['A#aug','a#aug la sustenido aumentado / sib aug','pestana','PESTANA',[6,9,8,7,7,6],
+
+[1,4,3,2,2,1],{f:6,a:0,b:5}],
+['Caug','caug do aumentado','simples','SIMPLES',[-1,3,2,1,1,0],
+
+[0,3,2,1,1,0]],
+['Daug','daug re aumentado','simples','SIMPLES',[-1,-1,0,3,3,2],
+
+[0,0,0,2,3,1]],
+['Eaug','eaug mi aumentado','simples','SIMPLES',[0,3,2,1,1,0],
+
+[0,4,3,1,2,0]],
+['Faug','faug fa aumentado','pestana','PESTANA',[1,4,3,2,2,1],
+
+[1,4,3,2,2,1],{f:1,a:0,b:5}],
+['Gaug','gaug sol aumentado','simples','SIMPLES',[3,2,1,0,0,3],
+
+[3,2,1,0,0,4]],
+['G#aug','g#aug sol sustenido aumentado','pestana','PESTANA',[4,7,6,5,5,4],
+
+[1,4,3,2,2,1],{f:4,a:0,b:5}],
+
 ];
 
+
 let filtro='todos';
+
+
 function diagrama(d){
-  const s=d[4];
-  const f=d[5];
-  const bar=d[6];
+
+const s=d[4];
+
+const f=d[5];
+
+const bar=d[6];
 
   /*
     DESENHO DO BRAÇO
     6 cordas = linhas verticais
     4 casas visíveis = linhas horizontais
   */
-  const x0 = 82;
-  const y0 = 58;
-  const dx = 32;
-  const dy = 38;
-  const largura = 300;
-  const altura = 300;
 
-  const positivas = s.filter(v => v > 0);
-  let inicioCasa = 1;
+const x0 = 82;
+
+const y0 = 58;
+
+const dx = 32;
+
+const dy = 38;
+
+const largura = 300;
+
+const altura = 300;
+
+
+const positivas = s.filter(v => v > 0);
+
+let inicioCasa = 1;
 
   if (positivas.length) {
-    const menor = Math.min(...positivas);
-    const maior = Math.max(...positivas);
+
+const menor = Math.min(...positivas);
+
+const maior = Math.max(...positivas);
 
     /*
       A primeira casa desenhada deve conter todas as notas.
@@ -79,11 +883,13 @@ function diagrama(d){
     }
   }
 
-  let z = `<svg viewBox="0 0 ${largura} ${altura}" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama do acorde ${d[0]}">`;
+
+let z = `<svg viewBox="0 0 ${largura} ${altura}" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama do acorde ${d[0]}">`;
 
   /* INDICAÇÃO DA CASA: número à esquerda + seta apontando para a primeira casa */
   if (inicioCasa > 1) {
-    const ySeta = y0 + dy / 2;
+
+const ySeta = y0 + dy / 2;
 
     z += `
       <text
@@ -112,33 +918,42 @@ function diagrama(d){
   }
 
   /* LINHAS VERTICAIS DAS 6 CORDAS */
-  for (let i = 0; i < 6; i++) {
-    const x = x0 + i * dx;
+  for (
+let i = 0; i < 6; i++) {
+
+const x = x0 + i * dx;
     z += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + 4 * dy}" stroke="#94a3b8" stroke-width="2"/>`;
   }
 
   /* LINHAS HORIZONTAIS DAS 4 CASAS */
-  for (let i = 0; i <= 4; i++) {
-    const y = y0 + i * dy;
+  for (
+let i = 0; i <= 4; i++) {
+
+const y = y0 + i * dy;
     z += `<line x1="${x0}" y1="${y}" x2="${x0 + 5 * dx}" y2="${y}" stroke="#94a3b8" stroke-width="${i === 0 && inicioCasa === 1 ? 5 : 2}"/>`;
   }
 
   /* PESTANA: fica exatamente sobre a casa correspondente */
   if (bar) {
-    const x1 = x0 + bar.a * dx;
-    const x2 = x0 + bar.b * dx;
-    const y = y0 + (bar.f - inicioCasa + 0.5) * dy;
+
+const x1 = x0 + bar.a * dx;
+
+const x2 = x0 + bar.b * dx;
+
+const y = y0 + (bar.f - inicioCasa + 0.5) * dy;
 
     z += `<rect x="${x1 - 10}" y="${y - 10}" width="${x2 - x1 + 20}" height="20" rx="10" fill="#fbbf24"/>`;
   }
 
   /* DIGITAÇÃO: todas as notas ficam obrigatoriamente dentro das casas */
   s.forEach((v, i) => {
-    const x = x0 + i * dx;
+
+const x = x0 + i * dx;
 
     if (v <= 0) return;
 
-    let y = y0 + (v - inicioCasa + 0.5) * dy;
+
+let y = y0 + (v - inicioCasa + 0.5) * dy;
 
     /* proteção para nunca deixar uma nota sair do desenho */
     y = Math.max(y0 + dy * 0.5, Math.min(y0 + dy * 3.5, y));
@@ -152,8 +967,10 @@ function diagrama(d){
 
   /* X = corda não tocada / O = corda solta */
   s.forEach((v, i) => {
-    const x = x0 + i * dx;
-    const y = y0 + 4 * dy + 25;
+
+const x = x0 + i * dx;
+
+const y = y0 + 4 * dy + 25;
 
     if (v === -1) {
       z += `<text x="${x}" y="${y}" text-anchor="middle" fill="#f87171" font-size="23" font-weight="bold" font-family="Arial, Helvetica, sans-serif">×</text>`;
@@ -164,13 +981,16 @@ function diagrama(d){
 
   /* NOMES DAS CORDAS: separados dos X/O e nunca recebem números de dedos */
   ['E','A','D','G','B','e'].forEach((n, i) => {
-    const x = x0 + i * dx;
+
+const x = x0 + i * dx;
     z += `<text x="${x}" y="${y0 + 4 * dy + 52}" text-anchor="middle" fill="#94a3b8" font-size="13" font-family="Arial, Helvetica, sans-serif">${n}</text>`;
   });
 
   z += '</svg>';
   return z;
 }
+
+
 function abrirAcorde(d){
   document.getElementById('modalNome').textContent=d[0];
   document.getElementById('modalTipo').textContent=d[3];
@@ -179,24 +999,114 @@ function abrirAcorde(d){
   document.body.style.overflow='hidden';
 }
 
+
+
 function fecharAcorde(){
   document.getElementById('acordeModal').classList.remove('ativo');
   document.body.style.overflow='';
 }
 
+
+
+function normalizarBusca(valor){
+  return String(valor || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/♯/g,'#')
+    .replace(/♭/g,'b')
+    .replace(/\s+/g,'')
+    .trim();
+}
+
+
+
+function equivalentesEnarmonicos(nome){
+
+const n=normalizarBusca(nome);
+
+const mapa={
+    'a#':['a#','bb'],
+    'bb':['bb','a#'],
+    'c#':['c#','db'],
+    'db':['db','c#'],
+    'd#':['d#','eb'],
+    'eb':['eb','d#'],
+    'f#':['f#','gb'],
+    'gb':['gb','f#'],
+    'g#':['g#','ab'],
+    'ab':['ab','g#']
+  };
+
+const base = n.match(/^[a-g](?:#|b)?/);
+  if(!base) return [n];
+
+const raiz=base[0];
+
+const sufixo=n.slice(raiz.length);
+  return (mapa[raiz] || [raiz]).map(r=>r+sufixo);
+}
+
+
+
+function correspondeBusca(d,q){
+  if(!q) return true;
+
+
+const nome=normalizarBusca(d[0]);
+
+const desc=normalizarBusca(d[1]);
+
+const aliases=equivalentesEnarmonicos(nome);
+
+  /*
+     A pesquisa principal é pelo NOME do acorde.
+     Assim "A" não encontra F, G, C etc. só porque a letra A
+     aparece dentro da descrição.
+  */
+  if(aliases.some(a=>a===q)) return true;
+
+  /* Permite digitar a raiz e ver suas variações:
+     A -> A, Am, A7, Amaj7...
+     A# -> A#, A#m, A#7...
+  */
+  if(/^[a-g](?:#|b)?$/.test(q)){
+    return aliases.some(a=>nome===a || (nome.startsWith(a) && !/[#b]/.test(nome.charAt(a.length))));
+  }
+
+  /* Para acordes completos, aceita somente o nome/alias completo. */
+  if(aliases.some(a=>nome===a)) return true;
+
+  /* Busca textual na descrição somente com 3+ caracteres e sem
+     transformar uma busca curta em centenas de resultados. */
+  return q.length>=3 && desc.includes(q);
+}
+
+
+
 function render(){
-  const q=document.getElementById('pesquisa').value.trim().toLowerCase();
-  const r=A.filter(d=>(filtro==='todos'||d[2]===filtro)&&(!q||d[0].toLowerCase().includes(q)||d[1].includes(q)));
+
+const q=normalizarBusca(document.getElementById('pesquisa').value);
+
+const r=A.filter(d=>(filtro==='todos'||d[2]===filtro)&&correspondeBusca(d,q));
   document.getElementById('resumo').textContent=`${r.length} acorde(s) encontrado(s)`;
-  const g=document.getElementById('grade');g.innerHTML='';
-  if(!r.length){g.innerHTML='<div class="vazio">Nenhum acorde encontrado.<br><small>Tente: C, Am, F, G7, Bm ou D/F#.</small></div>';return}
+
+const g=document.getElementById('grade');
+  g.innerHTML='';
+
+  if(!r.length){
+    g.innerHTML='<div class="vazio">Nenhum acorde encontrado.<br><small>Tente: A, A#, Am, A7, C, F, G7, Bm ou D/F#.</small></div>';
+    return;
+  }
+
   r.forEach(d=>{
-    const c=document.createElement('div');
+
+const c=document.createElement('div');
     c.className='acorde';
     c.innerHTML=`<div class="cab"><div class="nome">${d[0]}</div></div><div class="desc">${d[1]}</div><div class="diagrama">${diagrama(d)}</div><div class="tipo" style="display:block;text-align:center;width:max-content;margin:0 auto">${d[3]}</div>`;
     c.addEventListener('click',()=>abrirAcorde(d));
     g.appendChild(c);
-  })
+  });
 }
 
 document.getElementById('modalFechar').addEventListener('click',fecharAcorde);
