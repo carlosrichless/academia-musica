@@ -1071,6 +1071,106 @@ function nomeNotaExibicao(){
 }
 
 
+
+function diagrama(d){
+
+  const s=d[4];
+  const f=d[5];
+  const bar=d[6];
+
+  const x0=82, y0=58, dx=32, dy=38;
+  const largura=300, altura=300;
+
+  const positivas=s.filter(v=>v>0);
+  let inicioCasa=1;
+
+  if(positivas.length){
+    const menor=Math.min(...positivas);
+    const maior=Math.max(...positivas);
+    inicioCasa=menor;
+    if(maior-inicioCasa>3) inicioCasa=maior-3;
+  }
+
+  let z=`<svg viewBox="0 0 ${largura} ${altura}" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama do acorde ${d[0]}">`;
+
+  if(inicioCasa>1){
+    const ySeta=y0+dy/2;
+    z+=`
+      <text x="8" y="${ySeta+5}" fill="#fbbf24" font-size="15" font-weight="bold"> ${inicioCasa}ª</text>
+      <path d="M48 ${ySeta} H70" stroke="#fbbf24" stroke-width="2.5" fill="none"/>
+      <path d="M70 ${ySeta} L62 ${ySeta-5} M70 ${ySeta} L62 ${ySeta+5}" stroke="#fbbf24" stroke-width="2.5" fill="none"/>
+    `;
+  }
+
+  for(let i=0;i<6;i++){
+    const x=x0+i*dx;
+    z+=`<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0+4*dy}" stroke="#94a3b8" stroke-width="2"/>`;
+  }
+
+  for(let i=0;i<=4;i++){
+    const y=y0+i*dy;
+    z+=`<line x1="${x0}" y1="${y}" x2="${x0+5*dx}" y2="${y}" stroke="#94a3b8" stroke-width="${i===0&&inicioCasa===1?5:2}"/>`;
+  }
+
+  /*
+     PESTANA:
+     a barra amarela é a própria representação da pestana.
+     O número 1 fica dentro da barra, no primeiro dedo da pestana.
+  */
+  if(bar){
+    const x1=x0+bar.a*dx;
+    const x2=x0+bar.b*dx;
+    const y=y0+(bar.f-inicioCasa+0.5)*dy;
+
+    z+=`
+      <rect x="${x1-10}" y="${y-10}" width="${x2-x1+20}" height="20" rx="10" fill="#fbbf24"/>
+      <circle cx="${x1}" cy="${y}" r="12" fill="#38bdf8"/>
+      <text x="${x1}" y="${y+5}" text-anchor="middle" fill="#020617" font-size="13" font-weight="bold">1</text>
+    `;
+  }
+
+  s.forEach((v,i)=>{
+    if(v<=0) return;
+
+    const x=x0+i*dx;
+
+    /*
+       Se o dedo 1 está executando a pestana naquela corda,
+       não desenhamos outro círculo por cima da barra.
+    */
+    if(bar && f[i]===1 && i>=bar.a && i<=bar.b && v===bar.f) return;
+
+    let y=y0+(v-inicioCasa+0.5)*dy;
+    y=Math.max(y0+dy*0.5,Math.min(y0+dy*3.5,y));
+
+    z+=`<circle cx="${x}" cy="${y}" r="12" fill="#38bdf8"/>`;
+
+    if(f[i] && f[i]!==1){
+      z+=`<text x="${x}" y="${y+5}" text-anchor="middle" fill="#020617" font-size="13" font-weight="bold">${f[i]}</text>`;
+    }
+  });
+
+  s.forEach((v,i)=>{
+    const x=x0+i*dx;
+    const y=y0+4*dy+25;
+
+    if(v===-1){
+      z+=`<text x="${x}" y="${y}" text-anchor="middle" fill="#f87171" font-size="23" font-weight="bold">×</text>`;
+    }else if(v===0){
+      z+=`<circle cx="${x}" cy="${y-7}" r="7" fill="none" stroke="#34d399" stroke-width="2"/>`;
+    }
+  });
+
+  ['E','A','D','G','B','e'].forEach((n,i)=>{
+    const x=x0+i*dx;
+    z+=`<text x="${x}" y="${y0+4*dy+52}" text-anchor="middle" fill="#94a3b8" font-size="13">${n}</text>`;
+  });
+
+  z+='</svg>';
+  return z;
+}
+
+
 function render(){
 
   const r=A
