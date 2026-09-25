@@ -81,29 +81,39 @@ body {
     margin:0 0 18px;
     font-size:1.15rem}
 
-.pesquisa {
-    position:relative}
+.selecao-notas {
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:9px;
+    margin-top:6px}
 
-.pesquisa input {
-    width:100%;
-    padding:15px 16px 15px 45px;
-    border-radius:12px;
-    border:1px solid var(--border);
+.nota-filtro {
+    padding:11px 8px;
+    border-radius:10px;
     background:var(--bg);
-    color:var(--text);
-    font-size:1rem;
-    outline:none}
-
-.pesquisa input:focus {
-    border-color:var(--accent)}
-
-.icone-pesquisa {
-    position:absolute;
-    left:16px;
-    top:50%;
-    transform:translateY(-50%);
+    border:1px solid var(--border);
     color:var(--muted);
-    pointer-events:none}
+    cursor:pointer;
+    font-size:.82rem;
+    font-weight:bold;
+    line-height:1.15;
+    min-height:44px}
+
+.nota-filtro:hover,
+.nota-filtro.ativo {
+    border-color:var(--accent);
+    color:var(--text);
+    background:rgba(56,189,248,.12)}
+
+.nota-filtro .equivalente {
+    display:block;
+    margin-top:3px;
+    font-size:.67rem;
+    color:var(--muted);
+    font-weight:normal}
+
+.nota-filtro.ativo .equivalente {
+    color:#cbd5e1}
 
 .filtros {
     display:flex;
@@ -339,6 +349,10 @@ body {
 }
 
 @media(max-width:680px) {
+    .selecao-notas {
+    grid-template-columns:repeat(3,minmax(0,1fr))}
+
+
     body {
     padding:10px}
 
@@ -409,26 +423,77 @@ body {
 
 <div class="card">
 
-<h2>🔎 Encontrar acorde
+<h2>🎵 Escolha a nota do acorde
 </h2>
 
-<div class="pesquisa"><span class="icone-pesquisa">🔍</span><input id="pesquisa" type="text" placeholder="Digite o acorde. Ex.: C, Am, F, G7, Bm, D/F#..." autocomplete="off">
+<div class="selecao-notas" id="selecaoNotas">
+
+<button class="nota-filtro ativo" data-raiz="c">DÓ
+</button>
+
+<button class="nota-filtro" data-raiz="c#">DÓ♯
+<span class="equivalente">RÉ♭</span>
+</button>
+
+<button class="nota-filtro" data-raiz="d">RÉ
+</button>
+
+<button class="nota-filtro" data-raiz="d#">RÉ♯
+<span class="equivalente">MI♭</span>
+</button>
+
+<button class="nota-filtro" data-raiz="e">MI
+</button>
+
+<button class="nota-filtro" data-raiz="f">FÁ
+</button>
+
+<button class="nota-filtro" data-raiz="f#">FÁ♯
+<span class="equivalente">SOL♭</span>
+</button>
+
+<button class="nota-filtro" data-raiz="g">SOL
+</button>
+
+<button class="nota-filtro" data-raiz="g#">SOL♯
+<span class="equivalente">LÁ♭</span>
+</button>
+
+<button class="nota-filtro" data-raiz="a">LÁ
+</button>
+
+<button class="nota-filtro" data-raiz="a#">LÁ♯
+<span class="equivalente">SI♭</span>
+</button>
+
+<button class="nota-filtro" data-raiz="b">SI
+</button>
+
 </div>
+
+<div class="resumo" id="notaSelecionadaInfo">
+Dó (C) — mostrando todos os acordes de Dó.
+</div>
+
+<h2 style="margin-top:22px;margin-bottom:12px">🎯 Filtro de forma
+</h2>
 
 <div class="filtros">
 
 <button class="filtro ativo" data-f="todos">TODOS
 </button>
-<button class="filtro" data-f="simples">ACORDES SIMPLES
+
+<button class="filtro" data-f="simples">SIMPLES
 </button>
-<button class="filtro" data-f="pestana">COM PESTANA
-</button>
-<button class="filtro" data-f="baixo">COM BAIXA
+
+<button class="filtro" data-f="pestana">PESTANA
 </button>
 
 </div>
 
-<div class="legendas"><span class="marcador simples">● SIMPLES</span><span class="marcador pestana">● PESTANA</span><span class="marcador baixo">● ACORDE COM BAIXA</span>
+<div class="legendas">
+<span class="marcador simples">● SIMPLES</span>
+<span class="marcador pestana">● PESTANA</span>
 </div>
 
 <div class="resumo" id="resumo">
@@ -826,339 +891,60 @@ const A=[
 ];
 
 
-let filtrosAtivos=['todos'];
-
-
-function diagrama(d){
-
-const s=d[4];
-
-const f=d[5];
-
-const bar=d[6];
-
-  /*
-    DESENHO PRECISO DO BRAÇO
-
-    6 cordas = linhas verticais
-    4 casas visíveis = linhas horizontais
-
-    Quando existe pestana:
-    - a faixa amarela representa fisicamente a pestana;
-    - o número 1 aparece UMA ÚNICA VEZ sobre o ponto
-      correspondente ao dedo indicador que executa a pestana;
-    - os demais dedos aparecem exatamente sobre suas respectivas
-      cordas e casas;
-    - não são desenhados círculos extras com "1" em todas as
-      cordas presas pela pestana.
-  */
-
-const x0 = 82;
-
-const y0 = 58;
-
-const dx = 32;
-
-const dy = 38;
-
-const largura = 300;
-
-const altura = 300;
-
-
-const positivas = s.filter(v => v > 0);
-
-let inicioCasa = 1;
-
-  if (positivas.length) {
-
-const menor = Math.min(...positivas);
-
-const maior = Math.max(...positivas);
-
-    /*
-      A primeira casa desenhada deve permitir que todas as notas
-      fiquem dentro do braço.
-
-      Exemplos:
-      G# = 4,6,6,5,4,4 -> começa na 4ª casa
-      C# = 4,6,6,6,4     -> começa na 4ª casa
-      D# = 6,8,8,8,6     -> começa na 6ª casa
-    */
-    inicioCasa = menor;
-
-    if (maior - inicioCasa > 3) {
-      inicioCasa = maior - 3;
-    }
-  }
-
-
-let z = `<svg viewBox="0 0 ${largura} ${altura}" xmlns="http://www.w3.org/2000/svg" aria-label="Diagrama do acorde ${d[0]}">`;
-
-  /* INDICAÇÃO DA CASA: número à esquerda + seta para a primeira casa */
-  if (inicioCasa > 1) {
-
-const ySeta = y0 + dy / 2;
-
-    z += `
-      <text
-        x="8"
-        y="${ySeta + 5}"
-        fill="#fbbf24"
-        font-size="15"
-        font-weight="bold"
-        font-family="Arial, Helvetica, sans-serif"
-      >${inicioCasa}ª</text>
-
-      <path
-        d="M48 ${ySeta} H70"
-        stroke="#fbbf24"
-        stroke-width="2.5"
-        fill="none"
-      />
-
-      <path
-        d="M70 ${ySeta} L62 ${ySeta - 5} M70 ${ySeta} L62 ${ySeta + 5}"
-        stroke="#fbbf24"
-        stroke-width="2.5"
-        fill="none"
-      />
-    `;
-  }
-
-  /* LINHAS VERTICAIS DAS 6 CORDAS */
-  for (let i = 0; i < 6; i++) {
-
-const x = x0 + i * dx;
-
-    z += `<line x1="${x}" y1="${y0}" x2="${x}" y2="${y0 + 4 * dy}" stroke="#94a3b8" stroke-width="2"/>`;
-  }
-
-  /* LINHAS HORIZONTAIS DAS 4 CASAS */
-  for (let i = 0; i <= 4; i++) {
-
-const y = y0 + i * dy;
-
-    z += `<line x1="${x0}" y1="${y}" x2="${x0 + 5 * dx}" y2="${y}" stroke="#94a3b8" stroke-width="${i === 0 && inicioCasa === 1 ? 5 : 2}"/>`;
-  }
-
-
-  /*
-    PESTANA
-
-    A faixa amarela permanece visível.
-
-    bar.a = corda onde o dedo indicador começa a pestana.
-    bar.b = corda onde termina a pestana.
-    bar.f = casa da pestana.
-
-    O número 1 é colocado exatamente sobre o ponto do indicador,
-    usando a corda bar.a como posição do dedo que executa a pestana.
-  */
-  let yPestana = null;
-
-  if (bar) {
-
-const x1 = x0 + bar.a * dx;
-
-const x2 = x0 + bar.b * dx;
-
-    yPestana =
-      y0 + (bar.f - inicioCasa + 0.5) * dy;
-
-    z += `
-      <rect
-        x="${x1 - 10}"
-        y="${yPestana - 10}"
-        width="${x2 - x1 + 20}"
-        height="20"
-        rx="10"
-        fill="#fbbf24"
-      />
-    `;
-
-    /*
-      O dedo 1 aparece no início real da pestana.
-      Assim, em F o "1" fica sobre a 6ª corda;
-      em Bb/B/C#/D# etc. fica sobre a corda A;
-      e não aparece repetido nas outras cordas.
-    */
-    const xDedoPestana = x1;
-
-    z += `
-      <circle
-        cx="${xDedoPestana}"
-        cy="${yPestana}"
-        r="12"
-        fill="#38bdf8"
-      />
-      <text
-        x="${xDedoPestana}"
-        y="${yPestana + 5}"
-        text-anchor="middle"
-        fill="#020617"
-        font-size="13"
-        font-weight="bold"
-        font-family="Arial, Helvetica, sans-serif"
-      >1</text>
-    `;
-  }
-
-
-  /*
-    DIGITAÇÃO DOS DEMAIS DEDOS
-
-    Se houver pestana, os "1" que pertencem à própria pestana
-    são omitidos porque já foram representados pelo dedo 1 real
-    sobre a faixa amarela.
-
-    Todos os outros dedos são desenhados exatamente na casa
-    correspondente à nota e na corda correspondente.
-  */
-  s.forEach((v, i) => {
-
-const x = x0 + i * dx;
-
-    if (v <= 0) return;
-
-    /*
-      Se esta corda está dentro da pestana e o dedo indicado
-      é 1, não desenhar outro círculo. O dedo 1 já está na
-      posição física da pestana.
-    */
-    if (
-      bar &&
-      f[i] === 1 &&
-      i >= bar.a &&
-      i <= bar.b &&
-      v === bar.f
-    ) {
-      return;
-    }
-
-
-let y =
-      y0 + (v - inicioCasa + 0.5) * dy;
-
-    /*
-      Proteção para manter qualquer dedo dentro das 4 casas
-      desenhadas.
-    */
-    y = Math.max(
-      y0 + dy * 0.5,
-      Math.min(y0 + dy * 3.5, y)
-    );
-
-
-    /*
-      Se o dedo está sobre uma casa diferente da pestana,
-      desenha normalmente.
-    */
-    z += `
-      <circle
-        cx="${x}"
-        cy="${y}"
-        r="12"
-        fill="#38bdf8"
-      />
-    `;
-
-    if (f[i]) {
-
-      z += `
-        <text
-          x="${x}"
-          y="${y + 5}"
-          text-anchor="middle"
-          fill="#020617"
-          font-size="13"
-          font-weight="bold"
-          font-family="Arial, Helvetica, sans-serif"
-        >${f[i]}</text>
-      `;
-    }
-  });
-
-
-  /* X = corda não tocada / O = corda solta */
-  s.forEach((v, i) => {
-
-const x = x0 + i * dx;
-
-const y = y0 + 4 * dy + 25;
-
-    if (v === -1) {
-
-      z += `
-        <text
-          x="${x}"
-          y="${y}"
-          text-anchor="middle"
-          fill="#f87171"
-          font-size="23"
-          font-weight="bold"
-          font-family="Arial, Helvetica, sans-serif"
-        >×</text>
-      `;
-
-    } else if (v === 0) {
-
-      z += `
-        <circle
-          cx="${x}"
-          cy="${y - 7}"
-          r="7"
-          fill="none"
-          stroke="#34d399"
-          stroke-width="2"
-        />
-      `;
-    }
-  });
-
-
-  /* NOMES DAS CORDAS */
-  ['E','A','D','G','B','e'].forEach((n, i) => {
-
-const x = x0 + i * dx;
-
-    z += `
-      <text
-        x="${x}"
-        y="${y0 + 4 * dy + 52}"
-        text-anchor="middle"
-        fill="#94a3b8"
-        font-size="13"
-        font-family="Arial, Helvetica, sans-serif"
-      >${n}</text>
-    `;
-  });
-
-
-  z += '</svg>';
-
-  return z;
-}
-
-
-function abrirAcorde(d){
-  document.getElementById('modalNome').textContent=d[0];
-  document.getElementById('modalTipo').textContent=d[3];
-  document.getElementById('modalDiagrama').innerHTML=diagrama(d);
-  document.getElementById('acordeModal').classList.add('ativo');
-  document.body.style.overflow='hidden';
-}
-
-
-
-function fecharAcorde(){
-  document.getElementById('acordeModal').classList.remove('ativo');
-  document.body.style.overflow='';
-}
-
-
-
-function normalizarBusca(valor){
+let raizSelecionada='c';
+
+let filtroForma='todos';
+
+
+const ORDEM_NOTAS=[
+  'c',
+  'c#',
+  'd',
+  'd#',
+  'e',
+  'f',
+  'f#',
+  'g',
+  'g#',
+  'a',
+  'a#',
+  'b'
+];
+
+
+const NOMES_NOTAS={
+  'c':'Dó',
+  'c#':'Dó♯',
+  'd':'Ré',
+  'd#':'Ré♯',
+  'e':'Mi',
+  'f':'Fá',
+  'f#':'Fá♯',
+  'g':'Sol',
+  'g#':'Sol♯',
+  'a':'Lá',
+  'a#':'Lá♯',
+  'b':'Si'
+};
+
+
+const EQUIVALENTES={
+  'c':['c'],
+  'c#':['c#','db'],
+  'd':['d'],
+  'd#':['d#','eb'],
+  'e':['e'],
+  'f':['f'],
+  'f#':['f#','gb'],
+  'g':['g'],
+  'g#':['g#','ab'],
+  'a':['a'],
+  'a#':['a#','bb'],
+  'b':['b']
+};
+
+
+function normalizarNome(valor){
   return String(valor || '')
     .toLowerCase()
     .normalize('NFD')
@@ -1170,106 +956,218 @@ function normalizarBusca(valor){
 }
 
 
+function raizAcorde(nome){
+  const n=normalizarNome(nome);
+  const m=n.match(/^[a-g](?:#|b)?/);
+  return m ? m[0] : n;
+}
 
-function equivalentesEnarmonicos(nome){
 
-const n=normalizarBusca(nome);
+function pertenceRaiz(d){
+  const raiz=raizAcorde(d[0]);
+  return EQUIVALENTES[raizSelecionada].includes(raiz);
+}
 
-const mapa={
-    'a#':['a#','bb'],
-    'bb':['bb','a#'],
-    'c#':['c#','db'],
-    'db':['db','c#'],
-    'd#':['d#','eb'],
-    'eb':['eb','d#'],
-    'f#':['f#','gb'],
-    'gb':['gb','f#'],
-    'g#':['g#','ab'],
-    'ab':['ab','g#']
+
+/*
+   O filtro agora considera a FORMA REAL do desenho.
+
+   Se existe uma pestana registrada em d[6],
+   o acorde entra em PESTANA.
+
+   Se não existe pestana, entra em SIMPLES.
+
+   Isso permite que acordes com baixa, como C/E ou F/A,
+   continuem dentro da seleção SIMPLES ou PESTANA conforme
+   a forma realmente desenhada.
+*/
+function categoriaForma(d){
+  return d[6] ? 'pestana' : 'simples';
+}
+
+
+function valorQualidade(nome){
+  const n=normalizarNome(nome);
+  const raiz=raizAcorde(n);
+  const sufixo=n.slice(raiz.length);
+
+  const ordem={
+    '':0,
+    'm':1,
+    'dim':2,
+    'aug':3,
+    '5':4,
+    '6':5,
+    'm6':6,
+    '7':7,
+    'm7':8,
+    '7m':9,
+    '7m7':9,
+    '7m':9,
+    '9':10,
+    'add9':11,
+    'sus2':12,
+    'sus4':13,
+    '7sus4':14,
+    'dim7':15,
+    'aug7':16,
+    '6/9':17
   };
 
-const base = n.match(/^[a-g](?:#|b)?/);
-  if(!base) return [n];
+  if(sufixo==='7M') return 9;
+  if(sufixo==='m7') return 8;
+  if(sufixo==='7') return 7;
 
-const raiz=base[0];
-
-const sufixo=n.slice(raiz.length);
-  return (mapa[raiz] || [raiz]).map(r=>r+sufixo);
+  return Object.prototype.hasOwnProperty.call(ordem,sufixo)
+    ? ordem[sufixo]
+    : 50;
 }
 
 
+function valorOrdemRaiz(raiz){
+  const r=normalizarNome(raiz);
+  const ordem={
+    'c':0,
+    'c#':1,
+    'db':1,
+    'd':2,
+    'd#':3,
+    'eb':3,
+    'e':4,
+    'f':5,
+    'f#':6,
+    'gb':6,
+    'g':7,
+    'g#':8,
+    'ab':8,
+    'a':9,
+    'a#':10,
+    'bb':10,
+    'b':11
+  };
 
-function correspondeBusca(d,q){
-  if(!q) return true;
+  return Object.prototype.hasOwnProperty.call(ordem,r)
+    ? ordem[r]
+    : 99;
+}
 
 
-const nome=normalizarBusca(d[0]);
+function nomeNotaExibicao(){
+  const nome=NOMES_NOTAS[raizSelecionada] || raizSelecionada.toUpperCase();
 
-const desc=normalizarBusca(d[1]);
+  const equivalentes={
+    'c#':'RÉ♭',
+    'd#':'MI♭',
+    'f#':'SOL♭',
+    'g#':'LÁ♭',
+    'a#':'SI♭'
+  };
 
-const aliases=equivalentesEnarmonicos(nome);
-
-  /*
-     A pesquisa principal é pelo NOME do acorde.
-     Assim "A" não encontra F, G, C etc. só porque a letra A
-     aparece dentro da descrição.
-  */
-  if(aliases.some(a=>a===q)) return true;
-
-  /* Permite digitar a raiz e ver suas variações:
-     A -> A, Am, A7, A7M...
-     A# -> A#, A#m, A#7...
-  */
-  if(/^[a-g](?:#|b)?$/.test(q)){
-    return aliases.some(a=>nome===a || (nome.startsWith(a) && !/[#b]/.test(nome.charAt(a.length))));
+  if(equivalentes[raizSelecionada]){
+    return `${nome} (${raizSelecionada.toUpperCase()}) = ${equivalentes[raizSelecionada]}`;
   }
 
-  /* Para acordes completos, aceita somente o nome/alias completo. */
-  if(aliases.some(a=>nome===a)) return true;
-
-  /* Busca textual na descrição somente com 3+ caracteres e sem
-     transformar uma busca curta em centenas de resultados. */
-  return q.length>=3 && desc.includes(q);
+  return `${nome} (${raizSelecionada.toUpperCase()})`;
 }
-
 
 
 function render(){
 
-const q=normalizarBusca(document.getElementById('pesquisa').value);
+  const r=A
+    .filter(d=>pertenceRaiz(d))
+    .filter(d=>filtroForma==='todos' || categoriaForma(d)===filtroForma)
+    .sort((a,b)=>{
 
-const r=A
-  .filter(d=>filtrosAtivos.includes('todos') || filtrosAtivos.includes(d[2]))
-  .filter(d=>correspondeBusca(d,q))
-  .sort((a,b)=>{
-    if(q) return 0;
-    const ordem=['C','C#','Cm','C7','C7M','Cm7','C#7','C#7M','C#m7'];
-    const ia=ordem.indexOf(a[0]);
-    const ib=ordem.indexOf(b[0]);
-    if(ia!==-1 && ib!==-1) return ia-ib;
-    if(ia!==-1) return -1;
-    if(ib!==-1) return 1;
-    return 0;
-  });
-  document.getElementById('resumo').textContent=`${r.length} acorde(s) encontrado(s)`;
+      const qa=valorQualidade(a[0]);
+      const qb=valorQualidade(b[0]);
 
-const g=document.getElementById('grade');
+      if(qa!==qb) return qa-qb;
+
+      return String(a[0]).localeCompare(
+        String(b[0]),
+        'pt-BR',
+        {numeric:true,sensitivity:'base'}
+      );
+    });
+
+
+  document.getElementById('notaSelecionadaInfo').textContent =
+    `${nomeNotaExibicao()} — ${filtroForma==='todos'
+      ? 'todos os acordes desta nota.'
+      : filtroForma==='simples'
+        ? 'somente formas simples.'
+        : 'somente formas com pestana.'}`;
+
+
+  document.getElementById('resumo').textContent =
+    `${r.length} acorde(s) de ${NOMES_NOTAS[raizSelecionada] || raizSelecionada.toUpperCase()}`;
+
+
+  const g=document.getElementById('grade');
   g.innerHTML='';
 
+
   if(!r.length){
-    g.innerHTML='<div class="vazio">Nenhum acorde encontrado.<br><small>Tente: A, A#, Am, A7, C, F, G7, Bm ou D/F#.</small></div>';
+    g.innerHTML=
+      '<div class="vazio">Nenhum acorde cadastrado para esta nota com o filtro selecionado.</div>';
     return;
   }
 
+
   r.forEach(d=>{
 
-const c=document.createElement('div');
+    const c=document.createElement('div');
+
     c.className='acorde';
-    c.innerHTML=`<div class="cab"><div class="nome">${d[0]}</div></div><div class="desc">${d[1]}</div><div class="diagrama">${diagrama(d)}</div><div class="tipo" style="display:block;text-align:center;width:max-content;margin:0 auto">${d[3]}</div>`;
+
+    c.innerHTML=
+      `<div class="cab">
+        <div class="nome">${d[0]}</div>
+      </div>
+      <div class="desc">${d[1]}</div>
+      <div class="diagrama">${diagrama(d)}</div>
+      <div class="tipo" style="display:block;text-align:center;width:max-content;margin:0 auto">
+        ${d[3]}
+      </div>`;
+
     c.addEventListener('click',()=>abrirAcorde(d));
+
     g.appendChild(c);
   });
 }
+
+
+document.querySelectorAll('.nota-filtro').forEach(b=>{
+  b.addEventListener('click',()=>{
+
+    raizSelecionada=b.dataset.raiz;
+
+    document.querySelectorAll('.nota-filtro').forEach(x=>{
+      x.classList.remove('ativo');
+    });
+
+    b.classList.add('ativo');
+
+    render();
+  });
+});
+
+
+document.querySelectorAll('.filtro').forEach(b=>{
+  b.addEventListener('click',()=>{
+
+    filtroForma=b.dataset.f;
+
+    document.querySelectorAll('.filtro').forEach(x=>{
+      x.classList.remove('ativo');
+    });
+
+    b.classList.add('ativo');
+
+    render();
+  });
+});
+
 
 document.getElementById('modalFechar').addEventListener('click',fecharAcorde);
 document.getElementById('acordeModal').addEventListener('click',e=>{
@@ -1278,7 +1176,6 @@ document.getElementById('acordeModal').addEventListener('click',e=>{
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape')fecharAcorde();
 });
-document.getElementById('pesquisa').addEventListener('input',render);
 document.querySelectorAll('.filtro').forEach(b=>b.addEventListener('click',()=>{
   const f=b.dataset.f;
 
