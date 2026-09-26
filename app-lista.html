@@ -40,13 +40,13 @@ body{padding-bottom:40px}
 min-height:62px;
 display:flex;
 align-items:center;
-justify-content:center;
+justify-content:space-between;
 padding:10px 18px;
 border-bottom:1px solid #263650;
 background:#0b1426;
 }
 
-.brand{text-align:center}
+.brand{text-align:center; flex:1;}
 
 .brand .eyebrow{
 font-size:12px;
@@ -63,6 +63,22 @@ font-size:24px
 .brand h1 span{
 color:var(--text);
 font-weight:600
+}
+
+.home-btn-main {
+background: #26364e;
+color: #eaf1fb;
+border: 1px solid #40526e;
+border-radius: 8px;
+padding: 8px 12px;
+font-size: 12px;
+font-weight: 700;
+text-decoration: none;
+transition: .15s;
+}
+
+.home-btn-main:hover {
+background: #344766;
 }
 
 .shell{
@@ -799,16 +815,42 @@ border:1px solid var(--line);
 border-radius:12px;
 padding:12px
 }
+
+/* ESTILOS ESPECÍFICOS PARA AS 3 VOZES DE BATERIA */
+.drum-voices-container {
+display: flex;
+flex-direction: column;
+gap: 4px;
+width: 100%;
+}
+
+.drum-voice-row {
+display: flex;
+align-items: center;
+gap: 4px;
+width: 100%;
+}
+
+.drum-voice-label {
+font-size: 9px;
+font-weight: bold;
+color: var(--muted);
+width: 38px;
+text-align: right;
+flex-shrink: 0;
+}
 </style>
 </head>
 
 <body>
 
 <header class="topbar">
+<a href="index.html" class="home-btn-main">← Site Principal</a>
 <div class="brand">
 <div class="eyebrow">Projeto Academia de Música</div>
 <h1>Notação Musical <span>— por C.Richless</span></h1>
 </div>
+<div style="width: 100px;"></div>
 </header>
 
 <main class="shell">
@@ -940,7 +982,7 @@ Nenhum projeto recente. Abra um arquivo ou crie um novo.
 <input id="songName" type="text" placeholder="Digite o nome da música">
 </div>
 
-<div class="field">
+<div class="field" id="keyFieldContainer">
 <label for="songKey">Tom da música</label>
 <input id="songKey" type="text" placeholder="Ex.: G, D, Am">
 </div>
@@ -1257,6 +1299,7 @@ Cancelar
 </div>
 
 </div>
+
 </div>
 
 
@@ -1343,12 +1386,12 @@ const NOTES = [
 ];
 
 const DRUMS = [
-"Bumbo",
-"Caixa",
-"Hi-Hat Fechado",
-"Hi-Hat Aberto",
-"Aro de Caixa",
-"Prato de Ataque"
+{ label: "Bumbo", short: "Bumbo" },
+{ label: "Caixa", short: "Caixa" },
+{ label: "Hi-Hat Fechado", short: "HH Fechado" },
+{ label: "Hi-Hat Aberto", short: "HH Aberto" },
+{ label: "Aro de Caixa", short: "Aro" },
+{ label: "Prato de Ataque", short: "Ataque" }
 ];
 
 const METERS = [
@@ -1468,9 +1511,8 @@ return METERS.find(x=>x[0]===meter)
 function slotCount(measure){
 
 const [,num] = getMeter(measure.meter);
-
-return num * measure.subdivision;
-
+const baseCount = num * measure.subdivision;
+return isCurrentProjectDrum ? baseCount * 3 : baseCount;
 }
 
 
@@ -1478,7 +1520,10 @@ function chordLabel(ch){
 
 if(!ch) return "";
 
-if(isCurrentProjectDrum) return ch.root;
+if(isCurrentProjectDrum) {
+const found = DRUMS.find(d => d.label === ch.root);
+return found ? found.short : ch.root;
+}
 
 let suffix =
 ch.quality==="minor" ? "m" :
@@ -1495,7 +1540,7 @@ function buildMeterOptions(current){
 
 return METERS.map(m=>
 `<option value="${m[0]}" ${m[0]===current?"selected":""}>
-${m[0]}
+${m[0] + (isCurrentProjectDrum ? " (3 Vozes)" : "")}
 </option>`
 ).join("");
 
@@ -1539,56 +1584,64 @@ el.className =
 el.dataset.mi = mi;
 
 
-const slots =
-Array.from(
-{length:slotCount(m)},
-(_,si)=>{
+const [, beatsNum] = getMeter(m.meter);
+const totalSlotsPerVoice = beatsNum * m.subdivision;
 
-const ch = m.slots[si];
+let slotsHtml = "";
 
-const isActive =
-activePlayingSlot.mi===mi &&
-activePlayingSlot.si===si;
-
-const slotClass =
-"slot " +
-(ch ? "filled" : "empty") +
-(isActive ? " active-slot" : "");
-
-
-if(!ch){
-
-return `
-<div class="${slotClass}" data-si="${si}">
-<span>·</span>
-</div>
-`;
-
+if (isCurrentProjectDrum) {
+  let voiceHtmls = [];
+  for (let v = 0; v < 3; v++) {
+    let voiceSlots = "";
+    for (let s = 0; s < totalSlotsPerVoice; s++) {
+      const realIndex = v * totalSlotsPerVoice + s;
+      const ch = m.slots[realIndex];
+      const isActive = activePlayingSlot.mi === mi && activePlayingSlot.si === realIndex;
+      const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
+      
+      if (!ch) {
+        voiceSlots += `<div class="${slotClass}" data-si="${realIndex}"><span>·</span></div>`;
+      } else {
+        voiceSlots += `
+          <div class="${slotClass}" data-si="${realIndex}">
+            <div class="chord" title="Clique para alterar">
+              <div class="chord-name">${escapeHtml(chordLabel(ch))}</div>
+            </div>
+            <button class="slot-trash" data-trash="${realIndex}" title="Apagar">×</button>
+          </div>
+        `;
+      }
+    }
+    voiceHtmls.push(`
+      <div class="drum-voice-row">
+        <span class="drum-voice-label">Voz ${v+1}</span>
+        <div class="slots" style="min-height:36px;">${voiceSlots}</div>
+      </div>
+    `);
+  }
+  slotsHtml = `<div class="drum-voices-container">${voiceHtmls.join("")}</div>`;
+} else {
+  let voiceSlots = "";
+  for (let si = 0; si < totalSlotsPerVoice; si++) {
+    const ch = m.slots[si];
+    const isActive = activePlayingSlot.mi === mi && activePlayingSlot.si === si;
+    const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
+    
+    if (!ch) {
+      voiceSlots += `<div class="${slotClass}" data-si="${si}"><span>·</span></div>`;
+    } else {
+      voiceSlots += `
+        <div class="${slotClass}" data-si="${si}">
+          <div class="chord" title="Clique para alterar">
+            <div class="chord-name">${escapeHtml(chordLabel(ch))}</div>
+          </div>
+          <button class="slot-trash" data-trash="${si}" title="Apagar">×</button>
+        </div>
+      `;
+    }
+  }
+  slotsHtml = `<div class="slots">${voiceSlots}</div>`;
 }
-
-
-return `
-<div class="${slotClass}" data-si="${si}">
-
-<div class="chord" title="Clique para alterar">
-
-<div class="chord-name">
-${escapeHtml(chordLabel(ch))}
-</div>
-
-</div>
-
-<button
-class="slot-trash"
-data-trash="${si}"
-title="Apagar">
-×
-</button>
-
-</div>
-`;
-
-}).join("");
 
 
 const hasRit =
@@ -1695,10 +1748,7 @@ ${m.repeats || 1}
 
 </div>
 
-
-<div class="slots">
-${slots}
-</div>
+${slotsHtml}
 
 `;
 
@@ -1960,6 +2010,9 @@ e.stopPropagation();
 const mi =
 Number(btn.dataset.del);
 
+const defaultSlotsCount = isCurrentProjectDrum ? 12 : 4;
+const defaultSlots = Array.from({length: defaultSlotsCount}, () => null);
+
 if(measures.length===1){
 
 measures[0]={
@@ -1969,7 +2022,7 @@ repeats:1,
 ritornelo:null,
 ritorneloRepeats:1,
 textAnnotation:"",
-slots:[null,null,null,null]
+slots: defaultSlots
 };
 
 }else{
@@ -2160,73 +2213,31 @@ currentIndex+direction
 
 if(nextIndex===currentIndex)return;
 
-const oldSlots =
-m.slots.map(
-s=>s
-? JSON.parse(JSON.stringify(s))
-:null
-);
+const [, beatsNum] = getMeter(m.meter);
+const voicesCount = isCurrentProjectDrum ? 3 : 1;
+const oldSub = m.subdivision;
+const nextSub = levels[nextIndex];
 
-const oldSub =
-m.subdivision;
-
-const nextSub =
-levels[nextIndex];
-
-
-if(nextSub>oldSub){
+const oldSlots = m.slots.map(s => s ? JSON.parse(JSON.stringify(s)) : null);
 
 m.subdivision = nextSub;
+const newTotalSlots = slotCount(m);
+m.slots = Array.from({length: newTotalSlots}, () => null);
 
-const factor =
-nextSub/oldSub;
-
-m.slots =
-Array.from(
-{length:slotCount(m)},
-(_,i)=>{
-
-const item =
-oldSlots[Math.floor(i/factor)];
-
-return item
-? JSON.parse(JSON.stringify(item))
-:null;
-
-});
-
-}else{
-
-const factor =
-oldSub/nextSub;
-
-const nextCount =
-getMeter(m.meter)[1]*nextSub;
-
-m.subdivision =
-nextSub;
-
-m.slots =
-Array.from(
-{length:nextCount},
-(_,i)=>{
-
-for(let j=0;j<factor;j++){
-
-const value =
-oldSlots[i*factor+j];
-
-if(value)
-return JSON.parse(
-JSON.stringify(value)
-);
-
-}
-
-return null;
-
-});
-
+for (let v = 0; v < voicesCount; v++) {
+  const oldVoiceOffset = v * beatsNum * oldSub;
+  const newVoiceOffset = v * beatsNum * nextSub;
+  
+  for (let s = 0; s < beatsNum * nextSub; s++) {
+    // Mapeamento proporcional de subdivisão
+    const correspondingOldS = Math.floor(s * (oldSub / nextSub));
+    if (correspondingOldS < beatsNum * oldSub) {
+      const oldItem = oldSlots[oldVoiceOffset + correspondingOldS];
+      if (oldItem) {
+        m.slots[newVoiceOffset + s] = JSON.parse(JSON.stringify(oldItem));
+      }
+    }
+  }
 }
 
 selectedMeasure=mi;
@@ -2262,9 +2273,9 @@ DRUMS.map(d=>
 `
 <button
 class="note-btn"
-data-drum="${d}"
+data-drum="${d.label}"
 style="font-size:13px;padding:15px 8px;">
-🥁 ${d}
+🥁 ${d.label}
 </button>
 `
 ).join("");
@@ -2488,6 +2499,7 @@ ADICIONAR COMPASSO
 $("#addMeasure")
 .addEventListener("click",()=>{
 
+const defaultSlotsCount = isCurrentProjectDrum ? 12 : 4;
 measures.push({
 
 meter:"4/4",
@@ -2496,7 +2508,7 @@ repeats:1,
 ritornelo:null,
 ritorneloRepeats:1,
 textAnnotation:"",
-slots:[null,null,null,null]
+slots: Array.from({length: defaultSlotsCount}, () => null)
 
 });
 
@@ -2715,7 +2727,7 @@ activeFullscreenProject.bpm =
 getBpm();
 
 $("#fsSongMeta").textContent =
-`Tom: ${activeFullscreenProject?.songKey || '-'} · BPM: ${getBpm()}`;
+(isCurrentProjectDrum ? `BPM: ${getBpm()}` : `Tom: ${activeFullscreenProject?.songKey || '-'} · BPM: ${getBpm()}`);
 
 });
 
@@ -2736,7 +2748,7 @@ activeFullscreenProject.bpm =
 getBpm();
 
 $("#fsSongMeta").textContent =
-`Tom: ${activeFullscreenProject?.songKey || '-'} · BPM: ${getBpm()}`;
+(isCurrentProjectDrum ? `BPM: ${getBpm()}` : `Tom: ${activeFullscreenProject?.songKey || '-'} · BPM: ${getBpm()}`);
 
 });
 
@@ -3028,7 +3040,7 @@ when+i*.018,
 
 /*
 ===========================================================
-ÁUDIO DA BATERIA (INTEGRADO COM O REPOSITÓRIO GITHUB)
+ÁUDIO DA BATERIA (COM SUPORTE A POLIFONIA DE 3 VOZES)
 ===========================================================
 */
 
@@ -3080,7 +3092,6 @@ function playDrumSound(drumType, when = audioCtx.currentTime) {
 
   loadDrumSamples();
   
-  // Fallback sintético caso o sample ainda esteja a carregar
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.connect(gain);
@@ -3298,6 +3309,12 @@ activeFullscreenProject
 ritorneloCounters = {};
 
 
+const [, beatsNum] = getMeter(targetMeasures[0]?.meter || "4/4");
+const subdivisionVal = targetMeasures[0]?.subdivision || 1;
+const slotsPerVoice = beatsNum * subdivisionVal;
+const voicesCount = isCurrentProjectDrum ? 3 : 1;
+
+
 if(mode==="measure"){
 
 if(
@@ -3347,7 +3364,7 @@ rep;
 
 for(
 let si=0;
-si<m.slots.length;
+si<slotsPerVoice;
 si++
 ){
 
@@ -3375,15 +3392,28 @@ playbackRunId!==currentRun
 break;
 
 
-currentPlaySi =
-si;
-
 const when =
 audioCtx.currentTime+.035;
 
+if(metronomeOn){
+
+tick(
+when,
+si%m.subdivision===0
+);
+
+}
+
+for(let v=0; v<voicesCount; v++){
+  const realSlotIdx = v * slotsPerVoice + si;
+  if(m.slots[realSlotIdx]){
+    playChord(m.slots[realSlotIdx], when);
+  }
+}
+
 activePlayingSlot = {
 mi,
-si
+si: si
 };
 
 
@@ -3399,25 +3429,6 @@ si
 updateActiveSlotDOM(
 mi,
 si
-);
-
-}
-
-
-if(metronomeOn){
-
-tick(
-when,
-si%m.subdivision===0
-);
-
-}
-
-if(m.slots[si]){
-
-playChord(
-m.slots[si],
-when
 );
 
 }
@@ -3495,7 +3506,7 @@ currentPlaySi || 0;
 
 for(
 let si=startSi;
-si<m.slots.length &&
+si<slotsPerVoice &&
 playbackState!=="STOPPED" &&
 playbackRunId===currentRun;
 si++
@@ -3525,9 +3536,25 @@ break;
 const when =
 audioCtx.currentTime+.035;
 
+if(metronomeOn){
+
+tick(
+when,
+si%m.subdivision===0
+);
+
+}
+
+for(let v=0; v<voicesCount; v++){
+  const realSlotIdx = v * slotsPerVoice + si;
+  if(m.slots[realSlotIdx]){
+    playChord(m.slots[realSlotIdx], when);
+  }
+}
+
 activePlayingSlot={
 mi:currentPlayMi,
-si
+si: si
 };
 
 
@@ -3543,26 +3570,6 @@ si
 updateActiveSlotDOM(
 currentPlayMi,
 si
-);
-
-}
-
-
-if(metronomeOn){
-
-tick(
-when,
-si%m.subdivision===0
-);
-
-}
-
-
-if(m.slots[si]){
-
-playChord(
-m.slots[si],
-when
 );
 
 }
@@ -4034,8 +4041,11 @@ isCurrentProjectDrum = !!proj.isDrumProject;
 $("#fsSongTitle").textContent =
 proj.songName || "Música";
 
-$("#fsSongMeta").textContent =
-`Tom: ${proj.songKey || '-'} · BPM: ${proj.bpm}`;
+if (isCurrentProjectDrum) {
+  $("#fsSongMeta").textContent = `BPM: ${proj.bpm}`;
+} else {
+  $("#fsSongMeta").textContent = `Tom: ${proj.songKey || '-'} · BPM: ${proj.bpm}`;
+}
 
 $("#bpm").value =
 proj.bpm || 90;
@@ -4138,50 +4148,62 @@ mi===activeMi
 );
 
 
-const slots =
-Array.from(
-{length:slotCount(m)},
-(_,si)=>{
+const [, beatsNum] = getMeter(m.meter);
+const totalSlotsPerVoice = beatsNum * m.subdivision;
 
-const ch =
-m.slots[si];
+let slotsHtml = "";
 
-const isActive =
-mi===activeMi &&
-si===activeSi;
-
-const slotClass =
-"slot "+
-(ch?"filled":"empty")+
-(isActive?" active-slot":"");
-
-
-if(!ch){
-
-return `
-<div class="${slotClass}">
-<span>·</span>
-</div>
-`;
-
+if (isCurrentProjectDrum) {
+  let voiceHtmls = [];
+  for (let v = 0; v < 3; v++) {
+    let voiceSlots = "";
+    for (let s = 0; s < totalSlotsPerVoice; s++) {
+      const realIndex = v * totalSlotsPerVoice + s;
+      const ch = m.slots[realIndex];
+      const isActive = mi === activeMi && s === activeSi;
+      const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
+      
+      if (!ch) {
+        voiceSlots += `<div class="${slotClass}"><span>·</span></div>`;
+      } else {
+        voiceSlots += `
+          <div class="${slotClass}">
+            <div class="chord">
+              <div class="chord-name">${escapeHtml(chordLabel(ch))}</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+    voiceHtmls.push(`
+      <div class="drum-voice-row">
+        <span class="drum-voice-label">Voz ${v+1}</span>
+        <div class="slots" style="min-height:36px;">${voiceSlots}</div>
+      </div>
+    `);
+  }
+  slotsHtml = `<div class="drum-voices-container">${voiceHtmls.join("")}</div>`;
+} else {
+  let voiceSlots = "";
+  for (let s = 0; s < totalSlotsPerVoice; s++) {
+    const ch = m.slots[s];
+    const isActive = mi === activeMi && s === activeSi;
+    const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
+    
+    if (!ch) {
+      voiceSlots += `<div class="${slotClass}"><span>·</span></div>`;
+    } else {
+      voiceSlots += `
+        <div class="${slotClass}">
+          <div class="chord">
+            <div class="chord-name">${escapeHtml(chordLabel(ch))}</div>
+          </div>
+        </div>
+      `;
+    }
+  }
+  slotsHtml = `<div class="slots">${voiceSlots}</div>`;
 }
-
-
-return `
-<div class="${slotClass}">
-
-<div class="chord">
-
-<div class="chord-name">
-${escapeHtml(chordLabel(ch))}
-</div>
-
-</div>
-
-</div>
-`;
-
-}).join("");
 
 
 const annotationHtml =
@@ -4215,9 +4237,7 @@ ${annotationHtml}
 
 </div>
 
-<div class="slots">
-${slots}
-</div>
+${slotsHtml}
 
 `;
 
@@ -4240,8 +4260,14 @@ isCurrentProjectDrum = !!proj.isDrumProject;
 $("#songName").value =
 proj.songName || "";
 
-$("#songKey").value =
-proj.songKey || "";
+const keyFieldContainer = $("#keyFieldContainer");
+if (isCurrentProjectDrum) {
+  if (keyFieldContainer) keyFieldContainer.style.display = "none";
+  $("#songKey").value = "";
+} else {
+  if (keyFieldContainer) keyFieldContainer.style.display = "block";
+  $("#songKey").value = proj.songKey || "";
+}
 
 $("#bpm").value =
 proj.bpm || 90;
@@ -4306,7 +4332,7 @@ proj.songName
 );
 
 if(isCurrentProjectDrum){
-$("#editorHint").textContent = "Toque em um slot para adicionar/editar o elemento de bateria.";
+$("#editorHint").textContent = "Toque em um slot para adicionar/editar o elemento de bateria nas 3 vozes.";
 } else {
 $("#editorHint").textContent = "Toque em um slot para adicionar/editar o acorde.";
 }
@@ -4325,13 +4351,22 @@ currentProjectId =
 
 isCurrentProjectDrum = isDrum;
 
+const keyFieldContainer = $("#keyFieldContainer");
+if (isCurrentProjectDrum) {
+  if (keyFieldContainer) keyFieldContainer.style.display = "none";
+  $("#songKey").value = "";
+} else {
+  if (keyFieldContainer) keyFieldContainer.style.display = "block";
+  $("#songKey").value = "";
+}
+
 $("#songName").value="";
-$("#songKey").value="";
 $("#bpm").value=90;
 
 metronomeOn=false;
 
 
+const defaultSlotsCount = isCurrentProjectDrum ? 12 : 4;
 measures=[{
 
 meter:"4/4",
@@ -4340,7 +4375,7 @@ repeats:1,
 ritornelo:null,
 ritorneloRepeats:1,
 textAnnotation:"",
-slots:[null,null,null,null]
+slots: Array.from({length: defaultSlotsCount}, () => null)
 
 }];
 
@@ -4353,7 +4388,7 @@ $("#status").innerHTML =
 "Novo projeto (" + (isCurrentProjectDrum ? "Bateria" : "Cordas") + ")";
 
 if(isCurrentProjectDrum){
-$("#editorHint").textContent = "Toque em um slot para adicionar/editar o elemento de bateria.";
+$("#editorHint").textContent = "Toque em um slot para adicionar/editar o elemento de bateria nas 3 vozes.";
 } else {
 $("#editorHint").textContent = "Toque em um slot para adicionar/editar o acorde.";
 }
