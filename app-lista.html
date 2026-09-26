@@ -671,8 +671,6 @@ z-index:50;
 
 .overlay.open{display:flex}
 
-/* O painel de senha administrativa precisa ficar acima da lista demo. */
-#adminPasswordModal{z-index:200;}
 
 .modal{
 width:min(520px,100%);
@@ -846,6 +844,15 @@ text-align: right;
 flex-shrink: 0;
 }
 </style>
+
+<style>
+/* DESTAQUE DOS SUSTENIDOS */
+.sharp-chord,
+button[data-chord*="#"] {
+  font-weight: 700;
+}
+</style>
+
 </head>
 
 <body>
@@ -928,12 +935,12 @@ flex-shrink: 0;
 <button class="btn dark" id="metroToggle">♩ Metrônomo: OFF</button>
 <div class="control volume-control">
 <label for="volume">🔊 Vol Geral</label>
-<input id="volume" type="range" min="0.5" max="2.5" step="0.05" value="2.0">
+<input id="volume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
 <span id="volumeValue">200%</span>
 </div>
 <div class="control volume-control">
 <label for="metroVolume">⏱️ Vol Metrônomo</label>
-<input id="metroVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.5">
+<input id="metroVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
 <span id="metroVolumeValue">150%</span>
 </div>
 <button class="btn green" id="saveBtn">💾 Salvar Projeto</button>
@@ -957,11 +964,10 @@ flex-shrink: 0;
 <div class="fullscreen-overlay" id="demoListModal">
 <div class="fs-header">
 <div class="fs-title">
-<h2>15 Projetos de Demonstração (Ritmos)</h2>
-<p>Escolha um ritmo abaixo para abrir o player demo ou acesse o painel administrativo.</p>
+<h2>12 Projetos de Demonstração (Ritmos)</h2>
+<p>Escolha um ritmo abaixo para abrir o player demo.</p>
 </div>
 <div style="display:flex; gap:8px; align-items:center;">
-<button class="admin-top-btn" id="adminOpenModalBtn">🔒 Administrativo</button>
 <button class="fs-close btn dark" id="closeDemoList">✖ Fechar</button>
 </div>
 </div>
@@ -989,7 +995,6 @@ flex-shrink: 0;
 <div class="repeat-control" style="margin-left:0;background:#0e182b;border:1px solid #34455f;border-radius:9px;padding:5px 7px;">
 <span>⏱️</span><button id="fsRepeatMinus" type="button">−</button><strong id="fsRepeatDisplay">1 min</strong><button id="fsRepeatPlus" type="button">+</button>
 </div>
-<button class="btn primary" id="fsEditBtn" style="display:none;">✏️ Editar Projeto</button>
 <button class="fs-close btn dark" id="closeFullscreen">✖ Voltar à Lista Demo</button>
 </div>
 </div>
@@ -998,19 +1003,6 @@ flex-shrink: 0;
 </div>
 </div>
 
-<!-- MODAL DE SENHA ADMINISTRATIVA -->
-<div class="overlay" id="adminPasswordModal">
-<div class="modal">
-<h3>Painel Administrativo</h3>
-<p>Digite a senha secreta para controle total e edição de todos os 15 projetos demo:</p>
-<div class="bass-row">
-<input type="password" id="adminPasswordInput" placeholder="Senha secreta...">
-</div>
-<div class="modal-foot">
-<button class="btn primary" id="adminSubmitBtn">Entrar</button>
-<button class="btn dark" data-close="adminPasswordModal">Cancelar</button>
-</div>
-</div>
 </div>
 
 <!-- MODAL NOTAS / BATERIA -->
@@ -1188,15 +1180,30 @@ Cancelar
 
 
 
+
+/* BANCO EXTRA DE SUSTENIDOS */
+const EXTRA_SHARP_CHORDS = [
+  {name:"A#", notes:["A#","D","F"]},
+  {name:"A#m", notes:["A#","C#","F"]},
+  {name:"C#", notes:["C#","F","G#"]},
+  {name:"C#m", notes:["C#","E","G#"]},
+  {name:"D#", notes:["D#","G","A#"]},
+  {name:"D#m", notes:["D#","F#","A#"]},
+  {name:"F#", notes:["F#","A#","C#"]},
+  {name:"F#m", notes:["F#","A","C#"]},
+  {name:"G#", notes:["G#","C","D#"]},
+  {name:"G#m", notes:["G#","B","D#"]}
+];
+
 <script>
 const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const DRUMS = [
-{ label: "Bumbo", short: "Bumbo" },
-{ label: "Caixa", short: "Caixa" },
-{ label: "Hi-Hat Fechado", short: "HH Fechado" },
-{ label: "Hi-Hat Aberto", short: "HH Aberto" },
-{ label: "Aro de Caixa", short: "Aro" },
-{ label: "Prato de Ataque", short: "Ataque" }
+{ label: "Bumbo", short: "B" },
+{ label: "Caixa", short: "C" },
+{ label: "Hi-Hat Fechado", short: "H/F" },
+{ label: "Hi-Hat Aberto", short: "H/A" },
+{ label: "Aro de Caixa", short: "A/C" },
+{ label: "Prato de Ataque", short: "P/A" }
 ];
 const METERS = [
 ["2/4",2,4],
@@ -1219,7 +1226,6 @@ const METERS = [
 let currentProjectId = null;
 let isCurrentProjectDrum = false;
 let isDemoMode = false;
-let isAdminMode = false;
 
 let measures = [
 {
@@ -1349,7 +1355,6 @@ function startNewProject(isDrum){
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
 isCurrentProjectDrum=!!isDrum;
 isDemoMode=false;
-isAdminMode=false;
 activeFullscreenProject=null;
 currentProjectId="project_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
 measures=isDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures();
@@ -1375,7 +1380,6 @@ if(!project || !Array.isArray(project.measures)) return;
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
 isCurrentProjectDrum=!!project.isDrumProject;
 isDemoMode=false;
-isAdminMode=false;
 activeFullscreenProject=null;
 currentProjectId=project.id || ("project_"+Date.now());
 measures=JSON.parse(JSON.stringify(project.measures));
@@ -1441,8 +1445,8 @@ songName:$("#songName").value.trim() || (isCurrentProjectDrum ? "Novo Projeto de
 songKey:isCurrentProjectDrum ? "-" : ($("#songKey").value.trim() || "-"),
 bpm:getBpm(),
 metronomeOn,
-volume:parseFloat($("#volume").value || "2.0"),
-metroVolume:parseFloat($("#metroVolume").value || "1.5"),
+volume:parseFloat($("#volume").value || "1.0"),
+metroVolume:parseFloat($("#metroVolume").value || "1.0"),
 measures:JSON.parse(JSON.stringify(measures))
 };
 }
@@ -1528,7 +1532,7 @@ el.innerHTML=`
 <input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
 <div class="measure-actions"><button class="icon-btn play" data-play-measure="${mi}">▶</button><button class="icon-btn delete" data-del="${mi}">🗑</button></div>
 </div>
-<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div></div>
+<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div><div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div><button class="icon-btn ritornelo ${m.ritornelo!==null&&m.ritornelo!==undefined?'active':''}" data-rit="${mi}" title="${m.ritornelo!==null&&m.ritornelo!==undefined?`Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats||1} vez(es)`:'Configurar Ritornelo'}">↩</button></div>
 <div class="drum-voices-container">${voiceHtmls.join("")}</div>
 `;
 measuresEl.appendChild(el);
@@ -1576,6 +1580,9 @@ m.meter=sel.value;m.slots=next;selectedMeasure=mi;render();
 }));
 measuresEl.querySelectorAll("[data-sub-up]").forEach(btn=>btn.addEventListener("click",()=>changeDrumSubdivision(Number(btn.dataset.subUp),1)));
 measuresEl.querySelectorAll("[data-sub-down]").forEach(btn=>btn.addEventListener("click",()=>changeDrumSubdivision(Number(btn.dataset.subDown),-1)));
+measuresEl.querySelectorAll("[data-repeat-up]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatUp);measures[mi].repeats=Math.min(99,(measures[mi].repeats||1)+1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-repeat-down]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatDown);measures[mi].repeats=Math.max(1,(measures[mi].repeats||1)-1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-rit]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openRitorneloModal(Number(btn.dataset.rit));}));
 }
 
 function changeSubdivision(mi,direction){
@@ -1650,7 +1657,7 @@ selectedMeasure=measures.length-1;render();
 function openDrumModal(mi, si){
 selected = {mi, si};
 $("#drumGrid").innerHTML = DRUMS.map(d=>
-`<button class="note-btn" data-drum="${d.label}" style="font-size:13px;padding:15px 8px;">🥁 ${d.label}</button>`
+`<button class="note-btn" data-drum="${d.label}" style="font-size:13px;padding:15px 8px;">${d.label}</button>`
 ).join("");
 $("#drumGrid").querySelectorAll("[data-drum]").forEach(b=>{
 b.addEventListener("click",()=>{
@@ -1682,10 +1689,10 @@ $("#fsSongMeta").textContent = `BPM: ${getBpm()}`;
 const metroTxt = `♩ Metrônomo: ${metronomeOn?"ON":"OFF"}`;
 $("#metroToggle").textContent = metroTxt;
 $("#fsMetroToggle").textContent = metroTxt;
-const vol = parseFloat($("#volume").value || "2.0");
+const vol = parseFloat($("#volume").value || "1.0");
 $("#volume").value = vol;
 $("#volumeValue").textContent = Math.round(vol*100)+"%";
-const mVol = parseFloat($("#metroVolume").value || "1.5");
+const mVol = parseFloat($("#metroVolume").value || "1.0");
 $("#metroVolume").value = mVol;
 $("#metroVolumeValue").textContent = Math.round(mVol*100)+"%";
 updatePlayButtonLabels();
@@ -1729,14 +1736,14 @@ function ensureAudio(){
 if(!audioCtx){
 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 masterGain = audioCtx.createGain();
-masterGain.gain.value = parseFloat($("#volume").value || "2.0");
+masterGain.gain.value = parseFloat($("#volume").value || "1.0");
 masterGain.connect(audioCtx.destination);
 }
 if(audioCtx.state==="suspended") audioCtx.resume();
 }
 
 function updateMasterVolume(){
-const value = parseFloat($("#volume").value || "2.0");
+const value = parseFloat($("#volume").value || "1.0");
 if(masterGain){ masterGain.gain.setTargetAtTime(value, audioCtx.currentTime, .015); }
 }
 
@@ -1804,7 +1811,7 @@ function previewDrum(drumType) {
 }
 
 function tick(when=audioCtx.currentTime, accent=false){
-const metroVol = parseFloat($("#metroVolume").value || "1.5");
+const metroVol = parseFloat($("#metroVolume").value || "1.0");
 if(metroVol<=0) return;
 const osc = audioCtx.createOscillator();
 const g = audioCtx.createGain();
@@ -1820,7 +1827,7 @@ osc.start(when); osc.stop(when+.055);
 
 function slotDuration(m){
 const [,num,den]=getMeter(m.meter);
-return 60/getBpm()*(4/den);
+return 60/getBpm()*(4/den)/(m.subdivision||1);
 }
 
 function updateActiveSlotDOM(mi,si){
@@ -1842,15 +1849,60 @@ if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)arr.unshift({note:ch.bass,o
 return arr;
 }
 
-function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0){
-const ctx=audioCtx,osc=ctx.createOscillator(),osc2=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();
-osc.type="triangle";osc2.type="sine";osc.frequency.setValueAtTime(freq,when);osc2.frequency.setValueAtTime(freq*2,when);filter.type="lowpass";filter.frequency.setValueAtTime(3400,when);filter.Q.value=.75;
-gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(.26*velocity,when+.012);gain.gain.exponentialRampToValueAtTime(.16*velocity,when+.22);gain.gain.exponentialRampToValueAtTime(.105*velocity,when+.75);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
-osc.connect(filter);osc2.connect(filter);filter.connect(gain);gain.connect(masterGain||ctx.destination);osc.start(when);osc2.start(when);osc.stop(when+duration+.05);osc2.stop(when+duration+.05);
+// Amostra real do violão: uma única corda E é usada como fonte para todas as notas.
+const GUITAR_STRING_E_URL = "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav";
+const GUITAR_STRING_E_FREQ = 82.406889; // E2 — 6ª corda solta do violão
+let guitarStringEBuffer = null;
+let guitarStringELoading = null;
+
+async function loadGuitarStringE(){
+  ensureAudio();
+  if(guitarStringEBuffer) return guitarStringEBuffer;
+  if(guitarStringELoading) return guitarStringELoading;
+  guitarStringELoading = fetch(GUITAR_STRING_E_URL)
+    .then(r=>{ if(!r.ok) throw new Error("Não foi possível carregar a corda E"); return r.arrayBuffer(); })
+    .then(ab=>audioCtx.decodeAudioData(ab))
+    .then(buf=>{ guitarStringEBuffer=buf; return buf; })
+    .finally(()=>{ guitarStringELoading=null; });
+  return guitarStringELoading;
 }
 
-function playChord(ch,when=audioCtx.currentTime){if(!ch)return;chordNotes(ch).forEach((n,i)=>pluck(noteFreq(n.note,n.oct),when+i*.018,2.6,.95));}
-function previewChord(ch){ensureAudio();updateMasterVolume();playChord(ch);}
+function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0){
+  const ctx=audioCtx;
+  if(guitarStringEBuffer){
+    const source=ctx.createBufferSource();
+    const gain=ctx.createGain();
+    source.buffer=guitarStringEBuffer;
+    source.playbackRate.setValueAtTime(freq/GUITAR_STRING_E_FREQ,when);
+    gain.gain.setValueAtTime(Math.max(.001,velocity),when);
+    source.connect(gain);
+    gain.connect(masterGain||ctx.destination);
+    source.start(when);
+    source.stop(when+Math.min(duration,guitarStringEBuffer.duration/(freq/GUITAR_STRING_E_FREQ))+0.02);
+    return;
+  }
+  // Reserva apenas para o instante em que a amostra ainda estiver carregando.
+  const osc=ctx.createOscillator(),gain=ctx.createGain();
+  osc.type="triangle";
+  osc.frequency.setValueAtTime(freq,when);
+  gain.gain.setValueAtTime(.0001,when);
+  gain.gain.exponentialRampToValueAtTime(.18*velocity,when+.012);
+  gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
+  osc.connect(gain);gain.connect(masterGain||ctx.destination);
+  osc.start(when);osc.stop(when+duration+.05);
+}
+
+function playChord(ch,when=audioCtx.currentTime){
+  if(!ch)return;
+  chordNotes(ch).forEach((n,i)=>pluck(noteFreq(n.note,n.oct),when+i*.018,2.6,.95));
+}
+
+async function previewChord(ch){
+  ensureAudio();
+  updateMasterVolume();
+  try{ await loadGuitarStringE(); }catch(e){}
+  playChord(ch);
+}
 
 function tick(when=audioCtx.currentTime,accent=false){
 const metroVol=parseFloat($("#metroVolume").value||"1.5");if(metroVol<=0)return;const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type="square";osc.frequency.value=accent?1300:900;const baseGain=accent?.055:.035;g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(baseGain*metroVol,when+.002);g.gain.exponentialRampToValueAtTime(.0001,when+.045);osc.connect(g);g.connect(masterGain||audioCtx.destination);osc.start(when);osc.stop(when+.055);
@@ -1860,6 +1912,7 @@ function waitForResume(){return new Promise(resolve=>{playbackPromiseResolve=res
 
 async function handlePlayAction(mode,startMi){
 ensureAudio();await audioCtx.resume();
+if(!isCurrentProjectDrum){ try{ await loadGuitarStringE(); }catch(e){} }
 if(playbackState==="PLAYING"){playbackState="PAUSED";syncControlsUI();return;}
 if(playbackState==="PAUSED"){playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
 playbackRunId++;const currentRun=playbackRunId;playbackState="PLAYING";playbackMode=mode;syncControlsUI();
@@ -1867,8 +1920,10 @@ const targetMeasures=activeFullscreenProject?activeFullscreenProject.measures:me
 if(mode==="measure"){
 if(startMi<0||startMi>=targetMeasures.length){stopPlaybackCompletely();return;}
 const mi=startMi,m=targetMeasures[mi],repetitions=Math.max(1,m.repeats||1);
+const [,beatsNum]=getMeter(m.meter);
+const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
 for(let rep=0;rep<repetitions;rep++){
-for(let si=0;si<m.slots.length && playbackState!=="STOPPED" && playbackRunId===currentRun;si++){
+for(let si=0;si<playbackSlots && playbackState!=="STOPPED" && playbackRunId===currentRun;si++){
 while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
 if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
 const when=audioCtx.currentTime+.035;activePlayingSlot={mi,si};if(activeFullscreenProject)renderFullscreenMeasures(mi,si);else updateActiveSlotDOM(mi,si);
@@ -1882,9 +1937,11 @@ if(playbackRunId===currentRun)stopPlaybackCompletely();return;
 currentPlayMi=Math.max(0,Math.min(startMi,targetMeasures.length-1));currentPlaySi=0;currentPlayRep=0;
 while(currentPlayMi>=0&&currentPlayMi<targetMeasures.length&&playbackState!=="STOPPED"&&playbackRunId===currentRun){
 selectedMeasure=currentPlayMi;const m=targetMeasures[currentPlayMi],repetitions=Math.max(1,m.repeats||1);
+const [,beatsNum]=getMeter(m.meter);
 for(let rep=currentPlayRep;rep<repetitions&&playbackState!=="STOPPED"&&playbackRunId===currentRun;rep++){
 currentPlayRep=rep;const startSi=currentPlaySi||0;
-for(let si=startSi;si<m.slots.length&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
+const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
+for(let si=startSi;si<playbackSlots&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
 currentPlaySi=si;while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
 const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
 if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
@@ -1894,7 +1951,7 @@ await sleep(slotDuration(m)*1000);
 currentPlaySi=0;
 }
 currentPlayRep=0;currentPlaySi=0;
-if(!isCurrentProjectDrum&&m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<currentPlayMi){const ritKey=String(currentPlayMi),maxReturns=Math.max(1,m.ritorneloRepeats||1),used=ritorneloCounters[ritKey]||0;if(used<maxReturns){ritorneloCounters[ritKey]=used+1;currentPlayMi=m.ritornelo;currentPlaySi=0;currentPlayRep=0;continue;}}
+if(m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<currentPlayMi){const ritKey=String(currentPlayMi),maxReturns=Math.max(1,m.ritorneloRepeats||1),used=ritorneloCounters[ritKey]||0;if(used<maxReturns){ritorneloCounters[ritKey]=used+1;currentPlayMi=m.ritornelo;currentPlaySi=0;currentPlayRep=0;continue;}}
 currentPlayMi++;currentPlaySi=0;currentPlayRep=0;
 }
 if(playbackRunId===currentRun)stopPlaybackCompletely();
@@ -1986,80 +2043,55 @@ await sleep(slotDuration(m)*1000);
 if(playbackRunId===currentRun)stopPlaybackCompletely();
 }
 
+function createDemoMeasure(meter, subdivision, voice1, voice2, voice3, textAnnotation=""){
+const beats=getMeter(meter)[1];
+const totalSlots=beats*(subdivision||1);
+const v1=Array.from({length:totalSlots},(_,i)=>voice1[i]||null);
+const v2=Array.from({length:totalSlots},(_,i)=>voice2[i]||null);
+const v3=Array.from({length:totalSlots},(_,i)=>voice3[i]||null);
+return {
+  meter,
+  subdivision:subdivision||1,
+  repeats:1,
+  ritornelo:null,
+  ritorneloRepeats:1,
+  textAnnotation,
+  slots:[...v1,...v2,...v3].map(root=>root?{root}:null)
+};
+}
+
 function createDefaultDemoProjects(){
-let demoList=[];
-const metersList=["3/4","4/4","6/8"];
-for(let i=1;i<=15;i++){
-const mtr=metersList[(i-1)%3];
-demoList.push({
-id:"demo_ritmo_"+i,
-isDrumProject:true,
-songName:`Ritmo ${mtr} - Exemplo ${i}`,
-songKey:"-",
-bpm:80+(i*2),
-metronomeOn:true,
-volume:2.0,
-metroVolume:1.5,
-measures:[{
-meter:mtr,
-subdivision:1,
-repeats:1,
-ritornelo:null,
-ritorneloRepeats:1,
-textAnnotation:`Demonstração ${i}`,
-slots:Array.from({length:getMeter(mtr)[1]*3},(_,sIdx)=>{
-if(sIdx===0)return {root:"Bumbo"};
-if(sIdx===getMeter(mtr)[1])return {root:"Caixa"};
-return {root:"Hi-Hat Fechado"};
-})
-}]
+const d=[];
+const add=(id,songName,meter,bpm,measure)=>d.push({
+  id:"demo_ritmo_"+id,
+  isDrumProject:true,
+  songName,
+  songKey:"-",
+  bpm,
+  metronomeOn:false,
+  volume:1.0,
+  metroVolume:1.0,
+  measures:[measure]
 });
-}
-return demoList;
-}
 
-async function saveDemoProjectsToDrive(demos){
-const resposta=await fetch(DEMO_DRIVE_API_URL,{
-method:"POST",
-headers:{"Content-Type":"text/plain;charset=utf-8"},
-body:JSON.stringify({acao:"salvarDemos",demos:demos})
-});
-if(!resposta.ok)throw new Error("Erro ao salvar os demos no Google Drive.");
-const dados=await resposta.json();
-if(!dados.sucesso)throw new Error(dados.erro||"O Google Drive recusou o salvamento dos demos.");
-return dados;
-}
-
-async function loadDemoProjectsFromDrive(){
-if(demoDriveSyncPromise)return demoDriveSyncPromise;
-demoDriveSyncPromise=(async()=>{
-try{
-const resposta=await fetch(DEMO_DRIVE_API_URL+"?acao=carregarDemos&_="+Date.now());
-if(!resposta.ok)throw new Error("Erro ao carregar os demos do Google Drive.");
-const dados=await resposta.json();
-if(dados.sucesso && Array.isArray(dados.demos) && dados.demos.length>=15){
-localStorage.setItem("notacaoMusicalCRichlessDemo15",JSON.stringify(dados.demos));
-return dados.demos;
-}
-const locais=getDemoProjects();
-await saveDemoProjectsToDrive(locais);
-return locais;
-}catch(e){
-console.error("Sincronização dos demos com Google Drive:",e);
-return getDemoProjects();
-}
-})();
-return demoDriveSyncPromise;
+// Cada compasso dos três arquivos MXL foi convertido em um projeto separado.
+add(1,"3/4 — Levada 1","3/4",80,createDemoMeasure("3/4",1,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null],[null,"Caixa","Caixa"],"MXL: 3por4.mxl \u2014 compasso 1"));
+add(2,"3/4 — Levada 2","3/4",80,createDemoMeasure("3/4",2,[null,"Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,null,null],[null,null,"Caixa",null,"Caixa",null],"MXL: 3por4.mxl \u2014 compasso 2"));
+add(3,"3/4 — Levada 3","3/4",80,createDemoMeasure("3/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,"Bumbo",null,"Bumbo"],[null,null,null,null,"Caixa",null],"MXL: 3por4.mxl \u2014 compasso 3"));
+add(4,"4/4 — Levada 1","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,"Bumbo",null,null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"MXL: 4por4.mxl \u2014 compasso 1"));
+add(5,"4/4 — Levada 2","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,"Bumbo","Bumbo",null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"MXL: 4por4.mxl \u2014 compasso 2"));
+add(6,"4/4 — Levada 3","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,"Bumbo","Bumbo",null,null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"MXL: 4por4.mxl \u2014 compasso 3"));
+add(7,"4/4 — Levada 4","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,"Bumbo",null,"Bumbo",null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"MXL: 4por4.mxl \u2014 compasso 4"));
+add(8,"4/4 — Levada 5","4/4",90,createDemoMeasure("4/4",4,["Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null],["Bumbo",null,null,null,null,null,null,"Bumbo",null,null,"Bumbo",null,null,null,null,null],[null,null,null,null,"Caixa",null,null,null,null,null,null,null,"Caixa",null,null,null],"MXL: 4por4.mxl \u2014 compasso 5"));
+add(9,"4/4 — Levada 6","4/4",90,createDemoMeasure("4/4",4,["Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null],["Bumbo",null,null,null,null,null,null,"Bumbo",null,"Bumbo","Bumbo",null,null,null,null,null],[null,null,null,null,"Caixa",null,null,null,null,null,null,null,"Caixa",null,null,null],"MXL: 4por4.mxl \u2014 compasso 6"));
+add(10,"6/8 — Levada 1","6/8",80,createDemoMeasure("6/8",1,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,null,null],[null,null,null,"Caixa",null,null],"MXL: 6por8.mxl \u2014 compasso 1"));
+add(11,"6/8 — Levada 2","6/8",80,createDemoMeasure("6/8",1,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,null,"Bumbo"],[null,null,null,"Caixa",null,null],"MXL: 6por8.mxl \u2014 compasso 2"));
+add(12,"6/8 — Levada 3","6/8",80,createDemoMeasure("6/8",2,["Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null],["Bumbo",null,null,"Bumbo",null,"Bumbo",null,null,null,"Bumbo",null,null],[null,null,null,null,null,null,"Caixa",null,null,null,null,null],"MXL: 6por8.mxl \u2014 compasso 3"));
+return d;
 }
 
 function getDemoProjects(){
-let demoList=[];
-try{demoList=JSON.parse(localStorage.getItem("notacaoMusicalCRichlessDemo15")||"[]");}catch(e){demoList=[];}
-if(!Array.isArray(demoList)||demoList.length<15){
-demoList=createDefaultDemoProjects();
-localStorage.setItem("notacaoMusicalCRichlessDemo15",JSON.stringify(demoList));
-}
-return demoList;
+return createDefaultDemoProjects();
 }
 
 function renderDemoListGrid(){
@@ -2072,7 +2104,6 @@ grid.innerHTML=demos.map(proj=>`
 <p>Fórmula: ${escapeHtml(proj.measures[0]?.meter || "4/4")} · BPM: ${proj.bpm}</p>
 <div class="project-actions">
 <button class="btn primary" style="font-size:11px;padding:6px 10px;flex:1;" data-open-demo="${escapeHtml(proj.id)}">▶ Abrir Demonstração</button>
-${isAdminMode ? `<button class="btn green" style="font-size:11px;padding:6px 10px;flex:1;" data-edit-demo="${escapeHtml(proj.id)}">✏️ Editar</button>` : ""}
 </div>
 </div>
 `).join("");
@@ -2089,55 +2120,16 @@ openFullscreenProject(JSON.parse(JSON.stringify(proj)));
 });
 });
 
-grid.querySelectorAll("[data-edit-demo]").forEach(btn=>{
-btn.addEventListener("click",e=>{
-e.stopPropagation();
-if(!isAdminMode) return;
-const proj=getDemoProjects().find(p=>p.id===btn.dataset.editDemo);
-if(proj) openAdminEditor(proj);
-});
-});
-
 grid.querySelectorAll(".project-card").forEach(card=>{
 card.addEventListener("click",()=>{
 const proj=getDemoProjects().find(p=>p.id===card.dataset.demoId);
 if(!proj) return;
-if(isAdminMode){
-openAdminEditor(proj);
-}else{
 isDemoMode=true;
 $("#demoListModal").classList.remove("open");
 openFullscreenProject(JSON.parse(JSON.stringify(proj)));
-}
 });
 });
 }
-
-function openAdminEditor(proj){
-if(!isAdminMode) return;
-if(playbackState!=="STOPPED") stopPlaybackCompletely();
-activeFullscreenProject=null;
-isDemoMode=false;
-measures=JSON.parse(JSON.stringify(proj.measures || makeEmptyMeasures()));
-currentProjectId=proj.id;
-isCurrentProjectDrum=true;
-selectedMeasure=0;
-$("#songName").value=proj.songName || "Ritmo Demo";
-$("#songKey").value="-";
-$("#bpm").value=proj.bpm || 90;
-$("#volume").value=proj.volume ?? 2.0;
-$("#metroVolume").value=proj.metroVolume ?? 1.5;
-metronomeOn=!!proj.metronomeOn;
-$("#keyFieldContainer").style.display="none";
-$("#status").innerHTML="<strong>Modo Administrativo:</strong> Editando projeto demo.";
-$("#editorHint").textContent="Controle total do projeto demo.";
-$("#demoListModal").classList.remove("open");
-$("#fullscreenModal").classList.remove("open");
-switchView("editorView");
-syncControlsUI();
-render();
-}
-
 
 function openFullscreenProject(proj){
 activeFullscreenProject=proj;
@@ -2150,7 +2142,6 @@ $("#bpm").value=proj.bpm || 90;
 $("#volume").value=proj.volume ?? 2.0;
 $("#metroVolume").value=proj.metroVolume ?? 1.5;
 metronomeOn=proj.metronomeOn !== false;
-$("#fsEditBtn").style.display=isAdminMode ? "inline-flex" : "none";
 $("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 syncControlsUI();
 $("#fullscreenModal").classList.add("open");
@@ -2159,42 +2150,15 @@ renderFullscreenMeasures(-1,-1);
 
 
 // BOTÃO VER DEMO NO TOPO
-$("#demoBateriaBtn").addEventListener("click",async()=>{
+$("#demoBateriaBtn").addEventListener("click",()=>{
 renderDemoListGrid();
 $("#demoListModal").classList.add("open");
-await loadDemoProjectsFromDrive();
-renderDemoListGrid();
 });
 
 $("#closeDemoList").addEventListener("click",()=>{
 $("#demoListModal").classList.remove("open");
 });
 
-$("#adminOpenModalBtn").addEventListener("click",()=>{
-$("#adminPasswordInput").value="";
-openOverlay("adminPasswordModal");
-setTimeout(()=>$("#adminPasswordInput").focus(),50);
-});
-
-$("#adminSubmitBtn").addEventListener("click",async()=>{
-const pass=$("#adminPasswordInput").value;
-if(pass==="Ca@005521971585584"){
-isAdminMode=true;
-isDemoMode=false;
-closeOverlay("adminPasswordModal");
-renderDemoListGrid();
-$("#demoListModal").classList.add("open");
-await loadDemoProjectsFromDrive();
-renderDemoListGrid();
-alert("Acesso Administrativo Autorizado! Agora você pode escolher e editar qualquer um dos 15 projetos demo.");
-}else{
-alert("Senha incorreta!");
-}
-});
-
-$("#adminPasswordInput").addEventListener("keydown",e=>{
-if(e.key==="Enter") $("#adminSubmitBtn").click();
-});
 
 $("#fsPlayAll").addEventListener("click",()=>handleDemoPlay());
 $("#fsStop").addEventListener("click",()=>stopPlaybackCompletely());
@@ -2208,13 +2172,6 @@ fullscreenDurationMinutes=Math.min(120,fullscreenDurationMinutes+1);
 $("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 });
 
-$("#fsEditBtn").addEventListener("click",()=>{
-if(!isAdminMode || !activeFullscreenProject) return;
-if(playbackState!=="STOPPED") stopPlaybackCompletely();
-const proj=activeFullscreenProject;
-$("#fullscreenModal").classList.remove("open");
-openAdminEditor(proj);
-});
 
 
 // BOTÃO VOLTAR À LISTA DEMO
@@ -2231,41 +2188,14 @@ $("#backToHomeBtn").addEventListener("click",()=>{
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
 activeFullscreenProject=null;
 isDemoMode=false;
-isAdminMode=false;
 switchView("homeView");
 renderRecentProjects();
 });
 
-$("#saveBtn").addEventListener("click",async()=>{
-if(isAdminMode && currentProjectId && String(currentProjectId).startsWith("demo_")){
-const currentData=projectFromEditor();
-let demos=getDemoProjects();
-const idx=demos.findIndex(d=>d.id===currentProjectId);
-if(idx>=0){
-demos[idx]={
-...demos[idx],
-...currentData,
-id:currentProjectId,
-isDrumProject:true
-};
-localStorage.setItem("notacaoMusicalCRichlessDemo15",JSON.stringify(demos));
-try{
-await saveDemoProjectsToDrive(demos);
-alert("Projeto demo atualizado e sincronizado no Google Drive. Todos os dispositivos receberão esta alteração.");
-}catch(e){
-console.error(e);
-alert("O projeto foi salvo neste navegador, mas não foi possível sincronizar com o Google Drive.");
-}
-}
-$("#status").innerHTML="<strong>Projeto demo salvo.</strong>";
-renderDemoListGrid();
-$("#demoListModal").classList.add("open");
-switchView("homeView");
-}else{
+$("#saveBtn").addEventListener("click",()=>{
 saveCurrentUserProject();
 alert("Projeto salvo com sucesso!");
 switchView("homeView");
-}
 });
 
 renderRecentProjects();
@@ -2273,9 +2203,6 @@ renderRecentProjects();
 syncControlsUI();
 render();
 renderRecentProjects();
-loadDemoProjectsFromDrive().then(()=>{
-  if(document.querySelector("#demoListModal.open")) renderDemoListGrid();
-});
 </script>
 
 </body>
