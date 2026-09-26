@@ -711,6 +711,48 @@ font-weight:800;
 font-size:16px;
 }
 
+.note-btn:hover,
+.note-btn.selected{
+border-color:var(--cyan);
+background:#12334a
+}
+
+.mod-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px
+}
+
+.mod-btn{
+text-align:left;
+border:1px solid #40536e;
+background:#0e182a;
+color:#fff;
+border-radius:9px;
+padding:11px 12px;
+}
+
+.mod-btn strong{
+display:block;
+color:#fff
+}
+
+.mod-btn small{
+display:block;
+color:var(--muted);
+margin-top:2px
+}
+
+.mod-btn:hover{
+border-color:var(--green);
+background:#123329
+}
+
+.icon-btn.ritornelo.active{
+background:#453d1a;
+border-color:#ffd84d
+}
+
 .bass-row{
 display:flex;
 gap:8px;
@@ -945,7 +987,7 @@ flex-shrink: 0;
 <button class="btn dark" id="fsBpmPlus" style="padding:4px 8px;font-size:11px;">+</button>
 </div>
 <div class="repeat-control" style="margin-left:0;background:#0e182b;border:1px solid #34455f;border-radius:9px;padding:5px 7px;">
-<span>🔁</span><button id="fsRepeatMinus" type="button">−</button><strong id="fsRepeatDisplay">1x</strong><button id="fsRepeatPlus" type="button">+</button>
+<span>⏱️</span><button id="fsRepeatMinus" type="button">−</button><strong id="fsRepeatDisplay">1 min</strong><button id="fsRepeatPlus" type="button">+</button>
 </div>
 <button class="btn primary" id="fsEditBtn" style="display:none;">✏️ Editar Projeto</button>
 <button class="fs-close btn dark" id="closeFullscreen">✖ Voltar à Lista Demo</button>
@@ -983,6 +1025,169 @@ flex-shrink: 0;
 </div>
 </div>
 
+<!-- NOTA -->
+
+<div class="overlay" id="noteOverlay">
+
+<div class="modal">
+
+<h3>Escolha o acorde</h3>
+
+<p>Selecione a nota fundamental.</p>
+
+<div class="note-grid" id="noteGrid"></div>
+
+<div class="modal-foot">
+
+<button class="btn dark" data-close="noteOverlay">
+Cancelar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MODIFICADOR -->
+
+<div class="overlay" id="modifierOverlay">
+
+<div class="modal">
+
+<h3>Forma do acorde</h3>
+
+<p>Escolha a variação e o baixo do acorde.</p>
+
+<div class="mod-grid">
+
+<button class="mod-btn" data-mod="major">
+<strong>Maior</strong>
+<small>Ex.: G</small>
+</button>
+
+<button class="mod-btn" data-mod="minor">
+<strong>Menor</strong>
+<small>Ex.: Gm</small>
+</button>
+
+<button class="mod-btn" data-mod="dim">
+<strong>Diminuto</strong>
+<small>Ex.: G°</small>
+</button>
+
+<button class="mod-btn" data-mod="sus2">
+<strong>Sus2</strong>
+<small>Ex.: Gsus2</small>
+</button>
+
+</div>
+
+<div class="bass-row">
+
+<label for="bassSelect">
+Baixo / inversão
+</label>
+
+<select id="bassSelect">
+<option value="">Sem baixo específico</option>
+</select>
+
+</div>
+
+<div class="modal-foot">
+
+<button class="btn danger" id="clearCurrent">
+🗑 Apagar acorde
+</button>
+
+<button class="btn dark" data-close="modifierOverlay">
+Cancelar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- RITORNELO -->
+
+<div class="overlay" id="ritorneloOverlay">
+
+<div class="modal">
+
+<h3>Configurar Ritornelo</h3>
+
+<p>
+Escolha para qual compasso este compasso deve retornar
+e quantas vezes o retorno deve acontecer.
+</p>
+
+<div class="bass-row">
+
+<label for="ritorneloSelect">
+Retornar para:
+</label>
+
+<select id="ritorneloSelect"></select>
+
+</div>
+
+<div class="bass-row">
+
+<label for="ritorneloRepeats">
+Repetir:
+</label>
+
+<select id="ritorneloRepeats">
+
+<option value="1">1 vez</option>
+<option value="2">2 vezes</option>
+<option value="3">3 vezes</option>
+<option value="4">4 vezes</option>
+<option value="5">5 vezes</option>
+<option value="6">6 vezes</option>
+<option value="7">7 vezes</option>
+<option value="8">8 vezes</option>
+<option value="9">9 vezes</option>
+<option value="10">10 vezes</option>
+<option value="11">11 vezes</option>
+<option value="12">12 vezes</option>
+<option value="13">13 vezes</option>
+<option value="14">14 vezes</option>
+<option value="15">15 vezes</option>
+<option value="16">16 vezes</option>
+<option value="17">17 vezes</option>
+<option value="18">18 vezes</option>
+<option value="19">19 vezes</option>
+<option value="20">20 vezes</option>
+
+</select>
+
+</div>
+
+<div class="modal-foot">
+
+<button class="btn danger" id="clearRitornelo">
+Remover Ritornelo
+</button>
+
+<button class="btn primary" id="saveRitornelo">
+Salvar
+</button>
+
+<button class="btn dark" data-close="ritorneloOverlay">
+Cancelar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+
 <script>
 const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const DRUMS = [
@@ -993,10 +1198,26 @@ const DRUMS = [
 { label: "Aro de Caixa", short: "Aro" },
 { label: "Prato de Ataque", short: "Ataque" }
 ];
-const METERS = [["4/4",4,4],["3/4",3,4],["6/8",6,8]];
+const METERS = [
+["2/4",2,4],
+["3/4",3,4],
+["4/4",4,4],
+["5/4",5,4],
+["6/4",6,4],
+["7/4",7,4],
+["2/8",2,8],
+["3/8",3,8],
+["4/8",4,8],
+["5/8",5,8],
+["6/8",6,8],
+["7/8",7,8],
+["8/8",8,8],
+["9/8",9,8],
+["12/8",12,8]
+];
 
 let currentProjectId = null;
-let isCurrentProjectDrum = true;
+let isCurrentProjectDrum = false;
 let isDemoMode = false;
 let isAdminMode = false;
 
@@ -1025,7 +1246,12 @@ let playbackRunId = 0;
 let metronomeOn = false;
 let activeFullscreenProject = null;
 let activePlayingSlot = { mi:-1, si:-1 };
-let fullscreenRepeatCount = 1;
+let fullscreenDurationMinutes = 1;
+let demoTargetEndAt = 0;
+let demoPauseStartedAt = 0;
+let editingRitorneloMi = null;
+let playbackMode = "all";
+let ritorneloCounters = {};
 
 const $ = s => document.querySelector(s);
 const measuresEl = $("#measures");
@@ -1041,14 +1267,25 @@ function getMeter(meter){
 return METERS.find(x=>x[0]===meter) || ["4/4",4,4];
 }
 
+// Quantidade de posições de uma voz de cordas em um compasso.
+// Esta função pertence ao editor de Cordas e não cria vozes de bateria.
+function slotCount(measure){
+const [,num] = getMeter(measure.meter);
+return num * (measure.subdivision || 1);
+}
+
 function chordLabel(ch){
 if(!ch) return "";
-const found = DRUMS.find(d => d.label === ch.root);
+if(DRUMS.some(d=>d.label===ch.root)){
+const found=DRUMS.find(d=>d.label===ch.root);
 return found ? found.short : ch.root;
+}
+const suffix=ch.quality==="minor"?"m":ch.quality==="dim"?"°":ch.quality==="sus2"?"sus2":"";
+return ch.root + suffix + (ch.bass ? "/"+ch.bass : "");
 }
 
 function buildMeterOptions(current){
-return METERS.map(m=>`<option value="${m[0]}" ${m[0]===current?"selected":""}>${m[0]} (3 Vozes)</option>`).join("");
+return METERS.map(m=>`<option value="${m[0]}" ${m[0]===current?"selected":""}>${m[0]}${isCurrentProjectDrum ? " (3 Vozes)" : ""}</option>`).join("");
 }
 
 function escapeHtml(v){
@@ -1080,7 +1317,19 @@ localStorage.setItem(getRecentKey(isDrum), JSON.stringify(list));
 renderRecentProjects();
 }
 
-function makeEmptyMeasures(){
+function makeEmptyChordMeasures(){
+return [{
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:[null,null,null,null]
+}];
+}
+
+function makeEmptyDrumMeasures(){
 return [{
 meter:"4/4",
 subdivision:1,
@@ -1092,22 +1341,30 @@ slots:Array.from({length:12},()=>null)
 }];
 }
 
+function makeEmptyMeasures(){
+return isCurrentProjectDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures();
+}
+
 function startNewProject(isDrum){
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
-isCurrentProjectDrum = !!isDrum;
-isDemoMode = false;
-isAdminMode = false;
-activeFullscreenProject = null;
-currentProjectId = "project_" + Date.now() + "_" + Math.random().toString(36).slice(2,8);
-measures = makeEmptyMeasures();
-selectedMeasure = 0;
-activePlayingSlot = {mi:-1,si:-1};
-$("#songName").value = "";
-$("#songKey").value = isDrum ? "-" : "";
-$("#bpm").value = 90;
-$("#status").textContent = "Novo projeto em edição";
-$("#editorHint").textContent = isDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para editar.";
-$("#keyFieldContainer").style.display = isDrum ? "none" : "";
+isCurrentProjectDrum=!!isDrum;
+isDemoMode=false;
+isAdminMode=false;
+activeFullscreenProject=null;
+currentProjectId="project_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+measures=isDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures();
+selectedMeasure=0;
+selected={mi:0,si:0};
+activePlayingSlot={mi:-1,si:-1};
+ritorneloCounters={};
+editingRitorneloMi=null;
+$("#songName").value="";
+$("#songKey").value=isDrum ? "-" : "";
+$("#bpm").value=90;
+metronomeOn=false;
+$("#status").textContent="Novo projeto em edição";
+$("#editorHint").textContent=isDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para adicionar/editar o acorde.";
+$("#keyFieldContainer").style.display=isDrum ? "none" : "";
 switchView("editorView");
 syncControlsUI();
 render();
@@ -1116,63 +1373,61 @@ render();
 function openProject(project){
 if(!project || !Array.isArray(project.measures)) return;
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
-isCurrentProjectDrum = !!project.isDrumProject;
-isDemoMode = false;
-currentProjectId = project.id || ("project_" + Date.now());
-measures = JSON.parse(JSON.stringify(project.measures));
-selectedMeasure = 0;
-activePlayingSlot = {mi:-1,si:-1};
-$("#songName").value = project.songName || "";
-$("#songKey").value = project.songKey || (isCurrentProjectDrum ? "-" : "");
-$("#bpm").value = project.bpm || 90;
-$("#volume").value = project.volume ?? 2.0;
-$("#metroVolume").value = project.metroVolume ?? 1.5;
-metronomeOn = !!project.metronomeOn;
-$("#keyFieldContainer").style.display = isCurrentProjectDrum ? "none" : "";
-$("#status").textContent = "Projeto em edição";
-$("#editorHint").textContent = isCurrentProjectDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para editar.";
+isCurrentProjectDrum=!!project.isDrumProject;
+isDemoMode=false;
+isAdminMode=false;
+activeFullscreenProject=null;
+currentProjectId=project.id || ("project_"+Date.now());
+measures=JSON.parse(JSON.stringify(project.measures));
+selectedMeasure=0;
+selected={mi:0,si:0};
+activePlayingSlot={mi:-1,si:-1};
+ritorneloCounters={};
+$("#songName").value=project.songName || "";
+$("#songKey").value=project.songKey || (isCurrentProjectDrum ? "-" : "");
+$("#bpm").value=project.bpm || 90;
+$("#volume").value=project.volume ?? 2.0;
+$("#metroVolume").value=project.metroVolume ?? 1.5;
+metronomeOn=!!project.metronomeOn;
+$("#keyFieldContainer").style.display=isCurrentProjectDrum ? "none" : "";
+$("#status").textContent="Projeto em edição";
+$("#editorHint").textContent=isCurrentProjectDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para adicionar/editar o acorde.";
 switchView("editorView");
 syncControlsUI();
 render();
 }
 
 function renderRecentProjects(){
-const renderList = (isDrum, elId) => {
-const grid = $("#"+elId);
-const list = getRecentProjects(isDrum);
+const renderList=(isDrum,elId)=>{
+const grid=$("#"+elId);
+const list=getRecentProjects(isDrum);
 if(!list.length){
-grid.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:10px;">Nenhum projeto recente.</div>';
+grid.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px;">Nenhum projeto recente.</div>';
 return;
 }
-grid.innerHTML = list.slice(0,20).map(p=>`
+grid.innerHTML=list.slice(0,20).map(p=>`
 <div class="project-card" data-project-id="${escapeHtml(p.id)}">
 <h4>${isDrum ? "🥁" : "🎵"} ${escapeHtml(p.songName || "Projeto sem nome")}</h4>
-<p>${isDrum ? "Bateria" : "Cordas"} · BPM: ${Number(p.bpm)||90}</p>
+<p>${isDrum ? "Bateria" : "Tom: "+(p.songKey || "-")} · BPM: ${Number(p.bpm)||90}</p>
 <div class="project-actions">
 <button class="btn primary" style="font-size:11px;padding:6px 10px;" data-open-project="${escapeHtml(p.id)}">Abrir</button>
 <button class="btn danger" style="font-size:11px;padding:6px 10px;" data-delete-project="${escapeHtml(p.id)}">Excluir</button>
 </div>
 </div>
 `).join("");
-grid.querySelectorAll("[data-open-project]").forEach(btn=>{
-btn.addEventListener("click",e=>{
+grid.querySelectorAll("[data-open-project]").forEach(btn=>btn.addEventListener("click",e=>{
 e.stopPropagation();
-const project = getRecentProjects(isDrum).find(p=>p.id===btn.dataset.openProject);
+const project=getRecentProjects(isDrum).find(p=>p.id===btn.dataset.openProject);
 if(project) openProject(project);
-});
-});
-grid.querySelectorAll("[data-delete-project]").forEach(btn=>{
-btn.addEventListener("click",e=>{
+}));
+grid.querySelectorAll("[data-delete-project]").forEach(btn=>btn.addEventListener("click",e=>{
 e.stopPropagation();
 removeRecentProject(btn.dataset.deleteProject,isDrum);
-});
-});
-grid.querySelectorAll(".project-card").forEach(card=>{
-card.addEventListener("click",()=>{
-const project = getRecentProjects(isDrum).find(p=>p.id===card.dataset.projectId);
+}));
+grid.querySelectorAll(".project-card").forEach(card=>card.addEventListener("click",()=>{
+const project=getRecentProjects(isDrum).find(p=>p.id===card.dataset.projectId);
 if(project) openProject(project);
-});
-});
+}));
 };
 renderList(false,"projectsGrid");
 renderList(true,"projectsGridDrum");
@@ -1180,191 +1435,216 @@ renderList(true,"projectsGridDrum");
 
 function projectFromEditor(){
 return {
-id: currentProjectId || ("project_" + Date.now()),
-isDrumProject: !!isCurrentProjectDrum,
-songName: $("#songName").value.trim() || (isCurrentProjectDrum ? "Novo Projeto de Bateria" : "Novo Projeto de Cordas"),
-songKey: isCurrentProjectDrum ? "-" : ($("#songKey").value.trim() || "-"),
-bpm: getBpm(),
+id:currentProjectId || ("project_"+Date.now()),
+isDrumProject:!!isCurrentProjectDrum,
+songName:$("#songName").value.trim() || (isCurrentProjectDrum ? "Novo Projeto de Bateria" : "Novo Projeto de Cordas"),
+songKey:isCurrentProjectDrum ? "-" : ($("#songKey").value.trim() || "-"),
+bpm:getBpm(),
 metronomeOn,
-volume: parseFloat($("#volume").value || "2.0"),
-metroVolume: parseFloat($("#metroVolume").value || "1.5"),
-measures: JSON.parse(JSON.stringify(measures))
+volume:parseFloat($("#volume").value || "2.0"),
+metroVolume:parseFloat($("#metroVolume").value || "1.5"),
+measures:JSON.parse(JSON.stringify(measures))
 };
 }
 
 function saveCurrentUserProject(){
-const project = projectFromEditor();
-currentProjectId = project.id;
+const project=projectFromEditor();
+currentProjectId=project.id;
 saveRecentProject(project);
-$("#status").innerHTML = "<strong>Projeto salvo:</strong> " + escapeHtml(project.songName);
+$("#status").innerHTML="<strong>Projeto salvo:</strong> "+escapeHtml(project.songName);
 renderRecentProjects();
 }
 
 function render(){
-measuresEl.innerHTML = "";
-measures.forEach((m,mi)=>{
-const el = document.createElement("article");
-el.className = "measure" + (mi===selectedMeasure ? " playing" : "");
-el.dataset.mi = mi;
-const [, beatsNum] = getMeter(m.meter);
-const totalSlotsPerVoice = beatsNum * m.subdivision;
-let voiceHtmls = [];
-for (let v = 0; v < 3; v++) {
-  let voiceSlots = "";
-  for (let s = 0; s < totalSlotsPerVoice; s++) {
-    const realIndex = v * totalSlotsPerVoice + s;
-    const ch = m.slots[realIndex];
-    const isActive = activePlayingSlot.mi === mi && activePlayingSlot.si === realIndex;
-    const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
-    if (!ch) {
-      voiceSlots += `<div class="${slotClass}" data-si="${realIndex}"><span>·</span></div>`;
-    } else {
-      voiceSlots += `
-        <div class="${slotClass}" data-si="${realIndex}">
-          <div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div>
-          <button class="slot-trash" data-trash="${realIndex}">×</button>
-        </div>
-      `;
-    }
-  }
-  voiceHtmls.push(`
-    <div class="drum-voice-row">
-      <span class="drum-voice-label">Voz ${v+1}</span>
-      <div class="slots" style="min-height:36px;">${voiceSlots}</div>
-    </div>
-  `);
+if(isCurrentProjectDrum){
+renderDrumEditor();
+return;
+}
+renderChordEditor();
 }
 
-el.innerHTML = `
+function renderChordEditor(){
+measuresEl.innerHTML="";
+measures.forEach((m,mi)=>{
+const el=document.createElement("article");
+el.className="measure"+(mi===selectedMeasure ? " playing" : "");
+el.dataset.mi=mi;
+const slots=Array.from({length:slotCount(m)},(_,si)=>{
+const ch=m.slots[si];
+const isActive=activePlayingSlot.mi===mi && activePlayingSlot.si===si;
+const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");
+if(!ch) return `<div class="${slotClass}" data-si="${si}"><span>·</span></div>`;
+return `<div class="${slotClass}" data-si="${si}"><div class="chord" title="Clique para alterar"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div><button class="slot-trash" data-trash="${si}" title="Apagar">×</button></div>`;
+}).join("");
+const hasRit=m.ritornelo!==null && m.ritornelo!==undefined;
+const ritClass=hasRit ? "icon-btn ritornelo active" : "icon-btn ritornelo";
+const ritTitle=hasRit ? `Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats || 1} vez(es)` : "Configurar Ritornelo";
+el.innerHTML=`
 <div class="measure-top">
-<div class="measure-title">Comp. ${mi+1}</div>
-<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
+<div class="measure-title">Comp. ${mi+1} ${hasRit ? '↩('+(m.ritornelo+1)+')' : ''}</div>
+<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação (ex: Solo, Refrão)...">
 <div class="measure-actions">
-<button class="icon-btn play" data-play-measure="${mi}">▶</button>
-<button class="icon-btn delete" data-del="${mi}">🗑</button>
+<button class="icon-btn play" data-play-measure="${mi}" title="Tocar somente este compasso">▶</button>
+<button class="icon-btn delete" data-del="${mi}" title="Apagar">🗑</button>
+<button class="${ritClass}" data-rit="${mi}" title="${ritTitle}">↩</button>
 </div>
 </div>
 <div class="measure-settings">
 <select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select>
+<div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision}</span><button data-sub-up="${mi}">▶</button></div>
+<div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div>
 </div>
+<div class="slots">${slots}</div>
+`;
+measuresEl.appendChild(el);
+});
+bindChordMeasureEvents();
+}
+
+function renderDrumEditor(){
+measuresEl.innerHTML="";
+measures.forEach((m,mi)=>{
+const el=document.createElement("article");
+el.className="measure"+(mi===selectedMeasure ? " playing" : "");
+el.dataset.mi=mi;
+const [,beatsNum]=getMeter(m.meter);
+const totalSlotsPerVoice=beatsNum*(m.subdivision||1);
+let voiceHtmls=[];
+for(let v=0;v<3;v++){
+let voiceSlots="";
+for(let s=0;s<totalSlotsPerVoice;s++){
+const realIndex=v*totalSlotsPerVoice+s;
+const ch=m.slots[realIndex];
+const isActive=activePlayingSlot.mi===mi && activePlayingSlot.si===s;
+const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");
+if(!ch) voiceSlots+=`<div class="${slotClass}" data-si="${realIndex}"><span>·</span></div>`;
+else voiceSlots+=`<div class="${slotClass}" data-si="${realIndex}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div><button class="slot-trash" data-trash="${realIndex}">×</button></div>`;
+}
+voiceHtmls.push(`<div class="drum-voice-row"><span class="drum-voice-label">Voz ${v+1}</span><div class="slots" style="min-height:36px;">${voiceSlots}</div></div>`);
+}
+el.innerHTML=`
+<div class="measure-top">
+<div class="measure-title">Comp. ${mi+1}</div>
+<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
+<div class="measure-actions"><button class="icon-btn play" data-play-measure="${mi}">▶</button><button class="icon-btn delete" data-del="${mi}">🗑</button></div>
+</div>
+<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div></div>
 <div class="drum-voices-container">${voiceHtmls.join("")}</div>
 `;
 measuresEl.appendChild(el);
 });
-bindMeasureEvents();
+bindDrumMeasureEvents();
 }
 
-function bindMeasureEvents(){
-measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>{
-input.addEventListener("input",()=>{
-const mi = Number(input.dataset.annotation);
-if(measures[mi]) measures[mi].textAnnotation = input.value;
-});
-});
-
-measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>{
-btn.addEventListener("click",e=>{
-e.stopPropagation();
-handlePlayAction("measure", Number(btn.dataset.playMeasure));
-});
-});
-
-measuresEl.querySelectorAll(".slot").forEach(slot=>{
-slot.addEventListener("click",()=>{
-const mi = Number(slot.closest(".measure").dataset.mi);
-const si = Number(slot.dataset.si);
-selectedMeasure = mi;
-selected = {mi,si};
-openDrumModal(mi, si);
-});
-});
-
-measuresEl.querySelectorAll("[data-trash]").forEach(btn=>{
-btn.addEventListener("click",e=>{
-e.stopPropagation();
-const mi = Number(btn.closest(".measure").dataset.mi);
-measures[mi].slots[Number(btn.dataset.trash)] = null;
+function bindChordMeasureEvents(){
+measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>input.addEventListener("input",()=>{
+const mi=Number(input.dataset.annotation); if(measures[mi]) measures[mi].textAnnotation=input.value;
+}));
+measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();handlePlayAction("measure",Number(btn.dataset.playMeasure));}));
+measuresEl.querySelectorAll(".slot").forEach(slot=>slot.addEventListener("click",e=>{
+const mi=Number(slot.closest(".measure").dataset.mi), si=Number(slot.dataset.si);
+selectedMeasure=mi; selected={mi,si}; const ch=measures[mi].slots[si]; if(ch) openModifier(mi,si); else openNote(mi,si); render();
+}));
+measuresEl.querySelectorAll("[data-trash]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation(); const mi=Number(btn.closest(".measure").dataset.mi); measures[mi].slots[Number(btn.dataset.trash)]=null; render();}));
+measuresEl.querySelectorAll("[data-rit]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openRitorneloModal(Number(btn.dataset.rit));}));
+measuresEl.querySelectorAll("[data-meter]").forEach(sel=>sel.addEventListener("change",()=>{
+const mi=Number(sel.dataset.meter), old=measures[mi], count=slotCount({...old,meter:sel.value});
+old.meter=sel.value; old.slots=Array.from({length:count},(_,i)=>old.slots[i]||null); selectedMeasure=mi; render();
+}));
+measuresEl.querySelectorAll("[data-sub-up]").forEach(btn=>btn.addEventListener("click",()=>changeSubdivision(Number(btn.dataset.subUp),1)));
+measuresEl.querySelectorAll("[data-sub-down]").forEach(btn=>btn.addEventListener("click",()=>changeSubdivision(Number(btn.dataset.subDown),-1)));
+measuresEl.querySelectorAll("[data-repeat-up]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatUp);measures[mi].repeats=Math.min(99,(measures[mi].repeats||1)+1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-repeat-down]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatDown);measures[mi].repeats=Math.max(1,(measures[mi].repeats||1)-1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-del]").forEach(btn=>btn.addEventListener("click",e=>{
+e.stopPropagation(); const mi=Number(btn.dataset.del);
+if(measures.length===1){measures[0]={meter:"4/4",subdivision:1,repeats:1,ritornelo:null,ritorneloRepeats:1,textAnnotation:"",slots:[null,null,null,null]};}
+else{measures.splice(mi,1);measures.forEach(m=>{if(m.ritornelo===mi){m.ritornelo=null;m.ritorneloRepeats=1;}else if(m.ritornelo>mi)m.ritornelo--;});selectedMeasure=Math.max(0,Math.min(selectedMeasure,measures.length-1));}
 render();
-});
-});
-
-measuresEl.querySelectorAll("[data-del]").forEach(btn=>{
-btn.addEventListener("click",e=>{
-e.stopPropagation();
-const mi = Number(btn.dataset.del);
-if(measures.length<=1){
-measures[0] = makeEmptyMeasures()[0];
-}else{
-measures.splice(mi,1);
-selectedMeasure = Math.max(0,Math.min(selectedMeasure,measures.length-1));
-}
-render();
-});
-});
-
-measuresEl.querySelectorAll("[data-meter]").forEach(select=>{
-select.addEventListener("change",()=>{
-const mi = Number(select.dataset.meter);
-const m = measures[mi];
-const oldSlots = m.slots || [];
-const [,beatsNum] = getMeter(select.value);
-const total = beatsNum*(m.subdivision||1)*3;
-m.meter = select.value;
-m.slots = Array.from({length:total},(_,i)=>oldSlots[i] || null);
-render();
-});
-});
+}));
 }
 
+function bindDrumMeasureEvents(){
+measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>input.addEventListener("input",()=>{const mi=Number(input.dataset.annotation);if(measures[mi]) measures[mi].textAnnotation=input.value;}));
+measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();handlePlayAction("measure",Number(btn.dataset.playMeasure));}));
+measuresEl.querySelectorAll(".slot").forEach(slot=>slot.addEventListener("click",()=>{const mi=Number(slot.closest(".measure").dataset.mi),si=Number(slot.dataset.si);selectedMeasure=mi;selected={mi,si};openDrumModal(mi,si);}));
+measuresEl.querySelectorAll("[data-trash]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.closest(".measure").dataset.mi);measures[mi].slots[Number(btn.dataset.trash)]=null;render();}));
+measuresEl.querySelectorAll("[data-del]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.dataset.del);if(measures.length<=1){measures[0]=makeEmptyDrumMeasures()[0];}else{measures.splice(mi,1);selectedMeasure=Math.max(0,Math.min(selectedMeasure,measures.length-1));}render();}));
+measuresEl.querySelectorAll("[data-meter]").forEach(sel=>sel.addEventListener("change",()=>{
+const mi=Number(sel.dataset.meter),m=measures[mi],oldSlots=m.slots||[],oldSub=m.subdivision||1;const [,beatsNum]=getMeter(sel.value);const oldBeats=getMeter(m.meter)[1];
+let next=[];for(let v=0;v<3;v++){for(let s=0;s<beatsNum*oldSub;s++){next.push(oldSlots[v*oldBeats*oldSub+s]||null);}}
+m.meter=sel.value;m.slots=next;selectedMeasure=mi;render();
+}));
+measuresEl.querySelectorAll("[data-sub-up]").forEach(btn=>btn.addEventListener("click",()=>changeDrumSubdivision(Number(btn.dataset.subUp),1)));
+measuresEl.querySelectorAll("[data-sub-down]").forEach(btn=>btn.addEventListener("click",()=>changeDrumSubdivision(Number(btn.dataset.subDown),-1)));
+}
+
+function changeSubdivision(mi,direction){
+const m=measures[mi]; if(!m)return;
+const levels=[1,2,4,8]; const currentIndex=levels.indexOf(m.subdivision||1); const nextIndex=Math.max(0,Math.min(levels.length-1,currentIndex+direction)); if(nextIndex===currentIndex)return;
+const oldSlots=m.slots.map(s=>s?JSON.parse(JSON.stringify(s)):null); const oldSub=m.subdivision||1; const nextSub=levels[nextIndex];
+if(nextSub>oldSub){m.subdivision=nextSub;const factor=nextSub/oldSub;m.slots=Array.from({length:slotCount(m)},(_,i)=>{const item=oldSlots[Math.floor(i/factor)];return item?JSON.parse(JSON.stringify(item)):null;});}
+else{const factor=oldSub/nextSub;const nextCount=getMeter(m.meter)[1]*nextSub;m.subdivision=nextSub;m.slots=Array.from({length:nextCount},(_,i)=>{for(let j=0;j<factor;j++){const value=oldSlots[i*factor+j];if(value)return JSON.parse(JSON.stringify(value));}return null;});}
+selectedMeasure=mi;render();
+}
+
+function changeDrumSubdivision(mi,direction){
+const m=measures[mi]; if(!m)return;
+const levels=[1,2,4,8]; const currentIndex=levels.indexOf(m.subdivision||1); const nextIndex=Math.max(0,Math.min(levels.length-1,currentIndex+direction)); if(nextIndex===currentIndex)return;
+const oldSub=m.subdivision||1; const nextSub=levels[nextIndex]; const [,beatsNum]=getMeter(m.meter); const oldSlots=(m.slots||[]).map(s=>s?JSON.parse(JSON.stringify(s)):null); const nextSlots=[];
+for(let v=0;v<3;v++){
+const oldBase=v*beatsNum*oldSub;
+if(nextSub>oldSub){const factor=nextSub/oldSub;for(let i=0;i<beatsNum*nextSub;i++){const item=oldSlots[oldBase+Math.floor(i/factor)];nextSlots.push(item?JSON.parse(JSON.stringify(item)):null);}}
+else{const factor=oldSub/nextSub;for(let i=0;i<beatsNum*nextSub;i++){let value=null;for(let j=0;j<factor;j++){const item=oldSlots[oldBase+i*factor+j];if(item){value=JSON.parse(JSON.stringify(item));break;}}nextSlots.push(value);}}
+}
+m.subdivision=nextSub;m.slots=nextSlots;selectedMeasure=mi;render();
+}
+
+function openRitorneloModal(mi){
+editingRitorneloMi=mi;const sel=$("#ritorneloSelect");let opts='<option value="">Sem ritornelo (segue direto)</option>';for(let i=0;i<mi;i++)opts+=`<option value="${i}">Compasso ${i+1}</option>`;sel.innerHTML=opts;const currentRit=measures[mi].ritornelo;if(currentRit!==null&&currentRit!==undefined&&currentRit<mi)sel.value=currentRit;const repeats=measures[mi].ritorneloRepeats||1;$("#ritorneloRepeats").value=String(Math.max(1,Math.min(20,repeats)));openOverlay("ritorneloOverlay");
+}
+
+$("#saveRitornelo").addEventListener("click",()=>{if(editingRitorneloMi!==null){const val=$("#ritorneloSelect").value;if(val===""){measures[editingRitorneloMi].ritornelo=null;measures[editingRitorneloMi].ritorneloRepeats=1;}else{measures[editingRitorneloMi].ritornelo=Number(val);measures[editingRitorneloMi].ritorneloRepeats=Math.max(1,Number($("#ritorneloRepeats").value)||1);}render();}closeOverlay("ritorneloOverlay");});
+$("#clearRitornelo").addEventListener("click",()=>{if(editingRitorneloMi!==null){measures[editingRitorneloMi].ritornelo=null;measures[editingRitorneloMi].ritorneloRepeats=1;render();}closeOverlay("ritorneloOverlay");});
 
 $("#newProjectBtn").addEventListener("click",()=>startNewProject(false));
 $("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
-
 $("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
 $("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
 
-function handleFileOpen(file, forcedDrum){
-if(!file) return;
-const reader = new FileReader();
-reader.onload = ()=>{
-try{
-const project = JSON.parse(reader.result);
-if(!project || !Array.isArray(project.measures)) throw new Error("Formato inválido");
-project.isDrumProject = forcedDrum ? true : !!project.isDrumProject;
-if(!project.id) project.id = "project_" + Date.now();
-saveRecentProject(project);
-openProject(project);
-renderRecentProjects();
-}catch(e){
-alert("Não foi possível abrir este arquivo. Verifique se ele é um projeto JSON válido.");
-}
-};
+function handleFileOpen(file,forcedDrum){
+if(!file)return;
+const reader=new FileReader();
+reader.onload=()=>{try{const project=JSON.parse(reader.result);if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");project.isDrumProject=forcedDrum?true:!!project.isDrumProject;if(!project.id)project.id="project_"+Date.now();saveRecentProject(project);openProject(project);renderRecentProjects();}catch(e){alert("Não foi possível abrir este arquivo. Verifique se é um projeto JSON válido.");}};
 reader.readAsText(file);
 }
 
-$("#fileInput").addEventListener("change",e=>{
-handleFileOpen(e.target.files[0],false);
-e.target.value="";
-});
-$("#fileInputDrum").addEventListener("change",e=>{
-handleFileOpen(e.target.files[0],true);
-e.target.value="";
-});
+$("#fileInput").addEventListener("change",e=>{handleFileOpen(e.target.files[0],false);e.target.value="";});
+$("#fileInputDrum").addEventListener("change",e=>{handleFileOpen(e.target.files[0],true);e.target.value="";});
+
+function openNote(mi,si){
+selected={mi,si};
+$("#noteGrid").innerHTML=NOTES.map(n=>`<button class="note-btn" data-note="${n}">${n}</button>`).join("");
+$("#noteGrid").querySelectorAll("[data-note]").forEach(b=>b.addEventListener("click",()=>{
+measures[mi].slots[si]={root:b.dataset.note,quality:"major",bass:""};
+closeOverlay("noteOverlay");render();previewChord(measures[mi].slots[si]);setTimeout(()=>openModifier(mi,si),120);
+}));
+openOverlay("noteOverlay");
+}
+
+function openModifier(mi,si){selected={mi,si};const ch=measures[mi].slots[si];if(!ch)return openNote(mi,si);populateBass(ch);openOverlay("modifierOverlay");}
+function populateBass(ch){const sel=$("#bassSelect"),idx=NOTES.indexOf(ch.root),candidates=[ch.root,NOTES[(idx+2)%12],NOTES[(idx+4)%12],NOTES[(idx+7)%12]];sel.innerHTML='<option value="">Sem baixo específico</option>'+[...new Set(candidates)].map(n=>`<option value="${n}" ${ch.bass===n?"selected":""}>${n}</option>`).join("");}
+
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeOverlay(b.dataset.close)));
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
+document.querySelectorAll(".mod-btn").forEach(b=>b.addEventListener("click",()=>{const ch=measures[selected.mi].slots[selected.si];if(!ch)return;ch.quality=b.dataset.mod;ch.bass=$("#bassSelect").value;closeOverlay("modifierOverlay");render();previewChord(ch);}));
+$("#bassSelect").addEventListener("change",()=>{const ch=measures[selected.mi]?.slots[selected.si];if(ch)ch.bass=$("#bassSelect").value;});
+$("#clearCurrent").addEventListener("click",()=>{if(measures[selected.mi])measures[selected.mi].slots[selected.si]=null;closeOverlay("modifierOverlay");render();});
 
 $("#addMeasure").addEventListener("click",()=>{
-const base = measures[measures.length-1] || makeEmptyMeasures()[0];
-const [,beatsNum] = getMeter(base.meter);
-measures.push({
-meter:base.meter,
-subdivision:base.subdivision || 1,
-repeats:1,
-ritornelo:null,
-ritorneloRepeats:1,
-textAnnotation:"",
-slots:Array.from({length:beatsNum*(base.subdivision||1)*3},()=>null)
-});
-selectedMeasure = measures.length-1;
-render();
+const base=measures[measures.length-1] || (isCurrentProjectDrum?makeEmptyDrumMeasures()[0]:makeEmptyChordMeasures()[0]);
+const [,beatsNum]=getMeter(base.meter);
+measures.push({meter:base.meter,subdivision:base.subdivision||1,repeats:1,ritornelo:null,ritorneloRepeats:1,textAnnotation:"",slots:Array.from({length:beatsNum*(base.subdivision||1)*(isCurrentProjectDrum?3:1)},()=>null)});
+selectedMeasure=measures.length-1;render();
 });
 
 function openDrumModal(mi, si){
@@ -1539,172 +1819,130 @@ osc.start(when); osc.stop(when+.055);
 }
 
 function slotDuration(m){
-const [,num,den] = getMeter(m.meter);
+const [,num,den]=getMeter(m.meter);
 return 60/getBpm()*(4/den);
 }
 
 function updateActiveSlotDOM(mi,si){
 document.querySelectorAll(".measures-wrap .measure").forEach((mEl,mIdx)=>{
-if(mIdx===mi) mEl.classList.add("playing"); else mEl.classList.remove("playing");
-mEl.querySelectorAll(".slot").forEach((sEl,sIdx)=>{
-if(mIdx===mi && sIdx===si) sEl.classList.add("active-slot"); else sEl.classList.remove("active-slot");
-});
+if(mIdx===mi)mEl.classList.add("playing");else mEl.classList.remove("playing");
+mEl.querySelectorAll(".slot").forEach((sEl,sIdx)=>{if(mIdx===mi&&sIdx===si)sEl.classList.add("active-slot");else sEl.classList.remove("active-slot");});
 });
 }
 
-function renderFullscreenMeasures(activeMi, activeSi){
-const targetMeasures = activeFullscreenProject ? activeFullscreenProject.measures : measures;
-fsMeasuresEl.innerHTML = "";
-targetMeasures.forEach((m, mi)=>{
-const el = document.createElement("article");
-el.className = "measure" + (mi===activeMi ? " playing" : "");
-const [, beatsNum] = getMeter(m.meter);
-const totalSlotsPerVoice = beatsNum * m.subdivision;
-let voiceHtmls = [];
-for (let v = 0; v < 3; v++) {
-  let voiceSlots = "";
-  for (let s = 0; s < totalSlotsPerVoice; s++) {
-    const realIndex = v * totalSlotsPerVoice + s;
-    const ch = m.slots[realIndex];
-    const isActive = activeMi === mi && activeSi === realIndex;
-    const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
-    voiceSlots += `<div class="${slotClass}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div></div>`;
-  }
-  voiceHtmls.push(`
-    <div class="drum-voice-row">
-      <span class="drum-voice-label">Voz ${v+1}</span>
-      <div class="slots" style="min-height:36px;">${voiceSlots}</div>
-    </div>
-  `);
+function noteFreq(note,octave=4){
+const idx=NOTES.indexOf(note);const midi=60+idx+(octave-4)*12;return 440*Math.pow(2,(midi-69)/12);
 }
-el.innerHTML = `
-<div class="measure-top">
-<div class="measure-title">Comp. ${mi+1}</div>
-<div class="measure-annotation-input" style="border:none;background:transparent;color:var(--yellow);font-size:13px;text-align:center;">${escapeHtml(m.textAnnotation || '')}</div>
-</div>
-<div class="drum-voices-container">${voiceHtmls.join("")}</div>
-`;
+
+function chordNotes(ch){
+const rootIdx=NOTES.indexOf(ch.root);if(rootIdx<0)return [];
+const intervals=ch.quality==="minor"?[0,3,7]:ch.quality==="dim"?[0,3,6]:ch.quality==="sus2"?[0,2,7]:[0,4,7];
+let arr=intervals.map((x,i)=>{const n=NOTES[(rootIdx+x)%12];const oct=3+Math.floor((rootIdx+x)/12)+(i===0?1:0);return {note:n,oct};});
+if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)arr.unshift({note:ch.bass,oct:3+(bi<rootIdx?1:0)});}
+return arr;
+}
+
+function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0){
+const ctx=audioCtx,osc=ctx.createOscillator(),osc2=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();
+osc.type="triangle";osc2.type="sine";osc.frequency.setValueAtTime(freq,when);osc2.frequency.setValueAtTime(freq*2,when);filter.type="lowpass";filter.frequency.setValueAtTime(3400,when);filter.Q.value=.75;
+gain.gain.setValueAtTime(.0001,when);gain.gain.exponentialRampToValueAtTime(.26*velocity,when+.012);gain.gain.exponentialRampToValueAtTime(.16*velocity,when+.22);gain.gain.exponentialRampToValueAtTime(.105*velocity,when+.75);gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
+osc.connect(filter);osc2.connect(filter);filter.connect(gain);gain.connect(masterGain||ctx.destination);osc.start(when);osc2.start(when);osc.stop(when+duration+.05);osc2.stop(when+duration+.05);
+}
+
+function playChord(ch,when=audioCtx.currentTime){if(!ch)return;chordNotes(ch).forEach((n,i)=>pluck(noteFreq(n.note,n.oct),when+i*.018,2.6,.95));}
+function previewChord(ch){ensureAudio();updateMasterVolume();playChord(ch);}
+
+function tick(when=audioCtx.currentTime,accent=false){
+const metroVol=parseFloat($("#metroVolume").value||"1.5");if(metroVol<=0)return;const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type="square";osc.frequency.value=accent?1300:900;const baseGain=accent?.055:.035;g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(baseGain*metroVol,when+.002);g.gain.exponentialRampToValueAtTime(.0001,when+.045);osc.connect(g);g.connect(masterGain||audioCtx.destination);osc.start(when);osc.stop(when+.055);
+}
+
+function waitForResume(){return new Promise(resolve=>{playbackPromiseResolve=resolve;});}
+
+async function handlePlayAction(mode,startMi){
+ensureAudio();await audioCtx.resume();
+if(playbackState==="PLAYING"){playbackState="PAUSED";syncControlsUI();return;}
+if(playbackState==="PAUSED"){playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
+playbackRunId++;const currentRun=playbackRunId;playbackState="PLAYING";playbackMode=mode;syncControlsUI();
+const targetMeasures=activeFullscreenProject?activeFullscreenProject.measures:measures;ritorneloCounters={};
+if(mode==="measure"){
+if(startMi<0||startMi>=targetMeasures.length){stopPlaybackCompletely();return;}
+const mi=startMi,m=targetMeasures[mi],repetitions=Math.max(1,m.repeats||1);
+for(let rep=0;rep<repetitions;rep++){
+for(let si=0;si<m.slots.length && playbackState!=="STOPPED" && playbackRunId===currentRun;si++){
+while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
+if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
+const when=audioCtx.currentTime+.035;activePlayingSlot={mi,si};if(activeFullscreenProject)renderFullscreenMeasures(mi,si);else updateActiveSlotDOM(mi,si);
+if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
+if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
+await sleep(slotDuration(m)*1000);
+}
+}
+if(playbackRunId===currentRun)stopPlaybackCompletely();return;
+}
+currentPlayMi=Math.max(0,Math.min(startMi,targetMeasures.length-1));currentPlaySi=0;currentPlayRep=0;
+while(currentPlayMi>=0&&currentPlayMi<targetMeasures.length&&playbackState!=="STOPPED"&&playbackRunId===currentRun){
+selectedMeasure=currentPlayMi;const m=targetMeasures[currentPlayMi],repetitions=Math.max(1,m.repeats||1);
+for(let rep=currentPlayRep;rep<repetitions&&playbackState!=="STOPPED"&&playbackRunId===currentRun;rep++){
+currentPlayRep=rep;const startSi=currentPlaySi||0;
+for(let si=startSi;si<m.slots.length&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
+currentPlaySi=si;while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
+const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
+if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
+if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
+await sleep(slotDuration(m)*1000);
+}
+currentPlaySi=0;
+}
+currentPlayRep=0;currentPlaySi=0;
+if(!isCurrentProjectDrum&&m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<currentPlayMi){const ritKey=String(currentPlayMi),maxReturns=Math.max(1,m.ritorneloRepeats||1),used=ritorneloCounters[ritKey]||0;if(used<maxReturns){ritorneloCounters[ritKey]=used+1;currentPlayMi=m.ritornelo;currentPlaySi=0;currentPlayRep=0;continue;}}
+currentPlayMi++;currentPlaySi=0;currentPlayRep=0;
+}
+if(playbackRunId===currentRun)stopPlaybackCompletely();
+}
+
+function stopPlaybackCompletely(){
+playbackRunId++;playbackState="STOPPED";playbackMode="all";ritorneloCounters={};if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}activePlayingSlot={mi:-1,si:-1};currentPlayMi=0;currentPlaySi=0;currentPlayRep=0;syncControlsUI();render();if(activeFullscreenProject)renderFullscreenMeasures(-1,-1);
+}
+
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
+function renderFullscreenMeasures(activeMi,activeSi){
+if(!activeFullscreenProject)return;
+fsMeasuresEl.innerHTML="";
+activeFullscreenProject.measures.forEach((m,mi)=>{
+const el=document.createElement("article");el.className="measure"+(mi===activeMi?" playing":"");
+if(isCurrentProjectDrum || activeFullscreenProject.isDrumProject){
+const [,beatsNum]=getMeter(m.meter),totalSlotsPerVoice=beatsNum*(m.subdivision||1);let voiceHtmls=[];
+for(let v=0;v<3;v++){let voiceSlots="";for(let s=0;s<totalSlotsPerVoice;s++){const idx=v*totalSlotsPerVoice+s,ch=m.slots[idx],isActive=activeMi===mi&&activeSi===s,slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");voiceSlots+=`<div class="${slotClass}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div></div>`;}voiceHtmls.push(`<div class="drum-voice-row"><span class="drum-voice-label">Voz ${v+1}</span><div class="slots" style="min-height:36px;">${voiceSlots}</div></div>`);}
+el.innerHTML=`<div class="measure-top"><div class="measure-title">Comp. ${mi+1}</div><div class="measure-annotation-input" style="border:none;background:transparent;color:var(--yellow);font-size:13px;text-align:center;">${escapeHtml(m.textAnnotation||"")}</div></div><div class="drum-voices-container">${voiceHtmls.join("")}</div>`;
+}else{
+const slots=Array.from({length:slotCount(m)},(_,si)=>{const ch=m.slots[si],isActive=mi===activeMi&&si===activeSi,slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");return `<div class="${slotClass}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div></div>`;}).join("");
+const annotationHtml=m.textAnnotation?`<div class="measure-annotation-display">${escapeHtml(m.textAnnotation)}</div>`:"";
+el.innerHTML=`<div class="measure-top"><div class="measure-title">Comp. ${mi+1}${m.ritornelo!==null&&m.ritornelo!==undefined?' ↩('+(m.ritornelo+1)+')':""}</div>${annotationHtml}</div><div class="slots">${slots}</div>`;
+}
 fsMeasuresEl.appendChild(el);
 });
 }
 
-function waitForResume(){
-return new Promise(resolve=>{ playbackPromiseResolve = resolve; });
-}
-
-async function handlePlayAction(mode, startMi){
-ensureAudio();
-await audioCtx.resume();
-loadDrumSamples();
-
-if(playbackState==="PLAYING"){
-playbackState="PAUSED";
-syncControlsUI();
-return;
-}
-if(playbackState==="PAUSED"){
-playbackState="PLAYING";
-if(playbackPromiseResolve){
-const resolveFn = playbackPromiseResolve;
-playbackPromiseResolve = null;
-resolveFn();
-}
-syncControlsUI();
-return;
-}
-
-playbackRunId++;
-const currentRun = playbackRunId;
-playbackState="PLAYING";
-syncControlsUI();
-
-const targetMeasures = activeFullscreenProject ? activeFullscreenProject.measures : measures;
-const [, beatsNum] = getMeter(targetMeasures[0]?.meter || "4/4");
-const subdivisionVal = targetMeasures[0]?.subdivision || 1;
-const slotsPerVoice = beatsNum * subdivisionVal;
-
-if(mode==="measure"){
-if(startMi<0 || startMi>=targetMeasures.length){ stopPlaybackCompletely(); return; }
-const mi = startMi;
-const m = targetMeasures[mi];
-for(let si=0; si<slotsPerVoice; si++){
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) break;
-while(playbackState==="PAUSED" && playbackRunId===currentRun){ await waitForResume(); }
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) break;
-const when = audioCtx.currentTime+.035;
-if(metronomeOn){ tick(when, si%m.subdivision===0); }
-for(let v=0; v<3; v++){
-  const realSlotIdx = v * slotsPerVoice + si;
-  if(m.slots[realSlotIdx]){ playDrumSound(m.slots[realSlotIdx].root, when); }
-}
-activePlayingSlot = {mi, si};
-if(activeFullscreenProject){ renderFullscreenMeasures(mi, si); } else { updateActiveSlotDOM(mi, si); }
-await sleep(slotDuration(m)*1000);
-}
-if(playbackRunId===currentRun){ stopPlaybackCompletely(); }
-return;
-}
-
-currentPlayMi = Math.max(0, Math.min(startMi, targetMeasures.length-1));
-currentPlaySi=0;
-
-while(currentPlayMi>=0 && currentPlayMi<targetMeasures.length && playbackState!=="STOPPED" && playbackRunId===currentRun){
-const m = targetMeasures[currentPlayMi];
-for(let si=currentPlaySi; si<slotsPerVoice && playbackState!=="STOPPED" && playbackRunId===currentRun; si++){
-currentPlaySi = si;
-while(playbackState==="PAUSED" && playbackRunId===currentRun){ await waitForResume(); }
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) break;
-const when = audioCtx.currentTime+.035;
-if(metronomeOn){ tick(when, si%m.subdivision===0); }
-for(let v=0; v<3; v++){
-  const realSlotIdx = v * slotsPerVoice + si;
-  if(m.slots[realSlotIdx]){ playDrumSound(m.slots[realSlotIdx].root, when); }
-}
-activePlayingSlot={mi:currentPlayMi, si};
-if(activeFullscreenProject){ renderFullscreenMeasures(currentPlayMi, si); } else { updateActiveSlotDOM(currentPlayMi, si); }
-await sleep(slotDuration(m)*1000);
-}
-currentPlayMi++;
-currentPlaySi=0;
-}
-if(playbackRunId===currentRun){ stopPlaybackCompletely(); }
-}
-
-function stopPlaybackCompletely(){
-playbackRunId++;
-playbackState="STOPPED";
-if(playbackPromiseResolve){
-const resolveFn = playbackPromiseResolve;
-playbackPromiseResolve = null;
-resolveFn();
-}
-activePlayingSlot={mi:-1, si:-1};
-syncControlsUI();
-render();
-if(activeFullscreenProject){ renderFullscreenMeasures(-1,-1); }
-}
-
-function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
-
-
 async function handleDemoPlay(){
-if(!activeFullscreenProject) return;
+if(!activeFullscreenProject)return;
 ensureAudio();
 await audioCtx.resume();
 loadDrumSamples();
 
 if(playbackState==="PLAYING"){
 playbackState="PAUSED";
+demoPauseStartedAt=performance.now();
 syncControlsUI();
 return;
 }
+
 if(playbackState==="PAUSED"){
+const pausedFor=performance.now()-demoPauseStartedAt;
+demoTargetEndAt+=pausedFor;
+demoPauseStartedAt=0;
 playbackState="PLAYING";
-if(playbackPromiseResolve){
-const resolveFn=playbackPromiseResolve;
-playbackPromiseResolve=null;
-resolveFn();
-}
+if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}
 syncControlsUI();
 return;
 }
@@ -1712,75 +1950,114 @@ return;
 playbackRunId++;
 const currentRun=playbackRunId;
 playbackState="PLAYING";
+demoTargetEndAt=performance.now()+(fullscreenDurationMinutes*60000);
+demoPauseStartedAt=0;
 syncControlsUI();
 
-const targetMeasures=activeFullscreenProject.measures || [];
-const repeatTotal=Math.max(1,Math.min(20,fullscreenRepeatCount));
+const targetMeasures=activeFullscreenProject.measures||[];
+if(!targetMeasures.length){stopPlaybackCompletely();return;}
 
-for(let rep=0;rep<repeatTotal;rep++){
+while(playbackState!=="STOPPED" && playbackRunId===currentRun && performance.now()<demoTargetEndAt){
 for(let mi=0;mi<targetMeasures.length;mi++){
+if(performance.now()>=demoTargetEndAt)break;
 const m=targetMeasures[mi];
 const [,beatsNum]=getMeter(m.meter);
 const subdivisionVal=m.subdivision||1;
 const slotsPerVoice=beatsNum*subdivisionVal;
-
 for(let si=0;si<slotsPerVoice;si++){
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) return;
-while(playbackState==="PAUSED" && playbackRunId===currentRun){ await waitForResume(); }
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) return;
-
+if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
+if(performance.now()>=demoTargetEndAt)break;
+while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
+if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
+if(performance.now()>=demoTargetEndAt)break;
 const when=audioCtx.currentTime+.035;
-if(metronomeOn) tick(when,si%subdivisionVal===0);
+if(metronomeOn)tick(when,si%subdivisionVal===0);
 for(let v=0;v<3;v++){
-const realSlotIdx=v*slotsPerVoice+si;
-if(m.slots[realSlotIdx]) playDrumSound(m.slots[realSlotIdx].root,when);
+const idx=v*slotsPerVoice+si;
+if(m.slots[idx])playDrumSound(m.slots[idx].root,when);
 }
+activePlayingSlot={mi,si};
 renderFullscreenMeasures(mi,si);
 await sleep(slotDuration(m)*1000);
 }
 }
 }
-if(playbackRunId===currentRun) stopPlaybackCompletely();
+
+if(playbackRunId===currentRun)stopPlaybackCompletely();
+}
+
+function createDefaultDemoProjects(){
+let demoList=[];
+const metersList=["3/4","4/4","6/8"];
+for(let i=1;i<=15;i++){
+const mtr=metersList[(i-1)%3];
+demoList.push({
+id:"demo_ritmo_"+i,
+isDrumProject:true,
+songName:`Ritmo ${mtr} - Exemplo ${i}`,
+songKey:"-",
+bpm:80+(i*2),
+metronomeOn:true,
+volume:2.0,
+metroVolume:1.5,
+measures:[{
+meter:mtr,
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:`Demonstração ${i}`,
+slots:Array.from({length:getMeter(mtr)[1]*3},(_,sIdx)=>{
+if(sIdx===0)return {root:"Bumbo"};
+if(sIdx===getMeter(mtr)[1])return {root:"Caixa"};
+return {root:"Hi-Hat Fechado"};
+})
+}]
+});
+}
+return demoList;
+}
+
+async function saveDemoProjectsToDrive(demos){
+const resposta=await fetch(DEMO_DRIVE_API_URL,{
+method:"POST",
+headers:{"Content-Type":"text/plain;charset=utf-8"},
+body:JSON.stringify({acao:"salvarDemos",demos:demos})
+});
+if(!resposta.ok)throw new Error("Erro ao salvar os demos no Google Drive.");
+const dados=await resposta.json();
+if(!dados.sucesso)throw new Error(dados.erro||"O Google Drive recusou o salvamento dos demos.");
+return dados;
+}
+
+async function loadDemoProjectsFromDrive(){
+if(demoDriveSyncPromise)return demoDriveSyncPromise;
+demoDriveSyncPromise=(async()=>{
+try{
+const resposta=await fetch(DEMO_DRIVE_API_URL+"?acao=carregarDemos&_="+Date.now());
+if(!resposta.ok)throw new Error("Erro ao carregar os demos do Google Drive.");
+const dados=await resposta.json();
+if(dados.sucesso && Array.isArray(dados.demos) && dados.demos.length>=15){
+localStorage.setItem("notacaoMusicalCRichlessDemo15",JSON.stringify(dados.demos));
+return dados.demos;
+}
+const locais=getDemoProjects();
+await saveDemoProjectsToDrive(locais);
+return locais;
+}catch(e){
+console.error("Sincronização dos demos com Google Drive:",e);
+return getDemoProjects();
+}
+})();
+return demoDriveSyncPromise;
 }
 
 function getDemoProjects(){
-let demoList = [];
-try{
-demoList = JSON.parse(localStorage.getItem("notacaoMusicalCRichlessDemo15") || "[]");
-}catch(e){ demoList = []; }
-
-if(demoList.length < 15){
-demoList = [];
-const metersList = ["3/4", "4/4", "6/8"];
-for(let i=1; i<=15; i++){
-const mtr = metersList[(i-1)%3];
-demoList.push({
-id: "demo_ritmo_" + i,
-isDrumProject: true,
-songName: `Ritmo ${mtr} - Exemplo ${i}`,
-songKey: "-",
-bpm: 80 + (i * 2),
-metronomeOn: true,
-volume: 2.0,
-metroVolume: 1.5,
-measures: [
-{
-meter: mtr,
-subdivision: 1,
-repeats: 1,
-ritornelo: null,
-ritorneloRepeats: 1,
-textAnnotation: `Demonstração ${i}`,
-slots: Array.from({length: getMeter(mtr)[1] * 3}, (_, sIdx) => {
-if(sIdx === 0) return { root: "Bumbo" };
-if(sIdx === getMeter(mtr)[1]) return { root: "Caixa" };
-return { root: "Hi-Hat Fechado" };
-})
-}
-]
-});
-}
-localStorage.setItem("notacaoMusicalCRichlessDemo15", JSON.stringify(demoList));
+let demoList=[];
+try{demoList=JSON.parse(localStorage.getItem("notacaoMusicalCRichlessDemo15")||"[]");}catch(e){demoList=[];}
+if(!Array.isArray(demoList)||demoList.length<15){
+demoList=createDefaultDemoProjects();
+localStorage.setItem("notacaoMusicalCRichlessDemo15",JSON.stringify(demoList));
 }
 return demoList;
 }
@@ -1864,7 +2141,9 @@ render();
 
 function openFullscreenProject(proj){
 activeFullscreenProject=proj;
-fullscreenRepeatCount=1;
+fullscreenDurationMinutes=1;
+demoTargetEndAt=0;
+demoPauseStartedAt=0;
 $("#fsSongTitle").textContent=proj.songName || "Música Demo";
 $("#fsSongMeta").textContent=`BPM: ${proj.bpm || 90}`;
 $("#bpm").value=proj.bpm || 90;
@@ -1872,7 +2151,7 @@ $("#volume").value=proj.volume ?? 2.0;
 $("#metroVolume").value=proj.metroVolume ?? 1.5;
 metronomeOn=proj.metronomeOn !== false;
 $("#fsEditBtn").style.display=isAdminMode ? "inline-flex" : "none";
-$("#fsRepeatDisplay").textContent=fullscreenRepeatCount+"x";
+$("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 syncControlsUI();
 $("#fullscreenModal").classList.add("open");
 renderFullscreenMeasures(-1,-1);
@@ -1880,10 +2159,11 @@ renderFullscreenMeasures(-1,-1);
 
 
 // BOTÃO VER DEMO NO TOPO
-$("#demoBateriaBtn").addEventListener("click",()=>{
-getDemoProjects();
+$("#demoBateriaBtn").addEventListener("click",async()=>{
 renderDemoListGrid();
 $("#demoListModal").classList.add("open");
+await loadDemoProjectsFromDrive();
+renderDemoListGrid();
 });
 
 $("#closeDemoList").addEventListener("click",()=>{
@@ -1896,7 +2176,7 @@ openOverlay("adminPasswordModal");
 setTimeout(()=>$("#adminPasswordInput").focus(),50);
 });
 
-$("#adminSubmitBtn").addEventListener("click",()=>{
+$("#adminSubmitBtn").addEventListener("click",async()=>{
 const pass=$("#adminPasswordInput").value;
 if(pass==="Ca@005521971585584"){
 isAdminMode=true;
@@ -1904,6 +2184,8 @@ isDemoMode=false;
 closeOverlay("adminPasswordModal");
 renderDemoListGrid();
 $("#demoListModal").classList.add("open");
+await loadDemoProjectsFromDrive();
+renderDemoListGrid();
 alert("Acesso Administrativo Autorizado! Agora você pode escolher e editar qualquer um dos 15 projetos demo.");
 }else{
 alert("Senha incorreta!");
@@ -1918,12 +2200,12 @@ $("#fsPlayAll").addEventListener("click",()=>handleDemoPlay());
 $("#fsStop").addEventListener("click",()=>stopPlaybackCompletely());
 
 $("#fsRepeatMinus").addEventListener("click",()=>{
-fullscreenRepeatCount=Math.max(1,fullscreenRepeatCount-1);
-$("#fsRepeatDisplay").textContent=fullscreenRepeatCount+"x";
+fullscreenDurationMinutes=Math.max(1,fullscreenDurationMinutes-1);
+$("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 });
 $("#fsRepeatPlus").addEventListener("click",()=>{
-fullscreenRepeatCount=Math.min(20,fullscreenRepeatCount+1);
-$("#fsRepeatDisplay").textContent=fullscreenRepeatCount+"x";
+fullscreenDurationMinutes=Math.min(120,fullscreenDurationMinutes+1);
+$("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 });
 
 $("#fsEditBtn").addEventListener("click",()=>{
@@ -1954,7 +2236,7 @@ switchView("homeView");
 renderRecentProjects();
 });
 
-$("#saveBtn").addEventListener("click",()=>{
+$("#saveBtn").addEventListener("click",async()=>{
 if(isAdminMode && currentProjectId && String(currentProjectId).startsWith("demo_")){
 const currentData=projectFromEditor();
 let demos=getDemoProjects();
@@ -1967,7 +2249,13 @@ id:currentProjectId,
 isDrumProject:true
 };
 localStorage.setItem("notacaoMusicalCRichlessDemo15",JSON.stringify(demos));
-alert("Projeto demo atualizado com sucesso pelo Administrador!");
+try{
+await saveDemoProjectsToDrive(demos);
+alert("Projeto demo atualizado e sincronizado no Google Drive. Todos os dispositivos receberão esta alteração.");
+}catch(e){
+console.error(e);
+alert("O projeto foi salvo neste navegador, mas não foi possível sincronizar com o Google Drive.");
+}
 }
 $("#status").innerHTML="<strong>Projeto demo salvo.</strong>";
 renderDemoListGrid();
@@ -1985,6 +2273,9 @@ renderRecentProjects();
 syncControlsUI();
 render();
 renderRecentProjects();
+loadDemoProjectsFromDrive().then(()=>{
+  if(document.querySelector("#demoListModal.open")) renderDemoListGrid();
+});
 </script>
 
 </body>
