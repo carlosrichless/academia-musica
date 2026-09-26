@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0d1629">
-<title>Notação Musical — por C. Richless</title>
+<title>Notação Musical — por C.Richless</title>
 
 <style>
 :root{
@@ -73,7 +73,15 @@ margin:15px auto
 .view{display:none}
 .view.active{display:block}
 
-/* HOME */
+/* HOME — DOIS CARDS LADO A LADO E RESPONSIVO */
+
+.home-main-container{
+display:flex;
+gap:20px;
+justify-content:center;
+margin-top:20px;
+flex-wrap:wrap;
+}
 
 .home-container{
 background:linear-gradient(180deg,#17243a,#121e33);
@@ -82,7 +90,9 @@ border-radius:14px;
 padding:20px;
 box-shadow:var(--shadow);
 text-align:center;
-margin-top:20px;
+flex:1;
+min-width:300px;
+max-width:560px;
 }
 
 .home-container h2{
@@ -106,7 +116,7 @@ flex-wrap:wrap;
 
 .projects-grid{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
 gap:12px;
 text-align:left;
 margin-top:15px;
@@ -805,12 +815,15 @@ padding:12px
 
 <section id="homeView" class="view active">
 
+<div class="home-main-container">
+
+<!-- CARD ESQUERDA: CORDAS -->
 <div class="home-container">
 
-<h2>🎵 Meus Projetos Musicais</h2>
+<h2>🎵 Meus Projetos Cordas</h2>
 
 <p>
-Crie um novo projeto, abra um arquivo salvo no seu dispositivo
+Crie um novo projeto de cordas, abra um arquivo salvo no seu dispositivo
 ou escolha um projeto recente.
 </p>
 
@@ -841,7 +854,7 @@ style="display:none">
 <div style="margin-top:25px;text-align:left;">
 
 <h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">
-Projetos Recentes 
+Projetos Recentes (Cordas)
 </h3>
 
 <div class="projects-grid" id="projectsGrid">
@@ -851,6 +864,59 @@ Nenhum projeto recente. Abra um arquivo ou crie um novo.
 </div>
 
 </div>
+</div>
+
+</div>
+
+<!-- CARD DIREITA: BATERIA -->
+<div class="home-container">
+
+<h2>🥁 Meus Projetos Bateria</h2>
+
+<p>
+Crie um novo projeto de bateria, abra um arquivo salvo no seu dispositivo
+ou escolha um projeto recente.
+</p>
+
+<div class="home-actions">
+
+<button
+class="btn green"
+id="newProjectBtnDrum"
+style="font-size:14px;padding:12px 20px;">
+＋ Criar Novo Projeto
+</button>
+
+<button
+class="btn primary"
+id="openFileBtnDrum"
+style="font-size:14px;padding:12px 20px;">
+📂 Abrir Arquivo do Dispositivo
+</button>
+
+<input
+type="file"
+id="fileInputDrum"
+accept=".json"
+style="display:none">
+
+</div>
+
+<div style="margin-top:25px;text-align:left;">
+
+<h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">
+Projetos Recentes (Bateria)
+</h3>
+
+<div class="projects-grid" id="projectsGridDrum">
+
+<div style="font-size:12px;color:var(--muted);padding:10px;">
+Nenhum projeto recente. Abra um arquivo ou crie um novo.
+</div>
+
+</div>
+</div>
+
 </div>
 
 </div>
@@ -952,7 +1018,7 @@ Projeto em edição
 
 <h2>Compassos</h2>
 
-<div class="hint">
+<div class="hint" id="editorHint">
 Toque em um slot para adicionar/editar o acorde.
 </div>
 
@@ -1088,24 +1154,44 @@ id="closeFullscreen">
 </div>
 
 
-<!-- NOTA -->
+<!-- NOTAS (CORDAS) -->
 
 <div class="overlay" id="noteOverlay">
 
 <div class="modal">
 
-<h3>Escolha o acorde</h3>
+<h3>Escolher Nota Fundamental</h3>
 
-<p>Selecione a nota fundamental.</p>
+<p>Selecione a nota para o acorde.</p>
 
 <div class="note-grid" id="noteGrid"></div>
 
 <div class="modal-foot">
-
 <button class="btn dark" data-close="noteOverlay">
 Cancelar
 </button>
+</div>
 
+</div>
+</div>
+
+
+<!-- BATERIA -->
+
+<div class="overlay" id="drumOverlay">
+
+<div class="modal">
+
+<h3>Escolher Elemento de Bateria</h3>
+
+<p>Selecione o instrumento de percussão.</p>
+
+<div class="note-grid" id="drumGrid" style="grid-template-columns:repeat(2,1fr);"></div>
+
+<div class="modal-foot">
+<button class="btn dark" data-close="drumOverlay">
+Cancelar
+</button>
 </div>
 
 </div>
@@ -1161,7 +1247,7 @@ Baixo / inversão
 <div class="modal-foot">
 
 <button class="btn danger" id="clearCurrent">
-🗑 Apagar acorde
+🗑 Apagar item
 </button>
 
 <button class="btn dark" data-close="modifierOverlay">
@@ -1256,6 +1342,15 @@ const NOTES = [
 "C","C#","D","D#","E","F","F#","G","G#","A","A#","B"
 ];
 
+const DRUMS = [
+"Bumbo",
+"Caixa",
+"Hi-Hat Fechado",
+"Hi-Hat Aberto",
+"Aro de Caixa",
+"Prato de Ataque"
+];
+
 const METERS = [
 ["2/4",2,4],
 ["3/4",3,4],
@@ -1276,6 +1371,7 @@ const METERS = [
 
 
 let currentProjectId = null;
+let isCurrentProjectDrum = false;
 
 let measures = [
 {
@@ -1320,12 +1416,7 @@ let playbackRunId = 0;
 
 let playbackMode = "all";
 
-/*
-Conta quantas vezes cada ritornelo já foi executado
-durante a reprodução atual.
-*/
 let ritorneloCounters = {};
-
 
 let metronomeOn = false;
 
@@ -1386,6 +1477,8 @@ return num * measure.subdivision;
 function chordLabel(ch){
 
 if(!ch) return "";
+
+if(isCurrentProjectDrum) return ch.root;
 
 let suffix =
 ch.quality==="minor" ? "m" :
@@ -1646,10 +1739,6 @@ input.value;
 });
 
 
-/*
-PLAY INDIVIDUAL DO CARD
-*/
-
 measuresEl
 .querySelectorAll("[data-play-measure]")
 .forEach(btn=>{
@@ -1661,21 +1750,12 @@ e.stopPropagation();
 const mi =
 Number(btn.dataset.playMeasure);
 
-/*
-IMPORTANTE:
-modo "measure" toca somente este compasso.
-*/
-
 handlePlayAction("measure",mi);
 
 });
 
 });
 
-
-/*
-SLOTS
-*/
 
 measuresEl
 .querySelectorAll(".slot")
@@ -1698,21 +1778,22 @@ selected = {mi,si};
 const ch =
 measures[mi].slots[si];
 
-if(ch)
-openModifier(mi,si);
-else
+if(ch) {
+if(isCurrentProjectDrum) {
+measures[mi].slots[si] = null;
 openNote(mi,si);
-
 render();
+} else {
+openModifier(mi,si);
+}
+} else {
+openNote(mi,si);
+}
 
 });
 
 });
 
-
-/*
-APAGAR ACORDE
-*/
 
 measuresEl
 .querySelectorAll("[data-trash]")
@@ -1739,10 +1820,6 @@ render();
 });
 
 
-/*
-RITORNELO
-*/
-
 measuresEl
 .querySelectorAll("[data-rit]")
 .forEach(btn=>{
@@ -1760,10 +1837,6 @@ openRitorneloModal(mi);
 
 });
 
-
-/*
-MÉTRICA
-*/
 
 measuresEl
 .querySelectorAll("[data-meter]")
@@ -1802,10 +1875,6 @@ render();
 });
 
 
-/*
-SUBDIVISÃO
-*/
-
 measuresEl
 .querySelectorAll("[data-sub-up]")
 .forEach(btn=>{
@@ -1831,10 +1900,6 @@ Number(btn.dataset.subDown),
 
 });
 
-
-/*
-REPETIÇÃO DO COMPASSO
-*/
 
 measuresEl
 .querySelectorAll("[data-repeat-up]")
@@ -1883,10 +1948,6 @@ render();
 
 });
 
-
-/*
-APAGAR COMPASSO
-*/
 
 measuresEl
 .querySelectorAll("[data-del]")
@@ -2177,7 +2238,7 @@ render();
 
 /*
 ===========================================================
-MODAIS
+MODAIS DE NOTAS / BATERIA
 ===========================================================
 */
 
@@ -2194,6 +2255,44 @@ function openNote(mi,si){
 
 selected={mi,si};
 
+if(isCurrentProjectDrum){
+
+$("#drumGrid").innerHTML =
+DRUMS.map(d=>
+`
+<button
+class="note-btn"
+data-drum="${d}"
+style="font-size:13px;padding:15px 8px;">
+🥁 ${d}
+</button>
+`
+).join("");
+
+$("#drumGrid")
+.querySelectorAll("[data-drum]")
+.forEach(b=>{
+
+b.addEventListener("click",()=>{
+
+measures[mi].slots[si]={
+root:b.dataset.drum
+};
+
+closeOverlay("drumOverlay");
+
+render();
+
+previewDrum(b.dataset.drum);
+
+});
+
+});
+
+openOverlay("drumOverlay");
+
+}else{
+
 $("#noteGrid").innerHTML =
 NOTES.map(n=>
 `
@@ -2204,7 +2303,6 @@ ${n}
 </button>
 `
 ).join("");
-
 
 $("#noteGrid")
 .querySelectorAll("[data-note]")
@@ -2235,8 +2333,9 @@ setTimeout(
 
 });
 
-
 openOverlay("noteOverlay");
+
+}
 
 }
 
@@ -2250,6 +2349,8 @@ measures[mi].slots[si];
 
 if(!ch)
 return openNote(mi,si);
+
+if(isCurrentProjectDrum) return;
 
 populateBass(ch);
 
@@ -2717,7 +2818,7 @@ audioCtx.currentTime,
 
 /*
 ===========================================================
-FREQUÊNCIAS
+FREQUÊNCIAS E SOM
 ===========================================================
 */
 
@@ -2798,12 +2899,6 @@ return arr;
 
 }
 
-
-/*
-===========================================================
-SOM
-===========================================================
-*/
 
 function pluck(
 freq,
@@ -2913,6 +3008,11 @@ when=audioCtx.currentTime
 
 if(!ch)return;
 
+if(isCurrentProjectDrum) {
+playDrumSound(ch.root, when);
+return;
+}
+
 chordNotes(ch)
 .forEach((n,i)=>
 pluck(
@@ -2923,6 +3023,54 @@ when+i*.018,
 )
 );
 
+}
+
+
+function playDrumSound(drumType, when=audioCtx.currentTime) {
+const ctx = audioCtx;
+const osc = ctx.createOscillator();
+const gain = ctx.createGain();
+
+osc.connect(gain);
+gain.connect(masterGain || ctx.destination);
+
+if (drumType === "Bumbo") {
+osc.type = "sine";
+osc.frequency.setValueAtTime(130, when);
+osc.frequency.exponentialRampToValueAtTime(40, when + 0.1);
+gain.gain.setValueAtTime(0.8, when);
+gain.gain.exponentialRampToValueAtTime(0.001, when + 0.15);
+osc.start(when);
+osc.stop(when + 0.15);
+} else if (drumType === "Caixa") {
+osc.type = "triangle";
+osc.frequency.setValueAtTime(180, when);
+gain.gain.setValueAtTime(0.5, when);
+gain.gain.exponentialRampToValueAtTime(0.001, when + 0.1);
+osc.start(when);
+osc.stop(when + 0.1);
+} else if (drumType === "Hi-Hat Fechado" || drumType === "Hi-Hat Aberto") {
+osc.type = "square";
+osc.frequency.setValueAtTime(800, when);
+gain.gain.setValueAtTime(0.3, when);
+gain.gain.exponentialRampToValueAtTime(0.001, when + (drumType === "Hi-Hat Aberto" ? 0.3 : 0.05));
+osc.start(when);
+osc.stop(when + (drumType === "Hi-Hat Aberto" ? 0.3 : 0.05));
+} else {
+osc.type = "sine";
+osc.frequency.setValueAtTime(400, when);
+gain.gain.setValueAtTime(0.4, when);
+gain.gain.exponentialRampToValueAtTime(0.001, when + 0.2);
+osc.start(when);
+osc.stop(when + 0.2);
+}
+}
+
+
+function previewDrum(drumType) {
+ensureAudio();
+updateMasterVolume();
+playDrumSound(drumType);
 }
 
 
@@ -2984,12 +3132,6 @@ when+.055
 }
 
 
-/*
-===========================================================
-DURAÇÃO
-===========================================================
-*/
-
 function slotDuration(m){
 
 const [,num,den] =
@@ -2999,12 +3141,6 @@ return 60/getBpm()*(4/den);
 
 }
 
-
-/*
-===========================================================
-ATUALIZAÇÃO VISUAL
-===========================================================
-*/
 
 function updateActiveSlotDOM(mi,si){
 
@@ -3046,12 +3182,6 @@ sEl.classList.remove(
 }
 
 
-/*
-===========================================================
-PAUSA INTELIGENTE
-===========================================================
-*/
-
 function waitForResume(){
 
 return new Promise(resolve=>{
@@ -3064,12 +3194,6 @@ resolve;
 }
 
 
-/*
-===========================================================
-PLAYER PRINCIPAL
-===========================================================
-*/
-
 async function handlePlayAction(
 mode,
 startMi
@@ -3079,13 +3203,6 @@ ensureAudio();
 
 await audioCtx.resume();
 
-
-/*
------------------------------------------------
-SE JÁ ESTÁ TOCANDO:
-CLICA = PAUSA
------------------------------------------------
-*/
 
 if(playbackState==="PLAYING"){
 
@@ -3097,13 +3214,6 @@ return;
 
 }
 
-
-/*
------------------------------------------------
-SE ESTÁ PAUSADO:
-CLICA = CONTINUA
------------------------------------------------
-*/
 
 if(playbackState==="PAUSED"){
 
@@ -3128,12 +3238,6 @@ return;
 }
 
 
-/*
------------------------------------------------
-NOVO PLAY
------------------------------------------------
-*/
-
 playbackRunId++;
 
 const currentRun =
@@ -3146,44 +3250,14 @@ playbackMode=mode;
 syncControlsUI();
 
 
-/*
-Seleciona a fonte correta.
-
-Editor:
-    measures
-
-Tela cheia:
-    activeFullscreenProject.measures
-*/
-
 const targetMeasures =
 activeFullscreenProject
 ? activeFullscreenProject.measures
 : measures;
 
 
-/*
-ZERA CONTADORES DOS RITORNELOS
-*/
-
 ritorneloCounters = {};
 
-
-/*
------------------------------------------------
-MODO COMPASSO
------------------------------------------------
-
-Este é o ponto importante:
-
-O botão ▶ de cada card NÃO chama
-mais o player geral.
-
-Ele executa somente o compasso escolhido.
-
-Depois do compasso ele encerra.
------------------------------------------------
-*/
 
 if(mode==="measure"){
 
@@ -3245,10 +3319,6 @@ playbackRunId!==currentRun
 break;
 
 
-/*
-PAUSA
-*/
-
 while(
 playbackState==="PAUSED" &&
 playbackRunId===currentRun
@@ -3278,10 +3348,6 @@ si
 };
 
 
-/*
-Visual
-*/
-
 if(activeFullscreenProject){
 
 renderFullscreenMeasures(
@@ -3298,10 +3364,6 @@ si
 
 }
 
-
-/*
-Som
-*/
 
 if(metronomeOn){
 
@@ -3331,11 +3393,6 @@ slotDuration(m)*1000
 }
 
 
-/*
-TERMINOU O COMPASSO.
-PARA.
-*/
-
 if(
 playbackRunId===currentRun
 ){
@@ -3348,18 +3405,6 @@ return;
 
 }
 
-
-/*
-===========================================================
-MODO GERAL
-===========================================================
-
-Aqui ele percorre todos os compassos.
-
-O ritornelo é controlado por contador.
-Não existe mais loop infinito.
-===========================================================
-*/
 
 currentPlayMi =
 Math.max(
@@ -3394,12 +3439,6 @@ m.repeats || 1
 );
 
 
-/*
------------------------------------------------
-TOCA O COMPASSO
------------------------------------------------
-*/
-
 for(
 let rep=currentPlayRep;
 rep<repetitions &&
@@ -3427,10 +3466,6 @@ currentPlaySi =
 si;
 
 
-/*
-PAUSA
-*/
-
 while(
 playbackState==="PAUSED" &&
 playbackRunId===currentRun
@@ -3457,10 +3492,6 @@ si
 };
 
 
-/*
-VISUAL
-*/
-
 if(activeFullscreenProject){
 
 renderFullscreenMeasures(
@@ -3478,10 +3509,6 @@ si
 }
 
 
-/*
-METRÔNOMO
-*/
-
 if(metronomeOn){
 
 tick(
@@ -3491,10 +3518,6 @@ si%m.subdivision===0
 
 }
 
-
-/*
-ACORDE
-*/
 
 if(m.slots[si]){
 
@@ -3513,11 +3536,6 @@ slotDuration(m)*1000
 }
 
 
-/*
-Depois da primeira repetição,
-começa novamente no primeiro slot.
-*/
-
 currentPlaySi=0;
 
 }
@@ -3526,31 +3544,6 @@ currentPlaySi=0;
 currentPlayRep=0;
 currentPlaySi=0;
 
-
-/*
-===========================================================
-RITORNELO
-===========================================================
-
-Exemplo:
-
-Compasso 4:
-ritornelo = 1
-ritorneloRepeats = 2
-
-Ao chegar no compasso 4:
-
-1ª vez:
-volta para compasso 2
-
-2ª vez:
-volta para compasso 2
-
-3ª chegada:
-NÃO volta mais
-e continua para compasso 5.
-===========================================================
-*/
 
 if(
 m.ritornelo!==null &&
@@ -3574,17 +3567,8 @@ ritorneloCounters[ritKey] || 0;
 
 if(used<maxReturns){
 
-/*
-Registra este retorno.
-*/
-
 ritorneloCounters[ritKey] =
 used+1;
-
-
-/*
-Volta para o compasso configurado.
-*/
 
 currentPlayMi =
 m.ritornelo;
@@ -3599,13 +3583,6 @@ continue;
 }
 
 
-/*
-Não há mais ritornelo
-ou já terminou a quantidade.
-
-Vai para o próximo compasso.
-*/
-
 currentPlayMi++;
 
 currentPlaySi=0;
@@ -3613,12 +3590,6 @@ currentPlayRep=0;
 
 }
 
-
-/*
-===========================================================
-FINAL DA MÚSICA
-===========================================================
-*/
 
 if(
 playbackRunId===currentRun
@@ -3630,12 +3601,6 @@ stopPlaybackCompletely();
 
 }
 
-
-/*
-===========================================================
-PARAR
-===========================================================
-*/
 
 function stopPlaybackCompletely(){
 
@@ -3686,12 +3651,6 @@ renderFullscreenMeasures(
 }
 
 
-/*
-===========================================================
-SLEEP
-===========================================================
-*/
-
 function sleep(ms){
 
 return new Promise(
@@ -3712,12 +3671,6 @@ playChord(ch);
 }
 
 
-/*
-===========================================================
-ESTADO DO PROJETO
-===========================================================
-*/
-
 function stateObject(){
 
 return {
@@ -3725,6 +3678,8 @@ return {
 id:
 currentProjectId ||
 ("proj_"+Date.now()),
+
+isDrumProject: isCurrentProjectDrum,
 
 songName:
 $("#songName").value ||
@@ -3757,12 +3712,6 @@ JSON.stringify(measures)
 
 }
 
-
-/*
-===========================================================
-SALVAR
-===========================================================
-*/
 
 function saveProjectFile(){
 
@@ -3820,12 +3769,6 @@ switchView("homeView");
 
 }
 
-
-/*
-===========================================================
-PROJETOS RECENTES
-===========================================================
-*/
 
 function saveRecentProject(proj){
 
@@ -3901,113 +3844,82 @@ list=[];
 const container =
 $("#projectsGrid");
 
+const containerDrum =
+$("#projectsGridDrum");
 
-if(!list.length){
 
-container.innerHTML=`
+const stringProjects = list.filter(p => !p.isDrumProject);
+const drumProjects = list.filter(p => p.isDrumProject);
+
+
+if(!stringProjects.length){
+container.innerHTML = `
 <div style="font-size:12px;color:var(--muted);padding:10px;">
-Nenhum projeto recente.
-Clique em "Abrir Arquivo" ou "Criar Novo".
+Nenhum projeto de cordas recente.
 </div>
 `;
-
-return;
-
+} else {
+container.innerHTML = stringProjects.map(proj=>`
+<div class="project-card" data-proj-id="${proj.id}">
+<h4>🎵 ${escapeHtml(proj.songName)}</h4>
+<p>Tom: ${escapeHtml(proj.songKey || '-')} · BPM: ${proj.bpm} · Compassos: ${proj.measures.length}</p>
+<div class="project-actions">
+<button class="btn primary" style="font-size:11px;padding:5px 8px;" data-action="play" data-id="${proj.id}">▶ Tela Cheia</button>
+<button class="btn dark" style="font-size:11px;padding:5px 8px;" data-action="edit" data-id="${proj.id}">✏️ Editar</button>
+</div>
+</div>
+`).join("");
 }
 
 
-container.innerHTML =
-list.map(proj=>`
-
-<div
-class="project-card"
-data-proj-id="${proj.id}">
-
-<h4>
-🎵 ${escapeHtml(proj.songName)}
-</h4>
-
-<p>
-Tom: ${escapeHtml(proj.songKey || '-')}
-· BPM: ${proj.bpm}
-· Compassos: ${proj.measures.length}
-</p>
-
+if(!drumProjects.length){
+containerDrum.innerHTML = `
+<div style="font-size:12px;color:var(--muted);padding:10px;">
+Nenhum projeto de bateria recente.
+</div>
+`;
+} else {
+containerDrum.innerHTML = drumProjects.map(proj=>`
+<div class="project-card" data-proj-id="${proj.id}">
+<h4>🥁 ${escapeHtml(proj.songName)}</h4>
+<p>BPM: ${proj.bpm} · Compassos: ${proj.measures.length}</p>
 <div class="project-actions">
-
-<button
-class="btn primary"
-style="font-size:11px;padding:5px 8px;"
-data-action="play"
-data-id="${proj.id}">
-▶ Abrir Tela Cheia
-</button>
-
-<button
-class="btn dark"
-style="font-size:11px;padding:5px 8px;"
-data-action="edit"
-data-id="${proj.id}">
-✏️ Editar
-</button>
-
+<button class="btn primary" style="font-size:11px;padding:5px 8px;" data-action="play" data-id="${proj.id}">▶ Tela Cheia</button>
+<button class="btn dark" style="font-size:11px;padding:5px 8px;" data-action="edit" data-id="${proj.id}">✏️ Editar</button>
 </div>
-
 </div>
-
 `).join("");
+}
 
 
-container
-.querySelectorAll("[data-action]")
-.forEach(btn=>{
+[container, containerDrum].forEach(cont => {
+cont.querySelectorAll("[data-action]").forEach(btn=>{
 
 btn.addEventListener("click",e=>{
 
 e.stopPropagation();
 
-const id =
-btn.dataset.id;
-
-const action =
-btn.dataset.action;
-
-const proj =
-list.find(p=>p.id===id);
+const id = btn.dataset.id;
+const action = btn.dataset.action;
+const proj = list.find(p=>p.id===id);
 
 if(!proj)return;
 
+isCurrentProjectDrum = !!proj.isDrumProject;
 
 if(action==="play"){
-
-openFullscreenProject(
-JSON.parse(
-JSON.stringify(proj)
-)
-);
-
+openFullscreenProject(JSON.parse(JSON.stringify(proj)));
 }else if(action==="edit"){
-
-loadProjectIntoEditor(
-JSON.parse(
-JSON.stringify(proj)
-)
-);
-
+loadProjectIntoEditor(JSON.parse(JSON.stringify(proj)));
 }
 
 });
 
 });
+});
 
 }
 
-
-/*
-===========================================================
-ABRIR ARQUIVO
-===========================================================
-*/
 
 $("#openFileBtn")
 .addEventListener(
@@ -4017,24 +3929,26 @@ $("#openFileBtn")
 ).click()
 );
 
-
-$("#fileInput")
+$("#openFileBtnDrum")
 .addEventListener(
-"change",
-e=>{
+"click",
+()=>$(
+"#fileInputDrum"
+).click()
+);
+
+
+const handleFileLoad = (isDrum, e) => {
 
 const file =
 e.target.files[0];
 
 if(!file)return;
 
-
 const reader =
 new FileReader();
 
-
-reader.onload =
-function(evt){
+reader.onload = function(evt){
 
 try{
 
@@ -4043,141 +3957,40 @@ JSON.parse(
 evt.target.result
 );
 
-
-if(
-!proj ||
-!Array.isArray(proj.measures)
-){
-
-alert(
-"Arquivo de projeto inválido!"
-);
-
+if(!proj || !Array.isArray(proj.measures)){
+alert("Arquivo de projeto inválido!");
 return;
-
 }
 
+proj.isDrumProject = isDrum;
 
 saveRecentProject(proj);
 
+loadProjectIntoEditor(proj);
 
-currentProjectId =
-proj.id ||
-("proj_"+Date.now());
-
-
-$("#songName").value =
-proj.songName || "";
-
-$("#songKey").value =
-proj.songKey || "";
-
-$("#bpm").value =
-proj.bpm || 90;
-
-metronomeOn =
-!!proj.metronomeOn;
-
-
-const vol =
-proj.volume!==undefined
-? proj.volume
-:2.0;
-
-$("#volume").value =
-vol;
-
-
-const mVol =
-proj.metroVolume!==undefined
-? proj.metroVolume
-:1.5;
-
-$("#metroVolume").value =
-mVol;
-
-updateMasterVolume();
-
-
-measures =
-JSON.parse(
-JSON.stringify(
-proj.measures
-)
-);
-
-
-measures.forEach(m=>{
-
-if(!m.repeats || m.repeats<1)
-m.repeats=1;
-
-if(
-m.ritornelo===undefined
-)
-m.ritornelo=null;
-
-if(
-m.ritorneloRepeats===undefined
-)
-m.ritorneloRepeats=1;
-
-if(
-m.textAnnotation===undefined
-)
-m.textAnnotation="";
-
-});
-
-
-selectedMeasure=0;
-
-syncControlsUI();
-
-$("#status").innerHTML =
-"Editando projeto: "+
-escapeHtml(
-proj.songName
-);
-
-render();
-
-
-openFullscreenProject(
-JSON.parse(
-JSON.stringify(proj)
-)
-);
-
+openFullscreenProject(JSON.parse(JSON.stringify(proj)));
 
 }catch(err){
-
-alert(
-"Erro ao ler o arquivo JSON do projeto."
-);
-
+alert("Erro ao ler o arquivo JSON do projeto.");
 }
 
 };
 
-
 reader.readAsText(file);
-
 e.target.value="";
 
-});
+};
 
+$("#fileInput").addEventListener("change", e => handleFileLoad(false, e));
+$("#fileInputDrum").addEventListener("change", e => handleFileLoad(true, e));
 
-/*
-===========================================================
-TELA CHEIA
-===========================================================
-*/
 
 function openFullscreenProject(proj){
 
 activeFullscreenProject =
 proj;
+
+isCurrentProjectDrum = !!proj.isDrumProject;
 
 $("#fsSongTitle").textContent =
 proj.songName || "Música";
@@ -4218,12 +4031,6 @@ renderRecentGrid();
 }
 
 
-/*
-===========================================================
-EDITAR PELA TELA CHEIA
-===========================================================
-*/
-
 $("#fsEditBtn")
 .addEventListener("click",()=>{
 
@@ -4232,50 +4039,7 @@ stopPlaybackCompletely();
 
 
 if(activeFullscreenProject){
-
-currentProjectId =
-activeFullscreenProject.id ||
-("proj_"+Date.now());
-
-$("#songName").value =
-activeFullscreenProject.songName || "";
-
-$("#songKey").value =
-activeFullscreenProject.songKey || "";
-
-$("#bpm").value =
-activeFullscreenProject.bpm || 90;
-
-
-measures =
-JSON.parse(
-JSON.stringify(
-activeFullscreenProject.measures
-)
-);
-
-
-measures.forEach(m=>{
-
-if(!m.repeats || m.repeats<1)
-m.repeats=1;
-
-if(m.ritornelo===undefined)
-m.ritornelo=null;
-
-if(m.ritorneloRepeats===undefined)
-m.ritorneloRepeats=1;
-
-if(m.textAnnotation===undefined)
-m.textAnnotation="";
-
-});
-
-
-selectedMeasure=0;
-
-render();
-
+loadProjectIntoEditor(activeFullscreenProject);
 }
 
 
@@ -4310,12 +4074,6 @@ $("#fsPlayAll")
 );
 
 
-/*
-===========================================================
-TELA CHEIA — RENDER
-===========================================================
-*/
-
 function renderFullscreenMeasures(
 activeMi,
 activeSi
@@ -4324,9 +4082,7 @@ activeSi
 if(!activeFullscreenProject)
 return;
 
-
 fsMeasuresEl.innerHTML="";
-
 
 activeFullscreenProject.measures
 .forEach((m,mi)=>{
@@ -4434,17 +4190,13 @@ fsMeasuresEl.appendChild(el);
 }
 
 
-/*
-===========================================================
-CARREGAR PROJETO NO EDITOR
-===========================================================
-*/
-
 function loadProjectIntoEditor(proj){
 
 currentProjectId =
 proj.id ||
 ("proj_"+Date.now());
+
+isCurrentProjectDrum = !!proj.isDrumProject;
 
 $("#songName").value =
 proj.songName || "";
@@ -4509,10 +4261,16 @@ selectedMeasure=0;
 syncControlsUI();
 
 $("#status").innerHTML =
-"Editando projeto: "+
+"Editando projeto (" + (isCurrentProjectDrum ? "Bateria" : "Cordas") + "): "+
 escapeHtml(
 proj.songName
 );
+
+if(isCurrentProjectDrum){
+$("#editorHint").textContent = "Toque em um slot para adicionar/editar o elemento de bateria.";
+} else {
+$("#editorHint").textContent = "Toque em um slot para adicionar/editar o acorde.";
+}
 
 render();
 
@@ -4521,17 +4279,12 @@ switchView("editorView");
 }
 
 
-/*
-===========================================================
-NOVO PROJETO
-===========================================================
-*/
-
-$("#newProjectBtn")
-.addEventListener("click",()=>{
+const handleNewProject = (isDrum) => {
 
 currentProjectId =
 "proj_"+Date.now();
+
+isCurrentProjectDrum = isDrum;
 
 $("#songName").value="";
 $("#songKey").value="";
@@ -4558,20 +4311,23 @@ selectedMeasure=0;
 syncControlsUI();
 
 $("#status").innerHTML =
-"Novo projeto";
+"Novo projeto (" + (isCurrentProjectDrum ? "Bateria" : "Cordas") + ")";
+
+if(isCurrentProjectDrum){
+$("#editorHint").textContent = "Toque em um slot para adicionar/editar o elemento de bateria.";
+} else {
+$("#editorHint").textContent = "Toque em um slot para adicionar/editar o acorde.";
+}
 
 render();
 
 switchView("editorView");
 
-});
+};
 
+$("#newProjectBtn").addEventListener("click", () => handleNewProject(false));
+$("#newProjectBtnDrum").addEventListener("click", () => handleNewProject(true));
 
-/*
-===========================================================
-VOLTAR
-===========================================================
-*/
 
 $("#backToHomeBtn")
 .addEventListener("click",()=>{
@@ -4586,24 +4342,12 @@ renderRecentGrid();
 });
 
 
-/*
-===========================================================
-SALVAR
-===========================================================
-*/
-
 $("#saveBtn")
 .addEventListener(
 "click",
 saveProjectFile
 );
 
-
-/*
-===========================================================
-ESC
-===========================================================
-*/
 
 window.addEventListener(
 "keydown",
@@ -4615,6 +4359,8 @@ closeFullscreenProject();
 
 closeOverlay("noteOverlay");
 
+closeOverlay("drumOverlay");
+
 closeOverlay("modifierOverlay");
 
 closeOverlay("ritorneloOverlay");
@@ -4623,12 +4369,6 @@ closeOverlay("ritorneloOverlay");
 
 });
 
-
-/*
-===========================================================
-INICIALIZAÇÃO
-===========================================================
-*/
 
 syncControlsUI();
 
