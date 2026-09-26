@@ -1,3272 +1,4642 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1db954">
-
-  <title>APP LISTA BPM</title>
-
-  <style>
-    :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --accent: #38bdf8;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: #334155;
-      --success: #34d399;
-      --danger: #f87171;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      min-height: 100vh;
-      background: var(--bg-color);
-      color: var(--text-main);
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .topo {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .voltar {
-      color: var(--text-main);
-      text-decoration: none;
-      font-size: 0.95rem;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 10px 14px;
-      border-radius: 10px;
-    }
-
-    .voltar:hover {
-      border-color: var(--accent);
-    }
-
-    .titulo {
-      text-align: center;
-      flex: 1;
-    }
-
-    .titulo h1 {
-      margin: 0;
-      font-size: 1.8rem;
-    }
-
-    .titulo p {
-      margin: 6px 0 0;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 22px;
-      margin-bottom: 20px;
-    }
-
-    .card h2 {
-      margin-top: 0;
-      margin-bottom: 18px;
-      font-size: 1.15rem;
-    }
-
-    .aluno-area {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .campo {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #0f172a;
-      color: var(--text-main);
-      font-size: 1rem;
-      outline: none;
-    }
-
-    input:focus,
-    select:focus {
-      border-color: var(--accent);
-    }
-
-    button {
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .botao-principal {
-      padding: 13px 20px;
-      border-radius: 10px;
-      background: var(--accent);
-      color: #020617;
-      font-weight: bold;
-      font-size: 0.95rem;
-      align-self: end;
-      min-height: 47px;
-    }
-
-    .botao-principal:hover {
-      filter: brightness(1.08);
-    }
-
-    .alunos-salvos-titulo {
-      margin-top: 14px;
-      margin-bottom: 8px;
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      font-weight: bold;
-    }
-
-    .lista-alunos-salvos {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      max-height: 180px;
-      overflow-y: auto;
-      padding: 2px;
-    }
-
-    .aluno-salvo {
-      padding: 9px 12px;
-      border-radius: 9px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      font-size: 0.9rem;
-      transition: 0.15s ease;
-    }
-
-    .aluno-salvo:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .aluno-salvo.vazio {
-      width: 100%;
-      color: var(--text-muted);
-      text-align: left;
-      padding: 8px 2px;
-      background: transparent;
-      border: none;
-      cursor: default;
-    }
-
-    .aluno-salvo.vazio:hover {
-      transform: none;
-      border: none;
-    }
-
-    .mensagem {
-      margin-top: 15px;
-      padding: 12px;
-      border-radius: 10px;
-      display: none;
-      font-size: 0.9rem;
-    }
-
-    .mensagem.sucesso {
-      display: block;
-      background: rgba(52, 211, 153, 0.12);
-      border: 1px solid rgba(52, 211, 153, 0.35);
-      color: var(--success);
-    }
-
-    .mensagem.erro {
-      display: block;
-      background: rgba(248, 113, 113, 0.12);
-      border: 1px solid rgba(248, 113, 113, 0.35);
-      color: var(--danger);
-    }
-
-    .info-aluno {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-      padding: 15px 18px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-    }
-
-    .info-aluno.ativo {
-      display: flex;
-    }
-
-    .info-aluno strong {
-      color: var(--accent);
-    }
-
-    .botao-sair {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 8px 13px;
-      border-radius: 8px;
-    }
-
-    .botao-sair:hover {
-      color: var(--text-main);
-      border-color: var(--accent);
-    }
-
-    .adicionar-grid {
-      display: grid;
-      grid-template-columns: 1fr 130px 130px auto;
-      gap: 10px;
-      align-items: end;
-    }
-
-    .botao-adicionar {
-      min-height: 47px;
-      padding: 0 18px;
-      border-radius: 10px;
-      background: var(--success);
-      color: #022c22;
-      font-weight: bold;
-      white-space: nowrap;
-    }
-
-    .botao-adicionar:hover {
-      filter: brightness(1.08);
-    }
-
-    .tabela-container {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 650px;
-    }
-
-    th,
-    td {
-      padding: 14px 12px;
-      border-bottom: 1px solid var(--border);
-      text-align: left;
-    }
-
-    th {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    td {
-      font-size: 0.95rem;
-    }
-
-    tbody tr:hover {
-      background: rgba(255, 255, 255, 0.025);
-    }
-
-    .vazio {
-      text-align: center;
-      color: var(--text-muted);
-      padding: 35px 15px;
-    }
-
-    .acoes {
-      display: flex;
-      gap: 7px;
-      align-items: center;
-    }
-
-    .acao {
-      width: 38px;
-      height: 38px;
-      border-radius: 9px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      font-size: 1rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .acao:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .acao.excluir:hover {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-
-    .nome-musica {
-      color: var(--accent);
-      cursor: pointer;
-      font-weight: bold;
-      display: inline-block;
-    }
-
-    .nome-musica:hover {
-      text-decoration: underline;
-    }
-
-    .bloco-notas {
-      margin-top: 12px;
-      padding: 14px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      display: none;
-    }
-
-    .bloco-notas.aberto {
-      display: block;
-    }
-
-    .bloco-notas-titulo {
-      color: var(--text-main);
-      font-size: 0.85rem;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .campo-notas {
-      width: 100%;
-      min-height: 150px;
-      resize: vertical;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #020617;
-      color: var(--text-main);
-      font-family: Arial, Helvetica, sans-serif;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      outline: none;
-    }
-
-    .campo-notas:focus {
-      border-color: var(--accent);
-    }
-
-    .notas-status {
-      margin-top: 7px;
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      min-height: 16px;
-    }
-
-    .botao-foto {
-      margin-top: 10px;
-      padding: 9px 12px;
-      border-radius: 9px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      font-size: 0.85rem;
-    }
-
-    .botao-foto:hover {
-      border-color: var(--accent);
-    }
-
-    .input-foto {
-      display: none;
-    }
-
-    .foto-nota {
-      display: block;
-      max-width: 100%;
-      max-height: 350px;
-      margin-top: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      cursor: pointer;
-    }
-
-    .remover-foto {
-      margin-top: 8px;
-      padding: 7px 10px;
-      border-radius: 8px;
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-    }
-
-    .remover-foto:hover {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    .visualizador-foto {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      background: #000;
-    }
-
-    .visualizador-foto.aberto {
-      display: flex;
-    }
-
-    .visualizador-foto img {
-      max-width: 100%;
-      max-height: calc(100vh - 70px);
-      object-fit: contain;
-      border-radius: 8px;
-    }
-
-    .botao-voltar-foto {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      z-index: 2;
-      padding: 10px 14px;
-      border-radius: 9px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid #475569;
-      color: #f8fafc;
-      font-size: 0.9rem;
-    }
-
-    .botao-voltar-foto:hover {
-      border-color: var(--accent);
-    }
-
-    /* ============================================================
-       METRÔNOMO INTERNO
-       ============================================================ */
-
-    .metronomo-interno {
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 10px;
-      background: #020617;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .metronomo-status {
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      margin-left: 2px;
-    }
-
-    .metronomo-controle {
-      width: 38px;
-      height: 38px;
-      border-radius: 9px;
-      background: #0f172a;
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-    }
-
-    .metronomo-controle:hover {
-      border-color: var(--accent);
-    }
-
-    .metronomo-indicador {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      margin-left: 2px;
-    }
-
-    .metronomo-indicador.tocando {
-      background: var(--success);
-      box-shadow: 0 0 10px rgba(52, 211, 153, 0.75);
-    }
-
-    .rodape-info {
-      color: var(--text-muted);
-      text-align: center;
-      font-size: 0.75rem;
-      margin-top: 25px;
-      line-height: 1.5;
-    }
-
-    .carregando {
-      opacity: 0.65;
-      pointer-events: none;
-    }
-
-    @media (max-width: 750px) {
-      body {
-        padding: 10px;
-      }
-
-      .topo {
-        align-items: flex-start;
-      }
-
-      .titulo h1 {
-        font-size: 1.4rem;
-      }
-
-      .adicionar-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .adicionar-grid .campo-musica {
-        grid-column: 1 / -1;
-      }
-
-      .botao-adicionar {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 520px) {
-      .topo {
-        flex-direction: column;
-      }
-
-      .voltar {
-        width: 100%;
-        text-align: center;
-      }
-
-      .titulo {
-        width: 100%;
-      }
-
-      .adicionar-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .adicionar-grid .campo-musica {
-        grid-column: auto;
-      }
-
-      .campo {
-        min-width: 100%;
-      }
-
-      .botao-principal {
-        width: 100%;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d1629">
+<title>Notação Musical — por C. Richless</title>
+
+<style>
+:root{
+--bg:#0d1629;
+--bg2:#111d33;
+--card:#202d42;
+--card2:#172238;
+--line:#34445e;
+--text:#f3f7ff;
+--muted:#9fb0c9;
+--green:#20d7a0;
+--cyan:#39b9ef;
+--danger:#ff6574;
+--yellow:#ffd84d;
+--shadow:0 16px 45px rgba(0,0,0,.24);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+margin:0;
+min-height:100%;
+font-family:Arial,Helvetica,sans-serif;
+background:var(--bg);
+color:var(--text)
+}
+
+button,input,select{font:inherit}
+button{cursor:pointer}
+body{padding-bottom:40px}
+
+.topbar{
+min-height:62px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:10px 18px;
+border-bottom:1px solid #263650;
+background:#0b1426;
+}
+
+.brand{text-align:center}
+
+.brand .eyebrow{
+font-size:12px;
+color:var(--muted);
+letter-spacing:.2px
+}
+
+.brand h1{
+margin:5px 0 0;
+color:var(--green);
+font-size:24px
+}
+
+.brand h1 span{
+color:var(--text);
+font-weight:600
+}
+
+.shell{
+width:min(1180px,calc(100% - 20px));
+margin:15px auto
+}
+
+.view{display:none}
+.view.active{display:block}
+
+/* HOME */
+
+.home-container{
+background:linear-gradient(180deg,#17243a,#121e33);
+border:1px solid var(--line);
+border-radius:14px;
+padding:20px;
+box-shadow:var(--shadow);
+text-align:center;
+margin-top:20px;
+}
+
+.home-container h2{
+color:var(--green);
+margin-top:0;
+font-size:20px
+}
+
+.home-container p{
+color:var(--muted);
+font-size:13px;
+margin-bottom:20px
+}
+
+.home-actions{
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+.projects-grid{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:12px;
+text-align:left;
+margin-top:15px;
+max-height:450px;
+overflow-y:auto;
+padding:4px;
+}
+
+.project-card{
+background:var(--card);
+border:1px solid #3a4a62;
+border-radius:10px;
+padding:12px;
+cursor:pointer;
+transition:.15s;
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.project-card:hover{
+border-color:var(--cyan);
+background:#263650
+}
+
+.project-card h4{
+margin:0;
+color:#fff;
+font-size:15px
+}
+
+.project-card p{
+margin:0;
+font-size:11px;
+color:var(--muted)
+}
+
+.project-actions{
+display:flex;
+gap:6px;
+margin-top:8px
+}
+
+/* HERO */
+
+.hero{
+background:linear-gradient(180deg,#17243a,#121e33);
+border:1px solid var(--line);
+border-radius:14px;
+padding:14px;
+box-shadow:var(--shadow);
+}
+
+.meta-grid{
+display:grid;
+grid-template-columns:1fr;
+gap:10px
+}
+
+@media(min-width:600px){
+.meta-grid{
+grid-template-columns:2fr 1fr 1fr
+}
+}
+
+.field label{
+display:block;
+font-size:12px;
+color:var(--muted);
+margin:0 0 4px 4px
+}
+
+.field input{
+width:100%;
+background:#0e182b;
+color:var(--text);
+border:1px solid #3a4b65;
+border-radius:9px;
+padding:10px 12px;
+outline:none;
+}
+
+.field input:focus{
+border-color:var(--cyan);
+box-shadow:0 0 0 2px rgba(57,185,239,.12)
+}
+
+.toolbar{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+align-items:center;
+margin-top:12px;
+}
+
+.control{
+display:flex;
+align-items:center;
+gap:6px;
+background:#0e182b;
+border:1px solid #34455f;
+border-radius:9px;
+padding:6px 8px;
+}
+
+.control label{
+font-size:11px;
+color:var(--muted)
+}
+
+.control input,
+.control select{
+background:transparent;
+color:var(--text);
+border:0;
+outline:none;
+min-width:50px
+}
+
+.volume-control{
+min-width:190px
+}
+
+.volume-control input[type="range"]{
+min-width:55px;
+width:55px;
+accent-color:var(--cyan);
+padding:0
+}
+
+.volume-control span{
+font-size:11px;
+color:var(--green);
+font-weight:800;
+min-width:32px;
+text-align:right
+}
+
+.btn{
+border:0;
+border-radius:9px;
+padding:9px 12px;
+font-weight:700;
+font-size:13px;
+transition:.15s transform,.15s filter;
+}
+
+.btn:hover{
+filter:brightness(1.08);
+transform:translateY(-1px)
+}
+
+.btn.primary{
+background:var(--cyan);
+color:#06121e
+}
+
+.btn.green{
+background:var(--green);
+color:#06121e
+}
+
+.btn.dark{
+background:#26364e;
+color:#eaf1fb;
+border:1px solid #40526e
+}
+
+.btn.danger{
+background:#4b2630;
+color:#ffd9dd;
+border:1px solid #7c3b48
+}
+
+.status{
+font-size:11px;
+color:var(--muted);
+padding:4px 2px;
+width:100%
+}
+
+.status strong{color:var(--green)}
+
+/* MUSIC */
+
+.music-area{
+margin-top:15px;
+background:#111c30;
+border:1px solid var(--line);
+border-radius:14px;
+padding:12px;
+box-shadow:var(--shadow);
+}
+
+.music-head{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:10px;
+}
+
+.music-head h2{
+margin:0;
+color:#36c7ff;
+font-size:16px
+}
+
+.music-head .hint{
+font-size:11px;
+color:var(--muted)
+}
+
+.measures-wrap{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px;
+padding:2px 0 10px;
+}
+
+@media(max-width:600px){
+.measures-wrap{
+grid-template-columns:1fr
+}
+}
+
+.measure{
+background:var(--card);
+border:1px solid #3a4a62;
+border-radius:10px;
+padding:8px;
+position:relative;
+display:flex;
+flex-direction:column;
+gap:6px;
+}
+
+.measure.playing{
+border-color:var(--green);
+box-shadow:0 0 0 2px rgba(32,215,160,.16)
+}
+
+.measure-top{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:4px
+}
+
+.measure-title{
+font-size:11px;
+font-weight:800;
+color:#dfe8f5
+}
+
+.measure-annotation-input{
+background:#070d18;
+border:2px solid var(--cyan);
+color:var(--yellow);
+font-weight:900;
+font-size:15px;
+border-radius:8px;
+padding:4px 8px;
+outline:none;
+text-align:center;
+flex:1;
+margin:0 6px;
+}
+
+.measure-annotation-input:focus{
+border-color:var(--green);
+box-shadow:0 0 8px rgba(32,215,160,.3)
+}
+
+.measure-annotation-display{
+font-size:15px;
+font-weight:900;
+color:var(--yellow);
+background:#070d18;
+padding:4px 10px;
+border-radius:8px;
+border:2px solid var(--cyan);
+text-align:center;
+flex:1;
+margin:0 6px;
+letter-spacing:.5px;
+}
+
+.measure-actions{
+display:flex;
+flex-direction:column;
+gap:3px;
+align-items:flex-end
+}
+
+.icon-btn{
+width:26px;
+height:24px;
+border-radius:6px;
+border:1px solid #41536d;
+background:#18253a;
+color:#cbd8e9;
+font-weight:700;
+font-size:11px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.icon-btn:hover{
+background:#243651
+}
+
+.icon-btn.delete{
+color:#ff8a96
+}
+
+.icon-btn.play{
+color:#20d7a0;
+border-color:#206f54;
+background:#142d24
+}
+
+.icon-btn.play:hover{
+background:#1d4234
+}
+
+.icon-btn.ritornelo{
+color:#ffd84d;
+border-color:#655c32;
+background:#2a2614
+}
+
+.icon-btn.ritornelo.active{
+background:#453d1a;
+border-color:#ffd84d
+}
+
+.measure-settings{
+display:flex;
+flex-wrap:wrap;
+gap:4px;
+align-items:center
+}
+
+.meter-select{
+background:#0e182a;
+color:#fff;
+border:1px solid #41536d;
+border-radius:6px;
+padding:3px 4px;
+font-size:10px;
+outline:none;
+}
+
+.subdivision{
+display:flex;
+align-items:center;
+gap:3px;
+font-size:10px;
+color:var(--muted)
+}
+
+.subdivision button{
+background:#253650;
+color:#eaf2fb;
+border:1px solid #435673;
+border-radius:4px;
+padding:2px 4px;
+font-size:10px;
+}
+
+.repeat-control{
+display:flex;
+align-items:center;
+gap:2px;
+color:var(--muted);
+font-size:10px;
+margin-left:auto;
+}
+
+.repeat-control button{
+width:18px;
+height:18px;
+padding:0;
+border-radius:4px;
+background:#253650;
+color:#eaf2fb;
+border:1px solid #435673;
+font-weight:800;
+line-height:15px;
+font-size:10px;
+}
+
+.repeat-control strong{
+min-width:14px;
+text-align:center;
+color:var(--green);
+font-size:11px
+}
+
+.slots{
+display:flex;
+gap:3px;
+align-items:stretch;
+min-height:50px;
+width:100%;
+overflow-x:auto;
+}
+
+.slot{
+min-width:22px;
+flex:1;
+position:relative;
+background:#0e182b;
+border:1px solid #3a4c67;
+border-radius:6px;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:4px 1px;
+transition:.15s;
+}
+
+.slot:hover{
+border-color:var(--cyan);
+background:#111f35
+}
+
+.slot.empty{
+color:#61728c;
+font-size:12px
+}
+
+.slot.filled{
+border-color:#2b8eaa;
+background:#0f2638
+}
+
+.slot.active-slot{
+border-color:var(--green)!important;
+background:#143830!important;
+box-shadow:0 0 8px var(--green)
+}
+
+.chord{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:1px;
+width:100%;
+cursor:pointer;
+user-select:none
+}
+
+.chord-name{
+font-size:11px;
+font-weight:800;
+color:#fff;
+line-height:1;
+word-break:break-all;
+text-align:center
+}
+
+.slot-trash{
+position:absolute;
+right:1px;
+top:1px;
+width:13px;
+height:13px;
+border:0;
+border-radius:3px;
+background:transparent;
+color:#8092ab;
+font-size:8px;
+padding:0;
+line-height:13px;
+}
+
+.slot-trash:hover{
+background:#472731;
+color:#ff9ba5
+}
+
+.add-measure{
+margin-top:10px;
+width:100%;
+border:1px dashed #4a607d;
+background:#142238;
+color:#46c8fa;
+border-radius:9px;
+padding:10px;
+font-weight:800;
+font-size:13px;
+}
+
+.add-measure:hover{
+background:#192a43;
+border-color:#5f7b9f
+}
+
+.bottom-bar{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-top:12px;
+align-items:center
+}
+
+.note{
+font-size:10px;
+color:var(--muted);
+width:100%
+}
+
+/* MODAIS */
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(3,9,19,.72);
+backdrop-filter:blur(4px);
+display:none;
+align-items:center;
+justify-content:center;
+padding:16px;
+z-index:50;
+}
+
+.overlay.open{display:flex}
+
+.modal{
+width:min(520px,100%);
+background:#18253a;
+border:1px solid #465a77;
+border-radius:15px;
+box-shadow:0 24px 70px rgba(0,0,0,.45);
+padding:17px;
+}
+
+.modal h3{
+margin:0;
+color:var(--green);
+font-size:19px
+}
+
+.modal p{
+margin:6px 0 14px;
+color:var(--muted);
+font-size:12px
+}
+
+.note-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:8px
+}
+
+.note-btn{
+border:1px solid #40536e;
+background:#0e182a;
+color:#fff;
+border-radius:9px;
+padding:13px 8px;
+font-weight:800;
+font-size:16px;
+}
+
+.note-btn:hover,
+.note-btn.selected{
+border-color:var(--cyan);
+background:#12334a
+}
+
+.modal-foot{
+display:flex;
+justify-content:flex-end;
+gap:8px;
+margin-top:15px
+}
+
+.mod-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px
+}
+
+.mod-btn{
+text-align:left;
+border:1px solid #40536e;
+background:#0e182a;
+color:#fff;
+border-radius:9px;
+padding:11px 12px;
+}
+
+.mod-btn strong{
+display:block;
+color:#fff
+}
+
+.mod-btn small{
+display:block;
+color:var(--muted);
+margin-top:2px
+}
+
+.mod-btn:hover{
+border-color:var(--green);
+background:#123329
+}
+
+.bass-row{
+display:flex;
+gap:8px;
+align-items:center;
+margin-top:12px
+}
+
+.bass-row label{
+font-size:12px;
+color:var(--muted)
+}
+
+.bass-row select{
+flex:1;
+background:#0e182a;
+color:#fff;
+border:1px solid #40536e;
+border-radius:8px;
+padding:9px
+}
+
+/* TELA CHEIA */
+
+.fullscreen-overlay{
+position:fixed;
+inset:0;
+background:var(--bg);
+z-index:100;
+display:none;
+flex-direction:column;
+overflow-y:auto;
+padding:15px;
+}
+
+.fullscreen-overlay.open{
+display:flex
+}
+
+.fs-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+background:#111c30;
+border:1px solid var(--line);
+border-radius:12px;
+padding:12px 16px;
+margin-bottom:12px;
+flex-wrap:wrap;
+gap:10px;
+}
+
+.fs-title h2{
+margin:0;
+color:var(--green);
+font-size:18px
+}
+
+.fs-title p{
+margin:2px 0 0;
+font-size:11px;
+color:var(--muted)
+}
+
+.fs-body{
+flex:1;
+background:#111c30;
+border:1px solid var(--line);
+border-radius:12px;
+padding:12px
+}
+</style>
 </head>
 
 <body>
 
-  <div
-    id="visualizadorFoto"
-    class="visualizador-foto"
-  >
+<header class="topbar">
+<div class="brand">
+<div class="eyebrow">Projeto Academia de Música</div>
+<h1>Notação Musical <span>— por C.Richless</span></h1>
+</div>
+</header>
 
-    <button
-      type="button"
-      class="botao-voltar-foto"
-      onclick="fecharFotoTelaCheia()"
-    >
-      ← Voltar
-    </button>
+<main class="shell">
 
-    <img
-      id="imagemTelaCheia"
-      src=""
-      alt="Foto ampliada"
-    >
+<section id="homeView" class="view active">
 
-  </div>
+<div class="home-container">
 
+<h2>🎵 Meus Projetos Musicais</h2>
 
-  <div class="container">
+<p>
+Crie um novo projeto, abra um arquivo salvo no seu dispositivo
+ou escolha um projeto recente.
+</p>
 
-    <div class="topo">
+<div class="home-actions">
 
-      <a href="index.html" class="voltar">
-        ← Voltar
-      </a>
+<button
+class="btn green"
+id="newProjectBtn"
+style="font-size:14px;padding:12px 20px;">
+＋ Criar Novo Projeto
+</button>
 
-      <div class="titulo">
-        <h1>📝 APP LISTA BPM</h1>
-        <p>Lista de músicas e metrônomo</p>
-      </div>
+<button
+class="btn primary"
+id="openFileBtn"
+style="font-size:14px;padding:12px 20px;">
+📂 Abrir Arquivo do Dispositivo
+</button>
 
-    </div>
+<input
+type="file"
+id="fileInput"
+accept=".json"
+style="display:none">
 
+</div>
 
-    <!-- IDENTIFICAÇÃO DO ALUNO -->
-    <div class="card">
+<div style="margin-top:25px;text-align:left;">
 
-      <h2>👤 ALUNO(A)</h2>
-
-      <div class="aluno-area">
+<h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">
+Projetos Recentes 
+</h3>
 
-        <div class="campo">
-          <label for="nomeAluno">
-            Nome do aluno
-          </label>
-
-          <input
-            type="text"
-            id="nomeAluno"
-            placeholder="Digite seu nome ou procure abaixo"
-            autocomplete="off"
-            maxlength="100"
-          >
-
-          <div class="alunos-salvos-titulo">
-            Alunos salvos
-          </div>
-
-          <div
-            id="nomesAlunosSalvos"
-            class="lista-alunos-salvos"
-          >
-          </div>
-        </div>
-
-        <button
-          class="botao-principal"
-          id="botaoEntrar"
-          onclick="carregarAluno()"
-        >
-          ENTRAR
-        </button>
+<div class="projects-grid" id="projectsGrid">
 
-      </div>
+<div style="font-size:12px;color:var(--muted);padding:10px;">
+Nenhum projeto recente. Abra um arquivo ou crie um novo.
+</div>
 
-      <div id="mensagemLogin" class="mensagem"></div>
+</div>
+</div>
 
-    </div>
-
-
-    <!-- INFORMAÇÃO DO ALUNO -->
-    <div
-      id="infoAluno"
-      class="info-aluno"
-    >
+</div>
+</section>
 
-      <div>
-        Aluno(a):
-        <strong id="nomeAlunoAtual"></strong>
-      </div>
 
-      <button
-        class="botao-sair"
-        onclick="sairAluno()"
-      >
-        Trocar aluno
-      </button>
+<section id="editorView" class="view">
 
-    </div>
+<div style="margin-bottom:10px;">
+<button class="btn dark" id="backToHomeBtn">
+← Voltar para Lista de Projetos
+</button>
+</div>
 
+<section class="hero">
 
-    <!-- ADICIONAR MÚSICA -->
-    <div
-      class="card"
-      id="cardAdicionar"
-      style="display:none;"
-    >
+<div class="meta-grid">
 
-      <h2>➕ Adicionar música</h2>
+<div class="field">
+<label for="songName">Nome da música</label>
+<input id="songName" type="text" placeholder="Digite o nome da música">
+</div>
 
-      <div class="adicionar-grid">
+<div class="field">
+<label for="songKey">Tom da música</label>
+<input id="songKey" type="text" placeholder="Ex.: G, D, Am">
+</div>
 
-        <div class="campo campo-musica">
-          <label for="nomeMusica">
-            Música
-          </label>
+<div class="field">
+<label for="bpm">BPM</label>
+<input id="bpm" type="number" min="30" max="240" value="90">
+</div>
 
-          <input
-            type="text"
-            id="nomeMusica"
-            placeholder="Nome da música"
-            maxlength="200"
-          >
-        </div>
+</div>
 
+<div class="toolbar">
 
-        <div class="campo">
-          <label for="bpmMusica">
-            BPM
-          </label>
+<button class="btn primary" id="playAll">
+▶ Tocar
+</button>
 
-          <input
-            type="number"
-            id="bpmMusica"
-            min="30"
-            max="240"
-            value="80"
-          >
-        </div>
+<button class="btn dark" id="stopAll">
+■ Parar
+</button>
 
+<button class="btn dark" id="metroToggle">
+♩ Metrônomo: OFF
+</button>
 
-        <div class="campo">
-          <label for="compassoMusica">
-            Compasso
-          </label>
+<div class="control volume-control">
 
-          <select id="compassoMusica">
-            <option value="2/4">2/4</option>
-            <option value="3/4">3/4</option>
-            <option value="4/4" selected>4/4</option>
-            <option value="5/4">5/4</option>
-            <option value="6/8">6/8</option>
-            <option value="7/8">7/8</option>
-            <option value="9/8">9/8</option>
-            <option value="12/8">12/8</option>
-          </select>
-        </div>
+<label for="volume">🔊 Vol Geral</label>
 
+<input
+id="volume"
+type="range"
+min="0.5"
+max="2.5"
+step="0.05"
+value="2.0">
 
-        <button
-          class="botao-adicionar"
-          onclick="adicionarMusica()"
-        >
-          + ADICIONAR
-        </button>
+<span id="volumeValue">200%</span>
 
-      </div>
+</div>
 
-      <div id="mensagemMusica" class="mensagem"></div>
+<div class="control volume-control">
 
-    </div>
+<label for="metroVolume">⏱️ Vol Metrônomo</label>
 
+<input
+id="metroVolume"
+type="range"
+min="0.0"
+max="2.5"
+step="0.05"
+value="1.5">
 
-    <!-- LISTA -->
-    <div
-      class="card"
-      id="cardLista"
-      style="display:none;"
-    >
+<span id="metroVolumeValue">150%</span>
 
-      <h2>🎵 Minhas músicas</h2>
+</div>
 
-      <div class="tabela-container">
+<button class="btn green" id="saveBtn">
+💾 Salvar Projeto (Baixar)
+</button>
 
-        <table>
+<div class="status" id="status">
+Projeto em edição
+</div>
 
-          <thead>
-            <tr>
-              <th>Música</th>
-              <th>BPM</th>
-              <th>Compasso</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
+</div>
+</section>
 
-          <tbody id="listaMusicas">
 
-          </tbody>
+<section class="music-area">
 
-        </table>
+<div class="music-head">
 
-      </div>
+<div>
 
-    </div>
+<h2>Compassos</h2>
 
+<div class="hint">
+Toque em um slot para adicionar/editar o acorde.
+</div>
 
-    <div class="rodape-info">
-      APP LISTA BPM<br>
-      As músicas ficam associadas ao nome informado pelo aluno.
-    </div>
+</div>
 
-  </div>
+</div>
 
+<div class="measures-wrap" id="measures"></div>
 
-  <!-- FIREBASE -->
-  <script
-    type="module"
-    src="config-senhas.js"
-  ></script>
+<button class="add-measure" id="addMeasure">
+＋ Adicionar compasso
+</button>
 
+<div class="bottom-bar">
 
-  <script>
+<span class="note">
+Cada compasso possui seu próprio ritmo, subdivisão, repetição e ritornelo personalizados.
+</span>
 
-    /*
-      ============================================================
-      CONFIGURAÇÃO DO APP LISTA
-      ============================================================
-    */
+</div>
 
-    const CONFIG = {
+</section>
 
-      // ID DA PASTA PRINCIPAL DO GOOGLE DRIVE
-      pastaDriveId:
-        "1Oo7xW6Gi-Nr_bgb2L9wNO3okEDtXm6_G",
+</section>
+</main>
 
-      // Nome da pasta principal
-      nomePasta:
-        "APP LISTA BPM",
 
-      // Conta utilizada no Google Drive
-      contaDrive:
-        "applistabpm@gmail.com",
+<!-- TELA CHEIA -->
 
-      /*
-        ENDPOINT DO SERVIDOR
+<div class="fullscreen-overlay" id="fullscreenModal">
 
-        GOOGLE APPS SCRIPT
-      */
+<div class="fs-header">
 
-      API_URL:
-        "https://script.google.com/macros/s/AKfycbzKzOg6AVBXdk6mt4BlEDD6p8qAmsBjuNWQsw0xo5KiCQ39EFwwg-fuYzwlExh0xwb2/exec",
+<div class="fs-title">
 
-      /*
-        API ATIVA.
-        O sistema passa a usar o Google Drive
-        como armazenamento central.
-      */
+<h2 id="fsSongTitle">
+Nome da Música
+</h2>
 
-      usarModoLocal:
-        false
-    };
+<p id="fsSongMeta">
+Tom: G · BPM: 90
+</p>
 
+</div>
 
-    /*
-      ============================================================
-      ESTADO DO APP
-      ============================================================
-    */
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
 
-    let alunoAtual = "";
+<button class="btn green" id="fsPlayAll">
+▶ Tocar
+</button>
 
-    let musicas = [];
+<button class="btn dark" id="fsStop">
+■ Parar
+</button>
 
-    let notaAbertaId = null;
+<button class="btn dark" id="fsMetroToggle">
+♩ Metrônomo: OFF
+</button>
 
-    let temporizadoresNotas = {};
+<div class="control" style="padding:4px 6px;">
 
-    let nomesAlunosSalvos = [];
+<button
+class="btn dark"
+id="fsBpmMinus"
+style="padding:4px 8px;font-size:11px;">
+−
+</button>
 
-    let contextoAudioMetronomo = null;
+<span
+id="fsBpmDisplay"
+style="font-size:12px;font-weight:bold;color:var(--green);min-width:34px;text-align:center;">
+90 BPM
+</span>
 
-    let osciladorMetronomo = null;
+<button
+class="btn dark"
+id="fsBpmPlus"
+style="padding:4px 8px;font-size:11px;">
++
+</button>
 
-    let ganhoMetronomo = null;
+</div>
 
-    let temporizadorMetronomo = null;
+<div class="control volume-control" style="padding:4px 6px;">
 
-    let metronomoTocandoId = null;
+<label for="fsVolume" style="font-size:10px;">
+🔊 Vol Geral
+</label>
 
-    let proximoTempoMetronomo = 0;
+<input
+id="fsVolume"
+type="range"
+min="0.5"
+max="2.5"
+step="0.05"
+value="2.0">
 
-    let batidaMetronomo = 0;
+</div>
 
-    const AHEAD_TIME_METRONOMO = 0.10;
+<div class="control volume-control" style="padding:4px 6px;">
 
-    const LOOKAHEAD_METRONOMO = 25;
+<label for="fsMetroVolume" style="font-size:10px;">
+⏱️ Vol Metrônomo
+</label>
 
+<input
+id="fsMetroVolume"
+type="range"
+min="0.5"
+max="2.5"
+step="0.05"
+value="1.5">
 
-    /*
-      ============================================================
-      NOMES DE ALUNOS SALVOS
-      ============================================================
-    */
+</div>
 
-    const CHAVE_NOMES_ALUNOS =
-      "app_lista_bpm_nomes_alunos";
+<button class="btn primary" id="fsEditBtn">
+✏️ Editar Projeto
+</button>
 
+<button
+class="fs-close btn dark"
+id="closeFullscreen">
+✖ Fechar
+</button>
 
-    function carregarNomesAlunosSalvos() {
+</div>
+</div>
 
-      try {
+<div class="fs-body">
+<div class="measures-wrap" id="fsMeasures"></div>
+</div>
 
-        const dados =
-          localStorage.getItem(
-            CHAVE_NOMES_ALUNOS
-          );
+</div>
 
 
-        nomesAlunosSalvos =
-          dados
-            ? JSON.parse(dados)
-            : [];
+<!-- NOTA -->
 
+<div class="overlay" id="noteOverlay">
 
-        if (
-          !Array.isArray(
-            nomesAlunosSalvos
-          )
-        ) {
+<div class="modal">
 
-          nomesAlunosSalvos = [];
+<h3>Escolha o acorde</h3>
 
-        }
+<p>Selecione a nota fundamental.</p>
 
-      } catch (erro) {
+<div class="note-grid" id="noteGrid"></div>
 
-        console.error(
-          "Erro ao carregar nomes salvos:",
-          erro
-        );
+<div class="modal-foot">
 
-        nomesAlunosSalvos = [];
+<button class="btn dark" data-close="noteOverlay">
+Cancelar
+</button>
 
-      }
+</div>
 
+</div>
+</div>
 
-      renderizarNomesAlunosSalvos();
 
-    }
+<!-- MODIFICADOR -->
 
+<div class="overlay" id="modifierOverlay">
 
-    async function carregarNomesAlunosDoGoogleDrive() {
+<div class="modal">
 
-      if (
-        !CONFIG.API_URL ||
-        CONFIG.usarModoLocal
-      ) {
-        return;
-      }
+<h3>Forma do acorde</h3>
 
+<p>Escolha a variação e o baixo do acorde.</p>
 
-      try {
+<div class="mod-grid">
 
-        const resposta =
-          await fetch(
-            CONFIG.API_URL +
-            "?acao=listarAlunos"
-          );
+<button class="mod-btn" data-mod="major">
+<strong>Maior</strong>
+<small>Ex.: G</small>
+</button>
 
+<button class="mod-btn" data-mod="minor">
+<strong>Menor</strong>
+<small>Ex.: Gm</small>
+</button>
 
-        if (!resposta.ok) {
-          throw new Error(
-            "Erro ao consultar os alunos salvos."
-          );
-        }
+<button class="mod-btn" data-mod="dim">
+<strong>Diminuto</strong>
+<small>Ex.: G°</small>
+</button>
 
+<button class="mod-btn" data-mod="sus2">
+<strong>Sus2</strong>
+<small>Ex.: Gsus2</small>
+</button>
 
-        const dados =
-          await resposta.json();
+</div>
 
+<div class="bass-row">
 
-        if (
-          !dados ||
-          !dados.sucesso ||
-          !Array.isArray(dados.alunos)
-        ) {
-          return;
-        }
+<label for="bassSelect">
+Baixo / inversão
+</label>
 
+<select id="bassSelect">
+<option value="">Sem baixo específico</option>
+</select>
 
-        const nomesDaNuvem =
-          dados.alunos
-            .map(
-              nome => normalizarNome(String(nome))
-            )
-            .filter(Boolean);
+</div>
 
+<div class="modal-foot">
 
-        nomesAlunosSalvos =
-          nomesDaNuvem;
+<button class="btn danger" id="clearCurrent">
+🗑 Apagar acorde
+</button>
 
+<button class="btn dark" data-close="modifierOverlay">
+Cancelar
+</button>
 
-        localStorage.setItem(
-          CHAVE_NOMES_ALUNOS,
-          JSON.stringify(
-            nomesAlunosSalvos
-          )
-        );
+</div>
 
+</div>
+</div>
 
-        renderizarNomesAlunosSalvos();
 
-      } catch (erro) {
+<!-- RITORNELO -->
 
-        console.error(
-          "Erro ao carregar nomes dos alunos do Google Drive:",
-          erro
-        );
+<div class="overlay" id="ritorneloOverlay">
 
-      }
+<div class="modal">
 
-    }
+<h3>Configurar Ritornelo</h3>
 
+<p>
+Escolha para qual compasso este compasso deve retornar
+e quantas vezes o retorno deve acontecer.
+</p>
 
-    function renderizarNomesAlunosSalvos() {
+<div class="bass-row">
 
-      const lista =
-        document.getElementById(
-          "nomesAlunosSalvos"
-        );
+<label for="ritorneloSelect">
+Retornar para:
+</label>
 
+<select id="ritorneloSelect"></select>
 
-      if (!lista) {
-        return;
-      }
+</div>
 
+<div class="bass-row">
 
-      lista.innerHTML = "";
+<label for="ritorneloRepeats">
+Repetir:
+</label>
 
+<select id="ritorneloRepeats">
 
-      const campo =
-        document.getElementById("nomeAluno");
+<option value="1">1 vez</option>
+<option value="2">2 vezes</option>
+<option value="3">3 vezes</option>
+<option value="4">4 vezes</option>
+<option value="5">5 vezes</option>
+<option value="6">6 vezes</option>
+<option value="7">7 vezes</option>
+<option value="8">8 vezes</option>
+<option value="9">9 vezes</option>
+<option value="10">10 vezes</option>
+<option value="11">11 vezes</option>
+<option value="12">12 vezes</option>
+<option value="13">13 vezes</option>
+<option value="14">14 vezes</option>
+<option value="15">15 vezes</option>
+<option value="16">16 vezes</option>
+<option value="17">17 vezes</option>
+<option value="18">18 vezes</option>
+<option value="19">19 vezes</option>
+<option value="20">20 vezes</option>
 
-      const busca =
-        campo
-          ? normalizarNome(campo.value).toLowerCase()
-          : "";
+</select>
 
-      const nomesFiltrados =
-        nomesAlunosSalvos.filter(
-          nome =>
-            !busca ||
-            nome.toLowerCase().includes(busca)
-        );
+</div>
 
+<div class="modal-foot">
 
-      if (nomesFiltrados.length === 0) {
+<button class="btn danger" id="clearRitornelo">
+Remover Ritornelo
+</button>
 
-        const vazio =
-          document.createElement("div");
+<button class="btn primary" id="saveRitornelo">
+Salvar
+</button>
 
-        vazio.className =
-          "aluno-salvo vazio";
+<button class="btn dark" data-close="ritorneloOverlay">
+Cancelar
+</button>
 
-        vazio.textContent =
-          busca
-            ? "Nenhum aluno encontrado."
-            : "Nenhum aluno salvo ainda.";
+</div>
 
-        lista.appendChild(vazio);
+</div>
+</div>
 
-        return;
-      }
 
+<script>
 
-      nomesFiltrados.forEach(
-        nome => {
+const NOTES = [
+"C","C#","D","D#","E","F","F#","G","G#","A","A#","B"
+];
 
-          const botao =
-            document.createElement("button");
+const METERS = [
+["2/4",2,4],
+["3/4",3,4],
+["4/4",4,4],
+["5/4",5,4],
+["6/4",6,4],
+["7/4",7,4],
+["2/8",2,8],
+["3/8",3,8],
+["4/8",4,8],
+["5/8",5,8],
+["6/8",6,8],
+["7/8",7,8],
+["8/8",8,8],
+["9/8",9,8],
+["12/8",12,8]
+];
 
-          botao.type = "button";
-          botao.className = "aluno-salvo";
-          botao.textContent = nome;
-          botao.title =
-            "Entrar como " + nome;
 
-          botao.onclick =
-            function() {
+let currentProjectId = null;
 
-              document
-                .getElementById("nomeAluno")
-                .value = nome;
+let measures = [
+{
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:[null,null,null,null]
+}
+];
 
-              carregarAluno();
+let selected = {
+mi:0,
+si:0
+};
 
-            };
+let selectedMeasure = 0;
 
-          lista.appendChild(botao);
+let editingRitorneloMi = null;
 
-        }
-      );
+let audioCtx = null;
+let masterGain = null;
 
-    }
 
+/*
+===========================================================
+ESTADO DO PLAYER
+===========================================================
+*/
 
-    /*
-      ============================================================
-      NORMALIZAÇÃO DO NOME
-      ============================================================
-    */
+let playbackState = "STOPPED";
 
-    function normalizarNome(nome) {
+let playbackPromiseResolve = null;
 
-      return nome
-        .trim()
-        .replace(/\s+/g, " ");
+let currentPlayMi = 0;
+let currentPlaySi = 0;
+let currentPlayRep = 0;
 
-    }
+let playbackRunId = 0;
 
+let playbackMode = "all";
 
-    /*
-      ============================================================
-      NOME PARA ARQUIVO
-      ============================================================
-    */
+/*
+Conta quantas vezes cada ritornelo já foi executado
+durante a reprodução atual.
+*/
+let ritorneloCounters = {};
 
-    function nomeArquivoAluno(nome) {
 
-      return normalizarNome(nome)
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/[^a-zA-Z0-9\s_-]/g, "")
-        .replace(/\s+/g, "_")
-        .toLowerCase();
+let metronomeOn = false;
 
-    }
+let activeFullscreenProject = null;
 
+let activePlayingSlot = {
+mi:-1,
+si:-1
+};
 
-    /*
-      ============================================================
-      MENSAGENS
-      ============================================================
-    */
 
-    function mostrarMensagem(elementoId, texto, tipo) {
+const $ = s => document.querySelector(s);
 
-      const elemento =
-        document.getElementById(elementoId);
+const measuresEl = $("#measures");
 
-      elemento.textContent = texto;
+const fsMeasuresEl = $("#fsMeasures");
 
-      elemento.className =
-        "mensagem " + tipo;
 
-    }
+/*
+===========================================================
+TELAS
+===========================================================
+*/
 
+function switchView(viewId){
 
-    function esconderMensagem(elementoId) {
+document.querySelectorAll(".view")
+.forEach(v=>v.classList.remove("active"));
 
-      const elemento =
-        document.getElementById(elementoId);
+$("#"+viewId).classList.add("active");
 
-      elemento.textContent = "";
+}
 
-      elemento.className =
-        "mensagem";
 
-    }
+/*
+===========================================================
+UTILIDADES
+===========================================================
+*/
 
+function getMeter(meter){
 
-    /*
-      ============================================================
-      ENTRAR COMO ALUNO
-      ============================================================
-    */
+return METERS.find(x=>x[0]===meter)
+|| ["4/4",4,4];
 
-    async function carregarAluno() {
+}
 
-      const campo =
-        document.getElementById("nomeAluno");
 
-      const botao =
-        document.getElementById("botaoEntrar");
+function slotCount(measure){
 
-      const nome =
-        normalizarNome(campo.value);
+const [,num] = getMeter(measure.meter);
 
-      esconderMensagem("mensagemLogin");
+return num * measure.subdivision;
 
-      if (!nome) {
+}
 
-        mostrarMensagem(
-          "mensagemLogin",
-          "Digite o nome do aluno.",
-          "erro"
-        );
 
-        campo.focus();
+function chordLabel(ch){
 
-        return;
-      }
+if(!ch) return "";
 
-      if (botao) {
-        botao.disabled = true;
-        botao.classList.add("carregando");
-      }
+let suffix =
+ch.quality==="minor" ? "m" :
+ch.quality==="dim" ? "°" :
+ch.quality==="sus2" ? "sus2" :
+"";
 
-      alunoAtual = nome;
-      notaAbertaId = null;
-      musicas = [];
+return ch.root + suffix + (ch.bass ? "/" + ch.bass : "");
 
-      try {
+}
 
-        if (
-          CONFIG.API_URL &&
-          !CONFIG.usarModoLocal
-        ) {
 
-          await carregarDoGoogleDrive();
+function buildMeterOptions(current){
 
-          /*
-            O arquivo do aluno é criado no Google Drive
-            mesmo que ele ainda não tenha nenhuma música.
-          */
-          await salvarNoGoogleDrive();
+return METERS.map(m=>
+`<option value="${m[0]}" ${m[0]===current?"selected":""}>
+${m[0]}
+</option>`
+).join("");
 
-          await carregarNomesAlunosDoGoogleDrive();
+}
 
-        } else {
 
-          carregarDoNavegador();
+function escapeHtml(v){
 
-        }
+return String(v).replace(
+/[&<>"']/g,
+c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#039;"
+}[c])
+);
 
-        document
-          .getElementById("nomeAlunoAtual")
-          .textContent = alunoAtual;
+}
 
-        document
-          .getElementById("infoAluno")
-          .classList.add("ativo");
 
-        document
-          .getElementById("cardAdicionar")
-          .style.display = "block";
+/*
+===========================================================
+RENDER EDITOR
+===========================================================
+*/
 
-        document
-          .getElementById("cardLista")
-          .style.display = "block";
+function render(){
 
-        renderizarLista();
+measuresEl.innerHTML = "";
 
-      } catch (erro) {
+measures.forEach((m,mi)=>{
 
-        console.error(
-          "Erro ao entrar como aluno:",
-          erro
-        );
+const el = document.createElement("article");
 
-        alunoAtual = "";
-        musicas = [];
+el.className =
+"measure" +
+(mi===selectedMeasure ? " playing" : "");
 
-        document
-          .getElementById("infoAluno")
-          .classList.remove("ativo");
+el.dataset.mi = mi;
 
-        document
-          .getElementById("cardAdicionar")
-          .style.display = "none";
 
-        document
-          .getElementById("cardLista")
-          .style.display = "none";
+const slots =
+Array.from(
+{length:slotCount(m)},
+(_,si)=>{
 
-        mostrarMensagem(
-          "mensagemLogin",
-          "Não foi possível conectar ao Google Drive. Tente novamente.",
-          "erro"
-        );
+const ch = m.slots[si];
 
-      } finally {
+const isActive =
+activePlayingSlot.mi===mi &&
+activePlayingSlot.si===si;
 
-        if (botao) {
-          botao.disabled = false;
-          botao.classList.remove("carregando");
-        }
+const slotClass =
+"slot " +
+(ch ? "filled" : "empty") +
+(isActive ? " active-slot" : "");
 
-      }
 
-    }
+if(!ch){
 
-    /*
-      ============================================================
-      MODO LOCAL TEMPORÁRIO
-      ============================================================
-    */
+return `
+<div class="${slotClass}" data-si="${si}">
+<span>·</span>
+</div>
+`;
 
-    function chaveLocal() {
+}
 
-      return (
-        "app_lista_bpm_" +
-        nomeArquivoAluno(alunoAtual)
-      );
 
-    }
+return `
+<div class="${slotClass}" data-si="${si}">
 
+<div class="chord" title="Clique para alterar">
 
-    function carregarDoNavegador() {
+<div class="chord-name">
+${escapeHtml(chordLabel(ch))}
+</div>
 
-      const dados =
-        localStorage.getItem(chaveLocal());
+</div>
 
-      if (!dados) {
+<button
+class="slot-trash"
+data-trash="${si}"
+title="Apagar">
+×
+</button>
 
-        musicas = [];
+</div>
+`;
 
-        return;
-      }
+}).join("");
 
 
-      try {
+const hasRit =
+m.ritornelo !== null &&
+m.ritornelo !== undefined;
 
-        const objeto =
-          JSON.parse(dados);
+const ritClass =
+hasRit
+? "icon-btn ritornelo active"
+: "icon-btn ritornelo";
 
-        if (
-          objeto &&
-          Array.isArray(objeto.musicas)
-        ) {
+const ritTitle =
+hasRit
+? `Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats || 1} vez(es)`
+: "Configurar Ritornelo";
 
-          musicas =
-            objeto.musicas;
 
-        } else {
+el.innerHTML = `
 
-          musicas = [];
+<div class="measure-top">
 
-        }
+<div class="measure-title">
+Comp. ${mi+1}
+${hasRit ? '↩('+(m.ritornelo+1)+')' : ''}
+</div>
 
-      } catch (erro) {
+<input
+type="text"
+class="measure-annotation-input"
+data-annotation="${mi}"
+value="${escapeHtml(m.textAnnotation || '')}"
+placeholder="Anotação (ex: Solo, Refrão)...">
 
-        console.error(
-          "Erro ao ler lista local:",
-          erro
-        );
+<div class="measure-actions">
 
-        musicas = [];
+<button
+class="icon-btn play"
+data-play-measure="${mi}"
+title="Tocar somente este compasso">
+▶
+</button>
 
-      }
+<button
+class="icon-btn delete"
+data-del="${mi}"
+title="Apagar">
+🗑
+</button>
 
-    }
+<button
+class="${ritClass}"
+data-rit="${mi}"
+title="${ritTitle}">
+↩
+</button>
 
+</div>
 
-    /*
-      ============================================================
-      SALVAR MODO LOCAL TEMPORÁRIO
-      ============================================================
-    */
+</div>
 
-    function salvarNoNavegador() {
 
-      const dados = {
+<div class="measure-settings">
 
-        aluno:
-          alunoAtual,
+<select
+class="meter-select"
+data-meter="${mi}">
+${buildMeterOptions(m.meter)}
+</select>
 
-        musicas:
-          musicas
+<div class="subdivision">
 
-      };
+<button data-sub-down="${mi}">
+◀
+</button>
 
+<span>x${m.subdivision}</span>
 
-      localStorage.setItem(
-        chaveLocal(),
-        JSON.stringify(dados)
-      );
+<button data-sub-up="${mi}">
+▶
+</button>
 
-    }
+</div>
 
 
-    /*
-      ============================================================
-      GOOGLE DRIVE
-      ============================================================
-    */
+<div
+class="repeat-control"
+title="Repetições deste compasso">
 
-    async function carregarDoGoogleDrive() {
+<span>🔁</span>
 
-      const resposta =
-        await fetch(
-          CONFIG.API_URL +
-          "?acao=carregar" +
-          "&aluno=" +
-          encodeURIComponent(alunoAtual)
-        );
+<button data-repeat-down="${mi}">
+−
+</button>
 
+<strong>
+${m.repeats || 1}
+</strong>
 
-      if (!resposta.ok) {
+<button data-repeat-up="${mi}">
++
+</button>
 
-        throw new Error(
-          "Erro ao consultar o servidor."
-        );
+</div>
 
-      }
+</div>
 
 
-      const dados =
-        await resposta.json();
+<div class="slots">
+${slots}
+</div>
 
+`;
 
-      if (
-        dados &&
-        Array.isArray(dados.musicas)
-      ) {
+measuresEl.appendChild(el);
 
-        musicas =
-          dados.musicas;
+});
 
-      } else {
 
-        musicas = [];
+bindMeasureEvents();
 
-      }
+}
 
-    }
 
+/*
+===========================================================
+EVENTOS DOS COMPASSOS
+===========================================================
+*/
 
-    async function salvarNoGoogleDrive() {
+function bindMeasureEvents(){
 
-      const dados = {
+measuresEl
+.querySelectorAll(".measure-annotation-input")
+.forEach(input=>{
 
-        aluno:
-          alunoAtual,
+input.addEventListener("input",()=>{
 
-        musicas:
-          musicas
+const mi =
+Number(input.dataset.annotation);
 
-      };
+if(measures[mi]){
+measures[mi].textAnnotation =
+input.value;
+}
 
+});
 
-      const resposta =
-        await fetch(
-          CONFIG.API_URL,
-          {
-            method: "POST",
+});
 
-            headers: {
-              "Content-Type":
-          "text/plain;charset=utf-8"
-            },
 
-            body:
-              JSON.stringify({
-                acao:
-                  "salvar",
+/*
+PLAY INDIVIDUAL DO CARD
+*/
 
-                aluno:
-                  alunoAtual,
+measuresEl
+.querySelectorAll("[data-play-measure]")
+.forEach(btn=>{
 
-                musicas:
-                  musicas
-              })
-          }
-        );
+btn.addEventListener("click",e=>{
 
+e.stopPropagation();
 
-      if (!resposta.ok) {
+const mi =
+Number(btn.dataset.playMeasure);
 
-        throw new Error(
-          "Erro ao salvar no servidor."
-        );
+/*
+IMPORTANTE:
+modo "measure" toca somente este compasso.
+*/
 
-      }
+handlePlayAction("measure",mi);
 
+});
 
-      return await resposta.json();
+});
 
-    }
 
+/*
+SLOTS
+*/
 
-    /*
-      ============================================================
-      SALVAR LISTA
-      ============================================================
-    */
+measuresEl
+.querySelectorAll(".slot")
+.forEach(slot=>{
 
-    async function salvarLista() {
+slot.addEventListener("click",e=>{
 
-      if (!alunoAtual) {
-        return;
-      }
+const mi =
+Number(
+slot.closest(".measure").dataset.mi
+);
 
+const si =
+Number(slot.dataset.si);
 
-      if (
-        CONFIG.API_URL &&
-        !CONFIG.usarModoLocal
-      ) {
+selectedMeasure = mi;
 
-        await salvarNoGoogleDrive();
+selected = {mi,si};
 
-      } else {
+const ch =
+measures[mi].slots[si];
 
-        salvarNoNavegador();
+if(ch)
+openModifier(mi,si);
+else
+openNote(mi,si);
 
-      }
+render();
 
-    }
+});
 
+});
 
-    /*
-      ============================================================
-      ADICIONAR MÚSICA
-      ============================================================
-    */
 
-    async function adicionarMusica() {
+/*
+APAGAR ACORDE
+*/
 
-      esconderMensagem("mensagemMusica");
+measuresEl
+.querySelectorAll("[data-trash]")
+.forEach(btn=>{
 
+btn.addEventListener("click",e=>{
 
-      if (!alunoAtual) {
+e.stopPropagation();
 
-        mostrarMensagem(
-          "mensagemMusica",
-          "Primeiro informe o nome do aluno.",
-          "erro"
-        );
+const mi =
+Number(
+btn.closest(".measure").dataset.mi
+);
 
-        return;
-      }
+const si =
+Number(btn.dataset.trash);
 
+measures[mi].slots[si] = null;
 
-      const nome =
-        document
-          .getElementById("nomeMusica")
-          .value
-          .trim();
+render();
 
+});
 
-      const bpm =
-        parseInt(
-          document
-            .getElementById("bpmMusica")
-            .value,
-          10
-        );
+});
 
 
-      const compasso =
-        document
-          .getElementById("compassoMusica")
-          .value;
+/*
+RITORNELO
+*/
 
+measuresEl
+.querySelectorAll("[data-rit]")
+.forEach(btn=>{
 
-      if (!nome) {
+btn.addEventListener("click",e=>{
 
-        mostrarMensagem(
-          "mensagemMusica",
-          "Digite o nome da música.",
-          "erro"
-        );
+e.stopPropagation();
 
-        return;
-      }
+const mi =
+Number(btn.dataset.rit);
 
+openRitorneloModal(mi);
 
-      if (
-        !Number.isInteger(bpm) ||
-        bpm < 30 ||
-        bpm > 240
-      ) {
+});
 
-        mostrarMensagem(
-          "mensagemMusica",
-          "O BPM deve estar entre 30 e 240.",
-          "erro"
-        );
+});
 
-        return;
-      }
 
+/*
+MÉTRICA
+*/
 
-      const musica = {
+measuresEl
+.querySelectorAll("[data-meter]")
+.forEach(sel=>{
 
-        id:
-          Date.now(),
+sel.addEventListener("change",()=>{
 
-        nome:
-          nome,
+const mi =
+Number(sel.dataset.meter);
 
-        bpm:
-          bpm,
+const old =
+measures[mi];
 
-        compasso:
-          compasso,
+const count =
+slotCount({
+...old,
+meter:sel.value
+});
 
-        anotacao:
-          "",
+const next =
+Array.from(
+{length:count},
+(_,i)=>old.slots[i] || null
+);
 
-        foto:
-          ""
+old.meter = sel.value;
 
-      };
+old.slots = next;
 
+selectedMeasure = mi;
 
-      musicas.push(musica);
+render();
 
+});
 
-      try {
+});
 
-        await salvarLista();
 
-        document
-          .getElementById("nomeMusica")
-          .value = "";
+/*
+SUBDIVISÃO
+*/
 
+measuresEl
+.querySelectorAll("[data-sub-up]")
+.forEach(btn=>{
 
-        renderizarLista();
+btn.addEventListener("click",e=>
+changeSubdivision(
+Number(btn.dataset.subUp),
+1
+));
 
+});
 
-        mostrarMensagem(
-          "mensagemMusica",
-          "Música adicionada com sucesso.",
-          "sucesso"
-        );
 
+measuresEl
+.querySelectorAll("[data-sub-down]")
+.forEach(btn=>{
 
-      } catch (erro) {
+btn.addEventListener("click",e=>
+changeSubdivision(
+Number(btn.dataset.subDown),
+-1
+));
 
-        console.error(erro);
+});
 
 
-        musicas.pop();
+/*
+REPETIÇÃO DO COMPASSO
+*/
 
+measuresEl
+.querySelectorAll("[data-repeat-up]")
+.forEach(btn=>{
 
-        mostrarMensagem(
-          "mensagemMusica",
-          "Não foi possível salvar a música.",
-          "erro"
-        );
+btn.addEventListener("click",()=>{
 
-      }
+const mi =
+Number(btn.dataset.repeatUp);
 
-    }
+measures[mi].repeats =
+Math.min(
+99,
+(measures[mi].repeats || 1)+1
+);
 
+selectedMeasure = mi;
 
-    /*
-      ============================================================
-      METRÔNOMO INTERNO
-      ============================================================
-    */
+render();
 
-    function obterNumeradorCompasso(compasso) {
+});
 
-      const partes =
-        String(compasso || "4/4").split("/");
+});
 
-      const numerador =
-        parseInt(partes[0], 10);
 
-      return Number.isInteger(numerador) &&
-        numerador > 0
-        ? numerador
-        : 4;
+measuresEl
+.querySelectorAll("[data-repeat-down]")
+.forEach(btn=>{
 
-    }
+btn.addEventListener("click",()=>{
 
+const mi =
+Number(btn.dataset.repeatDown);
 
-    function obterContextoAudioMetronomo() {
+measures[mi].repeats =
+Math.max(
+1,
+(measures[mi].repeats || 1)-1
+);
 
-      if (!contextoAudioMetronomo) {
+selectedMeasure = mi;
 
-        const AudioContext =
-          window.AudioContext ||
-          window.webkitAudioContext;
+render();
 
-        if (!AudioContext) {
-          throw new Error(
-            "O navegador não suporta áudio."
-          );
-        }
+});
 
-        contextoAudioMetronomo =
-          new AudioContext();
+});
 
-      }
 
-      return contextoAudioMetronomo;
+/*
+APAGAR COMPASSO
+*/
 
-    }
+measuresEl
+.querySelectorAll("[data-del]")
+.forEach(btn=>{
 
+btn.addEventListener("click",e=>{
 
-    function tocarBatidaMetronomo(
-      contexto,
-      tempo,
-      batida,
-      numerador
-    ) {
+e.stopPropagation();
 
-      const oscilador =
-        contexto.createOscillator();
+const mi =
+Number(btn.dataset.del);
 
-      const ganho =
-        contexto.createGain();
+if(measures.length===1){
 
-      const primeiraBatida =
-        batida % numerador === 0;
+measures[0]={
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:[null,null,null,null]
+};
 
-      oscilador.type =
-        "sine";
+}else{
 
-      oscilador.frequency.setValueAtTime(
-        primeiraBatida ? 1500 : 1000,
-        tempo
-      );
+measures.splice(mi,1);
 
-      ganho.gain.setValueAtTime(
-        0.0001,
-        tempo
-      );
+measures.forEach(m=>{
 
-      ganho.gain.exponentialRampToValueAtTime(
-        0.22,
-        tempo + 0.002
-      );
+if(m.ritornelo===mi){
 
-      ganho.gain.exponentialRampToValueAtTime(
-        0.0001,
-        tempo + 0.055
-      );
+m.ritornelo=null;
+m.ritorneloRepeats=1;
 
-      oscilador.connect(ganho);
-      ganho.connect(contexto.destination);
+}
+else if(
+m.ritornelo>mi
+){
 
-      oscilador.start(tempo);
-      oscilador.stop(tempo + 0.06);
+m.ritornelo--;
 
-    }
+}
 
+});
 
-    function agendarBatidasMetronomo() {
+selectedMeasure =
+Math.max(
+0,
+Math.min(
+selectedMeasure,
+measures.length-1
+)
+);
 
-      if (
-        metronomoTocandoId === null ||
-        !contextoAudioMetronomo
-      ) {
-        return;
-      }
+}
 
-      const musica =
-        musicas.find(
-          item =>
-            item.id === metronomoTocandoId
-        );
+render();
 
-      if (!musica) {
-        pararMetronomo();
-        return;
-      }
+});
 
-      const bpm =
-        Math.max(
-          30,
-          Math.min(
-            240,
-            parseInt(musica.bpm, 10) || 80
-          )
-        );
+});
 
-      const numerador =
-        obterNumeradorCompasso(
-          musica.compasso
-        );
+}
 
-      const intervalo =
-        60 / bpm;
 
-      const limite =
-        contextoAudioMetronomo.currentTime +
-        AHEAD_TIME_METRONOMO;
+/*
+===========================================================
+RITORNELO
+===========================================================
+*/
 
-      while (
-        proximoTempoMetronomo <
-        limite
-      ) {
+function openRitorneloModal(mi){
 
-        tocarBatidaMetronomo(
-          contextoAudioMetronomo,
-          proximoTempoMetronomo,
-          batidaMetronomo,
-          numerador
-        );
+editingRitorneloMi = mi;
 
-        proximoTempoMetronomo +=
-          intervalo;
+const sel =
+$("#ritorneloSelect");
 
-        batidaMetronomo++;
+let opts =
+`<option value="">
+Sem ritornelo (segue direto)
+</option>`;
 
-      }
+for(let i=0;i<mi;i++){
 
-    }
+opts += `
+<option value="${i}">
+Compasso ${i+1}
+</option>
+`;
 
+}
 
-    async function tocarMetronomo(id) {
+sel.innerHTML = opts;
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+const currentRit =
+measures[mi].ritornelo;
 
-      if (!musica) {
-        return;
-      }
+if(
+currentRit!==null &&
+currentRit!==undefined &&
+currentRit<mi
+){
 
-      try {
+sel.value = currentRit;
 
-        const contexto =
-          obterContextoAudioMetronomo();
+}
 
-        if (
-          contexto.state === "suspended"
-        ) {
 
-          await contexto.resume();
+const repeats =
+measures[mi].ritorneloRepeats || 1;
 
-        }
+$("#ritorneloRepeats").value =
+String(
+Math.max(
+1,
+Math.min(20,repeats)
+)
+);
 
-        if (
-          metronomoTocandoId !== null &&
-          metronomoTocandoId !== id
-        ) {
+openOverlay("ritorneloOverlay");
 
-          pararMetronomo();
+}
 
-        }
 
-        metronomoTocandoId =
-          id;
+$("#saveRitornelo")
+.addEventListener("click",()=>{
 
-        batidaMetronomo = 0;
+if(editingRitorneloMi!==null){
 
-        proximoTempoMetronomo =
-          contexto.currentTime +
-          0.05;
+const val =
+$("#ritorneloSelect").value;
 
-        clearInterval(
-          temporizadorMetronomo
-        );
+if(val===""){
 
-        agendarBatidasMetronomo();
+measures[editingRitorneloMi].ritornelo =
+null;
 
-        temporizadorMetronomo =
-          setInterval(
-            agendarBatidasMetronomo,
-            LOOKAHEAD_METRONOMO
-          );
+measures[editingRitorneloMi].ritorneloRepeats =
+1;
 
-        renderizarLista();
+}else{
 
-      } catch (erro) {
+measures[editingRitorneloMi].ritornelo =
+Number(val);
 
-        console.error(
-          "Erro ao iniciar metrônomo:",
-          erro
-        );
+measures[editingRitorneloMi].ritorneloRepeats =
+Math.max(
+1,
+Number($("#ritorneloRepeats").value) || 1
+);
 
-        alert(
-          "Não foi possível iniciar o metrônomo neste navegador."
-        );
+}
 
-      }
+render();
 
-    }
+}
 
+closeOverlay("ritorneloOverlay");
 
-    function pararMetronomo() {
+});
 
-      clearInterval(
-        temporizadorMetronomo
-      );
 
-      temporizadorMetronomo =
-        null;
+$("#clearRitornelo")
+.addEventListener("click",()=>{
 
-      metronomoTocandoId =
-        null;
+if(editingRitorneloMi!==null){
 
-      proximoTempoMetronomo =
-        0;
+measures[editingRitorneloMi].ritornelo =
+null;
 
-      batidaMetronomo =
-        0;
+measures[editingRitorneloMi].ritorneloRepeats =
+1;
 
-      renderizarLista();
+render();
 
-    }
+}
 
+closeOverlay("ritorneloOverlay");
 
-    function alternarMetronomo(id) {
+});
 
-      if (
-        metronomoTocandoId === id
-      ) {
 
-        pararMetronomo();
+/*
+===========================================================
+SUBDIVISÃO
+===========================================================
+*/
 
-        return;
+function changeSubdivision(mi,direction){
 
-      }
+const m = measures[mi];
 
-      tocarMetronomo(id);
+if(!m)return;
 
-    }
+const levels=[1,2,4,8];
 
+const currentIndex =
+levels.indexOf(m.subdivision);
 
-    /*
-      ============================================================
-      EDITAR MÚSICA COMPLETAMENTE
-      ============================================================
-    */
+const nextIndex =
+Math.max(
+0,
+Math.min(
+levels.length-1,
+currentIndex+direction
+)
+);
 
-    async function editarMusica(id) {
+if(nextIndex===currentIndex)return;
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+const oldSlots =
+m.slots.map(
+s=>s
+? JSON.parse(JSON.stringify(s))
+:null
+);
 
+const oldSub =
+m.subdivision;
 
-      if (!musica) {
-        return;
-      }
+const nextSub =
+levels[nextIndex];
 
 
-      const novoNome =
-        prompt(
-          "Nome da música:",
-          musica.nome || ""
-        );
+if(nextSub>oldSub){
 
+m.subdivision = nextSub;
 
-      if (novoNome === null) {
-        return;
-      }
+const factor =
+nextSub/oldSub;
 
+m.slots =
+Array.from(
+{length:slotCount(m)},
+(_,i)=>{
 
-      const nome =
-        novoNome.trim();
+const item =
+oldSlots[Math.floor(i/factor)];
 
+return item
+? JSON.parse(JSON.stringify(item))
+:null;
 
-      if (!nome) {
+});
 
-        alert(
-          "O nome da música não pode ficar vazio."
-        );
+}else{
 
-        return;
+const factor =
+oldSub/nextSub;
 
-      }
+const nextCount =
+getMeter(m.meter)[1]*nextSub;
 
+m.subdivision =
+nextSub;
 
-      const novoBpm =
-        prompt(
-          "BPM:",
-          musica.bpm
-        );
+m.slots =
+Array.from(
+{length:nextCount},
+(_,i)=>{
 
+for(let j=0;j<factor;j++){
 
-      if (novoBpm === null) {
-        return;
-      }
+const value =
+oldSlots[i*factor+j];
 
+if(value)
+return JSON.parse(
+JSON.stringify(value)
+);
 
-      const bpm =
-        parseInt(
-          novoBpm,
-          10
-        );
+}
 
+return null;
 
-      if (
-        !Number.isInteger(bpm) ||
-        bpm < 30 ||
-        bpm > 240
-      ) {
+});
 
-        alert(
-          "O BPM deve estar entre 30 e 240."
-        );
+}
 
-        return;
+selectedMeasure=mi;
 
-      }
+render();
 
+}
 
-      const novoCompasso =
-        prompt(
-          "Fórmula de compasso:",
-          musica.compasso || "4/4"
-        );
 
+/*
+===========================================================
+MODAIS
+===========================================================
+*/
 
-      if (novoCompasso === null) {
-        return;
-      }
+function openOverlay(id){
+$("#"+id).classList.add("open");
+}
 
+function closeOverlay(id){
+$("#"+id).classList.remove("open");
+}
 
-      const compasso =
-        novoCompasso.trim();
 
+function openNote(mi,si){
 
-      if (
-        !/^\d+\/(2|4|8|16)$/.test(
-          compasso
-        )
-      ) {
+selected={mi,si};
 
-        alert(
-          "Compasso inválido.\n\nUse, por exemplo: 4/4, 3/4, 6/8."
-        );
+$("#noteGrid").innerHTML =
+NOTES.map(n=>
+`
+<button
+class="note-btn"
+data-note="${n}">
+${n}
+</button>
+`
+).join("");
 
-        return;
 
-      }
+$("#noteGrid")
+.querySelectorAll("[data-note]")
+.forEach(b=>{
 
+b.addEventListener("click",()=>{
 
-      const musicaAnterior = {
+measures[mi].slots[si]={
+root:b.dataset.note,
+quality:"major",
+bass:""
+};
 
-        nome:
-          musica.nome,
+closeOverlay("noteOverlay");
 
-        bpm:
-          musica.bpm,
+render();
 
-        compasso:
-          musica.compasso
+previewChord(
+measures[mi].slots[si]
+);
 
-      };
+setTimeout(
+()=>openModifier(mi,si),
+120
+);
 
+});
 
-      musica.nome =
-        nome;
+});
 
-      musica.bpm =
-        bpm;
 
-      musica.compasso =
-        compasso;
+openOverlay("noteOverlay");
 
+}
 
-      try {
 
-        await salvarLista();
+function openModifier(mi,si){
 
-        renderizarLista();
+selected={mi,si};
 
-      } catch (erro) {
+const ch =
+measures[mi].slots[si];
 
-        console.error(erro);
+if(!ch)
+return openNote(mi,si);
 
+populateBass(ch);
 
-        musica.nome =
-          musicaAnterior.nome;
+openOverlay("modifierOverlay");
 
-        musica.bpm =
-          musicaAnterior.bpm;
+}
 
-        musica.compasso =
-          musicaAnterior.compasso;
 
+function populateBass(ch){
 
-        renderizarLista();
+const sel =
+$("#bassSelect");
 
+const idx =
+NOTES.indexOf(ch.root);
 
-        alert(
-          "Não foi possível salvar a alteração."
-        );
+const candidates=[
+ch.root,
+NOTES[(idx+2)%12],
+NOTES[(idx+4)%12],
+NOTES[(idx+7)%12]
+];
 
-      }
+sel.innerHTML =
+`<option value="">
+Sem baixo específico
+</option>`+
+[...new Set(candidates)]
+.map(n=>
+`
+<option
+value="${n}"
+${ch.bass===n?"selected":""}>
+${n}
+</option>
+`
+).join("");
 
-    }
+}
 
 
-    /*
-      ============================================================
-      SENHA ADMINISTRATIVA FIREBASE
-      ============================================================
-    */
+document
+.querySelectorAll("[data-close]")
+.forEach(b=>{
 
-    async function verificarSenhaAdministrativa() {
+b.addEventListener("click",()=>{
 
-      const senhaDigitada =
-        prompt(
-          "Digite a senha administrativa:"
-        );
+closeOverlay(
+b.dataset.close
+);
 
+});
 
-      if (
-        senhaDigitada === null
-      ) {
+});
 
-        return false;
 
-      }
+document
+.querySelectorAll(".overlay")
+.forEach(o=>{
 
+o.addEventListener("click",e=>{
 
-      if (
-        !window.db ||
-        !window.firestore
-      ) {
+if(e.target===o)
+o.classList.remove("open");
 
-        alert(
-          "Não foi possível conectar ao Firebase."
-        );
+});
 
-        return false;
+});
 
-      }
 
+document
+.querySelectorAll(".mod-btn")
+.forEach(b=>{
 
-      try {
+b.addEventListener("click",()=>{
 
-        const referencia =
-          window.firestore.doc(
-            window.db,
-            "configuracoes",
-            "sistema"
-          );
+const ch =
+measures[selected.mi]
+.slots[selected.si];
 
+if(!ch)return;
 
-        const documento =
-          await window.firestore.getDoc(
-            referencia
-          );
+ch.quality =
+b.dataset.mod;
 
+ch.bass =
+$("#bassSelect").value;
 
-        const dados =
-          documento.exists()
-            ? documento.data()
-            : {};
+closeOverlay("modifierOverlay");
 
+render();
 
-        const senhaAdministrativa =
-          dados.senha_admin_sistema || "";
+previewChord(ch);
 
+});
 
-        if (
-          senhaAdministrativa &&
-          senhaDigitada ===
-            senhaAdministrativa
-        ) {
+});
 
-          return true;
 
-        }
+$("#bassSelect")
+.addEventListener("change",()=>{
 
+const ch =
+measures[selected.mi]
+.slots[selected.si];
 
-        alert(
-          "Senha administrativa incorreta."
-        );
+if(!ch)return;
 
+ch.bass =
+$("#bassSelect").value;
 
-        return false;
+});
 
-      } catch (erro) {
 
-        console.error(
-          "Erro ao verificar senha administrativa:",
-          erro
-        );
+$("#clearCurrent")
+.addEventListener("click",()=>{
 
+if(measures[selected.mi])
+measures[selected.mi]
+.slots[selected.si]=null;
 
-        alert(
-          "Erro ao conectar com a nuvem."
-        );
+closeOverlay("modifierOverlay");
 
+render();
 
-        return false;
+});
 
-      }
 
-    }
+/*
+===========================================================
+ADICIONAR COMPASSO
+===========================================================
+*/
 
+$("#addMeasure")
+.addEventListener("click",()=>{
 
-    /*
-      ============================================================
-      EXCLUIR MÚSICA
-      ============================================================
-    */
+measures.push({
 
-    async function excluirMusica(id) {
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:[null,null,null,null]
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+});
 
+selectedMeasure =
+measures.length-1;
 
-      if (!musica) {
-        return;
-      }
+render();
 
+});
 
-      const autorizado =
-        await verificarSenhaAdministrativa();
 
+/*
+===========================================================
+CONTROLES PRINCIPAIS
+===========================================================
+*/
 
-      if (!autorizado) {
-        return;
-      }
+$("#playAll")
+.addEventListener(
+"click",
+()=>handlePlayAction("all",0)
+);
 
+$("#stopAll")
+.addEventListener(
+"click",
+()=>stopPlaybackCompletely()
+);
 
-      const confirmar =
-        confirm(
-          'Excluir a música "' +
-          musica.nome +
-          '"?'
-        );
 
+/*
+===========================================================
+SINCRONIZAÇÃO
+===========================================================
+*/
 
-      if (!confirmar) {
-        return;
-      }
+function syncControlsUI(){
 
+const bpmVal =
+getBpm();
 
-      const listaAnterior =
-        [...musicas];
+$("#bpm").value =
+bpmVal;
 
+$("#fsBpmDisplay").textContent =
+bpmVal+" BPM";
 
-      musicas =
-        musicas.filter(
-          item => item.id !== id
-        );
 
+const metroTxt =
+`♩ Metrônomo: ${metronomeOn?"ON":"OFF"}`;
 
-      try {
+$("#metroToggle").textContent =
+metroTxt;
 
-        await salvarLista();
+$("#fsMetroToggle").textContent =
+metroTxt;
 
-        renderizarLista();
 
-      } catch (erro) {
+const vol =
+parseFloat(
+$("#volume").value || "2.0"
+);
 
-        console.error(erro);
+$("#volume").value =
+vol;
 
-        musicas =
-          listaAnterior;
+$("#volumeValue").textContent =
+Math.round(vol*100)+"%";
 
-        renderizarLista();
+$("#fsVolume").value =
+vol;
 
 
-        alert(
-          "Não foi possível excluir a música."
-        );
+const mVol =
+parseFloat(
+$("#metroVolume").value || "1.5"
+);
 
-      }
+$("#metroVolume").value =
+mVol;
 
-    }
+$("#metroVolumeValue").textContent =
+Math.round(mVol*100)+"%";
 
+$("#fsMetroVolume").value =
+mVol;
 
 
-    /*
-      ============================================================
-      BLOCO DE NOTAS INDIVIDUAL DA MÚSICA
-      ============================================================
-    */
+updatePlayButtonLabels();
 
-    function abrirBlocoNotas(id) {
+}
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
 
-      if (!musica) {
-        return;
-      }
+function updatePlayButtonLabels(){
 
-      notaAbertaId =
-        notaAbertaId === id
-          ? null
-          : id;
+const txt =
+playbackState==="PLAYING"
+? "⏸ Pausa"
+: "▶ Tocar";
 
-      renderizarLista();
+$("#playAll").textContent =
+txt;
 
-      if (notaAbertaId !== null) {
+$("#fsPlayAll").textContent =
+txt;
 
-        setTimeout(
-          function() {
+}
 
-            const campo =
-              document.querySelector(
-                '.campo-notas[data-id="' +
-                id +
-                '"]'
-              );
 
-            if (campo) {
+/*
+===========================================================
+METRÔNOMO
+===========================================================
+*/
 
-              campo.focus();
+$("#metroToggle")
+.addEventListener("click",()=>{
 
-              campo.setSelectionRange(
-                campo.value.length,
-                campo.value.length
-              );
+metronomeOn=!metronomeOn;
 
-            }
+syncControlsUI();
 
-          },
-          0
-        );
+});
 
-      }
 
-    }
+$("#fsMetroToggle")
+.addEventListener("click",()=>{
 
+metronomeOn=!metronomeOn;
 
-    /*
-      ============================================================
-      SALVAMENTO AUTOMÁTICO DAS ANOTAÇÕES
-      ============================================================
-    */
+syncControlsUI();
 
-    function agendarSalvamentoNota(id) {
+});
 
-      clearTimeout(
-        temporizadoresNotas[id]
-      );
 
-      const status =
-        document.querySelector(
-          '.notas-status[data-id="' +
-          id +
-          '"]'
-        );
+/*
+===========================================================
+VOLUME
+===========================================================
+*/
 
-      if (status) {
-        status.textContent =
-          "Salvando...";
-      }
+$("#volume")
+.addEventListener("input",()=>{
 
-      temporizadoresNotas[id] =
-        setTimeout(
-          async function() {
+$("#fsVolume").value =
+$("#volume").value;
 
-            try {
+syncControlsUI();
 
-              await salvarLista();
+updateMasterVolume();
 
-              const statusAtual =
-                document.querySelector(
-                  '.notas-status[data-id="' +
-                  id +
-                  '"]'
-                );
+});
 
-              if (statusAtual) {
-                statusAtual.textContent =
-                  "Salvo automaticamente.";
-              }
 
-            } catch (erro) {
+$("#fsVolume")
+.addEventListener("input",()=>{
 
-              console.error(erro);
+$("#volume").value =
+$("#fsVolume").value;
 
-              const statusAtual =
-                document.querySelector(
-                  '.notas-status[data-id="' +
-                  id +
-                  '"]'
-                );
+syncControlsUI();
 
-              if (statusAtual) {
-                statusAtual.textContent =
-                  "Erro ao salvar.";
-              }
+updateMasterVolume();
 
-            }
+});
 
-          },
-          700
-        );
 
-    }
+$("#metroVolume")
+.addEventListener("input",()=>{
 
+$("#fsMetroVolume").value =
+$("#metroVolume").value;
 
-    function alterarAnotacao(id, valor) {
+syncControlsUI();
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+});
 
-      if (!musica) {
-        return;
-      }
 
-      musica.anotacao =
-        valor;
+$("#fsMetroVolume")
+.addEventListener("input",()=>{
 
-      agendarSalvamentoNota(id);
+$("#metroVolume").value =
+$("#fsMetroVolume").value;
 
-    }
+syncControlsUI();
 
+});
 
-    /*
-      ============================================================
-      FOTO DA ANOTAÇÃO
-      ============================================================
-    */
 
-    function selecionarFoto(id) {
+$("#bpm")
+.addEventListener(
+"input",
+syncControlsUI
+);
 
-      const input =
-        document.querySelector(
-          '.input-foto[data-id="' +
-          id +
-          '"]'
-        );
 
-      if (input) {
-        input.click();
-      }
+/*
+===========================================================
+BPM FULLSCREEN
+===========================================================
+*/
 
-    }
+$("#fsBpmPlus")
+.addEventListener("click",()=>{
 
+let n =
+getBpm()+5;
 
-    function adicionarFotoNota(id, arquivo) {
+$("#bpm").value =
+Math.min(240,n);
 
-      if (!arquivo) {
-        return;
-      }
+syncControlsUI();
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+if(activeFullscreenProject)
+activeFullscreenProject.bpm =
+getBpm();
 
-      if (!musica) {
-        return;
-      }
+$("#fsSongMeta").textContent =
+`Tom: ${activeFullscreenProject?.songKey || '-'} · BPM: ${getBpm()}`;
 
-      if (!arquivo.type.startsWith("image/")) {
+});
 
-        alert(
-          "Selecione uma imagem."
-        );
 
-        return;
-      }
+$("#fsBpmMinus")
+.addEventListener("click",()=>{
 
-      const leitor =
-        new FileReader();
+let n =
+getBpm()-5;
 
-      leitor.onload =
-        function(evento) {
+$("#bpm").value =
+Math.max(30,n);
 
-          musica.foto =
-            evento.target.result;
+syncControlsUI();
 
-          renderizarLista();
+if(activeFullscreenProject)
+activeFullscreenProject.bpm =
+getBpm();
 
-          agendarSalvamentoNota(id);
+$("#fsSongMeta").textContent =
+`Tom: ${activeFullscreenProject?.songKey || '-'} · BPM: ${getBpm()}`;
 
-        };
+});
 
-      leitor.readAsDataURL(
-        arquivo
-      );
 
-    }
+function getBpm(){
 
+let n =
+parseInt(
+$("#bpm").value,
+10
+);
 
-    function abrirFotoTelaCheia(foto, nome) {
+if(!Number.isFinite(n))
+n=90;
 
-      const visualizador =
-        document.getElementById("visualizadorFoto");
+return Math.max(
+30,
+Math.min(240,n)
+);
 
-      const imagem =
-        document.getElementById("imagemTelaCheia");
+}
 
-      if (!visualizador || !imagem || !foto) {
-        return;
-      }
 
-      imagem.src = foto;
-      imagem.alt =
-        "Foto ampliada de " +
-        (nome || "anotação");
+/*
+===========================================================
+AUDIO
+===========================================================
+*/
 
-      visualizador.classList.add("aberto");
-      document.body.style.overflow = "hidden";
+function ensureAudio(){
 
-    }
+if(!audioCtx){
 
+audioCtx =
+new (
+window.AudioContext ||
+window.webkitAudioContext
+)();
 
-    function fecharFotoTelaCheia() {
+masterGain =
+audioCtx.createGain();
 
-      const visualizador =
-        document.getElementById("visualizadorFoto");
+masterGain.gain.value =
+parseFloat(
+$("#volume").value || "2.0"
+);
 
-      const imagem =
-        document.getElementById("imagemTelaCheia");
+masterGain.connect(
+audioCtx.destination
+);
 
-      if (!visualizador) {
-        return;
-      }
+}
 
-      visualizador.classList.remove("aberto");
-      document.body.style.overflow = "";
+if(audioCtx.state==="suspended")
+audioCtx.resume();
 
-      if (imagem) {
-        imagem.src = "";
-      }
+}
 
-    }
 
+function updateMasterVolume(){
 
-    function removerFotoNota(id) {
+const value =
+parseFloat(
+$("#volume").value || "2.0"
+);
 
-      const musica =
-        musicas.find(
-          item => item.id === id
-        );
+if(masterGain){
 
-      if (!musica) {
-        return;
-      }
+masterGain.gain.setTargetAtTime(
+value,
+audioCtx.currentTime,
+.015
+);
 
-      musica.foto =
-        "";
+}
 
-      renderizarLista();
+}
 
-      agendarSalvamentoNota(id);
 
-    }
+/*
+===========================================================
+FREQUÊNCIAS
+===========================================================
+*/
 
+function noteFreq(note,octave=4){
 
-    /*
-      ============================================================
-      RENDERIZAR LISTA
-      ============================================================
-    */
+const idx =
+NOTES.indexOf(note);
 
-    function renderizarLista() {
+const midi =
+60+idx+(octave-4)*12;
 
-      const tbody =
-        document.getElementById(
-          "listaMusicas"
-        );
+return 440*
+Math.pow(
+2,
+(midi-69)/12
+);
 
+}
 
-      tbody.innerHTML = "";
 
+function chordNotes(ch){
 
-      if (
-        !musicas ||
-        musicas.length === 0
-      ) {
+const rootIdx =
+NOTES.indexOf(ch.root);
 
-        const tr =
-          document.createElement("tr");
+if(rootIdx<0)
+return [];
 
+const intervals =
+ch.quality==="minor"
+? [0,3,7]
+:
+ch.quality==="dim"
+? [0,3,6]
+:
+ch.quality==="sus2"
+? [0,2,7]
+:
+[0,4,7];
 
-        const td =
-          document.createElement("td");
 
+let arr =
+intervals.map((x,i)=>{
 
-        td.colSpan = 4;
+const n =
+NOTES[(rootIdx+x)%12];
 
-        td.className =
-          "vazio";
+const oct =
+3+
+Math.floor((rootIdx+x)/12)+
+(i===0?1:0);
 
+return {
+note:n,
+oct
+};
 
-        td.textContent =
-          "Nenhuma música cadastrada ainda.";
+});
 
 
-        tr.appendChild(td);
+if(ch.bass){
 
-        tbody.appendChild(tr);
+const bi =
+NOTES.indexOf(ch.bass);
 
-        return;
-      }
+if(bi>=0){
 
+arr.unshift({
+note:ch.bass,
+oct:3+(bi<rootIdx?1:0)
+});
 
-      musicas.forEach(
-        musica => {
+}
 
-          const tr =
-            document.createElement("tr");
+}
 
+return arr;
 
-          const tdNome =
-            document.createElement("td");
+}
 
 
-          /*
-            O NOME DA MÚSICA É O ÚNICO PONTO
-            QUE ABRE O BLOCO DE NOTAS.
-          */
+/*
+===========================================================
+SOM
+===========================================================
+*/
 
-          const nomeMusica =
-            document.createElement("span");
+function pluck(
+freq,
+when=audioCtx.currentTime,
+duration=2.6,
+velocity=1.0
+){
 
-          nomeMusica.className =
-            "nome-musica";
+const ctx =
+audioCtx;
 
-          nomeMusica.textContent =
-            musica.nome;
+const osc =
+ctx.createOscillator();
 
-          nomeMusica.title =
-            "Clique para abrir as anotações";
+const osc2 =
+ctx.createOscillator();
 
-          nomeMusica.onclick =
-            function() {
+const gain =
+ctx.createGain();
 
-              abrirBlocoNotas(
-                musica.id
-              );
+const filter =
+ctx.createBiquadFilter();
 
-            };
 
-          tdNome.appendChild(
-            nomeMusica
-          );
+osc.type="triangle";
 
+osc2.type="sine";
 
-          /*
-            BLOCO DE NOTAS INDIVIDUAL
-          */
+osc.frequency.setValueAtTime(
+freq,
+when
+);
 
-          if (
-            notaAbertaId === musica.id
-          ) {
+osc2.frequency.setValueAtTime(
+freq*2,
+when
+);
 
-            const bloco =
-              document.createElement("div");
 
-            bloco.className =
-              "bloco-notas aberto";
+filter.type="lowpass";
 
+filter.frequency.setValueAtTime(
+3400,
+when
+);
 
-            const titulo =
-              document.createElement("div");
+filter.Q.value=.75;
 
-            titulo.className =
-              "bloco-notas-titulo";
 
-            titulo.textContent =
-              "📝 Anotações de " +
-              musica.nome;
+gain.gain.setValueAtTime(
+.0001,
+when
+);
 
+gain.gain.exponentialRampToValueAtTime(
+.26*velocity,
+when+.012
+);
 
-            const campo =
-              document.createElement("textarea");
+gain.gain.exponentialRampToValueAtTime(
+.16*velocity,
+when+.22
+);
 
-            campo.className =
-              "campo-notas";
+gain.gain.exponentialRampToValueAtTime(
+.105*velocity,
+when+.75
+);
 
-            campo.dataset.id =
-              musica.id;
+gain.gain.exponentialRampToValueAtTime(
+.0001,
+when+duration
+);
 
-            campo.placeholder =
-              "Escreva aqui suas anotações para esta música...";
 
-            campo.value =
-              musica.anotacao || "";
+osc.connect(filter);
 
-            campo.addEventListener(
-              "input",
-              function() {
+osc2.connect(filter);
 
-                alterarAnotacao(
-                  musica.id,
-                  campo.value
-                );
+filter.connect(gain);
 
-              }
-            );
+gain.connect(
+masterGain ||
+ctx.destination
+);
 
 
-            const botaoFoto =
-              document.createElement("button");
+osc.start(when);
 
-            botaoFoto.type =
-              "button";
+osc2.start(when);
 
-            botaoFoto.className =
-              "botao-foto";
+osc.stop(
+when+duration+.05
+);
 
-            botaoFoto.textContent =
-              "📷 Adicionar foto";
+osc2.stop(
+when+duration+.05
+);
 
-            botaoFoto.onclick =
-              function() {
+}
 
-                selecionarFoto(
-                  musica.id
-                );
 
-              };
+function playChord(
+ch,
+when=audioCtx.currentTime
+){
 
+if(!ch)return;
 
-            const inputFoto =
-              document.createElement("input");
+chordNotes(ch)
+.forEach((n,i)=>
+pluck(
+noteFreq(n.note,n.oct),
+when+i*.018,
+2.6,
+.95
+)
+);
 
-            inputFoto.type =
-              "file";
+}
 
-            inputFoto.accept =
-              "image/*";
 
-            inputFoto.className =
-              "input-foto";
+function tick(
+when=audioCtx.currentTime,
+accent=false
+){
 
-            inputFoto.dataset.id =
-              musica.id;
+const metroVol =
+parseFloat(
+$("#metroVolume").value || "1.5"
+);
 
-            inputFoto.addEventListener(
-              "change",
-              function() {
+if(metroVol<=0)
+return;
 
-                adicionarFotoNota(
-                  musica.id,
-                  inputFoto.files[0]
-                );
+const osc =
+audioCtx.createOscillator();
 
-                inputFoto.value = "";
+const g =
+audioCtx.createGain();
 
-              }
-            );
+osc.type="square";
 
+osc.frequency.value =
+accent ? 1300 : 900;
 
-            const status =
-              document.createElement("div");
+const baseGain =
+accent ? .055 : .035;
 
-            status.className =
-              "notas-status";
+g.gain.setValueAtTime(
+.0001,
+when
+);
 
-            status.dataset.id =
-              musica.id;
+g.gain.exponentialRampToValueAtTime(
+baseGain*metroVol,
+when+.002
+);
 
-            if (
-              musica.anotacao ||
-              musica.foto
-            ) {
+g.gain.exponentialRampToValueAtTime(
+.0001,
+when+.045
+);
 
-              status.textContent =
-                "Anotações salvas.";
+osc.connect(g);
 
-            }
+g.connect(
+masterGain ||
+audioCtx.destination
+);
 
+osc.start(when);
 
-            bloco.appendChild(
-              titulo
-            );
+osc.stop(
+when+.055
+);
 
-            bloco.appendChild(
-              campo
-            );
+}
 
-            bloco.appendChild(
-              botaoFoto
-            );
 
-            bloco.appendChild(
-              inputFoto
-            );
+/*
+===========================================================
+DURAÇÃO
+===========================================================
+*/
 
+function slotDuration(m){
 
-            if (musica.foto) {
+const [,num,den] =
+getMeter(m.meter);
 
-              const imagem =
-                document.createElement("img");
+return 60/getBpm()*(4/den);
 
-              imagem.className =
-                "foto-nota";
+}
 
-              imagem.src =
-                musica.foto;
 
-              imagem.alt =
-                "Foto da anotação de " +
-                musica.nome;
+/*
+===========================================================
+ATUALIZAÇÃO VISUAL
+===========================================================
+*/
 
-              imagem.title =
-                "Clique para abrir em tela cheia";
+function updateActiveSlotDOM(mi,si){
 
-              imagem.onclick =
-                function() {
+document
+.querySelectorAll(".measures-wrap .measure")
+.forEach((mEl,mIdx)=>{
 
-                  abrirFotoTelaCheia(
-                    musica.foto,
-                    musica.nome
-                  );
+if(mIdx===mi)
+mEl.classList.add("playing");
+else
+mEl.classList.remove("playing");
 
-                };
 
-              bloco.appendChild(
-                imagem
-              );
+mEl
+.querySelectorAll(".slot")
+.forEach((sEl,sIdx)=>{
 
+if(
+mIdx===mi &&
+sIdx===si
+){
 
-              const botaoTelaCheia =
-                document.createElement("button");
+sEl.classList.add(
+"active-slot"
+);
 
-              botaoTelaCheia.type =
-                "button";
+}else{
 
-              botaoTelaCheia.className =
-                "botao-foto";
+sEl.classList.remove(
+"active-slot"
+);
 
-              botaoTelaCheia.textContent =
-                "⛶ Tela cheia";
+}
 
-              botaoTelaCheia.onclick =
-                function() {
+});
 
-                  abrirFotoTelaCheia(
-                    musica.foto,
-                    musica.nome
-                  );
+});
 
-                };
+}
 
-              bloco.appendChild(
-                botaoTelaCheia
-              );
 
+/*
+===========================================================
+PAUSA INTELIGENTE
+===========================================================
+*/
 
-              const remover =
-                document.createElement("button");
+function waitForResume(){
 
-              remover.type =
-                "button";
+return new Promise(resolve=>{
 
-              remover.className =
-                "remover-foto";
+playbackPromiseResolve =
+resolve;
 
-              remover.textContent =
-                "Remover foto";
+});
 
-              remover.onclick =
-                function() {
+}
 
-                  removerFotoNota(
-                    musica.id
-                  );
 
-                };
+/*
+===========================================================
+PLAYER PRINCIPAL
+===========================================================
+*/
 
-              bloco.appendChild(
-                remover
-              );
+async function handlePlayAction(
+mode,
+startMi
+){
 
-            }
+ensureAudio();
 
-            bloco.appendChild(
-              status
-            );
+await audioCtx.resume();
 
-            tdNome.appendChild(
-              bloco
-            );
 
-          }
+/*
+-----------------------------------------------
+SE JÁ ESTÁ TOCANDO:
+CLICA = PAUSA
+-----------------------------------------------
+*/
 
+if(playbackState==="PLAYING"){
 
-          const tdBpm =
-            document.createElement("td");
+playbackState="PAUSED";
 
-          tdBpm.textContent =
-            musica.bpm;
+syncControlsUI();
 
+return;
 
-          const tdCompasso =
-            document.createElement("td");
+}
 
-          tdCompasso.textContent =
-            musica.compasso;
 
+/*
+-----------------------------------------------
+SE ESTÁ PAUSADO:
+CLICA = CONTINUA
+-----------------------------------------------
+*/
 
-          const tdAcoes =
-            document.createElement("td");
+if(playbackState==="PAUSED"){
 
+playbackState="PLAYING";
 
-          const acoes =
-            document.createElement("div");
+if(playbackPromiseResolve){
 
-          acoes.className =
-            "acoes";
+const resolveFn =
+playbackPromiseResolve;
 
+playbackPromiseResolve =
+null;
 
-          /*
-            ▶ METRÔNOMO
-          */
+resolveFn();
 
-          const botaoPlay =
-            document.createElement("button");
+}
 
-          botaoPlay.className =
-            "acao";
+syncControlsUI();
 
-          botaoPlay.title =
-            metronomoTocandoId === musica.id
-              ? "Pausar metrônomo"
-              : "Tocar metrônomo";
+return;
 
-          botaoPlay.textContent =
-            metronomoTocandoId === musica.id
-              ? "⏸"
-              : "▶";
+}
 
-          botaoPlay.onclick =
-            function() {
 
-              alternarMetronomo(
-                musica.id
-              );
+/*
+-----------------------------------------------
+NOVO PLAY
+-----------------------------------------------
+*/
 
-            };
+playbackRunId++;
 
+const currentRun =
+playbackRunId;
 
-          /*
-            💾 EDITAR COMPLETAMENTE
-          */
+playbackState="PLAYING";
 
-          const botaoEditar =
-            document.createElement("button");
+playbackMode=mode;
 
-          botaoEditar.className =
-            "acao editar";
+syncControlsUI();
 
-          botaoEditar.title =
-            "Editar música, BPM e compasso";
 
-          botaoEditar.textContent =
-            "💾";
+/*
+Seleciona a fonte correta.
 
-          botaoEditar.onclick =
-            function() {
+Editor:
+    measures
 
-              editarMusica(
-                musica.id
-              );
+Tela cheia:
+    activeFullscreenProject.measures
+*/
 
-            };
+const targetMeasures =
+activeFullscreenProject
+? activeFullscreenProject.measures
+: measures;
 
 
-          /*
-            🗑️ EXCLUIR
-          */
+/*
+ZERA CONTADORES DOS RITORNELOS
+*/
 
-          const botaoExcluir =
-            document.createElement("button");
+ritorneloCounters = {};
 
-          botaoExcluir.className =
-            "acao excluir";
 
-          botaoExcluir.title =
-            "Excluir música";
+/*
+-----------------------------------------------
+MODO COMPASSO
+-----------------------------------------------
 
-          botaoExcluir.textContent =
-            "🗑️";
+Este é o ponto importante:
 
-          botaoExcluir.onclick =
-            function() {
+O botão ▶ de cada card NÃO chama
+mais o player geral.
 
-              excluirMusica(
-                musica.id
-              );
+Ele executa somente o compasso escolhido.
 
-            };
+Depois do compasso ele encerra.
+-----------------------------------------------
+*/
 
+if(mode==="measure"){
 
-          acoes.appendChild(
-            botaoPlay
-          );
+if(
+startMi<0 ||
+startMi>=targetMeasures.length
+){
 
-          acoes.appendChild(
-            botaoEditar
-          );
+stopPlaybackCompletely();
 
-          acoes.appendChild(
-            botaoExcluir
-          );
+return;
 
+}
 
-          tdAcoes.appendChild(
-            acoes
-          );
 
+const mi =
+startMi;
 
-          if (
-            metronomoTocandoId === musica.id
-          ) {
+currentPlayMi =
+mi;
 
-            const painelMetronomo =
-              document.createElement(
-                "div"
-              );
+const m =
+targetMeasures[mi];
 
-            painelMetronomo.className =
-              "metronomo-interno";
+const repetitions =
+Math.max(
+1,
+m.repeats || 1
+);
 
 
-            const indicador =
-              document.createElement(
-                "span"
-              );
+for(
+let rep=0;
+rep<repetitions;
+rep++
+){
 
-            indicador.className =
-              "metronomo-indicador tocando";
+if(
+playbackState==="STOPPED" ||
+playbackRunId!==currentRun
+)
+break;
 
 
-            const status =
-              document.createElement(
-                "span"
-              );
+currentPlayRep =
+rep;
 
-            status.className =
-              "metronomo-status";
 
-            status.textContent =
-              musica.bpm +
-              " BPM • " +
-              (musica.compasso || "4/4") +
-              " • Tocando";
+for(
+let si=0;
+si<m.slots.length;
+si++
+){
 
+if(
+playbackState==="STOPPED" ||
+playbackRunId!==currentRun
+)
+break;
 
-            const botaoPausa =
-              document.createElement(
-                "button"
-              );
 
-            botaoPausa.type =
-              "button";
+/*
+PAUSA
+*/
 
-            botaoPausa.className =
-              "metronomo-controle";
+while(
+playbackState==="PAUSED" &&
+playbackRunId===currentRun
+){
 
-            botaoPausa.title =
-              "Pausar metrônomo";
+await waitForResume();
 
-            botaoPausa.textContent =
-              "⏸";
+}
 
-            botaoPausa.onclick =
-              function() {
 
-                pararMetronomo();
+if(
+playbackState==="STOPPED" ||
+playbackRunId!==currentRun
+)
+break;
 
-              };
 
+currentPlaySi =
+si;
 
-            painelMetronomo.appendChild(
-              indicador
-            );
+const when =
+audioCtx.currentTime+.035;
 
-            painelMetronomo.appendChild(
-              status
-            );
+activePlayingSlot = {
+mi,
+si
+};
 
-            painelMetronomo.appendChild(
-              botaoPausa
-            );
 
-            tdAcoes.appendChild(
-              painelMetronomo
-            );
+/*
+Visual
+*/
 
-          }
+if(activeFullscreenProject){
 
+renderFullscreenMeasures(
+mi,
+si
+);
 
-          tr.appendChild(
-            tdNome
-          );
+}else{
 
-          tr.appendChild(
-            tdBpm
-          );
+updateActiveSlotDOM(
+mi,
+si
+);
 
-          tr.appendChild(
-            tdCompasso
-          );
+}
 
-          tr.appendChild(
-            tdAcoes
-          );
 
+/*
+Som
+*/
 
-          tbody.appendChild(
-            tr
-          );
+if(metronomeOn){
 
-        }
-      );
+tick(
+when,
+si%m.subdivision===0
+);
 
-    }
+}
 
+if(m.slots[si]){
 
-    /*
-      ============================================================
-      TROCAR ALUNO
-      ============================================================
-    */
+playChord(
+m.slots[si],
+when
+);
 
-    function sairAluno() {
+}
 
-      pararMetronomo();
 
-      Object.keys(
-        temporizadoresNotas
-      ).forEach(
-        function(id) {
+await sleep(
+slotDuration(m)*1000
+);
 
-          clearTimeout(
-            temporizadoresNotas[id]
-          );
+}
 
-        }
-      );
+}
 
-      temporizadoresNotas = {};
 
-      alunoAtual = "";
+/*
+TERMINOU O COMPASSO.
+PARA.
+*/
 
-      musicas = [];
+if(
+playbackRunId===currentRun
+){
 
-      notaAbertaId = null;
+stopPlaybackCompletely();
 
+}
 
-      document
-        .getElementById("nomeAluno")
-        .value = "";
+return;
 
+}
 
-      document
-        .getElementById("nomeAlunoAtual")
-        .textContent = "";
 
+/*
+===========================================================
+MODO GERAL
+===========================================================
 
-      document
-        .getElementById("infoAluno")
-        .classList.remove("ativo");
+Aqui ele percorre todos os compassos.
 
+O ritornelo é controlado por contador.
+Não existe mais loop infinito.
+===========================================================
+*/
 
-      document
-        .getElementById("cardAdicionar")
-        .style.display = "none";
+currentPlayMi =
+Math.max(
+0,
+Math.min(
+startMi,
+targetMeasures.length-1
+)
+);
 
+currentPlaySi=0;
+currentPlayRep=0;
 
-      document
-        .getElementById("cardLista")
-        .style.display = "none";
 
+while(
+currentPlayMi>=0 &&
+currentPlayMi<targetMeasures.length &&
+playbackState!=="STOPPED" &&
+playbackRunId===currentRun
+){
 
-      esconderMensagem(
-        "mensagemLogin"
-      );
+selectedMeasure =
+currentPlayMi;
 
+const m =
+targetMeasures[currentPlayMi];
 
-      document
-        .getElementById("nomeAluno")
-        .focus();
+const repetitions =
+Math.max(
+1,
+m.repeats || 1
+);
 
-    }
 
+/*
+-----------------------------------------------
+TOCA O COMPASSO
+-----------------------------------------------
+*/
 
-    /*
-      ============================================================
-      INICIALIZAÇÃO DOS NOMES SALVOS
-      ============================================================
-    */
+for(
+let rep=currentPlayRep;
+rep<repetitions &&
+playbackState!=="STOPPED" &&
+playbackRunId===currentRun;
+rep++
+){
 
-    document.addEventListener(
-      "keydown",
-      function(event) {
+currentPlayRep =
+rep;
 
-        if (event.key === "Escape") {
-          fecharFotoTelaCheia();
-        }
+const startSi =
+currentPlaySi || 0;
 
-      }
-    );
 
+for(
+let si=startSi;
+si<m.slots.length &&
+playbackState!=="STOPPED" &&
+playbackRunId===currentRun;
+si++
+){
 
-    carregarNomesAlunosSalvos();
-    carregarNomesAlunosDoGoogleDrive();
+currentPlaySi =
+si;
 
 
-    /*
-      ============================================================
-      FILTRAR ALUNOS ENQUANTO DIGITA
-      ============================================================
-    */
+/*
+PAUSA
+*/
 
-    document
-      .getElementById("nomeAluno")
-      .addEventListener(
-        "input",
-        function() {
+while(
+playbackState==="PAUSED" &&
+playbackRunId===currentRun
+){
 
-          renderizarNomesAlunosSalvos();
+await waitForResume();
 
-        }
-      );
+}
 
 
-    /*
-      ============================================================
-      ENTER NO CAMPO DO ALUNO
-      ============================================================
-    */
+if(
+playbackState==="STOPPED" ||
+playbackRunId!==currentRun
+)
+break;
 
-    document
-      .getElementById("nomeAluno")
-      .addEventListener(
-        "keydown",
-        function(event) {
 
-          if (
-            event.key === "Enter"
-          ) {
+const when =
+audioCtx.currentTime+.035;
 
-            carregarAluno();
+activePlayingSlot={
+mi:currentPlayMi,
+si
+};
 
-          }
 
-        }
-      );
+/*
+VISUAL
+*/
 
+if(activeFullscreenProject){
 
-    /*
-      ============================================================
-      ENTER NO CAMPO DA MÚSICA
-      ============================================================
-    */
+renderFullscreenMeasures(
+currentPlayMi,
+si
+);
 
-    document
-      .getElementById("nomeMusica")
-      .addEventListener(
-        "keydown",
-        function(event) {
+}else{
 
-          if (
-            event.key === "Enter"
-          ) {
+updateActiveSlotDOM(
+currentPlayMi,
+si
+);
 
-            adicionarMusica();
+}
 
-          }
 
-        }
-      );
+/*
+METRÔNOMO
+*/
 
+if(metronomeOn){
 
-  </script>
+tick(
+when,
+si%m.subdivision===0
+);
+
+}
+
+
+/*
+ACORDE
+*/
+
+if(m.slots[si]){
+
+playChord(
+m.slots[si],
+when
+);
+
+}
+
+
+await sleep(
+slotDuration(m)*1000
+);
+
+}
+
+
+/*
+Depois da primeira repetição,
+começa novamente no primeiro slot.
+*/
+
+currentPlaySi=0;
+
+}
+
+
+currentPlayRep=0;
+currentPlaySi=0;
+
+
+/*
+===========================================================
+RITORNELO
+===========================================================
+
+Exemplo:
+
+Compasso 4:
+ritornelo = 1
+ritorneloRepeats = 2
+
+Ao chegar no compasso 4:
+
+1ª vez:
+volta para compasso 2
+
+2ª vez:
+volta para compasso 2
+
+3ª chegada:
+NÃO volta mais
+e continua para compasso 5.
+===========================================================
+*/
+
+if(
+m.ritornelo!==null &&
+m.ritornelo!==undefined &&
+m.ritornelo>=0 &&
+m.ritornelo<currentPlayMi
+){
+
+const ritKey =
+String(currentPlayMi);
+
+const maxReturns =
+Math.max(
+1,
+m.ritorneloRepeats || 1
+);
+
+const used =
+ritorneloCounters[ritKey] || 0;
+
+
+if(used<maxReturns){
+
+/*
+Registra este retorno.
+*/
+
+ritorneloCounters[ritKey] =
+used+1;
+
+
+/*
+Volta para o compasso configurado.
+*/
+
+currentPlayMi =
+m.ritornelo;
+
+currentPlaySi=0;
+currentPlayRep=0;
+
+continue;
+
+}
+
+}
+
+
+/*
+Não há mais ritornelo
+ou já terminou a quantidade.
+
+Vai para o próximo compasso.
+*/
+
+currentPlayMi++;
+
+currentPlaySi=0;
+currentPlayRep=0;
+
+}
+
+
+/*
+===========================================================
+FINAL DA MÚSICA
+===========================================================
+*/
+
+if(
+playbackRunId===currentRun
+){
+
+stopPlaybackCompletely();
+
+}
+
+}
+
+
+/*
+===========================================================
+PARAR
+===========================================================
+*/
+
+function stopPlaybackCompletely(){
+
+playbackRunId++;
+
+playbackState="STOPPED";
+
+playbackMode="all";
+
+ritorneloCounters={};
+
+
+if(playbackPromiseResolve){
+
+const resolveFn =
+playbackPromiseResolve;
+
+playbackPromiseResolve =
+null;
+
+resolveFn();
+
+}
+
+
+activePlayingSlot={
+mi:-1,
+si:-1
+};
+
+currentPlayMi=0;
+currentPlaySi=0;
+currentPlayRep=0;
+
+syncControlsUI();
+
+render();
+
+if(activeFullscreenProject){
+
+renderFullscreenMeasures(
+-1,
+-1
+);
+
+}
+
+}
+
+
+/*
+===========================================================
+SLEEP
+===========================================================
+*/
+
+function sleep(ms){
+
+return new Promise(
+resolve=>setTimeout(resolve,ms)
+);
+
+}
+
+
+function previewChord(ch){
+
+ensureAudio();
+
+updateMasterVolume();
+
+playChord(ch);
+
+}
+
+
+/*
+===========================================================
+ESTADO DO PROJETO
+===========================================================
+*/
+
+function stateObject(){
+
+return {
+
+id:
+currentProjectId ||
+("proj_"+Date.now()),
+
+songName:
+$("#songName").value ||
+"Sem Título",
+
+songKey:
+$("#songKey").value ||
+"-",
+
+bpm:getBpm(),
+
+metronomeOn,
+
+volume:
+parseFloat(
+$("#volume").value || "2.0"
+),
+
+metroVolume:
+parseFloat(
+$("#metroVolume").value || "1.5"
+),
+
+measures:
+JSON.parse(
+JSON.stringify(measures)
+)
+
+};
+
+}
+
+
+/*
+===========================================================
+SALVAR
+===========================================================
+*/
+
+function saveProjectFile(){
+
+const data =
+stateObject();
+
+const jsonStr =
+JSON.stringify(
+data,
+null,
+2
+);
+
+const blob =
+new Blob(
+[jsonStr],
+{type:"application/json"}
+);
+
+const url =
+URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+const safeName =
+(data.songName || "projeto")
+.replace(
+/[^a-z0-9]/gi,
+"_"
+)
+.toLowerCase();
+
+a.href=url;
+
+a.download =
+safeName+".json";
+
+document.body.appendChild(a);
+
+a.click();
+
+document.body.removeChild(a);
+
+URL.revokeObjectURL(url);
+
+saveRecentProject(data);
+
+if(playbackState!=="STOPPED")
+stopPlaybackCompletely();
+
+closeFullscreenProject();
+
+switchView("homeView");
+
+}
+
+
+/*
+===========================================================
+PROJETOS RECENTES
+===========================================================
+*/
+
+function saveRecentProject(proj){
+
+let list=[];
+
+try{
+
+list =
+JSON.parse(
+localStorage.getItem(
+"notacaoMusicalCRichlessRecentes"
+) || "[]"
+);
+
+}catch(e){
+
+list=[];
+
+}
+
+
+const existingIndex =
+list.findIndex(
+p=>p.id===proj.id
+);
+
+
+if(existingIndex>=0){
+
+list[existingIndex]=proj;
+
+}else{
+
+list.unshift(proj);
+
+}
+
+
+if(list.length>20)
+list=list.slice(0,20);
+
+
+localStorage.setItem(
+"notacaoMusicalCRichlessRecentes",
+JSON.stringify(list)
+);
+
+renderRecentGrid();
+
+}
+
+
+function renderRecentGrid(){
+
+let list=[];
+
+try{
+
+list =
+JSON.parse(
+localStorage.getItem(
+"notacaoMusicalCRichlessRecentes"
+) || "[]"
+);
+
+}catch(e){
+
+list=[];
+
+}
+
+
+const container =
+$("#projectsGrid");
+
+
+if(!list.length){
+
+container.innerHTML=`
+<div style="font-size:12px;color:var(--muted);padding:10px;">
+Nenhum projeto recente.
+Clique em "Abrir Arquivo" ou "Criar Novo".
+</div>
+`;
+
+return;
+
+}
+
+
+container.innerHTML =
+list.map(proj=>`
+
+<div
+class="project-card"
+data-proj-id="${proj.id}">
+
+<h4>
+🎵 ${escapeHtml(proj.songName)}
+</h4>
+
+<p>
+Tom: ${escapeHtml(proj.songKey || '-')}
+· BPM: ${proj.bpm}
+· Compassos: ${proj.measures.length}
+</p>
+
+<div class="project-actions">
+
+<button
+class="btn primary"
+style="font-size:11px;padding:5px 8px;"
+data-action="play"
+data-id="${proj.id}">
+▶ Abrir Tela Cheia
+</button>
+
+<button
+class="btn dark"
+style="font-size:11px;padding:5px 8px;"
+data-action="edit"
+data-id="${proj.id}">
+✏️ Editar
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+
+container
+.querySelectorAll("[data-action]")
+.forEach(btn=>{
+
+btn.addEventListener("click",e=>{
+
+e.stopPropagation();
+
+const id =
+btn.dataset.id;
+
+const action =
+btn.dataset.action;
+
+const proj =
+list.find(p=>p.id===id);
+
+if(!proj)return;
+
+
+if(action==="play"){
+
+openFullscreenProject(
+JSON.parse(
+JSON.stringify(proj)
+)
+);
+
+}else if(action==="edit"){
+
+loadProjectIntoEditor(
+JSON.parse(
+JSON.stringify(proj)
+)
+);
+
+}
+
+});
+
+});
+
+}
+
+
+/*
+===========================================================
+ABRIR ARQUIVO
+===========================================================
+*/
+
+$("#openFileBtn")
+.addEventListener(
+"click",
+()=>$(
+"#fileInput"
+).click()
+);
+
+
+$("#fileInput")
+.addEventListener(
+"change",
+e=>{
+
+const file =
+e.target.files[0];
+
+if(!file)return;
+
+
+const reader =
+new FileReader();
+
+
+reader.onload =
+function(evt){
+
+try{
+
+const proj =
+JSON.parse(
+evt.target.result
+);
+
+
+if(
+!proj ||
+!Array.isArray(proj.measures)
+){
+
+alert(
+"Arquivo de projeto inválido!"
+);
+
+return;
+
+}
+
+
+saveRecentProject(proj);
+
+
+currentProjectId =
+proj.id ||
+("proj_"+Date.now());
+
+
+$("#songName").value =
+proj.songName || "";
+
+$("#songKey").value =
+proj.songKey || "";
+
+$("#bpm").value =
+proj.bpm || 90;
+
+metronomeOn =
+!!proj.metronomeOn;
+
+
+const vol =
+proj.volume!==undefined
+? proj.volume
+:2.0;
+
+$("#volume").value =
+vol;
+
+
+const mVol =
+proj.metroVolume!==undefined
+? proj.metroVolume
+:1.5;
+
+$("#metroVolume").value =
+mVol;
+
+updateMasterVolume();
+
+
+measures =
+JSON.parse(
+JSON.stringify(
+proj.measures
+)
+);
+
+
+measures.forEach(m=>{
+
+if(!m.repeats || m.repeats<1)
+m.repeats=1;
+
+if(
+m.ritornelo===undefined
+)
+m.ritornelo=null;
+
+if(
+m.ritorneloRepeats===undefined
+)
+m.ritorneloRepeats=1;
+
+if(
+m.textAnnotation===undefined
+)
+m.textAnnotation="";
+
+});
+
+
+selectedMeasure=0;
+
+syncControlsUI();
+
+$("#status").innerHTML =
+"Editando projeto: "+
+escapeHtml(
+proj.songName
+);
+
+render();
+
+
+openFullscreenProject(
+JSON.parse(
+JSON.stringify(proj)
+)
+);
+
+
+}catch(err){
+
+alert(
+"Erro ao ler o arquivo JSON do projeto."
+);
+
+}
+
+};
+
+
+reader.readAsText(file);
+
+e.target.value="";
+
+});
+
+
+/*
+===========================================================
+TELA CHEIA
+===========================================================
+*/
+
+function openFullscreenProject(proj){
+
+activeFullscreenProject =
+proj;
+
+$("#fsSongTitle").textContent =
+proj.songName || "Música";
+
+$("#fsSongMeta").textContent =
+`Tom: ${proj.songKey || '-'} · BPM: ${proj.bpm}`;
+
+$("#bpm").value =
+proj.bpm || 90;
+
+syncControlsUI();
+
+$("#fullscreenModal")
+.classList.add("open");
+
+renderFullscreenMeasures(
+-1,
+-1
+);
+
+}
+
+
+function closeFullscreenProject(){
+
+if(playbackState!=="STOPPED")
+stopPlaybackCompletely();
+
+activeFullscreenProject=null;
+
+$("#fullscreenModal")
+.classList.remove("open");
+
+switchView("homeView");
+
+renderRecentGrid();
+
+}
+
+
+/*
+===========================================================
+EDITAR PELA TELA CHEIA
+===========================================================
+*/
+
+$("#fsEditBtn")
+.addEventListener("click",()=>{
+
+if(playbackState!=="STOPPED")
+stopPlaybackCompletely();
+
+
+if(activeFullscreenProject){
+
+currentProjectId =
+activeFullscreenProject.id ||
+("proj_"+Date.now());
+
+$("#songName").value =
+activeFullscreenProject.songName || "";
+
+$("#songKey").value =
+activeFullscreenProject.songKey || "";
+
+$("#bpm").value =
+activeFullscreenProject.bpm || 90;
+
+
+measures =
+JSON.parse(
+JSON.stringify(
+activeFullscreenProject.measures
+)
+);
+
+
+measures.forEach(m=>{
+
+if(!m.repeats || m.repeats<1)
+m.repeats=1;
+
+if(m.ritornelo===undefined)
+m.ritornelo=null;
+
+if(m.ritorneloRepeats===undefined)
+m.ritorneloRepeats=1;
+
+if(m.textAnnotation===undefined)
+m.textAnnotation="";
+
+});
+
+
+selectedMeasure=0;
+
+render();
+
+}
+
+
+activeFullscreenProject=null;
+
+$("#fullscreenModal")
+.classList.remove("open");
+
+switchView("editorView");
+
+});
+
+
+$("#closeFullscreen")
+.addEventListener(
+"click",
+closeFullscreenProject
+);
+
+
+$("#fsStop")
+.addEventListener(
+"click",
+stopPlaybackCompletely
+);
+
+
+$("#fsPlayAll")
+.addEventListener(
+"click",
+()=>handlePlayAction("all",0)
+);
+
+
+/*
+===========================================================
+TELA CHEIA — RENDER
+===========================================================
+*/
+
+function renderFullscreenMeasures(
+activeMi,
+activeSi
+){
+
+if(!activeFullscreenProject)
+return;
+
+
+fsMeasuresEl.innerHTML="";
+
+
+activeFullscreenProject.measures
+.forEach((m,mi)=>{
+
+const el =
+document.createElement("article");
+
+el.className =
+"measure"+
+(
+mi===activeMi
+? " playing"
+: ""
+);
+
+
+const slots =
+Array.from(
+{length:slotCount(m)},
+(_,si)=>{
+
+const ch =
+m.slots[si];
+
+const isActive =
+mi===activeMi &&
+si===activeSi;
+
+const slotClass =
+"slot "+
+(ch?"filled":"empty")+
+(isActive?" active-slot":"");
+
+
+if(!ch){
+
+return `
+<div class="${slotClass}">
+<span>·</span>
+</div>
+`;
+
+}
+
+
+return `
+<div class="${slotClass}">
+
+<div class="chord">
+
+<div class="chord-name">
+${escapeHtml(chordLabel(ch))}
+</div>
+
+</div>
+
+</div>
+`;
+
+}).join("");
+
+
+const annotationHtml =
+m.textAnnotation
+? `
+<div class="measure-annotation-display">
+${escapeHtml(m.textAnnotation)}
+</div>
+`
+:"";
+
+
+el.innerHTML=`
+
+<div class="measure-top">
+
+<div class="measure-title">
+
+Comp. ${mi+1}
+
+${
+m.ritornelo!==null &&
+m.ritornelo!==undefined
+? '↩('+(m.ritornelo+1)+')'
+:""
+}
+
+</div>
+
+${annotationHtml}
+
+</div>
+
+<div class="slots">
+${slots}
+</div>
+
+`;
+
+
+fsMeasuresEl.appendChild(el);
+
+});
+
+}
+
+
+/*
+===========================================================
+CARREGAR PROJETO NO EDITOR
+===========================================================
+*/
+
+function loadProjectIntoEditor(proj){
+
+currentProjectId =
+proj.id ||
+("proj_"+Date.now());
+
+$("#songName").value =
+proj.songName || "";
+
+$("#songKey").value =
+proj.songKey || "";
+
+$("#bpm").value =
+proj.bpm || 90;
+
+metronomeOn =
+!!proj.metronomeOn;
+
+
+const vol =
+proj.volume!==undefined
+?proj.volume
+:2.0;
+
+$("#volume").value =
+vol;
+
+
+const mVol =
+proj.metroVolume!==undefined
+?proj.metroVolume
+:1.5;
+
+$("#metroVolume").value =
+mVol;
+
+updateMasterVolume();
+
+
+measures =
+JSON.parse(
+JSON.stringify(
+proj.measures
+)
+);
+
+
+measures.forEach(m=>{
+
+if(!m.repeats || m.repeats<1)
+m.repeats=1;
+
+if(m.ritornelo===undefined)
+m.ritornelo=null;
+
+if(m.ritorneloRepeats===undefined)
+m.ritorneloRepeats=1;
+
+if(m.textAnnotation===undefined)
+m.textAnnotation="";
+
+});
+
+
+selectedMeasure=0;
+
+syncControlsUI();
+
+$("#status").innerHTML =
+"Editando projeto: "+
+escapeHtml(
+proj.songName
+);
+
+render();
+
+switchView("editorView");
+
+}
+
+
+/*
+===========================================================
+NOVO PROJETO
+===========================================================
+*/
+
+$("#newProjectBtn")
+.addEventListener("click",()=>{
+
+currentProjectId =
+"proj_"+Date.now();
+
+$("#songName").value="";
+$("#songKey").value="";
+$("#bpm").value=90;
+
+metronomeOn=false;
+
+
+measures=[{
+
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:[null,null,null,null]
+
+}];
+
+
+selectedMeasure=0;
+
+syncControlsUI();
+
+$("#status").innerHTML =
+"Novo projeto";
+
+render();
+
+switchView("editorView");
+
+});
+
+
+/*
+===========================================================
+VOLTAR
+===========================================================
+*/
+
+$("#backToHomeBtn")
+.addEventListener("click",()=>{
+
+if(playbackState!=="STOPPED")
+stopPlaybackCompletely();
+
+switchView("homeView");
+
+renderRecentGrid();
+
+});
+
+
+/*
+===========================================================
+SALVAR
+===========================================================
+*/
+
+$("#saveBtn")
+.addEventListener(
+"click",
+saveProjectFile
+);
+
+
+/*
+===========================================================
+ESC
+===========================================================
+*/
+
+window.addEventListener(
+"keydown",
+e=>{
+
+if(e.key==="Escape"){
+
+closeFullscreenProject();
+
+closeOverlay("noteOverlay");
+
+closeOverlay("modifierOverlay");
+
+closeOverlay("ritorneloOverlay");
+
+}
+
+});
+
+
+/*
+===========================================================
+INICIALIZAÇÃO
+===========================================================
+*/
+
+syncControlsUI();
+
+renderRecentGrid();
+
+render();
+
+</script>
 
 </body>
 </html>
