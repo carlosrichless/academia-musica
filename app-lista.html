@@ -937,6 +937,7 @@ flex-shrink: 0;
 <span id="metroVolumeValue">150%</span>
 </div>
 <button class="btn green" id="saveBtn">💾 Salvar Projeto</button>
+<button class="btn primary" id="saveDeviceBtn">💾 Salvar no Dispositivo</button>
 <div class="status" id="status">Projeto em edição</div>
 </div>
 </section>
@@ -2185,6 +2186,23 @@ isDemoMode=false;
 switchView("homeView");
 renderRecentProjects();
 });
+
+function saveProjectToDevice(){
+const project=projectFromEditor();
+const fileName=(project.songName || "projeto-musical").replace(/[\\/:*?"<>|]/g,"_").trim() || "projeto-musical";
+const blob=new Blob([JSON.stringify(project,null,2)],{type:"application/json"});
+const url=URL.createObjectURL(blob);
+const a=document.createElement("a");
+a.href=url;
+a.download=fileName+".json";
+document.body.appendChild(a);
+a.click();
+a.remove();
+setTimeout(()=>URL.revokeObjectURL(url),1000);
+$("#status").innerHTML="<strong>Arquivo salvo no dispositivo:</strong> "+escapeHtml(fileName+".json");
+}
+
+$("#saveDeviceBtn").addEventListener("click",saveProjectToDevice);
 
 $("#saveBtn").addEventListener("click",()=>{
 saveCurrentUserProject();
