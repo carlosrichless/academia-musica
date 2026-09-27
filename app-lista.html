@@ -671,6 +671,7 @@ z-index:50;
 
 .overlay.open{display:flex}
 
+
 .modal{
 width:min(520px,100%);
 background:#18253a;
@@ -706,6 +707,48 @@ border-radius:9px;
 padding:13px 8px;
 font-weight:800;
 font-size:16px;
+}
+
+.note-btn:hover,
+.note-btn.selected{
+border-color:var(--cyan);
+background:#12334a
+}
+
+.mod-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:8px
+}
+
+.mod-btn{
+text-align:left;
+border:1px solid #40536e;
+background:#0e182a;
+color:#fff;
+border-radius:9px;
+padding:11px 12px;
+}
+
+.mod-btn strong{
+display:block;
+color:#fff
+}
+
+.mod-btn small{
+display:block;
+color:var(--muted);
+margin-top:2px
+}
+
+.mod-btn:hover{
+border-color:var(--green);
+background:#123329
+}
+
+.icon-btn.ritornelo.active{
+background:#453d1a;
+border-color:#ffd84d
 }
 
 .bass-row{
@@ -800,68 +843,12 @@ width: 38px;
 text-align: right;
 flex-shrink: 0;
 }
-
-
-/* LOGIN DOS ALUNOS - APP NOTAÇÕES */
-#alunoLoginAppModal{position:fixed;inset:0;background:rgba(2,6,23,.96);z-index:10000;display:none;align-items:center;justify-content:center;padding:16px;}
-#alunoLoginAppModal.open{display:flex;}
-.aluno-login-app-box{width:min(440px,100%);max-height:calc(100vh - 32px);box-sizing:border-box;background:#111c30;border:1px solid #334155;border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center;display:flex;flex-direction:column;}
-.aluno-login-app-box h2{margin:0 0 6px;color:var(--green);}
-.aluno-login-app-box p{color:var(--muted);font-size:13px;margin:0 0 14px;}
-.aluno-app-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;overflow-y:auto;max-height:min(58vh,520px);padding:2px 5px 6px 2px;overscroll-behavior:contain;}
-.aluno-app-lista::-webkit-scrollbar{width:7px;}
-.aluno-app-lista::-webkit-scrollbar-thumb{background:#40536e;border-radius:10px;}
-.aluno-app-btn{border:1px solid #40536e;background:#0e182a;color:#fff;border-radius:10px;padding:12px 8px;cursor:pointer;font-weight:600;min-height:44px;}
-.aluno-app-btn:hover,.aluno-app-btn.selected{border-color:var(--green);background:#123329;}
-.aluno-app-senha-wrap{display:none;}
-.aluno-app-senha-wrap.open{display:flex;flex-direction:column;gap:8px;text-align:left;}
-.aluno-app-senha-wrap label{font-size:12px;color:var(--muted);}
-.aluno-app-senha-wrap input{width:100%;box-sizing:border-box;background:#0b1322;color:#fff;border:1px solid #40536e;border-radius:9px;padding:12px;}
-.aluno-app-erro{display:none;color:#f87171;font-size:12px;margin-top:8px;}
-.aluno-app-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
-#alunoAppSenhaModal{position:fixed;inset:0;background:rgba(2,6,23,.97);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px;}
-#alunoAppSenhaModal.open{display:flex;}
-.aluno-app-senha-card{width:min(380px,100%);box-sizing:border-box;background:#111c30;border:1px solid #334155;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center;}
-.aluno-app-senha-card h3{margin:0 0 7px;color:var(--green);font-size:20px;}
-.aluno-app-senha-card p{color:var(--muted);font-size:13px;margin:0 0 16px;}
-.aluno-app-senha-card .senha-field{display:flex;flex-direction:column;gap:8px;text-align:left;}
-.aluno-app-senha-card .senha-field input{width:100%;box-sizing:border-box;background:#0b1322;color:#fff;border:1px solid #40536e;border-radius:9px;padding:13px;}
-.aluno-app-senha-card .senha-actions{display:flex;gap:8px;margin-top:14px;}
-.aluno-app-senha-card .senha-actions button{flex:1;}
-@media(max-width:520px){.aluno-login-app-box{padding:18px;}.aluno-app-lista{grid-template-columns:1fr;max-height:62vh;}}
 </style>
+
+
 </head>
 
 <body>
-
-<!-- LOGIN DOS ALUNOS - PROTEÇÃO DIRETA DO APP -->
-<div id="alunoLoginAppModal">
-<div class="aluno-login-app-box">
-<h2>📝 APP NOTAÇÕES</h2>
-<p>Selecione seu nome e digite sua senha para entrar.</p>
-<div class="aluno-app-lista" id="alunoAppLista"></div>
-<div class="aluno-app-actions">
-<button type="button" class="btn dark" id="alunoAppEntrarIndex">Voltar</button>
-</div>
-</div>
-</div>
-
-<div id="alunoAppSenhaModal">
-<div class="aluno-app-senha-card">
-<h3 id="alunoAppSelecionadoLabel">Senha</h3>
-<p>Digite sua senha para entrar no APP NOTAÇÕES.</p>
-<div class="senha-field">
-<label for="alunoAppSenha">Senha</label>
-<input type="password" id="alunoAppSenha" placeholder="Digite sua senha..." autocomplete="current-password">
-<div class="aluno-app-erro" id="alunoAppErro">Senha incorreta.</div>
-</div>
-<div class="senha-actions">
-<button type="button" class="btn dark" id="alunoAppVoltarNomes">Voltar</button>
-<button type="button" class="btn green" id="alunoAppEntrarBtn">Entrar</button>
-</div>
-</div>
-</div>
-
 
 <header class="topbar">
 <a href="index.html" class="home-btn-main">← Site Principal</a>
@@ -941,12 +928,12 @@ flex-shrink: 0;
 <button class="btn dark" id="metroToggle">♩ Metrônomo: OFF</button>
 <div class="control volume-control">
 <label for="volume">🔊 Vol Geral</label>
-<input id="volume" type="range" min="0.5" max="2.5" step="0.05" value="2.0">
+<input id="volume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
 <span id="volumeValue">200%</span>
 </div>
 <div class="control volume-control">
 <label for="metroVolume">⏱️ Vol Metrônomo</label>
-<input id="metroVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.5">
+<input id="metroVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
 <span id="metroVolumeValue">150%</span>
 </div>
 <button class="btn green" id="saveBtn">💾 Salvar Projeto</button>
@@ -970,11 +957,10 @@ flex-shrink: 0;
 <div class="fullscreen-overlay" id="demoListModal">
 <div class="fs-header">
 <div class="fs-title">
-<h2>15 Projetos de Demonstração (Ritmos)</h2>
-<p>Escolha um ritmo abaixo para abrir o player demo ou acesse o painel administrativo.</p>
+<h2>12 Projetos de Demonstração (Ritmos)</h2>
+<p>Escolha um ritmo abaixo para abrir o player demo.</p>
 </div>
 <div style="display:flex; gap:8px; align-items:center;">
-<button class="admin-top-btn" id="adminOpenModalBtn">🔒 Administrativo</button>
 <button class="fs-close btn dark" id="closeDemoList">✖ Fechar</button>
 </div>
 </div>
@@ -999,7 +985,9 @@ flex-shrink: 0;
 <span id="fsBpmDisplay" style="font-size:12px;font-weight:bold;color:var(--green);min-width:34px;text-align:center;">90 BPM</span>
 <button class="btn dark" id="fsBpmPlus" style="padding:4px 8px;font-size:11px;">+</button>
 </div>
-<button class="btn primary" id="fsEditBtn">✏️ Editar Projeto (Demo)</button>
+<div class="repeat-control" style="margin-left:0;background:#0e182b;border:1px solid #34455f;border-radius:9px;padding:5px 7px;">
+<span>⏱️</span><button id="fsRepeatMinus" type="button">−</button><strong id="fsRepeatDisplay">1 min</strong><button id="fsRepeatPlus" type="button">+</button>
+</div>
 <button class="fs-close btn dark" id="closeFullscreen">✖ Voltar à Lista Demo</button>
 </div>
 </div>
@@ -1008,19 +996,6 @@ flex-shrink: 0;
 </div>
 </div>
 
-<!-- MODAL DE SENHA ADMINISTRATIVA -->
-<div class="overlay" id="adminPasswordModal">
-<div class="modal">
-<h3>Painel Administrativo</h3>
-<p>Digite a senha secreta para controle total e edição de todos os 15 projetos demo:</p>
-<div class="bass-row">
-<input type="password" id="adminPasswordInput" placeholder="Senha secreta...">
-</div>
-<div class="modal-foot">
-<button class="btn primary" id="adminSubmitBtn">Entrar</button>
-<button class="btn dark" data-close="adminPasswordModal">Cancelar</button>
-</div>
-</div>
 </div>
 
 <!-- MODAL NOTAS / BATERIA -->
@@ -1035,81 +1010,203 @@ flex-shrink: 0;
 </div>
 </div>
 
-<script type="module" src="config-senhas.js"></script>
+<!-- NOTA -->
+
+<div class="overlay" id="noteOverlay">
+
+<div class="modal">
+
+<h3>Escolha o acorde</h3>
+
+<p>Selecione a nota fundamental.</p>
+
+<div class="note-grid" id="noteGrid"></div>
+
+<div class="modal-foot">
+
+<button class="btn dark" data-close="noteOverlay">
+Cancelar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- MODIFICADOR -->
+
+<div class="overlay" id="modifierOverlay">
+
+<div class="modal">
+
+<h3>Forma do acorde</h3>
+
+<p>Escolha a variação e o baixo do acorde.</p>
+
+<div class="mod-grid">
+
+<button class="mod-btn" data-mod="major">
+<strong>Maior</strong>
+<small>Ex.: G</small>
+</button>
+
+<button class="mod-btn" data-mod="minor">
+<strong>Menor</strong>
+<small>Ex.: Gm</small>
+</button>
+
+<button class="mod-btn" data-mod="dim">
+<strong>Diminuto</strong>
+<small>Ex.: G°</small>
+</button>
+
+<button class="mod-btn" data-mod="sus2">
+<strong>Sus2</strong>
+<small>Ex.: Gsus2</small>
+</button>
+
+</div>
+
+<div class="bass-row">
+
+<label for="bassSelect">
+Baixo / inversão
+</label>
+
+<select id="bassSelect">
+<option value="">Sem baixo específico</option>
+</select>
+
+</div>
+
+<div class="modal-foot">
+
+<button class="btn danger" id="clearCurrent">
+🗑 Apagar acorde
+</button>
+
+<button class="btn dark" data-close="modifierOverlay">
+Cancelar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- RITORNELO -->
+
+<div class="overlay" id="ritorneloOverlay">
+
+<div class="modal">
+
+<h3>Configurar Ritornelo</h3>
+
+<p>
+Escolha para qual compasso este compasso deve retornar
+e quantas vezes o retorno deve acontecer.
+</p>
+
+<div class="bass-row">
+
+<label for="ritorneloSelect">
+Retornar para:
+</label>
+
+<select id="ritorneloSelect"></select>
+
+</div>
+
+<div class="bass-row">
+
+<label for="ritorneloRepeats">
+Repetir:
+</label>
+
+<select id="ritorneloRepeats">
+
+<option value="1">1 vez</option>
+<option value="2">2 vezes</option>
+<option value="3">3 vezes</option>
+<option value="4">4 vezes</option>
+<option value="5">5 vezes</option>
+<option value="6">6 vezes</option>
+<option value="7">7 vezes</option>
+<option value="8">8 vezes</option>
+<option value="9">9 vezes</option>
+<option value="10">10 vezes</option>
+<option value="11">11 vezes</option>
+<option value="12">12 vezes</option>
+<option value="13">13 vezes</option>
+<option value="14">14 vezes</option>
+<option value="15">15 vezes</option>
+<option value="16">16 vezes</option>
+<option value="17">17 vezes</option>
+<option value="18">18 vezes</option>
+<option value="19">19 vezes</option>
+<option value="20">20 vezes</option>
+
+</select>
+
+</div>
+
+<div class="modal-foot">
+
+<button class="btn danger" id="clearRitornelo">
+Remover Ritornelo
+</button>
+
+<button class="btn primary" id="saveRitornelo">
+Salvar
+</button>
+
+<button class="btn dark" data-close="ritorneloOverlay">
+Cancelar
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+
+
+
 
 <script>
-const ALUNOS_APP_NOTACOES = [
-{id:"aluno_01",nome:"C.Richless"},{id:"aluno_02",nome:"Cintia"},{id:"aluno_03",nome:"Andrian"},
-{id:"aluno_04",nome:"Brendha"},{id:"aluno_05",nome:"Caio"},{id:"aluno_06",nome:"Suerlando"},
-{id:"aluno_07",nome:"Duda"},{id:"aluno_08",nome:"Rafa"},{id:"aluno_09",nome:"Enzo"},
-{id:"aluno_10",nome:"Josué"},{id:"aluno_11",nome:"Deniz"},{id:"aluno_12",nome:"Kakau"},
-{id:"aluno_13",nome:"Sarah"},{id:"aluno_14",nome:"João"},{id:"aluno_15",nome:"Sophia"},
-{id:"aluno_16",nome:"Gabriel"},{id:"aluno_17",nome:"Bernardo"},{id:"aluno_18",nome:"Gabi"},{id:"aluno_19",nome:"Sophia"}
-];
-
-let alunoSelecionadoApp = null;
-
-function abrirLoginDiretoApp(){
-const grid=document.getElementById("alunoAppLista");
-grid.innerHTML=ALUNOS_APP_NOTACOES.map(a=>`<button type="button" class="aluno-app-btn" data-aluno-id="${a.id}">${a.nome}</button>`).join("");
-document.querySelectorAll("#alunoAppLista .aluno-app-btn").forEach(btn=>{
-btn.addEventListener("click",()=>{
-alunoSelecionadoApp=ALUNOS_APP_NOTACOES.find(a=>a.id===btn.dataset.alunoId);
-document.querySelectorAll("#alunoAppLista .aluno-app-btn").forEach(b=>b.classList.remove("selected"));
-btn.classList.add("selected");
-document.getElementById("alunoAppSelecionadoLabel").textContent="Senha de "+alunoSelecionadoApp.nome;
-document.getElementById("alunoAppSenha").value="";
-document.getElementById("alunoAppErro").style.display="none";
-document.getElementById("alunoLoginAppModal").classList.remove("open");
-document.getElementById("alunoAppSenhaModal").classList.add("open");
-setTimeout(()=>document.getElementById("alunoAppSenha").focus(),100);
-});
-});
-document.getElementById("alunoLoginAppModal").classList.add("open");
-document.getElementById("alunoAppSenhaModal").classList.remove("open");
-}
-
-async function autenticarAlunoDiretoApp(){
-if(!alunoSelecionadoApp){alert("Selecione seu nome primeiro.");return;}
-try{
-const snap=await window.firestore.getDoc(window.firestore.doc(window.db,"configuracoes","sistema"));
-const dados=snap.exists()?snap.data():{};
-const lista=Array.isArray(dados.senhas_alunos_app_notacoes)?dados.senhas_alunos_app_notacoes:[];
-const cadastro=lista.find(a=>a.id===alunoSelecionadoApp.id);
-if(!cadastro || !cadastro.senha || document.getElementById("alunoAppSenha").value!==cadastro.senha){document.getElementById("alunoAppErro").style.display="block";return;}
-sessionStorage.setItem("appNotacoesAlunoId",alunoSelecionadoApp.id);
-sessionStorage.setItem("appNotacoesAlunoNome",alunoSelecionadoApp.nome);
-document.getElementById("alunoLoginAppModal").classList.remove("open");
-}catch(e){console.error(e);alert("Erro ao conectar com a nuvem.");}
-}
-
-window.addEventListener("DOMContentLoaded",()=>{
-const autorizado=sessionStorage.getItem("appNotacoesAlunoId");
-if(!autorizado){abrirLoginDiretoApp();}
-document.getElementById("alunoAppEntrarBtn").addEventListener("click",autenticarAlunoDiretoApp);
-document.getElementById("alunoAppEntrarIndex").addEventListener("click",()=>{window.location.href="index.html";});
-document.getElementById("alunoAppVoltarNomes").addEventListener("click",()=>{
-document.getElementById("alunoAppSenhaModal").classList.remove("open");
-document.getElementById("alunoLoginAppModal").classList.add("open");
-});
-document.getElementById("alunoAppSenha").addEventListener("keydown",e=>{if(e.key==="Enter")autenticarAlunoDiretoApp();});
-});
-
 const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const DRUMS = [
-{ label: "Bumbo", short: "Bumbo" },
-{ label: "Caixa", short: "Caixa" },
-{ label: "Hi-Hat Fechado", short: "HH Fechado" },
-{ label: "Hi-Hat Aberto", short: "HH Aberto" },
-{ label: "Aro de Caixa", short: "Aro" },
-{ label: "Prato de Ataque", short: "Ataque" }
+{ label: "Bumbo", short: "B" },
+{ label: "Caixa", short: "C" },
+{ label: "Hi-Hat Fechado", short: "H/F" },
+{ label: "Hi-Hat Aberto", short: "H/A" },
+{ label: "Aro de Caixa", short: "A/C" },
+{ label: "Prato de Ataque", short: "P/A" }
 ];
-const METERS = [["4/4",4,4],["3/4",3,4],["6/8",6,8]];
+const METERS = [
+["2/4",2,4],
+["3/4",3,4],
+["4/4",4,4],
+["5/4",5,4],
+["6/4",6,4],
+["7/4",7,4],
+["2/8",2,8],
+["3/8",3,8],
+["4/8",4,8],
+["5/8",5,8],
+["6/8",6,8],
+["7/8",7,8],
+["8/8",8,8],
+["9/8",9,8],
+["12/8",12,8]
+];
 
 let currentProjectId = null;
-let isCurrentProjectDrum = true;
+let isCurrentProjectDrum = false;
 let isDemoMode = false;
-let isAdminMode = false;
 
 let measures = [
 {
@@ -1136,13 +1233,23 @@ let playbackRunId = 0;
 let metronomeOn = false;
 let activeFullscreenProject = null;
 let activePlayingSlot = { mi:-1, si:-1 };
+let fullscreenDurationMinutes = 1;
+let demoTargetEndAt = 0;
+let demoPauseStartedAt = 0;
+let editingRitorneloMi = null;
+let playbackMode = "all";
+let ritorneloCounters = {};
 
 const $ = s => document.querySelector(s);
 const measuresEl = $("#measures");
 const fsMeasuresEl = $("#fsMeasures");
 
-// LIMPAR PROJETOS RECENTES NA INICIALIZAÇÃO CONFORME SOLICITADO
-localStorage.removeItem("notacaoMusicalCRichlessRecentes");
+const alunoSessao=getStudentSession();
+if(!alunoSessao.id){
+alert("Sessão do aluno não encontrada. Faça o login pelo APP LISTA.");
+window.location.href="index.html";
+}
+
 
 function switchView(viewId){
 document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
@@ -1153,113 +1260,398 @@ function getMeter(meter){
 return METERS.find(x=>x[0]===meter) || ["4/4",4,4];
 }
 
+// Quantidade de posições de uma voz de cordas em um compasso.
+// Esta função pertence ao editor de Cordas e não cria vozes de bateria.
+function slotCount(measure){
+const [,num] = getMeter(measure.meter);
+return num * (measure.subdivision || 1);
+}
+
 function chordLabel(ch){
 if(!ch) return "";
-const found = DRUMS.find(d => d.label === ch.root);
+if(DRUMS.some(d=>d.label===ch.root)){
+const found=DRUMS.find(d=>d.label===ch.root);
 return found ? found.short : ch.root;
+}
+const suffix=ch.quality==="minor"?"m":ch.quality==="dim"?"°":ch.quality==="sus2"?"sus2":"";
+return ch.root + suffix + (ch.bass ? "/"+ch.bass : "");
 }
 
 function buildMeterOptions(current){
-return METERS.map(m=>`<option value="${m[0]}" ${m[0]===current?"selected":""}>${m[0]} (3 Vozes)</option>`).join("");
+return METERS.map(m=>`<option value="${m[0]}" ${m[0]===current?"selected":""}>${m[0]}${isCurrentProjectDrum ? " (3 Vozes)" : ""}</option>`).join("");
 }
 
 function escapeHtml(v){
 return String(v).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
 }
 
-function render(){
-measuresEl.innerHTML = "";
-measures.forEach((m,mi)=>{
-const el = document.createElement("article");
-el.className = "measure" + (mi===selectedMeasure ? " playing" : "");
-el.dataset.mi = mi;
-const [, beatsNum] = getMeter(m.meter);
-const totalSlotsPerVoice = beatsNum * m.subdivision;
-let voiceHtmls = [];
-for (let v = 0; v < 3; v++) {
-  let voiceSlots = "";
-  for (let s = 0; s < totalSlotsPerVoice; s++) {
-    const realIndex = v * totalSlotsPerVoice + s;
-    const ch = m.slots[realIndex];
-    const isActive = activePlayingSlot.mi === mi && activePlayingSlot.si === realIndex;
-    const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
-    if (!ch) {
-      voiceSlots += `<div class="${slotClass}" data-si="${realIndex}"><span>·</span></div>`;
-    } else {
-      voiceSlots += `
-        <div class="${slotClass}" data-si="${realIndex}">
-          <div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div>
-          <button class="slot-trash" data-trash="${realIndex}">×</button>
-        </div>
-      `;
-    }
-  }
-  voiceHtmls.push(`
-    <div class="drum-voice-row">
-      <span class="drum-voice-label">Voz ${v+1}</span>
-      <div class="slots" style="min-height:36px;">${voiceSlots}</div>
-    </div>
-  `);
+function getStudentSession(){
+const id=sessionStorage.getItem("appNotacoesAlunoId") || "";
+const nome=sessionStorage.getItem("appNotacoesAlunoNome") || "";
+return {id,nome};
+}
+function getRecentKey(isDrum){
+const base=isDrum ? "notacaoMusicalCRichlessRecentesBateria" : "notacaoMusicalCRichlessRecentesCordas";
+const id=getStudentSession().id.replace(/[^a-zA-Z0-9_-]/g,"_");
+return `${base}_${id || "sem_usuario"}`;
 }
 
-el.innerHTML = `
+function getRecentProjects(isDrum){
+try{
+const data = JSON.parse(localStorage.getItem(getRecentKey(isDrum)) || "[]");
+return Array.isArray(data) ? data : [];
+}catch(e){ return []; }
+}
+
+function saveRecentProject(project){
+const isDrum = !!project.isDrumProject;
+let list = getRecentProjects(isDrum).filter(p=>p.id !== project.id);
+list.unshift(JSON.parse(JSON.stringify(project)));
+if(list.length > 20) list = list.slice(0,20);
+localStorage.setItem(getRecentKey(isDrum), JSON.stringify(list));
+}
+
+function removeRecentProject(id,isDrum){
+const list = getRecentProjects(isDrum).filter(p=>p.id !== id);
+localStorage.setItem(getRecentKey(isDrum), JSON.stringify(list));
+renderRecentProjects();
+}
+
+function makeEmptyChordMeasures(){
+return [{
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:[null,null,null,null]
+}];
+}
+
+function makeEmptyDrumMeasures(){
+return [{
+meter:"4/4",
+subdivision:1,
+repeats:1,
+ritornelo:null,
+ritorneloRepeats:1,
+textAnnotation:"",
+slots:Array.from({length:12},()=>null)
+}];
+}
+
+function makeEmptyMeasures(){
+return isCurrentProjectDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures();
+}
+
+function startNewProject(isDrum){
+if(playbackState!=="STOPPED") stopPlaybackCompletely();
+isCurrentProjectDrum=!!isDrum;
+isDemoMode=false;
+activeFullscreenProject=null;
+currentProjectId="project_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
+measures=isDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures();
+selectedMeasure=0;
+selected={mi:0,si:0};
+activePlayingSlot={mi:-1,si:-1};
+ritorneloCounters={};
+editingRitorneloMi=null;
+$("#songName").value="";
+$("#songKey").value=isDrum ? "-" : "";
+$("#bpm").value=90;
+metronomeOn=false;
+$("#status").textContent="Novo projeto em edição";
+$("#editorHint").textContent=isDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para adicionar/editar o acorde.";
+$("#keyFieldContainer").style.display=isDrum ? "none" : "";
+switchView("editorView");
+syncControlsUI();
+render();
+}
+
+function openProject(project){
+if(!project || !Array.isArray(project.measures)) return;
+if(playbackState!=="STOPPED") stopPlaybackCompletely();
+isCurrentProjectDrum=!!project.isDrumProject;
+isDemoMode=false;
+activeFullscreenProject=null;
+currentProjectId=project.id || ("project_"+Date.now());
+measures=JSON.parse(JSON.stringify(project.measures));
+selectedMeasure=0;
+selected={mi:0,si:0};
+activePlayingSlot={mi:-1,si:-1};
+ritorneloCounters={};
+$("#songName").value=project.songName || "";
+$("#songKey").value=project.songKey || (isCurrentProjectDrum ? "-" : "");
+$("#bpm").value=project.bpm || 90;
+$("#volume").value=project.volume ?? 2.0;
+$("#metroVolume").value=project.metroVolume ?? 1.5;
+metronomeOn=!!project.metronomeOn;
+$("#keyFieldContainer").style.display=isCurrentProjectDrum ? "none" : "";
+$("#status").textContent="Projeto em edição";
+$("#editorHint").textContent=isCurrentProjectDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para adicionar/editar o acorde.";
+switchView("editorView");
+syncControlsUI();
+render();
+}
+
+function renderRecentProjects(){
+const renderList=(isDrum,elId)=>{
+const grid=$("#"+elId);
+const list=getRecentProjects(isDrum);
+if(!list.length){
+grid.innerHTML='<div style="font-size:12px;color:var(--muted);padding:10px;">Nenhum projeto recente.</div>';
+return;
+}
+grid.innerHTML=list.slice(0,20).map(p=>`
+<div class="project-card" data-project-id="${escapeHtml(p.id)}">
+<h4>${isDrum ? "🥁" : "🎵"} ${escapeHtml(p.songName || "Projeto sem nome")}</h4>
+<p>${isDrum ? "Bateria" : "Tom: "+(p.songKey || "-")} · BPM: ${Number(p.bpm)||90}</p>
+<div class="project-actions">
+<button class="btn primary" style="font-size:11px;padding:6px 10px;" data-open-project="${escapeHtml(p.id)}">Abrir</button>
+<button class="btn danger" style="font-size:11px;padding:6px 10px;" data-delete-project="${escapeHtml(p.id)}">Excluir</button>
+</div>
+</div>
+`).join("");
+grid.querySelectorAll("[data-open-project]").forEach(btn=>btn.addEventListener("click",e=>{
+e.stopPropagation();
+const project=getRecentProjects(isDrum).find(p=>p.id===btn.dataset.openProject);
+if(project) openProject(project);
+}));
+grid.querySelectorAll("[data-delete-project]").forEach(btn=>btn.addEventListener("click",e=>{
+e.stopPropagation();
+removeRecentProject(btn.dataset.deleteProject,isDrum);
+}));
+grid.querySelectorAll(".project-card").forEach(card=>card.addEventListener("click",()=>{
+const project=getRecentProjects(isDrum).find(p=>p.id===card.dataset.projectId);
+if(project) openProject(project);
+}));
+};
+renderList(false,"projectsGrid");
+renderList(true,"projectsGridDrum");
+}
+
+function projectFromEditor(){
+return {
+id:currentProjectId || ("project_"+Date.now()),
+isDrumProject:!!isCurrentProjectDrum,
+songName:$("#songName").value.trim() || (isCurrentProjectDrum ? "Novo Projeto de Bateria" : "Novo Projeto de Cordas"),
+songKey:isCurrentProjectDrum ? "-" : ($("#songKey").value.trim() || "-"),
+bpm:getBpm(),
+metronomeOn,
+volume:parseFloat($("#volume").value || "1.0"),
+metroVolume:parseFloat($("#metroVolume").value || "1.0"),
+measures:JSON.parse(JSON.stringify(measures))
+};
+}
+
+function saveCurrentUserProject(){
+const project=projectFromEditor();
+currentProjectId=project.id;
+saveRecentProject(project);
+$("#status").innerHTML="<strong>Projeto salvo:</strong> "+escapeHtml(project.songName);
+renderRecentProjects();
+}
+
+function render(){
+if(isCurrentProjectDrum){
+renderDrumEditor();
+return;
+}
+renderChordEditor();
+}
+
+function renderChordEditor(){
+measuresEl.innerHTML="";
+measures.forEach((m,mi)=>{
+const el=document.createElement("article");
+el.className="measure"+(mi===selectedMeasure ? " playing" : "");
+el.dataset.mi=mi;
+const slots=Array.from({length:slotCount(m)},(_,si)=>{
+const ch=m.slots[si];
+const isActive=activePlayingSlot.mi===mi && activePlayingSlot.si===si;
+const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");
+if(!ch) return `<div class="${slotClass}" data-si="${si}"><span>·</span></div>`;
+return `<div class="${slotClass}" data-si="${si}"><div class="chord" title="Clique para alterar"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div><button class="slot-trash" data-trash="${si}" title="Apagar">×</button></div>`;
+}).join("");
+const hasRit=m.ritornelo!==null && m.ritornelo!==undefined;
+const ritClass=hasRit ? "icon-btn ritornelo active" : "icon-btn ritornelo";
+const ritTitle=hasRit ? `Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats || 1} vez(es)` : "Configurar Ritornelo";
+el.innerHTML=`
 <div class="measure-top">
-<div class="measure-title">Comp. ${mi+1}</div>
-<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
+<div class="measure-title">Comp. ${mi+1} ${hasRit ? '↩('+(m.ritornelo+1)+')' : ''}</div>
+<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação (ex: Solo, Refrão)...">
 <div class="measure-actions">
-<button class="icon-btn play" data-play-measure="${mi}">▶</button>
-<button class="icon-btn delete" data-del="${mi}">🗑</button>
+<button class="icon-btn play" data-play-measure="${mi}" title="Tocar somente este compasso">▶</button>
+<button class="icon-btn delete" data-del="${mi}" title="Apagar">🗑</button>
+<button class="${ritClass}" data-rit="${mi}" title="${ritTitle}">↩</button>
 </div>
 </div>
 <div class="measure-settings">
 <select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select>
+<div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision}</span><button data-sub-up="${mi}">▶</button></div>
+<div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div>
 </div>
+<div class="slots">${slots}</div>
+`;
+measuresEl.appendChild(el);
+});
+bindChordMeasureEvents();
+}
+
+function renderDrumEditor(){
+measuresEl.innerHTML="";
+measures.forEach((m,mi)=>{
+const el=document.createElement("article");
+el.className="measure"+(mi===selectedMeasure ? " playing" : "");
+el.dataset.mi=mi;
+const [,beatsNum]=getMeter(m.meter);
+const totalSlotsPerVoice=beatsNum*(m.subdivision||1);
+let voiceHtmls=[];
+for(let v=0;v<3;v++){
+let voiceSlots="";
+for(let s=0;s<totalSlotsPerVoice;s++){
+const realIndex=v*totalSlotsPerVoice+s;
+const ch=m.slots[realIndex];
+const isActive=activePlayingSlot.mi===mi && activePlayingSlot.si===s;
+const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");
+if(!ch) voiceSlots+=`<div class="${slotClass}" data-si="${realIndex}"><span>·</span></div>`;
+else voiceSlots+=`<div class="${slotClass}" data-si="${realIndex}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div><button class="slot-trash" data-trash="${realIndex}">×</button></div>`;
+}
+voiceHtmls.push(`<div class="drum-voice-row"><span class="drum-voice-label">Voz ${v+1}</span><div class="slots" style="min-height:36px;">${voiceSlots}</div></div>`);
+}
+el.innerHTML=`
+<div class="measure-top">
+<div class="measure-title">Comp. ${mi+1}</div>
+<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
+<div class="measure-actions"><button class="icon-btn play" data-play-measure="${mi}">▶</button><button class="icon-btn delete" data-del="${mi}">🗑</button></div>
+</div>
+<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div><div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div><button class="icon-btn ritornelo ${m.ritornelo!==null&&m.ritornelo!==undefined?'active':''}" data-rit="${mi}" title="${m.ritornelo!==null&&m.ritornelo!==undefined?`Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats||1} vez(es)`:'Configurar Ritornelo'}">↩</button></div>
 <div class="drum-voices-container">${voiceHtmls.join("")}</div>
 `;
 measuresEl.appendChild(el);
 });
-bindMeasureEvents();
+bindDrumMeasureEvents();
 }
 
-function bindMeasureEvents(){
-measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>{
-input.addEventListener("input",()=>{
-const mi = Number(input.dataset.annotation);
-if(measures[mi]) measures[mi].textAnnotation = input.value;
-});
-});
-
-measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>{
-btn.addEventListener("click",e=>{
-e.stopPropagation();
-handlePlayAction("measure", Number(btn.dataset.playMeasure));
-});
-});
-
-measuresEl.querySelectorAll(".slot").forEach(slot=>{
-slot.addEventListener("click",()=>{
-const mi = Number(slot.closest(".measure").dataset.mi);
-const si = Number(slot.dataset.si);
-selectedMeasure = mi;
-selected = {mi,si};
-openDrumModal(mi, si);
-});
-});
-
-measuresEl.querySelectorAll("[data-trash]").forEach(btn=>{
-btn.addEventListener("click",e=>{
-e.stopPropagation();
-const mi = Number(btn.closest(".measure").dataset.mi);
-measures[mi].slots[Number(btn.dataset.trash)] = null;
+function bindChordMeasureEvents(){
+measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>input.addEventListener("input",()=>{
+const mi=Number(input.dataset.annotation); if(measures[mi]) measures[mi].textAnnotation=input.value;
+}));
+measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();handlePlayAction("measure",Number(btn.dataset.playMeasure));}));
+measuresEl.querySelectorAll(".slot").forEach(slot=>slot.addEventListener("click",e=>{
+const mi=Number(slot.closest(".measure").dataset.mi), si=Number(slot.dataset.si);
+selectedMeasure=mi; selected={mi,si}; const ch=measures[mi].slots[si]; if(ch) openModifier(mi,si); else openNote(mi,si); render();
+}));
+measuresEl.querySelectorAll("[data-trash]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation(); const mi=Number(btn.closest(".measure").dataset.mi); measures[mi].slots[Number(btn.dataset.trash)]=null; render();}));
+measuresEl.querySelectorAll("[data-rit]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openRitorneloModal(Number(btn.dataset.rit));}));
+measuresEl.querySelectorAll("[data-meter]").forEach(sel=>sel.addEventListener("change",()=>{
+const mi=Number(sel.dataset.meter), old=measures[mi], count=slotCount({...old,meter:sel.value});
+old.meter=sel.value; old.slots=Array.from({length:count},(_,i)=>old.slots[i]||null); selectedMeasure=mi; render();
+}));
+measuresEl.querySelectorAll("[data-sub-up]").forEach(btn=>btn.addEventListener("click",()=>changeSubdivision(Number(btn.dataset.subUp),1)));
+measuresEl.querySelectorAll("[data-sub-down]").forEach(btn=>btn.addEventListener("click",()=>changeSubdivision(Number(btn.dataset.subDown),-1)));
+measuresEl.querySelectorAll("[data-repeat-up]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatUp);measures[mi].repeats=Math.min(99,(measures[mi].repeats||1)+1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-repeat-down]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatDown);measures[mi].repeats=Math.max(1,(measures[mi].repeats||1)-1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-del]").forEach(btn=>btn.addEventListener("click",e=>{
+e.stopPropagation(); const mi=Number(btn.dataset.del);
+if(measures.length===1){measures[0]={meter:"4/4",subdivision:1,repeats:1,ritornelo:null,ritorneloRepeats:1,textAnnotation:"",slots:[null,null,null,null]};}
+else{measures.splice(mi,1);measures.forEach(m=>{if(m.ritornelo===mi){m.ritornelo=null;m.ritorneloRepeats=1;}else if(m.ritornelo>mi)m.ritornelo--;});selectedMeasure=Math.max(0,Math.min(selectedMeasure,measures.length-1));}
 render();
-});
-});
+}));
 }
+
+function bindDrumMeasureEvents(){
+measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>input.addEventListener("input",()=>{const mi=Number(input.dataset.annotation);if(measures[mi]) measures[mi].textAnnotation=input.value;}));
+measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();handlePlayAction("measure",Number(btn.dataset.playMeasure));}));
+measuresEl.querySelectorAll(".slot").forEach(slot=>slot.addEventListener("click",()=>{const mi=Number(slot.closest(".measure").dataset.mi),si=Number(slot.dataset.si);selectedMeasure=mi;selected={mi,si};openDrumModal(mi,si);}));
+measuresEl.querySelectorAll("[data-trash]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.closest(".measure").dataset.mi);measures[mi].slots[Number(btn.dataset.trash)]=null;render();}));
+measuresEl.querySelectorAll("[data-del]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.dataset.del);if(measures.length<=1){measures[0]=makeEmptyDrumMeasures()[0];}else{measures.splice(mi,1);selectedMeasure=Math.max(0,Math.min(selectedMeasure,measures.length-1));}render();}));
+measuresEl.querySelectorAll("[data-meter]").forEach(sel=>sel.addEventListener("change",()=>{
+const mi=Number(sel.dataset.meter),m=measures[mi],oldSlots=m.slots||[],oldSub=m.subdivision||1;const [,beatsNum]=getMeter(sel.value);const oldBeats=getMeter(m.meter)[1];
+let next=[];for(let v=0;v<3;v++){for(let s=0;s<beatsNum*oldSub;s++){next.push(oldSlots[v*oldBeats*oldSub+s]||null);}}
+m.meter=sel.value;m.slots=next;selectedMeasure=mi;render();
+}));
+measuresEl.querySelectorAll("[data-sub-up]").forEach(btn=>btn.addEventListener("click",()=>changeDrumSubdivision(Number(btn.dataset.subUp),1)));
+measuresEl.querySelectorAll("[data-sub-down]").forEach(btn=>btn.addEventListener("click",()=>changeDrumSubdivision(Number(btn.dataset.subDown),-1)));
+measuresEl.querySelectorAll("[data-repeat-up]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatUp);measures[mi].repeats=Math.min(99,(measures[mi].repeats||1)+1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-repeat-down]").forEach(btn=>btn.addEventListener("click",()=>{const mi=Number(btn.dataset.repeatDown);measures[mi].repeats=Math.max(1,(measures[mi].repeats||1)-1);selectedMeasure=mi;render();}));
+measuresEl.querySelectorAll("[data-rit]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openRitorneloModal(Number(btn.dataset.rit));}));
+}
+
+function changeSubdivision(mi,direction){
+const m=measures[mi]; if(!m)return;
+const levels=[1,2,4,8]; const currentIndex=levels.indexOf(m.subdivision||1); const nextIndex=Math.max(0,Math.min(levels.length-1,currentIndex+direction)); if(nextIndex===currentIndex)return;
+const oldSlots=m.slots.map(s=>s?JSON.parse(JSON.stringify(s)):null); const oldSub=m.subdivision||1; const nextSub=levels[nextIndex];
+if(nextSub>oldSub){m.subdivision=nextSub;const factor=nextSub/oldSub;m.slots=Array.from({length:slotCount(m)},(_,i)=>{const item=oldSlots[Math.floor(i/factor)];return item?JSON.parse(JSON.stringify(item)):null;});}
+else{const factor=oldSub/nextSub;const nextCount=getMeter(m.meter)[1]*nextSub;m.subdivision=nextSub;m.slots=Array.from({length:nextCount},(_,i)=>{for(let j=0;j<factor;j++){const value=oldSlots[i*factor+j];if(value)return JSON.parse(JSON.stringify(value));}return null;});}
+selectedMeasure=mi;render();
+}
+
+function changeDrumSubdivision(mi,direction){
+const m=measures[mi]; if(!m)return;
+const levels=[1,2,4,8]; const currentIndex=levels.indexOf(m.subdivision||1); const nextIndex=Math.max(0,Math.min(levels.length-1,currentIndex+direction)); if(nextIndex===currentIndex)return;
+const oldSub=m.subdivision||1; const nextSub=levels[nextIndex]; const [,beatsNum]=getMeter(m.meter); const oldSlots=(m.slots||[]).map(s=>s?JSON.parse(JSON.stringify(s)):null); const nextSlots=[];
+for(let v=0;v<3;v++){
+const oldBase=v*beatsNum*oldSub;
+if(nextSub>oldSub){const factor=nextSub/oldSub;for(let i=0;i<beatsNum*nextSub;i++){const item=oldSlots[oldBase+Math.floor(i/factor)];nextSlots.push(item?JSON.parse(JSON.stringify(item)):null);}}
+else{const factor=oldSub/nextSub;for(let i=0;i<beatsNum*nextSub;i++){let value=null;for(let j=0;j<factor;j++){const item=oldSlots[oldBase+i*factor+j];if(item){value=JSON.parse(JSON.stringify(item));break;}}nextSlots.push(value);}}
+}
+m.subdivision=nextSub;m.slots=nextSlots;selectedMeasure=mi;render();
+}
+
+function openRitorneloModal(mi){
+editingRitorneloMi=mi;const sel=$("#ritorneloSelect");let opts='<option value="">Sem ritornelo (segue direto)</option>';for(let i=0;i<mi;i++)opts+=`<option value="${i}">Compasso ${i+1}</option>`;sel.innerHTML=opts;const currentRit=measures[mi].ritornelo;if(currentRit!==null&&currentRit!==undefined&&currentRit<mi)sel.value=currentRit;const repeats=measures[mi].ritorneloRepeats||1;$("#ritorneloRepeats").value=String(Math.max(1,Math.min(20,repeats)));openOverlay("ritorneloOverlay");
+}
+
+$("#saveRitornelo").addEventListener("click",()=>{if(editingRitorneloMi!==null){const val=$("#ritorneloSelect").value;if(val===""){measures[editingRitorneloMi].ritornelo=null;measures[editingRitorneloMi].ritorneloRepeats=1;}else{measures[editingRitorneloMi].ritornelo=Number(val);measures[editingRitorneloMi].ritorneloRepeats=Math.max(1,Number($("#ritorneloRepeats").value)||1);}render();}closeOverlay("ritorneloOverlay");});
+$("#clearRitornelo").addEventListener("click",()=>{if(editingRitorneloMi!==null){measures[editingRitorneloMi].ritornelo=null;measures[editingRitorneloMi].ritorneloRepeats=1;render();}closeOverlay("ritorneloOverlay");});
+
+$("#newProjectBtn").addEventListener("click",()=>startNewProject(false));
+$("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
+$("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
+$("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
+
+function handleFileOpen(file,forcedDrum){
+if(!file)return;
+const reader=new FileReader();
+reader.onload=()=>{try{const project=JSON.parse(reader.result);if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");project.isDrumProject=forcedDrum?true:!!project.isDrumProject;if(!project.id)project.id="project_"+Date.now();saveRecentProject(project);openProject(project);renderRecentProjects();}catch(e){alert("Não foi possível abrir este arquivo. Verifique se é um projeto JSON válido.");}};
+reader.readAsText(file);
+}
+
+$("#fileInput").addEventListener("change",e=>{handleFileOpen(e.target.files[0],false);e.target.value="";});
+$("#fileInputDrum").addEventListener("change",e=>{handleFileOpen(e.target.files[0],true);e.target.value="";});
+
+function openNote(mi,si){
+selected={mi,si};
+$("#noteGrid").innerHTML=NOTES.map(n=>`<button class="note-btn" data-note="${n}">${n}</button>`).join("");
+$("#noteGrid").querySelectorAll("[data-note]").forEach(b=>b.addEventListener("click",()=>{
+measures[mi].slots[si]={root:b.dataset.note,quality:"major",bass:""};
+closeOverlay("noteOverlay");render();previewChord(measures[mi].slots[si]);setTimeout(()=>openModifier(mi,si),120);
+}));
+openOverlay("noteOverlay");
+}
+
+function openModifier(mi,si){selected={mi,si};const ch=measures[mi].slots[si];if(!ch)return openNote(mi,si);populateBass(ch);openOverlay("modifierOverlay");}
+function populateBass(ch){const sel=$("#bassSelect"),idx=NOTES.indexOf(ch.root),candidates=[ch.root,NOTES[(idx+2)%12],NOTES[(idx+4)%12],NOTES[(idx+7)%12]];sel.innerHTML='<option value="">Sem baixo específico</option>'+[...new Set(candidates)].map(n=>`<option value="${n}" ${ch.bass===n?"selected":""}>${n}</option>`).join("");}
+
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeOverlay(b.dataset.close)));
+document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
+document.querySelectorAll(".mod-btn").forEach(b=>b.addEventListener("click",()=>{const ch=measures[selected.mi].slots[selected.si];if(!ch)return;ch.quality=b.dataset.mod;ch.bass=$("#bassSelect").value;closeOverlay("modifierOverlay");render();previewChord(ch);}));
+$("#bassSelect").addEventListener("change",()=>{const ch=measures[selected.mi]?.slots[selected.si];if(ch)ch.bass=$("#bassSelect").value;});
+$("#clearCurrent").addEventListener("click",()=>{if(measures[selected.mi])measures[selected.mi].slots[selected.si]=null;closeOverlay("modifierOverlay");render();});
+
+$("#addMeasure").addEventListener("click",()=>{
+const base=measures[measures.length-1] || (isCurrentProjectDrum?makeEmptyDrumMeasures()[0]:makeEmptyChordMeasures()[0]);
+const [,beatsNum]=getMeter(base.meter);
+measures.push({meter:base.meter,subdivision:base.subdivision||1,repeats:1,ritornelo:null,ritorneloRepeats:1,textAnnotation:"",slots:Array.from({length:beatsNum*(base.subdivision||1)*(isCurrentProjectDrum?3:1)},()=>null)});
+selectedMeasure=measures.length-1;render();
+});
 
 function openDrumModal(mi, si){
 selected = {mi, si};
 $("#drumGrid").innerHTML = DRUMS.map(d=>
-`<button class="note-btn" data-drum="${d.label}" style="font-size:13px;padding:15px 8px;">🥁 ${d.label}</button>`
+`<button class="note-btn" data-drum="${d.label}" style="font-size:13px;padding:15px 8px;">${d.label}</button>`
 ).join("");
 $("#drumGrid").querySelectorAll("[data-drum]").forEach(b=>{
 b.addEventListener("click",()=>{
@@ -1285,13 +1677,16 @@ $("#stopAll").addEventListener("click",()=>stopPlaybackCompletely());
 function syncControlsUI(){
 $("#bpm").value = getBpm();
 $("#fsBpmDisplay").textContent = getBpm()+" BPM";
+if(activeFullscreenProject){
+$("#fsSongMeta").textContent = `BPM: ${getBpm()}`;
+}
 const metroTxt = `♩ Metrônomo: ${metronomeOn?"ON":"OFF"}`;
 $("#metroToggle").textContent = metroTxt;
 $("#fsMetroToggle").textContent = metroTxt;
-const vol = parseFloat($("#volume").value || "2.0");
+const vol = parseFloat($("#volume").value || "1.0");
 $("#volume").value = vol;
 $("#volumeValue").textContent = Math.round(vol*100)+"%";
-const mVol = parseFloat($("#metroVolume").value || "1.5");
+const mVol = parseFloat($("#metroVolume").value || "1.0");
 $("#metroVolume").value = mVol;
 $("#metroVolumeValue").textContent = Math.round(mVol*100)+"%";
 updatePlayButtonLabels();
@@ -1307,7 +1702,10 @@ $("#metroToggle").addEventListener("click",()=>{ metronomeOn=!metronomeOn; syncC
 $("#fsMetroToggle").addEventListener("click",()=>{ metronomeOn=!metronomeOn; syncControlsUI(); });
 $("#volume").addEventListener("input",()=>{ syncControlsUI(); updateMasterVolume(); });
 $("#metroVolume").addEventListener("input", syncControlsUI);
-$("#bpm").addEventListener("input", syncControlsUI);
+$("#bpm").addEventListener("input",()=>{
+syncControlsUI();
+if(activeFullscreenProject) activeFullscreenProject.bpm=getBpm();
+});
 
 $("#fsBpmPlus").addEventListener("click",()=>{
 let n = getBpm()+5;
@@ -1332,25 +1730,33 @@ function ensureAudio(){
 if(!audioCtx){
 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 masterGain = audioCtx.createGain();
-masterGain.gain.value = parseFloat($("#volume").value || "2.0");
+masterGain.gain.value = parseFloat($("#volume").value || "1.0");
 masterGain.connect(audioCtx.destination);
 }
 if(audioCtx.state==="suspended") audioCtx.resume();
 }
 
 function updateMasterVolume(){
-const value = parseFloat($("#volume").value || "2.0");
+const value = parseFloat($("#volume").value || "1.0");
 if(masterGain){ masterGain.gain.setTargetAtTime(value, audioCtx.currentTime, .015); }
 }
 
-const DRUM_SAMPLES = {
-  "Bumbo": "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3",
-  "Caixa": "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3",
-  "Hi-Hat Fechado": "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3",
-  "Hi-Hat Aberto": "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3",
-  "Aro de Caixa": "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3",
-  "Prato de Ataque": "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"
+// Arquivos de áudio: os nomes abaixo correspondem EXATAMENTE aos arquivos do repositório.
+const DRUM_AUDIO_FILES = {
+  "Bumbo": "bumbo.mp3",
+  "Caixa": "caixa.mp3",
+  "Hi-Hat Fechado": "hi hat fechado.mp3",
+  "Hi-Hat Aberto": "hi tat aberto.mp3",
+  "Aro de Caixa": "aro.mp3",
+  "Prato de Ataque": "ataque.mp3"
 };
+
+const DRUM_SAMPLES = Object.fromEntries(
+  Object.entries(DRUM_AUDIO_FILES).map(([drumName, fileName]) => [
+    drumName,
+    `https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/${encodeURIComponent(fileName)}`
+  ])
+);
 
 const audioBuffers = {};
 async function loadDrumSamples() {
@@ -1399,7 +1805,7 @@ function previewDrum(drumType) {
 }
 
 function tick(when=audioCtx.currentTime, accent=false){
-const metroVol = parseFloat($("#metroVolume").value || "1.5");
+const metroVol = parseFloat($("#metroVolume").value || "1.0");
 if(metroVol<=0) return;
 const osc = audioCtx.createOscillator();
 const g = audioCtx.createGain();
@@ -1414,329 +1820,383 @@ osc.start(when); osc.stop(when+.055);
 }
 
 function slotDuration(m){
-const [,num,den] = getMeter(m.meter);
-return 60/getBpm()*(4/den);
+const [,num,den]=getMeter(m.meter);
+return 60/getBpm()*(4/den)/(m.subdivision||1);
 }
 
 function updateActiveSlotDOM(mi,si){
 document.querySelectorAll(".measures-wrap .measure").forEach((mEl,mIdx)=>{
-if(mIdx===mi) mEl.classList.add("playing"); else mEl.classList.remove("playing");
-mEl.querySelectorAll(".slot").forEach((sEl,sIdx)=>{
-if(mIdx===mi && sIdx===si) sEl.classList.add("active-slot"); else sEl.classList.remove("active-slot");
-});
+if(mIdx===mi)mEl.classList.add("playing");else mEl.classList.remove("playing");
+mEl.querySelectorAll(".slot").forEach((sEl,sIdx)=>{if(mIdx===mi&&sIdx===si)sEl.classList.add("active-slot");else sEl.classList.remove("active-slot");});
 });
 }
 
-function renderFullscreenMeasures(activeMi, activeSi){
-const targetMeasures = activeFullscreenProject ? activeFullscreenProject.measures : measures;
-fsMeasuresEl.innerHTML = "";
-targetMeasures.forEach((m, mi)=>{
-const el = document.createElement("article");
-el.className = "measure" + (mi===activeMi ? " playing" : "");
-const [, beatsNum] = getMeter(m.meter);
-const totalSlotsPerVoice = beatsNum * m.subdivision;
-let voiceHtmls = [];
-for (let v = 0; v < 3; v++) {
-  let voiceSlots = "";
-  for (let s = 0; s < totalSlotsPerVoice; s++) {
-    const realIndex = v * totalSlotsPerVoice + s;
-    const ch = m.slots[realIndex];
-    const isActive = activeMi === mi && activeSi === realIndex;
-    const slotClass = "slot " + (ch ? "filled" : "empty") + (isActive ? " active-slot" : "");
-    voiceSlots += `<div class="${slotClass}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div></div>`;
-  }
-  voiceHtmls.push(`
-    <div class="drum-voice-row">
-      <span class="drum-voice-label">Voz ${v+1}</span>
-      <div class="slots" style="min-height:36px;">${voiceSlots}</div>
-    </div>
-  `);
+function noteFreq(note,octave=4){
+const idx=NOTES.indexOf(note);const midi=60+idx+(octave-4)*12;return 440*Math.pow(2,(midi-69)/12);
 }
-el.innerHTML = `
-<div class="measure-top">
-<div class="measure-title">Comp. ${mi+1}</div>
-<div class="measure-annotation-input" style="border:none;background:transparent;color:var(--yellow);font-size:13px;text-align:center;">${escapeHtml(m.textAnnotation || '')}</div>
-</div>
-<div class="drum-voices-container">${voiceHtmls.join("")}</div>
-`;
+
+function chordNotes(ch){
+const rootIdx=NOTES.indexOf(ch.root);if(rootIdx<0)return [];
+const intervals=ch.quality==="minor"?[0,3,7]:ch.quality==="dim"?[0,3,6]:ch.quality==="sus2"?[0,2,7]:[0,4,7];
+let arr=intervals.map((x,i)=>{const n=NOTES[(rootIdx+x)%12];const oct=3+Math.floor((rootIdx+x)/12)+(i===0?1:0);return {note:n,oct};});
+if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)arr.unshift({note:ch.bass,oct:3+(bi<rootIdx?1:0)});}
+return arr;
+}
+
+// Amostra real do violão: uma única corda E é usada como fonte para todas as notas.
+const GUITAR_STRING_E_URL = "https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav";
+const GUITAR_STRING_E_FREQ = 82.406889; // E2 — 6ª corda solta do violão
+let guitarStringEBuffer = null;
+let guitarStringELoading = null;
+
+async function loadGuitarStringE(){
+  ensureAudio();
+  if(guitarStringEBuffer) return guitarStringEBuffer;
+  if(guitarStringELoading) return guitarStringELoading;
+  guitarStringELoading = fetch(GUITAR_STRING_E_URL)
+    .then(r=>{ if(!r.ok) throw new Error("Não foi possível carregar a corda E"); return r.arrayBuffer(); })
+    .then(ab=>audioCtx.decodeAudioData(ab))
+    .then(buf=>{ guitarStringEBuffer=buf; return buf; })
+    .finally(()=>{ guitarStringELoading=null; });
+  return guitarStringELoading;
+}
+
+function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0){
+  const ctx=audioCtx;
+  if(guitarStringEBuffer){
+    const source=ctx.createBufferSource();
+    const gain=ctx.createGain();
+    source.buffer=guitarStringEBuffer;
+    source.playbackRate.setValueAtTime(freq/GUITAR_STRING_E_FREQ,when);
+    gain.gain.setValueAtTime(Math.max(.001,velocity),when);
+    source.connect(gain);
+    gain.connect(masterGain||ctx.destination);
+    source.start(when);
+    source.stop(when+Math.min(duration,guitarStringEBuffer.duration/(freq/GUITAR_STRING_E_FREQ))+0.02);
+    return;
+  }
+  // Reserva apenas para o instante em que a amostra ainda estiver carregando.
+  const osc=ctx.createOscillator(),gain=ctx.createGain();
+  osc.type="triangle";
+  osc.frequency.setValueAtTime(freq,when);
+  gain.gain.setValueAtTime(.0001,when);
+  gain.gain.exponentialRampToValueAtTime(.18*velocity,when+.012);
+  gain.gain.exponentialRampToValueAtTime(.0001,when+duration);
+  osc.connect(gain);gain.connect(masterGain||ctx.destination);
+  osc.start(when);osc.stop(when+duration+.05);
+}
+
+function playChord(ch,when=audioCtx.currentTime){
+  if(!ch)return;
+  chordNotes(ch).forEach((n,i)=>pluck(noteFreq(n.note,n.oct),when+i*.018,2.6,.95));
+}
+
+async function previewChord(ch){
+  ensureAudio();
+  updateMasterVolume();
+  try{ await loadGuitarStringE(); }catch(e){}
+  playChord(ch);
+}
+
+function tick(when=audioCtx.currentTime,accent=false){
+const metroVol=parseFloat($("#metroVolume").value||"1.5");if(metroVol<=0)return;const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type="square";osc.frequency.value=accent?1300:900;const baseGain=accent?.055:.035;g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(baseGain*metroVol,when+.002);g.gain.exponentialRampToValueAtTime(.0001,when+.045);osc.connect(g);g.connect(masterGain||audioCtx.destination);osc.start(when);osc.stop(when+.055);
+}
+
+function waitForResume(){return new Promise(resolve=>{playbackPromiseResolve=resolve;});}
+
+async function handlePlayAction(mode,startMi){
+ensureAudio();await audioCtx.resume();
+if(!isCurrentProjectDrum){ try{ await loadGuitarStringE(); }catch(e){} }
+if(playbackState==="PLAYING"){playbackState="PAUSED";syncControlsUI();return;}
+if(playbackState==="PAUSED"){playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
+playbackRunId++;const currentRun=playbackRunId;playbackState="PLAYING";playbackMode=mode;syncControlsUI();
+const targetMeasures=activeFullscreenProject?activeFullscreenProject.measures:measures;ritorneloCounters={};
+if(mode==="measure"){
+if(startMi<0||startMi>=targetMeasures.length){stopPlaybackCompletely();return;}
+const mi=startMi,m=targetMeasures[mi],repetitions=Math.max(1,m.repeats||1);
+const [,beatsNum]=getMeter(m.meter);
+const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
+for(let rep=0;rep<repetitions;rep++){
+for(let si=0;si<playbackSlots && playbackState!=="STOPPED" && playbackRunId===currentRun;si++){
+while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
+if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
+const when=audioCtx.currentTime+.035;activePlayingSlot={mi,si};if(activeFullscreenProject)renderFullscreenMeasures(mi,si);else updateActiveSlotDOM(mi,si);
+if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
+if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
+await sleep(slotDuration(m)*1000);
+}
+}
+if(playbackRunId===currentRun)stopPlaybackCompletely();return;
+}
+currentPlayMi=Math.max(0,Math.min(startMi,targetMeasures.length-1));currentPlaySi=0;currentPlayRep=0;
+while(currentPlayMi>=0&&currentPlayMi<targetMeasures.length&&playbackState!=="STOPPED"&&playbackRunId===currentRun){
+selectedMeasure=currentPlayMi;const m=targetMeasures[currentPlayMi],repetitions=Math.max(1,m.repeats||1);
+const [,beatsNum]=getMeter(m.meter);
+for(let rep=currentPlayRep;rep<repetitions&&playbackState!=="STOPPED"&&playbackRunId===currentRun;rep++){
+currentPlayRep=rep;const startSi=currentPlaySi||0;
+const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
+for(let si=startSi;si<playbackSlots&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
+currentPlaySi=si;while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
+const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
+if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
+if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
+await sleep(slotDuration(m)*1000);
+}
+currentPlaySi=0;
+}
+currentPlayRep=0;currentPlaySi=0;
+if(m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<currentPlayMi){const ritKey=String(currentPlayMi),maxReturns=Math.max(1,m.ritorneloRepeats||1),used=ritorneloCounters[ritKey]||0;if(used<maxReturns){ritorneloCounters[ritKey]=used+1;currentPlayMi=m.ritornelo;currentPlaySi=0;currentPlayRep=0;continue;}}
+currentPlayMi++;currentPlaySi=0;currentPlayRep=0;
+}
+if(playbackRunId===currentRun)stopPlaybackCompletely();
+}
+
+function stopPlaybackCompletely(){
+playbackRunId++;playbackState="STOPPED";playbackMode="all";ritorneloCounters={};if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}activePlayingSlot={mi:-1,si:-1};currentPlayMi=0;currentPlaySi=0;currentPlayRep=0;syncControlsUI();render();if(activeFullscreenProject)renderFullscreenMeasures(-1,-1);
+}
+
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
+function renderFullscreenMeasures(activeMi,activeSi){
+if(!activeFullscreenProject)return;
+fsMeasuresEl.innerHTML="";
+activeFullscreenProject.measures.forEach((m,mi)=>{
+const el=document.createElement("article");el.className="measure"+(mi===activeMi?" playing":"");
+if(isCurrentProjectDrum || activeFullscreenProject.isDrumProject){
+const [,beatsNum]=getMeter(m.meter),totalSlotsPerVoice=beatsNum*(m.subdivision||1);let voiceHtmls=[];
+for(let v=0;v<3;v++){let voiceSlots="";for(let s=0;s<totalSlotsPerVoice;s++){const idx=v*totalSlotsPerVoice+s,ch=m.slots[idx],isActive=activeMi===mi&&activeSi===s,slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");voiceSlots+=`<div class="${slotClass}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div></div>`;}voiceHtmls.push(`<div class="drum-voice-row"><span class="drum-voice-label">Voz ${v+1}</span><div class="slots" style="min-height:36px;">${voiceSlots}</div></div>`);}
+el.innerHTML=`<div class="measure-top"><div class="measure-title">Comp. ${mi+1}</div><div class="measure-annotation-input" style="border:none;background:transparent;color:var(--yellow);font-size:13px;text-align:center;">${escapeHtml(m.textAnnotation||"")}</div></div><div class="drum-voices-container">${voiceHtmls.join("")}</div>`;
+}else{
+const slots=Array.from({length:slotCount(m)},(_,si)=>{const ch=m.slots[si],isActive=mi===activeMi&&si===activeSi,slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");return `<div class="${slotClass}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div></div>`;}).join("");
+const annotationHtml=m.textAnnotation?`<div class="measure-annotation-display">${escapeHtml(m.textAnnotation)}</div>`:"";
+el.innerHTML=`<div class="measure-top"><div class="measure-title">Comp. ${mi+1}${m.ritornelo!==null&&m.ritornelo!==undefined?' ↩('+(m.ritornelo+1)+')':""}</div>${annotationHtml}</div><div class="slots">${slots}</div>`;
+}
 fsMeasuresEl.appendChild(el);
 });
 }
 
-function waitForResume(){
-return new Promise(resolve=>{ playbackPromiseResolve = resolve; });
-}
-
-async function handlePlayAction(mode, startMi){
+async function handleDemoPlay(){
+if(!activeFullscreenProject)return;
 ensureAudio();
 await audioCtx.resume();
 loadDrumSamples();
 
 if(playbackState==="PLAYING"){
 playbackState="PAUSED";
+demoPauseStartedAt=performance.now();
 syncControlsUI();
 return;
 }
+
 if(playbackState==="PAUSED"){
+const pausedFor=performance.now()-demoPauseStartedAt;
+demoTargetEndAt+=pausedFor;
+demoPauseStartedAt=0;
 playbackState="PLAYING";
-if(playbackPromiseResolve){
-const resolveFn = playbackPromiseResolve;
-playbackPromiseResolve = null;
-resolveFn();
-}
+if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}
 syncControlsUI();
 return;
 }
 
 playbackRunId++;
-const currentRun = playbackRunId;
+const currentRun=playbackRunId;
 playbackState="PLAYING";
+demoTargetEndAt=performance.now()+(fullscreenDurationMinutes*60000);
+demoPauseStartedAt=0;
 syncControlsUI();
 
-const targetMeasures = activeFullscreenProject ? activeFullscreenProject.measures : measures;
-const [, beatsNum] = getMeter(targetMeasures[0]?.meter || "4/4");
-const subdivisionVal = targetMeasures[0]?.subdivision || 1;
-const slotsPerVoice = beatsNum * subdivisionVal;
+const targetMeasures=activeFullscreenProject.measures||[];
+if(!targetMeasures.length){stopPlaybackCompletely();return;}
 
-if(mode==="measure"){
-if(startMi<0 || startMi>=targetMeasures.length){ stopPlaybackCompletely(); return; }
-const mi = startMi;
-const m = targetMeasures[mi];
-for(let si=0; si<slotsPerVoice; si++){
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) break;
-while(playbackState==="PAUSED" && playbackRunId===currentRun){ await waitForResume(); }
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) break;
-const when = audioCtx.currentTime+.035;
-if(metronomeOn){ tick(when, si%m.subdivision===0); }
-for(let v=0; v<3; v++){
-  const realSlotIdx = v * slotsPerVoice + si;
-  if(m.slots[realSlotIdx]){ playDrumSound(m.slots[realSlotIdx].root, when); }
+while(playbackState!=="STOPPED" && playbackRunId===currentRun && performance.now()<demoTargetEndAt){
+for(let mi=0;mi<targetMeasures.length;mi++){
+if(performance.now()>=demoTargetEndAt)break;
+const m=targetMeasures[mi];
+const [,beatsNum]=getMeter(m.meter);
+const subdivisionVal=m.subdivision||1;
+const slotsPerVoice=beatsNum*subdivisionVal;
+for(let si=0;si<slotsPerVoice;si++){
+if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
+if(performance.now()>=demoTargetEndAt)break;
+while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
+if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
+if(performance.now()>=demoTargetEndAt)break;
+const when=audioCtx.currentTime+.035;
+if(metronomeOn)tick(when,si%subdivisionVal===0);
+for(let v=0;v<3;v++){
+const idx=v*slotsPerVoice+si;
+if(m.slots[idx])playDrumSound(m.slots[idx].root,when);
 }
-activePlayingSlot = {mi, si};
-if(activeFullscreenProject){ renderFullscreenMeasures(mi, si); } else { updateActiveSlotDOM(mi, si); }
+activePlayingSlot={mi,si};
+renderFullscreenMeasures(mi,si);
 await sleep(slotDuration(m)*1000);
 }
-if(playbackRunId===currentRun){ stopPlaybackCompletely(); }
-return;
+}
 }
 
-currentPlayMi = Math.max(0, Math.min(startMi, targetMeasures.length-1));
-currentPlaySi=0;
-
-while(currentPlayMi>=0 && currentPlayMi<targetMeasures.length && playbackState!=="STOPPED" && playbackRunId===currentRun){
-const m = targetMeasures[currentPlayMi];
-for(let si=currentPlaySi; si<slotsPerVoice && playbackState!=="STOPPED" && playbackRunId===currentRun; si++){
-currentPlaySi = si;
-while(playbackState==="PAUSED" && playbackRunId===currentRun){ await waitForResume(); }
-if(playbackState==="STOPPED" || playbackRunId!==currentRun) break;
-const when = audioCtx.currentTime+.035;
-if(metronomeOn){ tick(when, si%m.subdivision===0); }
-for(let v=0; v<3; v++){
-  const realSlotIdx = v * slotsPerVoice + si;
-  if(m.slots[realSlotIdx]){ playDrumSound(m.slots[realSlotIdx].root, when); }
-}
-activePlayingSlot={mi:currentPlayMi, si};
-if(activeFullscreenProject){ renderFullscreenMeasures(currentPlayMi, si); } else { updateActiveSlotDOM(currentPlayMi, si); }
-await sleep(slotDuration(m)*1000);
-}
-currentPlayMi++;
-currentPlaySi=0;
-}
-if(playbackRunId===currentRun){ stopPlaybackCompletely(); }
+if(playbackRunId===currentRun)stopPlaybackCompletely();
 }
 
-function stopPlaybackCompletely(){
-playbackRunId++;
-playbackState="STOPPED";
-if(playbackPromiseResolve){
-const resolveFn = playbackPromiseResolve;
-playbackPromiseResolve = null;
-resolveFn();
-}
-activePlayingSlot={mi:-1, si:-1};
-syncControlsUI();
-render();
-if(activeFullscreenProject){ renderFullscreenMeasures(-1,-1); }
+function createDemoMeasure(meter, subdivision, voice1, voice2, voice3, textAnnotation=""){
+const beats=getMeter(meter)[1];
+const totalSlots=beats*(subdivision||1);
+const v1=Array.from({length:totalSlots},(_,i)=>voice1[i]||null);
+const v2=Array.from({length:totalSlots},(_,i)=>voice2[i]||null);
+const v3=Array.from({length:totalSlots},(_,i)=>voice3[i]||null);
+return {
+  meter,
+  subdivision:subdivision||1,
+  repeats:1,
+  ritornelo:null,
+  ritorneloRepeats:1,
+  textAnnotation,
+  slots:[...v1,...v2,...v3].map(root=>root?{root}:null)
+};
 }
 
-function sleep(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
+function createDefaultDemoProjects(){
+const d=[];
+const add=(id,songName,meter,bpm,measure)=>d.push({
+  id:"demo_ritmo_"+id,
+  isDrumProject:true,
+  songName,
+  songKey:"-",
+  bpm,
+  metronomeOn:false,
+  volume:1.0,
+  metroVolume:1.0,
+  measures:[measure]
+});
+
+// Cada compasso dos três arquivos MXL foi convertido em um projeto separado.
+add(1,"3/4 — Levada 1","3/4",80,createDemoMeasure("3/4",1,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null],[null,"Caixa","Caixa"],"3por4.mxl \u2014 compasso 1"));
+add(2,"3/4 — Levada 2","3/4",80,createDemoMeasure("3/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,null,null],[null,null,"Caixa",null,"Caixa",null],"3por4.mxl \u2014 compasso 2"));
+add(3,"3/4 — Levada 3","3/4",80,createDemoMeasure("3/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,"Bumbo",null,"Bumbo"],[null,null,null,null,"Caixa",null],"3por4.mxl \u2014 compasso 3"));
+add(4,"4/4 — Levada 1","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,"Bumbo",null,null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"4por4.mxl \u2014 compasso 1"));
+add(5,"4/4 — Levada 2","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,"Bumbo","Bumbo",null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"4por4.mxl \u2014 compasso 2"));
+add(6,"4/4 — Levada 3","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,"Bumbo","Bumbo",null,null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"4por4.mxl \u2014 compasso 3"));
+add(7,"4/4 — Levada 4","4/4",90,createDemoMeasure("4/4",2,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,"Bumbo",null,"Bumbo",null,null],[null,null,"Caixa",null,null,null,"Caixa",null],"4por4.mxl \u2014 compasso 4"));
+add(8,"4/4 — Levada 5","4/4",90,createDemoMeasure("4/4",4,["Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null],["Bumbo",null,null,null,null,null,null,"Bumbo",null,null,"Bumbo",null,null,null,null,null],[null,null,null,null,"Caixa",null,null,null,null,null,null,null,"Caixa",null,null,null],"4por4.mxl \u2014 compasso 5"));
+add(9,"4/4 — Levada 6","4/4",90,createDemoMeasure("4/4",4,["Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null],["Bumbo",null,null,null,null,null,null,"Bumbo",null,"Bumbo","Bumbo",null,null,null,null,null],[null,null,null,null,"Caixa",null,null,null,null,null,null,null,"Caixa",null,null,null],"4por4.mxl \u2014 compasso 6"));
+add(10,"6/8 — Levada 1","6/8",80,createDemoMeasure("6/8",1,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,null,null],[null,null,null,"Caixa",null,null],"6por8.mxl \u2014 compasso 1"));
+add(11,"6/8 — Levada 2","6/8",80,createDemoMeasure("6/8",1,["Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado","Hi-Hat Fechado"],["Bumbo",null,null,null,null,"Bumbo"],[null,null,null,"Caixa",null,null],"6por8.mxl \u2014 compasso 2"));
+add(12,"6/8 — Levada 3","6/8",80,createDemoMeasure("6/8",2,["Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null,"Hi-Hat Fechado",null],["Bumbo",null,null,"Bumbo",null,"Bumbo",null,null,null,"Bumbo",null,null],[null,null,null,null,null,null,"Caixa",null,null,null,null,null],"6por8.mxl \u2014 compasso 3"));
+return d;
+}
 
 function getDemoProjects(){
-let demoList = [];
-try{
-demoList = JSON.parse(localStorage.getItem("notacaoMusicalCRichlessDemo15") || "[]");
-}catch(e){ demoList = []; }
-
-if(demoList.length < 15){
-demoList = [];
-const metersList = ["3/4", "4/4", "6/8"];
-for(let i=1; i<=15; i++){
-const mtr = metersList[(i-1)%3];
-demoList.push({
-id: "demo_ritmo_" + i,
-isDrumProject: true,
-songName: `Ritmo ${mtr} - Exemplo ${i}`,
-songKey: "-",
-bpm: 80 + (i * 2),
-metronomeOn: true,
-volume: 2.0,
-metroVolume: 1.5,
-measures: [
-{
-meter: mtr,
-subdivision: 1,
-repeats: 1,
-ritornelo: null,
-ritorneloRepeats: 1,
-textAnnotation: `Demonstração ${i}`,
-slots: Array.from({length: getMeter(mtr)[1] * 3}, (_, sIdx) => {
-if(sIdx === 0) return { root: "Bumbo" };
-if(sIdx === getMeter(mtr)[1]) return { root: "Caixa" };
-return { root: "Hi-Hat Fechado" };
-})
-}
-]
-});
-}
-localStorage.setItem("notacaoMusicalCRichlessDemo15", JSON.stringify(demoList));
-}
-return demoList;
+return createDefaultDemoProjects();
 }
 
 function renderDemoListGrid(){
-const grid = $("#demoProjectsGrid");
-const demos = getDemoProjects();
-grid.innerHTML = demos.map(proj => `
-<div class="project-card" data-demo-id="${proj.id}">
+const grid=$("#demoProjectsGrid");
+const demos=getDemoProjects();
+
+grid.innerHTML=demos.map(proj=>`
+<div class="project-card" data-demo-id="${escapeHtml(proj.id)}">
 <h4>🥁 ${escapeHtml(proj.songName)}</h4>
-<p>Fórmula: ${escapeHtml(proj.measures[0]?.meter || '4/4')} · BPM: ${proj.bpm}</p>
+<p>Fórmula: ${escapeHtml(proj.measures[0]?.meter || "4/4")} · BPM: ${proj.bpm}</p>
 <div class="project-actions">
-<button class="btn primary" style="font-size:11px;padding:6px 10px;width:100%;" data-open-demo="${proj.id}">▶ Abrir Demonstração</button>
+<button class="btn primary" style="font-size:11px;padding:6px 10px;flex:1;" data-open-demo="${escapeHtml(proj.id)}">▶ Abrir Demonstração</button>
 </div>
 </div>
 `).join("");
 
 grid.querySelectorAll("[data-open-demo]").forEach(btn=>{
-btn.addEventListener("click", ()=>{
-const id = btn.dataset.openDemo;
-const demos = getDemoProjects();
-const proj = demos.find(p => p.id === id);
+btn.addEventListener("click",e=>{
+e.stopPropagation();
+const proj=getDemoProjects().find(p=>p.id===btn.dataset.openDemo);
 if(proj){
-isDemoMode = true;
+isDemoMode=true;
 $("#demoListModal").classList.remove("open");
 openFullscreenProject(JSON.parse(JSON.stringify(proj)));
 }
 });
 });
+
+grid.querySelectorAll(".project-card").forEach(card=>{
+card.addEventListener("click",()=>{
+const proj=getDemoProjects().find(p=>p.id===card.dataset.demoId);
+if(!proj) return;
+isDemoMode=true;
+$("#demoListModal").classList.remove("open");
+openFullscreenProject(JSON.parse(JSON.stringify(proj)));
+});
+});
 }
 
 function openFullscreenProject(proj){
-activeFullscreenProject = proj;
-$("#fsSongTitle").textContent = proj.songName || "Música Demo";
-$("#fsSongMeta").textContent = `BPM: ${proj.bpm}`;
-$("#bpm").value = proj.bpm || 90;
+activeFullscreenProject=proj;
+fullscreenDurationMinutes=1;
+demoTargetEndAt=0;
+demoPauseStartedAt=0;
+$("#fsSongTitle").textContent=proj.songName || "Música Demo";
+$("#fsSongMeta").textContent=`BPM: ${proj.bpm || 90}`;
+$("#bpm").value=proj.bpm || 90;
+$("#volume").value=proj.volume ?? 2.0;
+$("#metroVolume").value=proj.metroVolume ?? 1.5;
+metronomeOn=proj.metronomeOn !== false;
+$("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 syncControlsUI();
 $("#fullscreenModal").classList.add("open");
 renderFullscreenMeasures(-1,-1);
 }
 
+
 // BOTÃO VER DEMO NO TOPO
-$("#demoBateriaBtn").addEventListener("click", () => {
-getDemoProjects();
+$("#demoBateriaBtn").addEventListener("click",()=>{
 renderDemoListGrid();
 $("#demoListModal").classList.add("open");
 });
 
-$("#closeDemoList").addEventListener("click", () => {
+$("#closeDemoList").addEventListener("click",()=>{
 $("#demoListModal").classList.remove("open");
 });
 
-// BOTÃO ADMINISTRATIVO (ABRE MODAL DE SENHA)
-$("#adminOpenModalBtn").addEventListener("click", () => {
-$("#adminPasswordInput").value = "";
-openOverlay("adminPasswordModal");
+
+$("#fsPlayAll").addEventListener("click",()=>handleDemoPlay());
+$("#fsStop").addEventListener("click",()=>stopPlaybackCompletely());
+
+$("#fsRepeatMinus").addEventListener("click",()=>{
+fullscreenDurationMinutes=Math.max(1,fullscreenDurationMinutes-1);
+$("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
+});
+$("#fsRepeatPlus").addEventListener("click",()=>{
+fullscreenDurationMinutes=Math.min(120,fullscreenDurationMinutes+1);
+$("#fsRepeatDisplay").textContent=fullscreenDurationMinutes+" min";
 });
 
-// VALIDAÇÃO DA SENHA SECRETA
-$("#adminSubmitBtn").addEventListener("click", () => {
-const pass = $("#adminPasswordInput").value;
-if(pass === "Ca@005521971585584"){
-isAdminMode = true;
-closeOverlay("adminPasswordModal");
-$("#demoListModal").classList.remove("open");
-alert("Acesso Administrativo Autorizado! Agora você tem controle total para editar os ritmos.");
-// Abre o primeiro projeto demo no editor geral para edição total pelo administrador
-const demos = getDemoProjects();
-measures = JSON.parse(JSON.stringify(demos[0].measures));
-currentProjectId = demos[0].id;
-$("#songName").value = demos[0].songName;
-$("#bpm").value = demos[0].bpm;
-isCurrentProjectDrum = true;
-switchView("editorView");
-$("#status").innerHTML = "<strong>Modo Administrativo:</strong> Controle Total Ativo.";
-} else {
-alert("Senha incorreta!");
-}
-});
 
-// BOTÃO DE EDIÇÃO DENTRO DO PLAYER DEMO (VERSÃO LIMITADA PARA VISITANTES)
-$("#fsEditBtn").addEventListener("click", () => {
-if(playbackState!=="STOPPED") stopPlaybackCompletely();
-if(isAdminMode){
-// Se for admin, vai direto para o editor completo
-if(activeFullscreenProject){
-measures = JSON.parse(JSON.stringify(activeFullscreenProject.measures));
-currentProjectId = activeFullscreenProject.id;
-$("#songName").value = activeFullscreenProject.songName;
-$("#bpm").value = activeFullscreenProject.bpm;
-}
-$("#fullscreenModal").classList.remove("open");
-switchView("editorView");
-} else {
-// Versão demo limitada: apenas permite modificar a velocidade (BPM) e tocar
-alert("Modo Demo: A edição completa é restrita ao administrador. Utilize o painel administrativo com senha para editar todos os projetos demo.");
-}
-});
 
 // BOTÃO VOLTAR À LISTA DEMO
-$("#closeFullscreen").addEventListener("click", () => {
+$("#closeFullscreen").addEventListener("click",()=>{
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
-activeFullscreenProject = null;
+activeFullscreenProject=null;
+isDemoMode=false;
 $("#fullscreenModal").classList.remove("open");
 $("#demoListModal").classList.add("open");
 renderDemoListGrid();
 });
 
-$("#backToHomeBtn").addEventListener("click", () => {
+$("#backToHomeBtn").addEventListener("click",()=>{
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
+activeFullscreenProject=null;
+isDemoMode=false;
+switchView("homeView");
+renderRecentProjects();
+});
+
+$("#saveBtn").addEventListener("click",()=>{
+saveCurrentUserProject();
+alert("Projeto salvo com sucesso!");
 switchView("homeView");
 });
 
-$("#saveBtn").addEventListener("click", () => {
-if(isAdminMode && currentProjectId){
-const currentData = {
-id: currentProjectId,
-isDrumProject: true,
-songName: $("#songName").value || "Ritmo Demo",
-songKey: "-",
-bpm: getBpm(),
-measures: JSON.parse(JSON.stringify(measures))
-};
-let demos = getDemoProjects();
-const idx = demos.findIndex(d => d.id === currentProjectId);
-if(idx >= 0){
-demos[idx] = currentData;
-localStorage.setItem("notacaoMusicalCRichlessDemo15", JSON.stringify(demos));
-alert("Projeto demo atualizado com sucesso pelo Administrador!");
-}
-} else {
-alert("Projeto salvo com sucesso!");
-}
-switchView("homeView");
-});
+renderRecentProjects();
 
 syncControlsUI();
 render();
+renderRecentProjects();
 </script>
 
 </body>
