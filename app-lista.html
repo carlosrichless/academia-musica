@@ -2251,7 +2251,7 @@ function criarArquivoProjetoIndependente(project,fileName){
 const logoData="__CRICHLESS_LOGO_DATA__";
 const projectJson=JSON.stringify(project,null,2).replace(/</g,"\\u003c");
 const transferPayload=textToBase64Url(JSON.stringify(project));
-const siteUrl="https://carlosrichless.github.io/index.html?projeto="+encodeURIComponent(transferPayload);
+const siteUrl="https://carlosrichless.github.io/academia-musica/index.html?projeto="+encodeURIComponent(transferPayload);
 const safeName=escapeHtml(project.songName || "Projeto musical");
 const tipo=project.isDrumProject ? "Bateria" : "Cordas / Acordes";
 const medidas=Array.isArray(project.measures) ? project.measures.length : 0;
