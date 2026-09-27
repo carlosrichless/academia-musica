@@ -146,7 +146,6 @@
             font-size: 0.95rem;
         }
 
-        /* CRÉDITO DO DESENVOLVEDOR */
         .credito-desenvolvedor {
             text-align: center;
             color: var(--text-muted);
@@ -382,25 +381,171 @@
                 padding: 20px;
             }
         }
-    
 
-/* LOGIN DOS ALUNOS - APP NOTAÇÕES */
-#alunoLoginModal{position:fixed;inset:0;background:rgba(2,6,23,.94);z-index:5000;display:none;align-items:center;justify-content:center;padding:20px;}
-#alunoLoginModal.open{display:flex;}
-.aluno-login-box{width:min(440px,100%);background:#111c30;border:1px solid #334155;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.45);text-align:center;}
-.aluno-login-box h2{margin:0 0 6px;color:#1db954;}
-.aluno-login-box p{color:#94a3b8;font-size:13px;margin:0 0 18px;}
-.aluno-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:16px;}
-.aluno-btn{border:1px solid #40536e;background:#0e182a;color:#fff;border-radius:10px;padding:11px 8px;cursor:pointer;font-weight:600;}
-.aluno-btn:hover,.aluno-btn.selected{border-color:#1db954;background:#123329;}
-.aluno-senha-wrap{display:none;gap:8px;flex-direction:column;text-align:left;}
-.aluno-senha-wrap.open{display:flex;}
-.aluno-senha-wrap label{font-size:12px;color:#94a3b8;}
-.aluno-senha-wrap input{width:100%;box-sizing:border-box;background:#0b1322;color:#fff;border:1px solid #40536e;border-radius:9px;padding:11px;}
-.aluno-login-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
-.aluno-erro{display:none;color:#f87171;font-size:12px;margin-top:8px;}
-@media(max-width:520px){.aluno-lista{grid-template-columns:1fr;}}
-</style>
+        /* LOGIN DOS ALUNOS - APP NOTAÇÕES */
+        #alunoLoginModal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, .94);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #alunoLoginModal.open {
+            display: flex;
+        }
+
+        .aluno-login-box {
+            width: min(440px, 100%);
+            max-height: 90vh;
+            overflow: hidden;
+            background: #111c30;
+            border: 1px solid #334155;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .45);
+            text-align: center;
+        }
+
+        .aluno-login-box h2 {
+            margin: 0 0 6px;
+            color: #1db954;
+        }
+
+        .aluno-login-box p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin: 0 0 18px;
+        }
+
+        .aluno-escolha {
+            display: block;
+        }
+
+        .aluno-escolha.hidden {
+            display: none;
+        }
+
+        .aluno-lista {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 4px;
+            max-height: 58vh;
+            overflow-y: auto;
+            padding-right: 4px;
+            scrollbar-width: thin;
+        }
+
+        .aluno-btn {
+            border: 1px solid #40536e;
+            background: #0e182a;
+            color: #fff;
+            border-radius: 10px;
+            padding: 11px 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .aluno-btn:hover,
+        .aluno-btn.selected {
+            border-color: #1db954;
+            background: #123329;
+        }
+
+        .aluno-senha-wrap {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .aluno-senha-wrap.open {
+            display: flex;
+        }
+
+        .aluno-senha-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .aluno-senha-card-titulo {
+            text-align: center;
+            color: #1db954;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .aluno-senha-wrap label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .aluno-senha-wrap input {
+            width: 100%;
+            box-sizing: border-box;
+            background: #0b1322;
+            color: #fff;
+            border: 1px solid #40536e;
+            border-radius: 9px;
+            padding: 11px;
+        }
+
+        .aluno-senha-wrap input:focus {
+            outline: none;
+            border-color: #1db954;
+        }
+
+        .aluno-login-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 14px;
+        }
+
+        .aluno-login-actions button {
+            border: none;
+            border-radius: 9px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .aluno-btn-cancelar,
+        .aluno-btn-voltar {
+            background: #334155;
+            color: #fff;
+        }
+
+        .aluno-btn-entrar {
+            background: #1db954;
+            color: #06120b;
+        }
+
+        .aluno-erro {
+            display: none;
+            color: #f87171;
+            font-size: 12px;
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        @media (max-width: 520px) {
+            .aluno-lista {
+                grid-template-columns: 1fr;
+                max-height: 62vh;
+            }
+
+            .aluno-login-box {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -441,7 +586,6 @@
 
     </div>
 
-
     <!-- CONTEÚDO -->
     <div id="conteudoSite" class="container">
 
@@ -453,7 +597,6 @@
             </a>
 
         </div>
-
 
         <!-- CABEÇALHO -->
         <div class="header">
@@ -468,24 +611,16 @@
 
         </div>
 
-
         <!-- CRÉDITO DO DESENVOLVEDOR -->
         <div class="credito-desenvolvedor">
             Desenvolvido por C. Richless
         </div>
 
-
-        <!-- ================================
-             APLICATIVOS MUSICAIS
-             ================================ -->
-
+        <!-- APLICATIVOS MUSICAIS -->
         <div class="apps-musicais">
 
             <!-- METRÔNOMO -->
-            <a
-                href="metronomo.html"
-                class="app-musical"
-            >
+            <a href="metronomo.html" class="app-musical">
 
                 <div class="app-icone">
                     🎵
@@ -501,12 +636,8 @@
 
             </a>
 
-
             <!-- AFINADOR -->
-            <a
-                href="afinador.html"
-                class="app-musical"
-            >
+            <a href="afinador.html" class="app-musical">
 
                 <div class="app-icone">
                     🎸
@@ -521,7 +652,6 @@
                 </p>
 
             </a>
-
 
             <!-- APP LISTA -->
             <a
@@ -544,12 +674,8 @@
 
             </a>
 
-
             <!-- APP ACORDES -->
-            <a
-                href="app-acordes.html"
-                class="app-musical"
-            >
+            <a href="app-acordes.html" class="app-musical">
 
                 <div class="app-icone">
                     🎼
@@ -567,11 +693,7 @@
 
         </div>
 
-
-        <!-- ================================
-             MURAL
-             ================================ -->
-
+        <!-- MURAL -->
         <div class="secao-mural">
 
             <h2>
@@ -602,11 +724,7 @@
 
         </div>
 
-
-        <!-- ================================
-             MÓDULOS
-             ================================ -->
-
+        <!-- MÓDULOS -->
         <div class="modulos-grid">
 
             <div class="modulo-box">
@@ -627,7 +745,6 @@
                 </button>
 
             </div>
-
 
             <div class="modulo-box">
 
@@ -650,9 +767,7 @@
 
         </div>
 
-
     </div>
-
 
     <!-- RODAPÉ -->
     <footer>
@@ -664,32 +779,105 @@
 
     </footer>
 
-
     <!-- LOGIN DOS ALUNOS - APP NOTAÇÕES -->
     <div id="alunoLoginModal">
-        <div class="aluno-login-box">
-            <h2>📝 APP NOTAÇÕES</h2>
-            <p>Selecione seu nome e digite sua senha.</p>
-            <div class="aluno-lista" id="alunoListaIndex"></div>
-            <div class="aluno-senha-wrap" id="alunoSenhaWrapIndex">
-                <label id="alunoSelecionadoLabelIndex">Senha</label>
-                <input type="password" id="alunoSenhaIndex" placeholder="Digite sua senha...">
-                <div class="aluno-erro" id="alunoErroIndex">Senha incorreta.</div>
-            </div>
-            <div class="aluno-login-actions">
-                <button type="button" class="btn dark" id="alunoCancelarIndex">Cancelar</button>
-                <button type="button" class="btn green" id="alunoEntrarIndex">Entrar</button>
-            </div>
-        </div>
-    </div>
 
+        <div class="aluno-login-box">
+
+            <!-- TELA DE ESCOLHA DO ALUNO -->
+            <div id="alunoEscolhaIndex" class="aluno-escolha">
+
+                <h2>📝 APP NOTAÇÕES</h2>
+
+                <p>
+                    Selecione seu nome.
+                </p>
+
+                <div
+                    class="aluno-lista"
+                    id="alunoListaIndex"
+                ></div>
+
+                <div class="aluno-login-actions">
+
+                    <button
+                        type="button"
+                        class="aluno-btn-cancelar"
+                        id="alunoCancelarIndex"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- TELA DE SENHA -->
+            <div
+                class="aluno-senha-wrap"
+                id="alunoSenhaWrapIndex"
+            >
+
+                <div class="aluno-senha-card">
+
+                    <div
+                        class="aluno-senha-card-titulo"
+                        id="alunoSelecionadoLabelIndex"
+                    >
+                        Senha
+                    </div>
+
+                    <label for="alunoSenhaIndex">
+                        Digite sua senha:
+                    </label>
+
+                    <input
+                        type="password"
+                        id="alunoSenhaIndex"
+                        placeholder="Digite sua senha..."
+                        autocomplete="current-password"
+                    >
+
+                    <div
+                        class="aluno-erro"
+                        id="alunoErroIndex"
+                    >
+                        Senha incorreta.
+                    </div>
+
+                </div>
+
+                <div class="aluno-login-actions">
+
+                    <button
+                        type="button"
+                        class="aluno-btn-voltar"
+                        id="alunoVoltarIndex"
+                    >
+                        Voltar
+                    </button>
+
+                    <button
+                        type="button"
+                        class="aluno-btn-entrar"
+                        id="alunoEntrarIndex"
+                    >
+                        Entrar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <!-- FIREBASE -->
     <script
         type="module"
         src="config-senhas.js"
     ></script>
-
 
     <script>
 
@@ -722,71 +910,227 @@
         let alunoSelecionadoIndex = null;
 
         function abrirLoginAluno() {
-            alunoSelecionadoIndex = null;
-            document.getElementById("alunoListaIndex").innerHTML = ALUNOS_APP_NOTACOES.map(aluno =>
-                `<button type="button" class="aluno-btn" data-aluno-id="${aluno.id}">${aluno.nome}</button>`
-            ).join("");
 
-            document.querySelectorAll("#alunoListaIndex .aluno-btn").forEach(btn => {
+            alunoSelecionadoIndex = null;
+
+            const escolha =
+                document.getElementById("alunoEscolhaIndex");
+
+            const senha =
+                document.getElementById("alunoSenhaWrapIndex");
+
+            const lista =
+                document.getElementById("alunoListaIndex");
+
+            const inputSenha =
+                document.getElementById("alunoSenhaIndex");
+
+            const erro =
+                document.getElementById("alunoErroIndex");
+
+            lista.innerHTML =
+                ALUNOS_APP_NOTACOES.map(aluno =>
+                    `<button type="button" class="aluno-btn" data-aluno-id="${aluno.id}">${aluno.nome}</button>`
+                ).join("");
+
+            document.querySelectorAll(
+                "#alunoListaIndex .aluno-btn"
+            ).forEach(btn => {
+
                 btn.addEventListener("click", () => {
-                    alunoSelecionadoIndex = ALUNOS_APP_NOTACOES.find(a => a.id === btn.dataset.alunoId);
-                    document.querySelectorAll("#alunoListaIndex .aluno-btn").forEach(b => b.classList.remove("selected"));
-                    btn.classList.add("selected");
-                    document.getElementById("alunoSelecionadoLabelIndex").textContent = "Senha de " + alunoSelecionadoIndex.nome;
-                    document.getElementById("alunoSenhaWrapIndex").classList.add("open");
-                    document.getElementById("alunoSenhaIndex").value = "";
-                    document.getElementById("alunoSenhaIndex").focus();
-                    document.getElementById("alunoErroIndex").style.display = "none";
+
+                    alunoSelecionadoIndex =
+                        ALUNOS_APP_NOTACOES.find(
+                            a => a.id === btn.dataset.alunoId
+                        );
+
+                    document.getElementById(
+                        "alunoSelecionadoLabelIndex"
+                    ).textContent =
+                        "Senha de " +
+                        alunoSelecionadoIndex.nome;
+
+                    escolha.classList.add("hidden");
+                    senha.classList.add("open");
+
+                    inputSenha.value = "";
+                    erro.style.display = "none";
+
+                    setTimeout(() => {
+                        inputSenha.focus();
+                    }, 50);
+
                 });
+
             });
 
-            document.getElementById("alunoSenhaWrapIndex").classList.remove("open");
-            document.getElementById("alunoLoginModal").classList.add("open");
+            escolha.classList.remove("hidden");
+            senha.classList.remove("open");
+
+            document.getElementById(
+                "alunoLoginModal"
+            ).classList.add("open");
         }
 
         async function entrarAppNotacoesAluno() {
+
             if (!alunoSelecionadoIndex) {
-                alert("Selecione seu nome primeiro.");
                 return;
             }
 
             try {
-                const ref = window.firestore.doc(window.db, "configuracoes", "sistema");
-                const snap = await window.firestore.getDoc(ref);
-                const dados = snap.exists() ? snap.data() : {};
-                const listaSenhas = Array.isArray(dados.senhas_alunos_app_notacoes) ? dados.senhas_alunos_app_notacoes : [];
-                const cadastro = listaSenhas.find(a => a.id === alunoSelecionadoIndex.id);
 
-                if (!cadastro || !cadastro.senha || document.getElementById("alunoSenhaIndex").value !== cadastro.senha) {
-                    document.getElementById("alunoErroIndex").style.display = "block";
+                const ref =
+                    window.firestore.doc(
+                        window.db,
+                        "configuracoes",
+                        "sistema"
+                    );
+
+                const snap =
+                    await window.firestore.getDoc(ref);
+
+                const dados =
+                    snap.exists()
+                        ? snap.data()
+                        : {};
+
+                const listaSenhas =
+                    Array.isArray(
+                        dados.senhas_alunos_app_notacoes
+                    )
+                        ? dados.senhas_alunos_app_notacoes
+                        : [];
+
+                const cadastro =
+                    listaSenhas.find(
+                        a =>
+                            a.id ===
+                            alunoSelecionadoIndex.id
+                    );
+
+                const senhaDigitada =
+                    document.getElementById(
+                        "alunoSenhaIndex"
+                    ).value;
+
+                if (
+                    !cadastro ||
+                    !cadastro.senha ||
+                    senhaDigitada !== cadastro.senha
+                ) {
+
+                    document.getElementById(
+                        "alunoErroIndex"
+                    ).style.display = "block";
+
+                    document.getElementById(
+                        "alunoSenhaIndex"
+                    ).focus();
+
                     return;
                 }
 
-                sessionStorage.setItem("appNotacoesAlunoId", alunoSelecionadoIndex.id);
-                sessionStorage.setItem("appNotacoesAlunoNome", alunoSelecionadoIndex.nome);
-                window.location.href = "app-lista.html";
+                sessionStorage.setItem(
+                    "appNotacoesAlunoId",
+                    alunoSelecionadoIndex.id
+                );
+
+                sessionStorage.setItem(
+                    "appNotacoesAlunoNome",
+                    alunoSelecionadoIndex.nome
+                );
+
+                window.location.href =
+                    "app-lista.html";
+
             } catch (erro) {
-                console.error("Erro ao verificar senha do aluno:", erro);
-                alert("Erro ao conectar com a nuvem.");
+
+                console.error(
+                    "Erro ao verificar senha do aluno:",
+                    erro
+                );
+
+                alert(
+                    "Erro ao conectar com a nuvem."
+                );
+
             }
+
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const appBtn = document.getElementById("appNotacoesBtn");
-            if (appBtn) {
-                appBtn.addEventListener("click", event => {
-                    event.preventDefault();
-                    abrirLoginAluno();
-                });
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const appBtn =
+                    document.getElementById(
+                        "appNotacoesBtn"
+                    );
+
+                if (appBtn) {
+
+                    appBtn.addEventListener(
+                        "click",
+                        event => {
+
+                            event.preventDefault();
+
+                            abrirLoginAluno();
+
+                        }
+                    );
+
+                }
+
+                document
+                    .getElementById("alunoCancelarIndex")
+                    .addEventListener(
+                        "click",
+                        () => {
+
+                            document
+                                .getElementById(
+                                    "alunoLoginModal"
+                                )
+                                .classList.remove("open");
+
+                        }
+                    );
+
+                document
+                    .getElementById("alunoVoltarIndex")
+                    .addEventListener(
+                        "click",
+                        () => {
+
+                            abrirLoginAluno();
+
+                        }
+                    );
+
+                document
+                    .getElementById("alunoEntrarIndex")
+                    .addEventListener(
+                        "click",
+                        entrarAppNotacoesAluno
+                    );
+
+                document
+                    .getElementById("alunoSenhaIndex")
+                    .addEventListener(
+                        "keydown",
+                        e => {
+
+                            if (e.key === "Enter") {
+                                entrarAppNotacoesAluno();
+                            }
+
+                        }
+                    );
+
             }
-            document.getElementById("alunoCancelarIndex").addEventListener("click", () => {
-                document.getElementById("alunoLoginModal").classList.remove("open");
-            });
-            document.getElementById("alunoEntrarIndex").addEventListener("click", entrarAppNotacoesAluno);
-            document.getElementById("alunoSenhaIndex").addEventListener("keydown", e => {
-                if (e.key === "Enter") entrarAppNotacoesAluno();
-            });
-        });
+        );
 
 
         /* =========================================
@@ -806,22 +1150,18 @@
                         )
                     );
 
-
                 let dados =
                     docRef.exists()
                         ? docRef.data()
                         : {};
 
-
                 let senhaGeral =
                     dados.senha_site_geral || "123456";
-
 
                 let versaoAtual =
                     String(
                         dados.versao_senha_site || 1
                     );
-
 
                 if (
                     document.getElementById(
@@ -834,22 +1174,18 @@
                         "true"
                     );
 
-
                     sessionStorage.setItem(
                         "versaoSenhaSite",
                         versaoAtual
                     );
 
-
                     document.getElementById(
                         'telaLoginGeral'
                     ).style.display = 'none';
 
-
                     document.getElementById(
                         'conteudoSite'
                     ).style.display = 'block';
-
 
                     inicializarSite();
 
@@ -895,18 +1231,15 @@
                         'telaLoginGeral'
                     );
 
-
                 let autorizado =
                     sessionStorage.getItem(
                         "siteAutorizado"
                     );
 
-
                 let versaoSalva =
                     sessionStorage.getItem(
                         "versaoSenhaSite"
                     );
-
 
                 try {
 
@@ -919,16 +1252,13 @@
                             )
                         );
 
-
                     let dados =
                         docRef.exists()
                             ? docRef.data()
                             : {};
 
-
                     let versaoAtual =
                         dados.versao_senha_site || 1;
-
 
                     if (
                         autorizado === "true" &&
@@ -957,7 +1287,6 @@
 
                     }
 
-
                 } catch(erro) {
 
                     console.error(
@@ -973,6 +1302,7 @@
 
             }
         );
+
 
         /* =========================================
            ENTER NA SENHA
@@ -1005,7 +1335,6 @@
                     ? 'bateria-vip.html'
                     : 'violao-vip.html';
 
-
             window.location.href =
                 paginaDestino;
 
@@ -1029,12 +1358,10 @@
                         )
                     );
 
-
                 let dados =
                     docRef.exists()
                         ? docRef.data()
                         : {};
-
 
                 /* AVISOS */
 
@@ -1051,7 +1378,6 @@
 
                     ];
 
-
                 /* TEMPO DO MURAL */
 
                 let tempoSegundos =
@@ -1059,21 +1385,17 @@
                         dados.admin_tempo_mural
                     ) || 4;
 
-
                 let indexAviso = 0;
-
 
                 const elTitulo =
                     document.getElementById(
                         'muralTitulo'
                     );
 
-
                 const elTexto =
                     document.getElementById(
                         'muralTexto'
                     );
-
 
                 /* ATUALIZAR MURAL */
 
@@ -1086,10 +1408,8 @@
                         let item =
                             listaAvisos[indexAviso];
 
-
                         elTitulo.style.opacity = 0;
                         elTexto.style.opacity = 0;
-
 
                         setTimeout(
                             () => {
@@ -1097,14 +1417,11 @@
                                 elTitulo.innerText =
                                     item.titulo || "";
 
-
                                 elTexto.innerText =
                                     item.texto || "";
 
-
                                 elTitulo.style.opacity = 1;
                                 elTexto.style.opacity = 1;
-
 
                                 indexAviso =
                                     (
@@ -1120,14 +1437,11 @@
 
                 }
 
-
                 elTitulo.style.transition =
                     "opacity 0.3s ease";
 
-
                 elTexto.style.transition =
                     "opacity 0.3s ease";
-
 
                 if (
                     listaAvisos.length > 0
@@ -1135,15 +1449,12 @@
 
                     atualizarMural();
 
-
                     setInterval(
                         atualizarMural,
                         tempoSegundos * 1000
                     );
 
                 }
-
-
 
             } catch (erro) {
 
@@ -1157,7 +1468,6 @@
         }
 
     </script>
-
 
     <!-- SERVICE WORKER -->
     <script>
