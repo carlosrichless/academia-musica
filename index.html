@@ -545,39 +545,10 @@
                 padding: 20px;
             }
         }
-    
-
-/* AVISO RÁPIDO — BANANA CIFRAS */
-#bananaCifrasAviso{
-    position:fixed;
-    left:50%;
-    bottom:28px;
-    transform:translate(-50%,20px);
-    background:#111c30;
-    color:#fff;
-    border:1px solid #38bdf8;
-    border-radius:12px;
-    padding:13px 20px;
-    font-size:14px;
-    font-weight:600;
-    text-align:center;
-    box-shadow:0 8px 30px rgba(0,0,0,.35);
-    opacity:0;
-    pointer-events:none;
-    z-index:99999;
-    transition:opacity .2s ease, transform .2s ease;
-}
-
-#bananaCifrasAviso.show{
-    opacity:1;
-    transform:translate(-50%,0);
-}
-</style>
+    </style>
 </head>
 
 <body>
-
-<div id="bananaCifrasAviso" role="status" aria-live="polite">Redirecionando para o site Banana Cifras...</div>
 
     <!-- LOGIN -->
     <div id="telaLoginGeral" class="container">
@@ -703,15 +674,15 @@
 
             </a>
 
-            <!-- APP ACORDES / BANANA CIFRAS -->
-            <a href="https://www.bananacifras.com/chordfinder" class="app-musical" id="bananaCifrasBtn">
+            <!-- APP ACORDES -->
+            <a href="app-acordes.html" class="app-musical">
 
                 <div class="app-icone">
                     🎼
                 </div>
 
                 <h3>
-                    APP ACORDES — Banana Cifras
+                    APP ACORDES
                 </h3>
 
                 <p>
@@ -909,6 +880,90 @@
     ></script>
 
     <script>
+
+        /* =========================================
+           PROJETO INDEPENDENTE RECEBIDO
+           ========================================= */
+
+        function base64UrlToText(value) {
+
+            try {
+
+                let base64 = String(value || '')
+                    .replace(/-/g, '+')
+                    .replace(/_/g, '/');
+
+                while (base64.length % 4) {
+                    base64 += '=';
+                }
+
+                const binary = atob(base64);
+                const bytes = new Uint8Array(binary.length);
+
+                for (let i = 0; i < binary.length; i++) {
+                    bytes[i] = binary.charCodeAt(i);
+                }
+
+                return new TextDecoder().decode(bytes);
+
+            } catch (erro) {
+
+                console.error('Não foi possível ler o projeto recebido:', erro);
+                return null;
+
+            }
+
+        }
+
+        function receberProjetoIndependente() {
+
+            const params = new URLSearchParams(window.location.search);
+            const payload = params.get('projeto');
+
+            if (!payload) {
+                return false;
+            }
+
+            try {
+
+                const texto = base64UrlToText(payload);
+                const projeto = JSON.parse(texto || 'null');
+
+                if (!projeto || !Array.isArray(projeto.measures)) {
+                    throw new Error('Projeto inválido.');
+                }
+
+                sessionStorage.setItem(
+                    'appNotacoesProjetoPendente',
+                    JSON.stringify(projeto)
+                );
+
+                // Este acesso deve sempre passar novamente pela senha geral.
+                sessionStorage.removeItem('siteAutorizado');
+                sessionStorage.removeItem('versaoSenhaSite');
+
+                // Limpa o payload da barra de endereço, mas mantém o projeto na sessão.
+                const urlLimpa =
+                    window.location.origin +
+                    window.location.pathname;
+
+                window.history.replaceState({}, document.title, urlLimpa);
+
+                return true;
+
+            } catch (erro) {
+
+                console.error('Projeto independente inválido:', erro);
+                sessionStorage.removeItem('appNotacoesProjetoPendente');
+                return false;
+
+            }
+
+        }
+
+        const abriuProjetoIndependente =
+            receberProjetoIndependente();
+
 
         /* =========================================
            LOGIN DOS ALUNOS - APP NOTAÇÕES
@@ -1218,6 +1273,12 @@
 
                     inicializarSite();
 
+                    if (sessionStorage.getItem('appNotacoesProjetoPendente')) {
+                        setTimeout(() => {
+                            abrirLoginAluno();
+                        }, 50);
+                    }
+
                 } else {
 
                     document.getElementById(
@@ -1264,6 +1325,11 @@
                     sessionStorage.getItem(
                         "siteAutorizado"
                     );
+
+                // Links de projetos independentes sempre exigem a senha geral novamente.
+                if (abriuProjetoIndependente) {
+                    autorizado = null;
+                }
 
                 let versaoSalva =
                     sessionStorage.getItem(
@@ -1536,22 +1602,5 @@
 
     </script>
 
-
-
-<script>
-(function(){
-    const btn = document.getElementById("bananaCifrasBtn");
-    const aviso = document.getElementById("bananaCifrasAviso");
-    if(!btn || !aviso) return;
-
-    btn.addEventListener("click", function(event){
-        event.preventDefault();
-        aviso.classList.add("show");
-        setTimeout(function(){
-            window.location.href = "https://www.bananacifras.com/chordfinder";
-        }, 850);
-    });
-})();
-</script>
 </body>
 </html>
