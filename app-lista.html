@@ -803,21 +803,32 @@ flex-shrink: 0;
 
 
 /* LOGIN DOS ALUNOS - APP NOTAÇÕES */
-#alunoLoginAppModal{position:fixed;inset:0;background:rgba(2,6,23,.96);z-index:10000;display:none;align-items:center;justify-content:center;padding:20px;}
+#alunoLoginAppModal{position:fixed;inset:0;background:rgba(2,6,23,.96);z-index:10000;display:none;align-items:center;justify-content:center;padding:16px;}
 #alunoLoginAppModal.open{display:flex;}
-.aluno-login-app-box{width:min(440px,100%);background:#111c30;border:1px solid #334155;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center;}
+.aluno-login-app-box{width:min(440px,100%);max-height:calc(100vh - 32px);box-sizing:border-box;background:#111c30;border:1px solid #334155;border-radius:18px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center;display:flex;flex-direction:column;}
 .aluno-login-app-box h2{margin:0 0 6px;color:var(--green);}
-.aluno-login-app-box p{color:var(--muted);font-size:13px;margin:0 0 18px;}
-.aluno-app-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:16px;}
-.aluno-app-btn{border:1px solid #40536e;background:#0e182a;color:#fff;border-radius:10px;padding:11px 8px;cursor:pointer;font-weight:600;}
+.aluno-login-app-box p{color:var(--muted);font-size:13px;margin:0 0 14px;}
+.aluno-app-lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px;overflow-y:auto;max-height:min(58vh,520px);padding:2px 5px 6px 2px;overscroll-behavior:contain;}
+.aluno-app-lista::-webkit-scrollbar{width:7px;}
+.aluno-app-lista::-webkit-scrollbar-thumb{background:#40536e;border-radius:10px;}
+.aluno-app-btn{border:1px solid #40536e;background:#0e182a;color:#fff;border-radius:10px;padding:12px 8px;cursor:pointer;font-weight:600;min-height:44px;}
 .aluno-app-btn:hover,.aluno-app-btn.selected{border-color:var(--green);background:#123329;}
-.aluno-app-senha-wrap{display:none;gap:8px;flex-direction:column;text-align:left;}
-.aluno-app-senha-wrap.open{display:flex;}
+.aluno-app-senha-wrap{display:none;}
+.aluno-app-senha-wrap.open{display:flex;flex-direction:column;gap:8px;text-align:left;}
 .aluno-app-senha-wrap label{font-size:12px;color:var(--muted);}
-.aluno-app-senha-wrap input{width:100%;box-sizing:border-box;background:#0b1322;color:#fff;border:1px solid #40536e;border-radius:9px;padding:11px;}
+.aluno-app-senha-wrap input{width:100%;box-sizing:border-box;background:#0b1322;color:#fff;border:1px solid #40536e;border-radius:9px;padding:12px;}
 .aluno-app-erro{display:none;color:#f87171;font-size:12px;margin-top:8px;}
 .aluno-app-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
-@media(max-width:520px){.aluno-app-lista{grid-template-columns:1fr;}}
+#alunoAppSenhaModal{position:fixed;inset:0;background:rgba(2,6,23,.97);z-index:10001;display:none;align-items:center;justify-content:center;padding:20px;}
+#alunoAppSenhaModal.open{display:flex;}
+.aluno-app-senha-card{width:min(380px,100%);box-sizing:border-box;background:#111c30;border:1px solid #334155;border-radius:18px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6);text-align:center;}
+.aluno-app-senha-card h3{margin:0 0 7px;color:var(--green);font-size:20px;}
+.aluno-app-senha-card p{color:var(--muted);font-size:13px;margin:0 0 16px;}
+.aluno-app-senha-card .senha-field{display:flex;flex-direction:column;gap:8px;text-align:left;}
+.aluno-app-senha-card .senha-field input{width:100%;box-sizing:border-box;background:#0b1322;color:#fff;border:1px solid #40536e;border-radius:9px;padding:13px;}
+.aluno-app-senha-card .senha-actions{display:flex;gap:8px;margin-top:14px;}
+.aluno-app-senha-card .senha-actions button{flex:1;}
+@media(max-width:520px){.aluno-login-app-box{padding:18px;}.aluno-app-lista{grid-template-columns:1fr;max-height:62vh;}}
 </style>
 </head>
 
@@ -829,13 +840,23 @@ flex-shrink: 0;
 <h2>📝 APP NOTAÇÕES</h2>
 <p>Selecione seu nome e digite sua senha para entrar.</p>
 <div class="aluno-app-lista" id="alunoAppLista"></div>
-<div class="aluno-app-senha-wrap" id="alunoAppSenhaWrap">
-<label id="alunoAppSelecionadoLabel">Senha</label>
-<input type="password" id="alunoAppSenha" placeholder="Digite sua senha...">
-<div class="aluno-app-erro" id="alunoAppErro">Senha incorreta.</div>
-</div>
 <div class="aluno-app-actions">
 <button type="button" class="btn dark" id="alunoAppEntrarIndex">Voltar</button>
+</div>
+</div>
+</div>
+
+<div id="alunoAppSenhaModal">
+<div class="aluno-app-senha-card">
+<h3 id="alunoAppSelecionadoLabel">Senha</h3>
+<p>Digite sua senha para entrar no APP NOTAÇÕES.</p>
+<div class="senha-field">
+<label for="alunoAppSenha">Senha</label>
+<input type="password" id="alunoAppSenha" placeholder="Digite sua senha..." autocomplete="current-password">
+<div class="aluno-app-erro" id="alunoAppErro">Senha incorreta.</div>
+</div>
+<div class="senha-actions">
+<button type="button" class="btn dark" id="alunoAppVoltarNomes">Voltar</button>
 <button type="button" class="btn green" id="alunoAppEntrarBtn">Entrar</button>
 </div>
 </div>
@@ -1037,14 +1058,15 @@ alunoSelecionadoApp=ALUNOS_APP_NOTACOES.find(a=>a.id===btn.dataset.alunoId);
 document.querySelectorAll("#alunoAppLista .aluno-app-btn").forEach(b=>b.classList.remove("selected"));
 btn.classList.add("selected");
 document.getElementById("alunoAppSelecionadoLabel").textContent="Senha de "+alunoSelecionadoApp.nome;
-document.getElementById("alunoAppSenhaWrap").classList.add("open");
 document.getElementById("alunoAppSenha").value="";
-document.getElementById("alunoAppSenha").focus();
 document.getElementById("alunoAppErro").style.display="none";
+document.getElementById("alunoLoginAppModal").classList.remove("open");
+document.getElementById("alunoAppSenhaModal").classList.add("open");
+setTimeout(()=>document.getElementById("alunoAppSenha").focus(),100);
 });
 });
-document.getElementById("alunoAppSenhaWrap").classList.remove("open");
 document.getElementById("alunoLoginAppModal").classList.add("open");
+document.getElementById("alunoAppSenhaModal").classList.remove("open");
 }
 
 async function autenticarAlunoDiretoApp(){
@@ -1066,6 +1088,10 @@ const autorizado=sessionStorage.getItem("appNotacoesAlunoId");
 if(!autorizado){abrirLoginDiretoApp();}
 document.getElementById("alunoAppEntrarBtn").addEventListener("click",autenticarAlunoDiretoApp);
 document.getElementById("alunoAppEntrarIndex").addEventListener("click",()=>{window.location.href="index.html";});
+document.getElementById("alunoAppVoltarNomes").addEventListener("click",()=>{
+document.getElementById("alunoAppSenhaModal").classList.remove("open");
+document.getElementById("alunoLoginAppModal").classList.add("open");
+});
 document.getElementById("alunoAppSenha").addEventListener("keydown",e=>{if(e.key==="Enter")autenticarAlunoDiretoApp();});
 });
 
