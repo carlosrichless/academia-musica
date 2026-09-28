@@ -1613,19 +1613,15 @@ $("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
 $("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
 $("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
 
-function extrairProjetoOfflineDoHTML(texto){
+function extrairProjetoOfflineHTML(texto){
 try{
 const doc=new DOMParser().parseFromString(texto,"text/html");
-const tag=doc.getElementById("crichlessProjectData");
+const tag=doc.getElementById("crichlessOfflineData");
 if(!tag)return null;
-const bruto=tag.textContent || tag.innerHTML || "";
-const project=JSON.parse(bruto);
-if(!project || !Array.isArray(project.measures))return null;
+const project=JSON.parse(tag.textContent||"{}");
+if(!project||!Array.isArray(project.measures))return null;
 return project;
-}catch(e){
-console.error("Erro ao ler projeto HTML:",e);
-return null;
-}
+}catch(e){return null;}
 }
 
 function handleFileOpen(file,forcedDrum){
@@ -1633,16 +1629,15 @@ if(!file)return;
 const reader=new FileReader();
 reader.onload=()=>{
 try{
+const texto=reader.result;
 let project=null;
-const nome=(file.name||"").toLowerCase();
-
-if(nome.endsWith(".html") || nome.endsWith(".htm")){
-project=extrairProjetoOfflineDoHTML(reader.result);
-}else{
-project=JSON.parse(reader.result);
+if(/\.html?$/i.test(file.name)){
+project=extrairProjetoOfflineHTML(texto);
 }
-
-if(!project || !Array.isArray(project.measures))throw new Error("Formato inválido");
+if(!project){
+try{project=JSON.parse(texto);}catch(e){project=null;}
+}
+if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");
 project.isDrumProject=forcedDrum?true:!!project.isDrumProject;
 if(!project.id)project.id="project_"+Date.now();
 saveRecentProject(project);
@@ -1650,7 +1645,7 @@ openProject(project);
 renderRecentProjects();
 }catch(e){
 console.error(e);
-alert("Não foi possível abrir este arquivo. Selecione um projeto HTML salvo pelo botão 'Salvar no Dispositivo'.");
+alert("Não foi possível abrir este arquivo. Selecione um projeto HTML salvo pelo botão 'Salvar no Dispositivo' ou um projeto JSON válido.");
 }
 };
 reader.readAsText(file);
