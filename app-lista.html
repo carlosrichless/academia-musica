@@ -1636,9 +1636,6 @@ $("#clearRitornelo").addEventListener("click",()=>{if(editingRitorneloMi!==null)
 
 $("#newProjectBtn").addEventListener("click",()=>startNewProject(false));
 $("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
-$("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
-$("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
-
 function extrairDadosOfflineHTML(texto){
 try{
 const doc=new DOMParser().parseFromString(texto,"text/html");
@@ -1753,6 +1750,18 @@ reader.readAsText(file);
 
 $("#openFileBtn").addEventListener("click",()=>escolherArquivoComHandle(false));
 $("#openFileBtnDrum").addEventListener("click",()=>escolherArquivoComHandle(true));
+
+// Fallback para navegadores que não oferecem showOpenFilePicker.
+$("#fileInput").addEventListener("change",e=>{
+const file=e.target.files && e.target.files[0];
+if(file) handleFileOpen(file,false);
+e.target.value="";
+});
+$("#fileInputDrum").addEventListener("change",e=>{
+const file=e.target.files && e.target.files[0];
+if(file) handleFileOpen(file,true);
+e.target.value="";
+});
 
 function openNote(mi,si){
 selected={mi,si};
