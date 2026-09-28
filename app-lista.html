@@ -1209,6 +1209,12 @@ let currentProjectId = null;
 let isCurrentProjectDrum = false;
 let isDemoMode = false;
 
+// Modo de edição de arquivo HTML aberto do dispositivo.
+let modoArquivoExistente = false;
+let arquivoAtualHandle = null;
+let arquivoAtualNome = "";
+let arquivoAtualAudioData = null;
+
 let measures = [
 {
 meter:"4/4",
@@ -1346,8 +1352,28 @@ function makeEmptyMeasures(){
 return isCurrentProjectDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures();
 }
 
+function setEditorSaveMode(arquivoExistente){
+modoArquivoExistente=!!arquivoExistente;
+const saveBtn=$("#saveBtn");
+const saveDeviceBtn=$("#saveDeviceBtn");
+if(modoArquivoExistente){
+  saveBtn.textContent="💾 Salvar";
+  saveBtn.style.display="";
+  saveDeviceBtn.style.display="none";
+}else{
+  saveBtn.textContent="💾 Salvar Projeto";
+  saveBtn.style.display="";
+  saveDeviceBtn.style.display="";
+}
+}
+
 function startNewProject(isDrum){
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
+modoArquivoExistente=false;
+arquivoAtualHandle=null;
+arquivoAtualNome="";
+arquivoAtualAudioData=null;
+setEditorSaveMode(false);
 isCurrentProjectDrum=!!isDrum;
 isDemoMode=false;
 activeFullscreenProject=null;
@@ -1613,15 +1639,81 @@ $("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
 $("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
 $("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
 
-function extrairProjetoOfflineHTML(texto){
+function extrairDadosOfflineHTML(texto){
 try{
 const doc=new DOMParser().parseFromString(texto,"text/html");
 const tag=doc.getElementById("crichlessOfflineData");
 if(!tag)return null;
 const project=JSON.parse(tag.textContent||"{}");
 if(!project||!Array.isArray(project.measures))return null;
-return project;
+const audioTag=doc.getElementById("crichlessOfflineAudio");
+let audioData=null;
+if(audioTag){
+try{audioData=JSON.parse(audioTag.textContent||"{}");}catch(e){audioData=null;}
+}
+return {project,audioData};
 }catch(e){return null;}
+}
+
+function extrairProjetoOfflineHTML(texto){
+const dados=extrairDadosOfflineHTML(texto);
+return dados ? dados.project : null;
+}
+
+async function abrirArquivoComHandle(handle,forcedDrum){
+if(!handle)return;
+try{
+const file=await handle.getFile();
+const texto=await file.text();
+let project=null;
+let audioData=null;
+if(/\.html?$/i.test(file.name)){
+const dados=extrairDadosOfflineHTML(texto);
+if(dados){project=dados.project;audioData=dados.audioData;}
+}
+if(!project){
+try{project=JSON.parse(texto);}catch(e){project=null;}
+}
+if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");
+project.isDrumProject=forcedDrum?true:!!project.isDrumProject;
+if(!project.id)project.id="project_"+Date.now();
+
+arquivoAtualHandle=handle;
+arquivoAtualNome=file.name;
+arquivoAtualAudioData=audioData;
+modoArquivoExistente=/\.html?$/i.test(file.name);
+
+saveRecentProject(project);
+openProject(project);
+setEditorSaveMode(modoArquivoExistente);
+renderRecentProjects();
+$("#status").innerHTML=modoArquivoExistente
+ ? "<strong>Arquivo aberto:</strong> "+escapeHtml(file.name)+" — Salvar atualiza este mesmo arquivo."
+ : "<strong>Arquivo aberto:</strong> "+escapeHtml(file.name);
+}catch(e){
+console.error(e);
+alert("Não foi possível abrir este arquivo. Selecione um projeto HTML salvo pelo botão 'Salvar no Dispositivo' ou um projeto JSON válido.");
+}
+}
+
+async function escolherArquivoComHandle(forcedDrum){
+if(!window.showOpenFilePicker){
+$(forcedDrum ? "#fileInputDrum" : "#fileInput").click();
+return;
+}
+try{
+const [handle]=await window.showOpenFilePicker({
+multiple:false,
+types:[{description:"Projeto C.Richless",accept:{"text/html":[".html",".htm"],"application/json":[".json"]}}],
+excludeAcceptAllOption:false
+});
+await abrirArquivoComHandle(handle,forcedDrum);
+}catch(e){
+if(e && e.name!=="AbortError"){
+console.error(e);
+alert("Não foi possível abrir este arquivo.");
+}
+}
 }
 
 function handleFileOpen(file,forcedDrum){
@@ -1631,8 +1723,10 @@ reader.onload=()=>{
 try{
 const texto=reader.result;
 let project=null;
+let audioData=null;
 if(/\.html?$/i.test(file.name)){
-project=extrairProjetoOfflineHTML(texto);
+const dados=extrairDadosOfflineHTML(texto);
+if(dados){project=dados.project;audioData=dados.audioData;}
 }
 if(!project){
 try{project=JSON.parse(texto);}catch(e){project=null;}
@@ -1640,9 +1734,15 @@ try{project=JSON.parse(texto);}catch(e){project=null;}
 if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");
 project.isDrumProject=forcedDrum?true:!!project.isDrumProject;
 if(!project.id)project.id="project_"+Date.now();
+modoArquivoExistente=false;
+arquivoAtualHandle=null;
+arquivoAtualNome=file.name;
+arquivoAtualAudioData=audioData;
 saveRecentProject(project);
 openProject(project);
+setEditorSaveMode(false);
 renderRecentProjects();
+$("#status").innerHTML="<strong>Arquivo aberto:</strong> "+escapeHtml(file.name)+". Para salvar no mesmo arquivo, use um navegador compatível com acesso direto ao arquivo.";
 }catch(e){
 console.error(e);
 alert("Não foi possível abrir este arquivo. Selecione um projeto HTML salvo pelo botão 'Salvar no Dispositivo' ou um projeto JSON válido.");
@@ -1651,8 +1751,8 @@ alert("Não foi possível abrir este arquivo. Selecione um projeto HTML salvo pe
 reader.readAsText(file);
 }
 
-$("#fileInput").addEventListener("change",e=>{handleFileOpen(e.target.files[0],false);e.target.value="";});
-$("#fileInputDrum").addEventListener("change",e=>{handleFileOpen(e.target.files[0],true);e.target.value="";});
+$("#openFileBtn").addEventListener("click",()=>escolherArquivoComHandle(false));
+$("#openFileBtnDrum").addEventListener("click",()=>escolherArquivoComHandle(true));
 
 function openNote(mi,si){
 selected={mi,si};
@@ -2305,31 +2405,69 @@ const blob=await r.blob();
 return await new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=()=>resolve(fr.result);fr.onerror=reject;fr.readAsDataURL(blob);});
 }
 
-async function salvarArquivoOfflineNoDispositivo(project){
-const audioData={};
+async function salvarArquivoOfflineNoDispositivo(project, targetHandle=null, existingAudioData=null){
+let audioData=existingAudioData;
+if(!audioData){
+audioData={};
 if(project.isDrumProject){
 const urls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
 for(const [name,url] of Object.entries(urls)) audioData[name]=await urlParaDataUrl(url);
 }else audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
+}
 const html=projetoHtmlIndependente(project,audioData);
+
+if(targetHandle){
+const permission=await targetHandle.queryPermission({mode:"readwrite"});
+if(permission!=="granted"){
+const requested=await targetHandle.requestPermission({mode:"readwrite"});
+if(requested!=="granted")throw new Error("Permissão de gravação não concedida.");
+}
+const writable=await targetHandle.createWritable();
+await writable.write(html);
+await writable.close();
+arquivoAtualAudioData=audioData;
+$("#status").innerHTML="<strong>Arquivo salvo:</strong> "+escapeHtml(arquivoAtualNome||"projeto.html");
+return;
+}
+
 const fileName=(project.songName||"projeto-musical").replace(/[\\/:*?"<>|]/g,"_").trim()||"projeto-musical";
 const blob=new Blob([html],{type:"text/html;charset=utf-8"});
 const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=fileName+".html";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
 $("#status").innerHTML="<strong>Projeto independente salvo:</strong> "+escapeHtml(fileName+".html");
 }
 
-function saveProjectToDevice(){
+async function saveProjectToDevice(){
 const project=projectFromEditor();
-salvarArquivoOfflineNoDispositivo(project).catch(e=>{console.error(e);alert("Não foi possível criar o projeto offline. Verifique sua conexão com a internet e tente novamente.");});
+try{await salvarArquivoOfflineNoDispositivo(project,null,null);}catch(e){console.error(e);alert("Não foi possível criar o projeto offline. Verifique sua conexão com a internet e tente novamente.");}
+}
+
+async function salvarArquivoExistente(){
+if(!arquivoAtualHandle){
+alert("Este arquivo foi aberto sem acesso direto de gravação. Use o botão Abrir Arquivo em um navegador compatível (como o Chrome/Edge) e selecione o HTML novamente.");
+return;
+}
+const project=projectFromEditor();
+try{
+await salvarArquivoOfflineNoDispositivo(project,arquivoAtualHandle,arquivoAtualAudioData);
+}catch(e){
+console.error(e);
+alert("Não foi possível salvar este arquivo. O navegador não concedeu permissão para gravá-lo.");
+}
 }
 
 $("#saveDeviceBtn").addEventListener("click",saveProjectToDevice);
 
-$("#saveBtn").addEventListener("click",()=>{
+$("#saveBtn").addEventListener("click",async()=>{
+if(modoArquivoExistente){
+await salvarArquivoExistente();
+return;
+}
 saveCurrentUserProject();
 alert("Projeto salvo com sucesso!");
 switchView("homeView");
 });
+
+setEditorSaveMode(false);
 
 renderRecentProjects();
 
