@@ -874,7 +874,7 @@ flex-shrink: 0;
 <div class="home-actions">
 <button class="btn green" id="newProjectBtn" style="font-size:14px;padding:12px 20px;">＋ Criar Novo Projeto</button>
 <button class="btn primary" id="openFileBtn" style="font-size:14px;padding:12px 20px;">📂 Abrir Arquivo</button>
-<input type="file" id="fileInput" accept=".html,.json" style="display:none">
+<input type="file" id="fileInput" accept=".json" style="display:none">
 </div>
 <div style="margin-top:25px;text-align:left;">
 <h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">Projetos Recentes (Cordas)</h3>
@@ -890,7 +890,7 @@ flex-shrink: 0;
 <div class="home-actions">
 <button class="btn green" id="newProjectBtnDrum" style="font-size:14px;padding:12px 20px;">＋ Criar Novo Projeto</button>
 <button class="btn primary" id="openFileBtnDrum" style="font-size:14px;padding:12px 20px;">📂 Abrir Arquivo</button>
-<input type="file" id="fileInputDrum" accept=".html,.json" style="display:none">
+<input type="file" id="fileInputDrum" accept=".json" style="display:none">
 </div>
 <div style="margin-top:25px;text-align:left;">
 <h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">Projetos Recentes (Bateria)</h3>
@@ -1241,11 +1241,6 @@ let editingRitorneloMi = null;
 let playbackMode = "all";
 let ritorneloCounters = {};
 
-// Estado do arquivo independente aberto pelo APP.
-let arquivoAtualHandle = null;
-let modoArquivoExistente = false;
-let arquivoAtualEhOffline = false;
-
 const $ = s => document.querySelector(s);
 const measuresEl = $("#measures");
 const fsMeasuresEl = $("#fsMeasures");
@@ -1352,9 +1347,6 @@ return isCurrentProjectDrum ? makeEmptyDrumMeasures() : makeEmptyChordMeasures()
 }
 
 function startNewProject(isDrum){
-arquivoAtualHandle=null;
-modoArquivoExistente=false;
-arquivoAtualEhOffline=false;
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
 isCurrentProjectDrum=!!isDrum;
 isDemoMode=false;
@@ -1621,80 +1613,12 @@ $("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
 $("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
 $("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
 
-function extrairProjetoOffline(texto){
-try{
-const doc=new DOMParser().parseFromString(texto,"text/html");
-const tag=doc.getElementById("crichlessProjectData");
-if(!tag) return null;
-const project=JSON.parse(tag.textContent || tag.innerHTML || "{}");
-if(!project || !Array.isArray(project.measures)) return null;
-return project;
-}catch(e){return null;}
-}
-
-async function abrirArquivoComHandle(handle, forcedDrum=false){
-try{
-const file=await handle.getFile();
-const text=await file.text();
-let project=null;
-if(file.name.toLowerCase().endsWith(".html")) project=extrairProjetoOffline(text);
-if(!project){
-try{project=JSON.parse(text);}catch(e){project=null;}
-}
-if(!project || !Array.isArray(project.measures)) throw new Error("Formato inválido");
-project.isDrumProject=forcedDrum?true:!!project.isDrumProject;
-if(!project.id) project.id="project_"+Date.now();
-arquivoAtualHandle=handle;
-modoArquivoExistente=true;
-arquivoAtualEhOffline=file.name.toLowerCase().endsWith(".html");
-openProject(project);
-$("#status").innerHTML="<strong>Arquivo aberto:</strong> "+escapeHtml(file.name)+" — Salvar atualiza este mesmo arquivo.";
-}catch(e){
-console.error(e);
-alert("Não foi possível abrir este arquivo de projeto.");
-}
-}
-
-async function escolherArquivoComHandle(forcedDrum=false){
-if(!window.showOpenFilePicker){
-$(forcedDrum ? "#fileInputDrum" : "#fileInput").click();
-return;
-}
-try{
-const [handle]=await window.showOpenFilePicker({
-multiple:false,
-types:[{description:"Projeto C.Richless",accept:{"text/html":[".html"],"application/json":[".json"]}}],
-excludeAcceptAllOption:false
-});
-await abrirArquivoComHandle(handle,forcedDrum);
-}catch(e){
-if(e && e.name!=="AbortError") alert("O navegador não permitiu abrir o arquivo.");
-}
-}
-
-async function handleFileOpen(file,forcedDrum){
+function handleFileOpen(file,forcedDrum){
 if(!file)return;
-try{
-const text=await file.text();
-let project=null;
-if(file.name.toLowerCase().endsWith(".html")) project=extrairProjetoOffline(text);
-if(!project){try{project=JSON.parse(text);}catch(e){project=null;}}
-if(!project || !Array.isArray(project.measures)) throw new Error("Formato inválido");
-project.isDrumProject=forcedDrum?true:!!project.isDrumProject;
-if(!project.id)project.id="project_"+Date.now();
-modoArquivoExistente=false;
-arquivoAtualHandle=null;
-arquivoAtualEhOffline=file.name.toLowerCase().endsWith(".html");
-openProject(project);
-$("#status").innerHTML="<strong>Arquivo aberto:</strong> "+escapeHtml(file.name)+". Para salvar no mesmo arquivo, abra usando o seletor de arquivos do navegador compatível.";
-}catch(e){
-console.error(e);
-alert("Não foi possível abrir este arquivo de projeto.");
+const reader=new FileReader();
+reader.onload=()=>{try{const project=JSON.parse(reader.result);if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");project.isDrumProject=forcedDrum?true:!!project.isDrumProject;if(!project.id)project.id="project_"+Date.now();saveRecentProject(project);openProject(project);renderRecentProjects();}catch(e){alert("Não foi possível abrir este arquivo. Verifique se é um projeto JSON válido.");}};
+reader.readAsText(file);
 }
-}
-
-$("#openFileBtn").addEventListener("click",()=>escolherArquivoComHandle(false));
-$("#openFileBtnDrum").addEventListener("click",()=>escolherArquivoComHandle(true));
 
 $("#fileInput").addEventListener("change",e=>{handleFileOpen(e.target.files[0],false);e.target.value="";});
 $("#fileInputDrum").addEventListener("change",e=>{handleFileOpen(e.target.files[0],true);e.target.value="";});
@@ -2264,52 +2188,83 @@ renderRecentProjects();
 });
 
 function projetoHtmlIndependente(project, audioData){
-let appSource=document.documentElement.outerHTML;
-// No arquivo independente, o motor não exige a sessão/login do site.
-appSource=appSource.replace(/const alunoSessao=getStudentSession\(\);[\s\S]*?window\.location\.href="index\.html";\n}\n\n/,"");
 const projectJson=JSON.stringify(project).replace(/<\/script/gi,"<\\/script");
 const audioJson=JSON.stringify(audioData).replace(/<\/script/gi,"<\\/script");
-const boot=`
-<script id="crichlessOfflineData" type="application/json">${projectJson}<\/script>
-<script id="crichlessOfflineAudio" type="application/json">${audioJson}<\/script>
+return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0d1629">
+<title>${String(project.songName||"Projeto Musical").replace(/[&<>"']/g,"_")} — C.Richless</title>
 <style>
-body.crichless-offline #homeView,body.crichless-offline header,body.crichless-offline #backToHomeBtn,body.crichless-offline #keyFieldContainer,body.crichless-offline #saveBtn,body.crichless-offline #saveDeviceBtn,body.crichless-offline #status,body.crichless-offline .home-main-container{display:none!important}
-body.crichless-offline #editorView{display:block!important}
-body.crichless-offline .meta-grid .field:first-child{display:none!important}
-body.crichless-offline .music-area{pointer-events:none!important}
-body.crichless-offline .overlay{pointer-events:none!important}
-body.crichless-offline #editorHint{display:none!important}
-body.crichless-offline #measures{pointer-events:none!important}
-body.crichless-offline .toolbar{justify-content:center}
-body.crichless-offline .toolbar .control{display:flex!important}
-body.crichless-offline #offlineTitle{display:block!important;text-align:center;font-weight:800;font-size:18px;color:var(--green);margin:0 0 10px}
-#offlineTitle{display:none}
+:root{--bg:#0d1629;--card:#172238;--card2:#111d33;--line:#34445e;--text:#f3f7ff;--muted:#9fb0c9;--green:#20d7a0;--cyan:#39b9ef;--yellow:#ffd84d;}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+body{padding:18px 12px 40px}.wrap{width:min(980px,100%);margin:0 auto}.top{text-align:center;margin-bottom:16px}.top .eyebrow{font-size:11px;color:var(--muted)}
+.top h1{margin:4px 0;color:var(--green);font-size:23px}.top .type{font-size:12px;color:var(--muted)}
+.controls{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.control{display:flex;align-items:center;gap:7px;background:#0f1b30;border:1px solid #34445e;border-radius:9px;padding:7px 9px;font-size:12px}.control label{color:var(--muted);white-space:nowrap}.control input[type=number]{width:70px;background:#0b1426;color:#fff;border:1px solid #40526e;border-radius:6px;padding:5px}.control input[type=range]{width:110px;accent-color:var(--cyan)}
+.btn{border:1px solid #40526e;border-radius:8px;background:#26364e;color:#fff;padding:8px 13px;font-weight:700;cursor:pointer}.btn.primary{background:var(--cyan);color:#06121e;border-color:var(--cyan)}.btn.green{background:var(--green);color:#06121e;border-color:var(--green)}.btn.active{background:var(--yellow);color:#161100;border-color:var(--yellow)}
+.status{text-align:center;color:var(--muted);font-size:11px;min-height:14px;width:100%}
+.project{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px}.project-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.project-head h2{font-size:16px;margin:0;color:#fff}.project-head span{font-size:12px;color:var(--muted)}
+.measure{border:1px solid #40526e;border-radius:10px;padding:9px;margin:8px 0;background:#101b2e;overflow:hidden}.measure.playing{border-color:var(--green);box-shadow:0 0 0 1px rgba(32,215,160,.2)}.measure-top{display:flex;gap:10px;align-items:center;margin-bottom:8px}.measure-title{font-weight:700;font-size:12px;color:var(--cyan);min-width:60px}.annotation{font-size:11px;color:var(--yellow);flex:1;text-align:center}.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(55px,1fr));gap:4px}.slot{min-height:38px;border:1px solid #34445e;border-radius:6px;background:#0c1628;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}.slot.filled{color:#fff;border-color:#48627f;background:#172943}.slot.active-slot{border-color:var(--green);background:#12392f;color:#fff}.drum-row{margin:5px 0}.drum-label{font-size:10px;color:var(--muted);margin-bottom:3px}.drum-row .slots{grid-template-columns:repeat(auto-fit,minmax(42px,1fr))}.footer{text-align:center;color:#71839e;font-size:10px;margin-top:14px}
+@media(max-width:650px){body{padding:10px 7px}.controls{justify-content:stretch}.control{flex:1}.slots{grid-template-columns:repeat(auto-fit,minmax(44px,1fr))}.project-head{display:block}.project-head span{display:block;margin-top:4px}}
 </style>
-<script>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><div class="eyebrow">Projeto Academia de Música</div><h1>Notação Musical — por C.Richless</h1><div class="type">${project.isDrumProject?'Projeto de Bateria':'Projeto de Cordas'}</div></div>
+<div class="controls">
+<div class="control"><label>BPM</label><input id="bpm" type="number" min="30" max="240" value="${Number(project.bpm)||90}"></div>
+<div class="control"><label>🔊 Vol Geral</label><input id="volume" type="range" min="0" max="2.5" step="0.05" value="${Number.isFinite(Number(project.volume))?Number(project.volume):1}"><span id="volumeValue"></span></div>
+<div class="control"><label>⏱️ Vol Metrônomo</label><input id="metroVolume" type="range" min="0" max="2.5" step="0.05" value="${Number.isFinite(Number(project.metroVolume))?Number(project.metroVolume):1.5}"><span id="metroVolumeValue"></span></div>
+<button class="btn" id="metroBtn">♩ Metrônomo: ${project.metronomeOn===false?'OFF':'ON'}</button>
+<button class="btn primary" id="playBtn">▶ Tocar</button>
+<button class="btn" id="stopBtn">■ Parar</button>
+<div class="status" id="status">Pronto para executar</div>
+</div>
+<div class="project">
+<div class="project-head"><h2>${String(project.songName||'Projeto sem nome').replace(/[&<>"']/g,'_')}</h2><span id="meta"></span></div>
+<div id="measures"></div>
+</div>
+<div class="footer">Arquivo de projeto offline • execução local • C.Richless</div>
+</div>
+<${'script'} id="crichlessOfflineData" type="application/json">${projectJson}</${'script'}>
+<${'script'} id="crichlessOfflineAudio" type="application/json">${audioJson}</${'script'}>
+<${'script'}>
 (function(){
-const data=JSON.parse(document.getElementById('crichlessOfflineData').textContent||'{}');
-const aud=JSON.parse(document.getElementById('crichlessOfflineAudio').textContent||'{}');
-window.__CRICHLESS_OFFLINE_PROJECT=data;
-window.__CRICHLESS_OFFLINE_AUDIO=aud;
-// Redireciona as solicitações de áudio do motor para os dados incorporados.
-const originalFetch=window.fetch.bind(window);
-window.fetch=async function(input,init){
- const u=typeof input==='string'?input:(input&&input.url)||'';
- for(const [key,dataUrl] of Object.entries(aud)){
-   if((key==='guitar' && u.includes('corda%20E.wav')) || (key!=='guitar' && u.toLowerCase().includes(encodeURIComponent(({'Bumbo':'bumbo.mp3','Caixa':'caixa.mp3','Hi-Hat Fechado':'hi hat fechado.mp3','Hi-Hat Aberto':'hi tat aberto.mp3','Aro de Caixa':'aro.mp3','Prato de Ataque':'ataque.mp3'})[key]).toLowerCase()))){
-      return originalFetch(dataUrl,init);
-   }
- }
- return originalFetch(input,init);
-};
-document.body.classList.add('crichless-offline');
-openProject(data);
-const h=document.querySelector('#editorView .hero');
-if(h){const t=document.createElement('div');t.id='offlineTitle';t.textContent=(data.songName||'Projeto Musical')+(data.isDrumProject?' — Bateria':' — Cordas');h.prepend(t);}
+const project=JSON.parse(document.getElementById('crichlessOfflineData').textContent||'{}');
+const audioData=JSON.parse(document.getElementById('crichlessOfflineAudio').textContent||'{}');
+const $=id=>document.getElementById(id);const measures=project.measures||[];
+const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const METERS=[['2/4',2,4],['3/4',3,4],['4/4',4,4],['5/4',5,4],['6/4',6,4],['7/4',7,4],['2/8',2,8],['3/8',3,8],['4/8',4,8],['5/8',5,8],['6/8',6,8],['7/8',7,8],['8/8',8,8],['9/8',9,8],['12/8',12,8]];
+const DRUMS=['Bumbo','Caixa','Hi-Hat Fechado','Hi-Hat Aberto','Aro de Caixa','Prato de Ataque'];
+function getMeter(m){return METERS.find(x=>x[0]===m)||['4/4',4,4]}
+function label(ch){if(!ch)return '';if(DRUMS.includes(ch.root)){return ({'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'H/F','Hi-Hat Aberto':'H/A','Aro de Caixa':'A/C','Prato de Ataque':'P/A'})[ch.root]||ch.root}const s=ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':'';return ch.root+s+(ch.bass?'/'+ch.bass:'')}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function slotCount(m){return getMeter(m.meter)[1]*(m.subdivision||1)}
+function render(activeMi=-1,activeSi=-1){$('measures').innerHTML=measures.map((m,mi)=>{let html='<div class="measure '+(mi===activeMi?'playing':'')+'"><div class="measure-top"><div class="measure-title">Comp. '+(mi+1)+' • '+esc(m.meter||'4/4')+'</div><div class="annotation">'+esc(m.textAnnotation||'')+'</div></div>';
+if(project.isDrumProject){const n=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){html+='<div class="drum-row"><div class="drum-label">Voz '+(v+1)+'</div><div class="slots">';for(let si=0;si<n;si++){const idx=v*n+si,ch=m.slots?.[idx],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+'">'+esc(label(ch))+'</div>'}html+='</div></div>'}}
+else{html+='<div class="slots">';for(let si=0;si<slotCount(m);si++){const ch=m.slots?.[si],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+'">'+esc(label(ch))+'</div>'}html+='</div>'}return html+'</div>'}).join('')}
+let ctx=null,master=null,buffers={},guitar=null,playing=false,run=0,paused=false,resolvePause=null,metro=project.metronomeOn!==false;
+function ensure(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.connect(ctx.destination)}master.gain.setTargetAtTime(Number($('volume').value)||1,ctx.currentTime,.01);if(ctx.state==='suspended')ctx.resume()}
+function update(){ $('volumeValue').textContent=Math.round(Number($('volume').value)*100)+'%';$('metroVolumeValue').textContent=Math.round(Number($('metroVolume').value)*100)+'%';$('metroBtn').textContent='♩ Metrônomo: '+(metro?'ON':'OFF');$('playBtn').textContent=playing&&!paused?'⏸ Pausa':'▶ Tocar';$('meta').textContent='BPM: '+getBpm()+' • '+(project.isDrumProject?'Bateria':'Cordas')}
+function getBpm(){return Math.max(30,Math.min(240,parseInt($('bpm').value)||90))}
+function dur(m){const [,n,d]=getMeter(m.meter);return 60/getBpm()*(4/d)/(m.subdivision||1)}
+function tick(t,accent){if(!metro)return;const vol=Number($('metroVolume').value)||0;if(vol<=0)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=accent?1300:900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime((accent?.055:.035)*vol,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.045);o.connect(g);g.connect(master);o.start(t);o.stop(t+.055)}
+async function decodeAll(){if(project.isDrumProject){for(const k of Object.keys(audioData)){if(!buffers[k]){try{const ab=await (await fetch(audioData[k])).arrayBuffer();buffers[k]=await ctx.decodeAudioData(ab)}catch(e){}}}}else if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){}}}
+function drum(name,t){if(buffers[name]){const s=ctx.createBufferSource();s.buffer=buffers[name];s.connect(master);s.start(t);return}const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=name==='Caixa'?180:120;g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(master);o.start(t);o.stop(t+.13)}
+function noteFreq(n,o=4){const i=NOTES.indexOf(n);const midi=60+i+(o-4)*12;return 440*Math.pow(2,(midi-69)/12)}
+function chordNotes(ch){const ri=NOTES.indexOf(ch.root);if(ri<0)return [];const ints=ch.quality==='minor'?[0,3,7]:ch.quality==='dim'?[0,3,6]:ch.quality==='sus2'?[0,2,7]:[0,4,7];let a=ints.map((x,i)=>{const n=NOTES[(ri+x)%12];const o=3+Math.floor((ri+x)/12)+(i===0?1:0);return[n,o]});if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)a.unshift([ch.bass,3+(bi<ri?1:0)])}return a}
+function chord(ch,t){if(!ch)return;for(const [n,o] of chordNotes(ch)){const f=noteFreq(n,o);if(guitar){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=guitar;s.playbackRate.value=f/82.406889;g.gain.value=.9;s.connect(g);g.connect(master);s.start(t);s.stop(t+Math.min(2.6,guitar.duration/(f/82.406889)+.02))}else{const o1=ctx.createOscillator(),g=ctx.createGain();o1.type='triangle';o1.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+1.2);o1.connect(g);g.connect(master);o1.start(t);o1.stop(t+1.25)}}}
+function waitResume(){return new Promise(r=>resolvePause=r)}
+async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;update();for(let mi=0;mi<measures.length&&playing&&run===my;mi++){const m=measures[mi],reps=Math.max(1,m.repeats||1),n=project.isDrumProject?getMeter(m.meter)[1]*(m.subdivision||1):m.slots.length;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const t=ctx.currentTime+.03;render(mi,si);if(metronomeSafe()&&si%(m.subdivision||1)===0)tick(t,true);if(project.isDrumProject){const per=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){const ch=m.slots?.[v*per+si];if(ch)drum(ch.root,t)}}else if(m.slots?.[si])chord(m.slots[si],t);await new Promise(r=>setTimeout(r,dur(m)*1000))}}}if(run===my)stop()}
+function metronomeSafe(){return metro}
+function stop(){run++;playing=false;paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}render();update()}
+$('playBtn').onclick=play;$('stopBtn').onclick=stop;$('metroBtn').onclick=()=>{metro=!metro;update()};$('volume').oninput=update;$('metroVolume').oninput=update;$('bpm').oninput=update;render();update();
 })();
-<\/script>`;
-// Insere os dados imediatamente antes do fechamento do body, mantendo todo o motor do APP incorporado.
-return appSource.replace(/<\/body>/i,boot+'\n</body>');
+</${'script'}>
+</body></html>`;
 }
 
 async function urlParaDataUrl(url){
@@ -2322,18 +2277,9 @@ return await new Promise((resolve,reject)=>{const fr=new FileReader();fr.onload=
 async function salvarArquivoOfflineNoDispositivo(project){
 const audioData={};
 if(project.isDrumProject){
-const urls={
-"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3",
-"Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3",
-"Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3",
-"Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3",
-"Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3",
-"Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"
-};
+const urls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
 for(const [name,url] of Object.entries(urls)) audioData[name]=await urlParaDataUrl(url);
-}else{
-audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
-}
+}else audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
 const html=projetoHtmlIndependente(project,audioData);
 const fileName=(project.songName||"projeto-musical").replace(/[\\/:*?"<>|]/g,"_").trim()||"projeto-musical";
 const blob=new Blob([html],{type:"text/html;charset=utf-8"});
@@ -2341,43 +2287,14 @@ const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u
 $("#status").innerHTML="<strong>Projeto independente salvo:</strong> "+escapeHtml(fileName+".html");
 }
 
-async function salvarNoMesmoArquivo(){
-if(!arquivoAtualHandle){
-alert("Este projeto não está vinculado a um arquivo aberto com acesso de gravação. Use Salvar no Dispositivo para criar um novo arquivo.");
-return;
-}
-try{
-const perm=await arquivoAtualHandle.queryPermission({mode:"readwrite"});
-if(perm!=="granted"){
-const req=await arquivoAtualHandle.requestPermission({mode:"readwrite"});
-if(req!=="granted") throw new Error("Permissão de gravação não concedida.");
-}
+function saveProjectToDevice(){
 const project=projectFromEditor();
-const audioData={};
-if(project.isDrumProject){
-const urls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
-for(const [name,url] of Object.entries(urls)) audioData[name]=await urlParaDataUrl(url);
-}else audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
-const html=projetoHtmlIndependente(project,audioData);
-const writable=await arquivoAtualHandle.createWritable();
-await writable.write(html);await writable.close();
-$("#status").innerHTML="<strong>Salvo no mesmo arquivo.</strong>";
-}catch(e){console.error(e);alert("Não foi possível atualizar o mesmo arquivo. O arquivo não foi sobrescrito.");}
-}
-
-async function saveProjectToDevice(){
-const project=projectFromEditor();
-if(modoArquivoExistente && arquivoAtualHandle){await salvarNoMesmoArquivo();return;}
-try{await salvarArquivoOfflineNoDispositivo(project);}catch(e){console.error(e);alert("Não foi possível criar o projeto offline. Verifique sua conexão com a internet e tente novamente.");}
+salvarArquivoOfflineNoDispositivo(project).catch(e=>{console.error(e);alert("Não foi possível criar o projeto offline. Verifique sua conexão com a internet e tente novamente.");});
 }
 
 $("#saveDeviceBtn").addEventListener("click",saveProjectToDevice);
 
-$("#saveBtn").addEventListener("click",async()=>{
-if(modoArquivoExistente && arquivoAtualHandle){
-await salvarNoMesmoArquivo();
-return;
-}
+$("#saveBtn").addEventListener("click",()=>{
 saveCurrentUserProject();
 alert("Projeto salvo com sucesso!");
 switchView("homeView");
