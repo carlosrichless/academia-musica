@@ -874,7 +874,7 @@ flex-shrink: 0;
 <div class="home-actions">
 <button class="btn green" id="newProjectBtn" style="font-size:14px;padding:12px 20px;">＋ Criar Novo Projeto</button>
 <button class="btn primary" id="openFileBtn" style="font-size:14px;padding:12px 20px;">📂 Abrir Arquivo</button>
-<input type="file" id="fileInput" accept=".json" style="display:none">
+<input type="file" id="fileInput" accept=".html,.htm,.json" style="display:none">
 </div>
 <div style="margin-top:25px;text-align:left;">
 <h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">Projetos Recentes (Cordas)</h3>
@@ -890,7 +890,7 @@ flex-shrink: 0;
 <div class="home-actions">
 <button class="btn green" id="newProjectBtnDrum" style="font-size:14px;padding:12px 20px;">＋ Criar Novo Projeto</button>
 <button class="btn primary" id="openFileBtnDrum" style="font-size:14px;padding:12px 20px;">📂 Abrir Arquivo</button>
-<input type="file" id="fileInputDrum" accept=".json" style="display:none">
+<input type="file" id="fileInputDrum" accept=".html,.htm,.json" style="display:none">
 </div>
 <div style="margin-top:25px;text-align:left;">
 <h3 style="color:#36c7ff;font-size:14px;margin-bottom:8px;">Projetos Recentes (Bateria)</h3>
@@ -1613,10 +1613,46 @@ $("#newProjectBtnDrum").addEventListener("click",()=>startNewProject(true));
 $("#openFileBtn").addEventListener("click",()=>$("#fileInput").click());
 $("#openFileBtnDrum").addEventListener("click",()=>$("#fileInputDrum").click());
 
+function extrairProjetoOfflineDoHTML(texto){
+try{
+const doc=new DOMParser().parseFromString(texto,"text/html");
+const tag=doc.getElementById("crichlessProjectData");
+if(!tag)return null;
+const bruto=tag.textContent || tag.innerHTML || "";
+const project=JSON.parse(bruto);
+if(!project || !Array.isArray(project.measures))return null;
+return project;
+}catch(e){
+console.error("Erro ao ler projeto HTML:",e);
+return null;
+}
+}
+
 function handleFileOpen(file,forcedDrum){
 if(!file)return;
 const reader=new FileReader();
-reader.onload=()=>{try{const project=JSON.parse(reader.result);if(!project||!Array.isArray(project.measures))throw new Error("Formato inválido");project.isDrumProject=forcedDrum?true:!!project.isDrumProject;if(!project.id)project.id="project_"+Date.now();saveRecentProject(project);openProject(project);renderRecentProjects();}catch(e){alert("Não foi possível abrir este arquivo. Verifique se é um projeto JSON válido.");}};
+reader.onload=()=>{
+try{
+let project=null;
+const nome=(file.name||"").toLowerCase();
+
+if(nome.endsWith(".html") || nome.endsWith(".htm")){
+project=extrairProjetoOfflineDoHTML(reader.result);
+}else{
+project=JSON.parse(reader.result);
+}
+
+if(!project || !Array.isArray(project.measures))throw new Error("Formato inválido");
+project.isDrumProject=forcedDrum?true:!!project.isDrumProject;
+if(!project.id)project.id="project_"+Date.now();
+saveRecentProject(project);
+openProject(project);
+renderRecentProjects();
+}catch(e){
+console.error(e);
+alert("Não foi possível abrir este arquivo. Selecione um projeto HTML salvo pelo botão 'Salvar no Dispositivo'.");
+}
+};
 reader.readAsText(file);
 }
 
