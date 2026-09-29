@@ -545,10 +545,39 @@
                 padding: 20px;
             }
         }
-    </style>
+    
+
+/* AVISO RÁPIDO — BANANA CIFRAS */
+#bananaCifrasAviso{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translate(-50%,20px);
+    background:#111c30;
+    color:#fff;
+    border:1px solid #38bdf8;
+    border-radius:12px;
+    padding:13px 20px;
+    font-size:14px;
+    font-weight:600;
+    text-align:center;
+    box-shadow:0 8px 30px rgba(0,0,0,.35);
+    opacity:0;
+    pointer-events:none;
+    z-index:99999;
+    transition:opacity .2s ease, transform .2s ease;
+}
+
+#bananaCifrasAviso.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+</style>
 </head>
 
 <body>
+
+<div id="bananaCifrasAviso" role="status" aria-live="polite">Redirecionando para o site Banana Cifras...</div>
 
     <!-- LOGIN -->
     <div id="telaLoginGeral" class="container">
@@ -674,15 +703,15 @@
 
             </a>
 
-            <!-- APP ACORDES -->
-            <a href="app-acordes.html" class="app-musical">
+            <!-- APP ACORDES / BANANA CIFRAS -->
+            <a href="https://www.bananacifras.com/chordfinder" class="app-musical" id="bananaCifrasBtn">
 
                 <div class="app-icone">
                     🎼
                 </div>
 
                 <h3>
-                    APP ACORDES
+                    APP ACORDES — Banana Cifras
                 </h3>
 
                 <p>
@@ -1507,5 +1536,22 @@
 
     </script>
 
+
+
+<script>
+(function(){
+    const btn = document.getElementById("bananaCifrasBtn");
+    const aviso = document.getElementById("bananaCifrasAviso");
+    if(!btn || !aviso) return;
+
+    btn.addEventListener("click", function(event){
+        event.preventDefault();
+        aviso.classList.add("show");
+        setTimeout(function(){
+            window.location.href = "https://www.bananacifras.com/chordfinder";
+        }, 850);
+    });
+})();
+</script>
 </body>
 </html>
