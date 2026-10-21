@@ -1306,27 +1306,8 @@ return `${base}_${id || "sem_usuario"}`;
 function getRecentProjects(isDrum){
 try{
 const data = JSON.parse(localStorage.getItem(getRecentKey(isDrum)) || "[]");
-if(!Array.isArray(data)) return [];
-
-// Cada lista pertence exclusivamente ao seu tipo de projeto.
-// Isso também limpa automaticamente listas antigas que tenham sido misturadas.
-const tipo = !!isDrum;
-return data.filter(p => p && !!p.isDrumProject === tipo);
+return Array.isArray(data) ? data : [];
 }catch(e){ return []; }
-}
-
-function abrirProjetoRecente(project){
-if(!project || !Array.isArray(project.measures)) return;
-
-// Projeto recente é um projeto do site, não um arquivo físico aberto do dispositivo.
-// Portanto, nunca herda o modo "Salvar no mesmo arquivo".
-modoArquivoExistente=false;
-arquivoAtualHandle=null;
-arquivoAtualNome="";
-arquivoAtualAudioData=null;
-
-openProject(project);
-setEditorSaveMode(false);
 }
 
 function saveRecentProject(project){
@@ -1462,7 +1443,7 @@ grid.innerHTML=list.slice(0,20).map(p=>`
 grid.querySelectorAll("[data-open-project]").forEach(btn=>btn.addEventListener("click",e=>{
 e.stopPropagation();
 const project=getRecentProjects(isDrum).find(p=>p.id===btn.dataset.openProject);
-if(project) abrirProjetoRecente(project);
+if(project) openProject(project);
 }));
 grid.querySelectorAll("[data-delete-project]").forEach(btn=>btn.addEventListener("click",e=>{
 e.stopPropagation();
@@ -1470,7 +1451,7 @@ removeRecentProject(btn.dataset.deleteProject,isDrum);
 }));
 grid.querySelectorAll(".project-card").forEach(card=>card.addEventListener("click",()=>{
 const project=getRecentProjects(isDrum).find(p=>p.id===card.dataset.projectId);
-if(project) abrirProjetoRecente(project);
+if(project) openProject(project);
 }));
 };
 renderList(false,"projectsGrid");
