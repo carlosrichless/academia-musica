@@ -382,6 +382,169 @@
             }
         }
 
+        /* LOGIN DOS ALUNOS - APP NOTAÇÕES */
+        #alunoLoginModal {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, .94);
+            z-index: 5000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #alunoLoginModal.open {
+            display: flex;
+        }
+
+        .aluno-login-box {
+            width: min(440px, 100%);
+            max-height: 90vh;
+            overflow: hidden;
+            background: #111c30;
+            border: 1px solid #334155;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .45);
+            text-align: center;
+        }
+
+        .aluno-login-box h2 {
+            margin: 0 0 6px;
+            color: #1db954;
+        }
+
+        .aluno-login-box p {
+            color: #94a3b8;
+            font-size: 13px;
+            margin: 0 0 18px;
+        }
+
+        .aluno-escolha {
+            display: block;
+        }
+
+        .aluno-escolha.hidden {
+            display: none;
+        }
+
+        .aluno-lista {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 4px;
+            max-height: 58vh;
+            overflow-y: auto;
+            padding-right: 4px;
+            scrollbar-width: thin;
+        }
+
+        .aluno-btn {
+            border: 1px solid #40536e;
+            background: #0e182a;
+            color: #fff;
+            border-radius: 10px;
+            padding: 11px 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .aluno-btn:hover,
+        .aluno-btn.selected {
+            border-color: #1db954;
+            background: #123329;
+        }
+
+        .aluno-senha-wrap {
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .aluno-senha-wrap.open {
+            display: flex;
+        }
+
+        .aluno-senha-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .aluno-senha-card-titulo {
+            text-align: center;
+            color: #1db954;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .aluno-senha-wrap label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .aluno-senha-wrap input {
+            width: 100%;
+            box-sizing: border-box;
+            background: #0b1322;
+            color: #fff;
+            border: 1px solid #40536e;
+            border-radius: 9px;
+            padding: 11px;
+        }
+
+        .aluno-senha-wrap input:focus {
+            outline: none;
+            border-color: #1db954;
+        }
+
+        .aluno-login-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 14px;
+        }
+
+        .aluno-login-actions button {
+            border: none;
+            border-radius: 9px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .aluno-btn-cancelar,
+        .aluno-btn-voltar {
+            background: #334155;
+            color: #fff;
+        }
+
+        .aluno-btn-entrar {
+            background: #1db954;
+            color: #06120b;
+        }
+
+        .aluno-erro {
+            display: none;
+            color: #f87171;
+            font-size: 12px;
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        @media (max-width: 520px) {
+            .aluno-lista {
+                grid-template-columns: 1fr;
+                max-height: 62vh;
+            }
+
+            .aluno-login-box {
+                padding: 20px;
+            }
+        }
     
 
 /* AVISO RÁPIDO — BANANA CIFRAS */
@@ -645,14 +808,358 @@
 
     </footer>
 
+    <!-- LOGIN DOS ALUNOS - APP NOTAÇÕES -->
+    <div id="alunoLoginModal">
+
+        <div class="aluno-login-box">
+
+            <!-- TELA DE ESCOLHA DO ALUNO -->
+            <div id="alunoEscolhaIndex" class="aluno-escolha">
+
+                <h2>📝 APP NOTAÇÕES</h2>
+
+                <p>
+                    Selecione seu nome.
+                </p>
+
+                <div
+                    class="aluno-lista"
+                    id="alunoListaIndex"
+                ></div>
+
+                <div class="aluno-login-actions">
+
+                    <button
+                        type="button"
+                        class="aluno-btn-cancelar"
+                        id="alunoCancelarIndex"
+                    >
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- TELA DE SENHA -->
+            <div
+                class="aluno-senha-wrap"
+                id="alunoSenhaWrapIndex"
+            >
+
+                <div class="aluno-senha-card">
+
+                    <div
+                        class="aluno-senha-card-titulo"
+                        id="alunoSelecionadoLabelIndex"
+                    >
+                        Senha
+                    </div>
+
+                    <label for="alunoSenhaIndex">
+                        Digite sua senha:
+                    </label>
+
+                    <input
+                        type="password"
+                        id="alunoSenhaIndex"
+                        placeholder="Digite sua senha..."
+                        autocomplete="current-password"
+                    >
+
+                    <div
+                        class="aluno-erro"
+                        id="alunoErroIndex"
+                    >
+                        Senha incorreta.
+                    </div>
+
+                </div>
+
+                <div class="aluno-login-actions">
+
+                    <button
+                        type="button"
+                        class="aluno-btn-voltar"
+                        id="alunoVoltarIndex"
+                    >
+                        Voltar
+                    </button>
+
+                    <button
+                        type="button"
+                        class="aluno-btn-entrar"
+                        id="alunoEntrarIndex"
+                    >
+                        Entrar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <!-- FIREBASE -->
     <script
         type="module"
         src="config-senhas.js"
     ></script>
+
     <script>
 
+        /* =========================================
+           LOGIN DOS ALUNOS - APP NOTAÇÕES
+           ========================================= */
+
+        const ALUNOS_APP_NOTACOES = [
+            { id: "aluno_01", nome: "C.Richless" },
+            { id: "aluno_02", nome: "Cintia" },
+            { id: "aluno_03", nome: "Andrian" },
+            { id: "aluno_04", nome: "Brendha" },
+            { id: "aluno_05", nome: "Caio" },
+            { id: "aluno_06", nome: "Suerlando" },
+            { id: "aluno_07", nome: "Duda" },
+            { id: "aluno_08", nome: "Rafa" },
+            { id: "aluno_09", nome: "Enzo" },
+            { id: "aluno_10", nome: "Josué" },
+            { id: "aluno_11", nome: "Deniz" },
+            { id: "aluno_12", nome: "Kakau" },
+            { id: "aluno_13", nome: "Sarah" },
+            { id: "aluno_14", nome: "João" },
+            { id: "aluno_15", nome: "Sophia" },
+            { id: "aluno_16", nome: "Gabriel" },
+            { id: "aluno_17", nome: "Bernardo" },
+            { id: "aluno_18", nome: "Gabi" },
+            { id: "aluno_19", nome: "Sophia" }
+        ];
+
+        let alunoSelecionadoIndex = null;
+
+        function abrirLoginAluno() {
+
+            alunoSelecionadoIndex = null;
+
+            const escolha =
+                document.getElementById("alunoEscolhaIndex");
+
+            const senha =
+                document.getElementById("alunoSenhaWrapIndex");
+
+            const lista =
+                document.getElementById("alunoListaIndex");
+
+            const inputSenha =
+                document.getElementById("alunoSenhaIndex");
+
+            const erro =
+                document.getElementById("alunoErroIndex");
+
+            lista.innerHTML =
+                ALUNOS_APP_NOTACOES.map(aluno =>
+                    `<button type="button" class="aluno-btn" data-aluno-id="${aluno.id}">${aluno.nome}</button>`
+                ).join("");
+
+            document.querySelectorAll(
+                "#alunoListaIndex .aluno-btn"
+            ).forEach(btn => {
+
+                btn.addEventListener("click", () => {
+
+                    alunoSelecionadoIndex =
+                        ALUNOS_APP_NOTACOES.find(
+                            a => a.id === btn.dataset.alunoId
+                        );
+
+                    document.getElementById(
+                        "alunoSelecionadoLabelIndex"
+                    ).textContent =
+                        "Senha de " +
+                        alunoSelecionadoIndex.nome;
+
+                    escolha.classList.add("hidden");
+                    senha.classList.add("open");
+
+                    inputSenha.value = "";
+                    erro.style.display = "none";
+
+                    setTimeout(() => {
+                        inputSenha.focus();
+                    }, 50);
+
+                });
+
+            });
+
+            escolha.classList.remove("hidden");
+            senha.classList.remove("open");
+
+            document.getElementById(
+                "alunoLoginModal"
+            ).classList.add("open");
+        }
+
+        async function entrarAppNotacoesAluno() {
+
+            if (!alunoSelecionadoIndex) {
+                return;
+            }
+
+            try {
+
+                const ref =
+                    window.firestore.doc(
+                        window.db,
+                        "configuracoes",
+                        "sistema"
+                    );
+
+                const snap =
+                    await window.firestore.getDoc(ref);
+
+                const dados =
+                    snap.exists()
+                        ? snap.data()
+                        : {};
+
+                const listaSenhas =
+                    Array.isArray(
+                        dados.senhas_alunos_app_notacoes
+                    )
+                        ? dados.senhas_alunos_app_notacoes
+                        : [];
+
+                const cadastro =
+                    listaSenhas.find(
+                        a =>
+                            a.id ===
+                            alunoSelecionadoIndex.id
+                    );
+
+                const senhaDigitada =
+                    document.getElementById(
+                        "alunoSenhaIndex"
+                    ).value;
+
+                if (
+                    !cadastro ||
+                    !cadastro.senha ||
+                    senhaDigitada !== cadastro.senha
+                ) {
+
+                    document.getElementById(
+                        "alunoErroIndex"
+                    ).style.display = "block";
+
+                    document.getElementById(
+                        "alunoSenhaIndex"
+                    ).focus();
+
+                    return;
+                }
+
+                sessionStorage.setItem(
+                    "appNotacoesAlunoId",
+                    alunoSelecionadoIndex.id
+                );
+
+                sessionStorage.setItem(
+                    "appNotacoesAlunoNome",
+                    alunoSelecionadoIndex.nome
+                );
+
+                window.location.href =
+                    "app-lista.html";
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro ao verificar senha do aluno:",
+                    erro
+                );
+
+                alert(
+                    "Erro ao conectar com a nuvem."
+                );
+
+            }
+
+        }
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+
+                const appBtn =
+                    document.getElementById(
+                        "appNotacoesBtn"
+                    );
+
+                if (appBtn) {
+
+                    appBtn.addEventListener(
+                        "click",
+                        event => {
+
+                            event.preventDefault();
+
+                            abrirLoginAluno();
+
+                        }
+                    );
+
+                }
+
+                document
+                    .getElementById("alunoCancelarIndex")
+                    .addEventListener(
+                        "click",
+                        () => {
+
+                            document
+                                .getElementById(
+                                    "alunoLoginModal"
+                                )
+                                .classList.remove("open");
+
+                        }
+                    );
+
+                document
+                    .getElementById("alunoVoltarIndex")
+                    .addEventListener(
+                        "click",
+                        () => {
+
+                            abrirLoginAluno();
+
+                        }
+                    );
+
+                document
+                    .getElementById("alunoEntrarIndex")
+                    .addEventListener(
+                        "click",
+                        entrarAppNotacoesAluno
+                    );
+
+                document
+                    .getElementById("alunoSenhaIndex")
+                    .addEventListener(
+                        "keydown",
+                        e => {
+
+                            if (e.key === "Enter") {
+                                entrarAppNotacoesAluno();
+                            }
+
+                        }
+                    );
+
+            }
+        );
 
 
         /* =========================================
