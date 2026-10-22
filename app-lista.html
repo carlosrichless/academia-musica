@@ -1251,11 +1251,8 @@ const $ = s => document.querySelector(s);
 const measuresEl = $("#measures");
 const fsMeasuresEl = $("#fsMeasures");
 
+// O APP NOTAÇÕES agora abre diretamente, sem seleção de aluno ou senha individual.
 const alunoSessao=getStudentSession();
-if(!alunoSessao.id){
-alert("Sessão do aluno não encontrada. Faça o login pelo APP LISTA.");
-window.location.href="index.html";
-}
 
 
 function switchView(viewId){
@@ -1333,7 +1330,7 @@ function saveRecentProject(project){
 const isDrum = !!project.isDrumProject;
 let list = getRecentProjects(isDrum).filter(p=>p.id !== project.id);
 list.unshift(JSON.parse(JSON.stringify(project)));
-if(list.length > 20) list = list.slice(0,20);
+if(list.length > 50) list = list.slice(0,50);
 localStorage.setItem(getRecentKey(isDrum), JSON.stringify(list));
 }
 
