@@ -1885,7 +1885,7 @@ return Number.isFinite(n) ? Math.max(30, Math.min(240,n)) : 90;
 
 function ensureAudio(){
 if(!audioCtx){
-audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+audioCtx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "interactive" });
 masterGain = audioCtx.createGain();
 masterGain.gain.value = parseFloat($("#volume").value || "1.0");
 masterGain.connect(audioCtx.destination);
@@ -1916,16 +1916,25 @@ const DRUM_SAMPLES = Object.fromEntries(
 );
 
 const audioBuffers = {};
+let drumSamplesLoading = null;
 async function loadDrumSamples() {
   if (!audioCtx) return;
-  for (let [drumName, url] of Object.entries(DRUM_SAMPLES)) {
-    try {
-      if (audioBuffers[drumName]) continue;
-      const response = await fetch(url);
-      const arrayBuffer = await response.arrayBuffer();
-      audioBuffers[drumName] = await audioCtx.decodeAudioData(arrayBuffer);
-    } catch (e) {}
-  }
+  if (drumSamplesLoading) return drumSamplesLoading;
+  drumSamplesLoading = (async () => {
+    await Promise.all(Object.entries(DRUM_SAMPLES).map(async ([drumName, url]) => {
+      if (audioBuffers[drumName]) return;
+      try {
+        const response = await fetch(url, { cache: "force-cache" });
+        if (!response.ok) throw new Error("Falha ao carregar " + drumName);
+        const arrayBuffer = await response.arrayBuffer();
+        audioBuffers[drumName] = await audioCtx.decodeAudioData(arrayBuffer);
+      } catch (e) {
+        console.warn("Não foi possível carregar a amostra de bateria:", drumName, e);
+      }
+    }));
+  })();
+  try { await drumSamplesLoading; }
+  finally { drumSamplesLoading = null; }
 }
 
 function playDrumSound(drumType, when = audioCtx.currentTime) {
@@ -1942,7 +1951,6 @@ function playDrumSound(drumType, when = audioCtx.currentTime) {
       return;
     } catch (e) {}
   }
-  loadDrumSamples();
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.connect(gain);
@@ -1954,10 +1962,11 @@ function playDrumSound(drumType, when = audioCtx.currentTime) {
   osc.start(when); osc.stop(when + 0.15);
 }
 
-function previewDrum(drumType) {
+async function previewDrum(drumType) {
   ensureAudio();
-  loadDrumSamples();
+  await audioCtx.resume();
   updateMasterVolume();
+  await loadDrumSamples();
   playDrumSound(drumType);
 }
 
@@ -2064,6 +2073,7 @@ function waitForResume(){return new Promise(resolve=>{playbackPromiseResolve=res
 async function handlePlayAction(mode,startMi){
 ensureAudio();await audioCtx.resume();
 if(!isCurrentProjectDrum){ try{ await loadGuitarStringE(); }catch(e){} }
+else { await loadDrumSamples(); }
 if(playbackState==="PLAYING"){playbackState="PAUSED";syncControlsUI();return;}
 if(playbackState==="PAUSED"){playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
 playbackRunId++;const currentRun=playbackRunId;playbackState="PLAYING";playbackMode=mode;syncControlsUI();
@@ -2077,10 +2087,10 @@ for(let rep=0;rep<repetitions;rep++){
 for(let si=0;si<playbackSlots && playbackState!=="STOPPED" && playbackRunId===currentRun;si++){
 while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
 if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
-const when=audioCtx.currentTime+.035;activePlayingSlot={mi,si};if(activeFullscreenProject)renderFullscreenMeasures(mi,si);else updateActiveSlotDOM(mi,si);
+const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;activePlayingSlot={mi,si};if(activeFullscreenProject)renderFullscreenMeasures(mi,si);else updateActiveSlotDOM(mi,si);
 if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
 if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
-await sleep(slotDuration(m)*1000);
+await waitUntilStepDeadline(stepStartedAt+slotDuration(m)*1000);
 }
 }
 if(playbackRunId===currentRun)stopPlaybackCompletely();return;
@@ -2094,10 +2104,10 @@ currentPlayRep=rep;const startSi=currentPlaySi||0;
 const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
 for(let si=startSi;si<playbackSlots&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
 currentPlaySi=si;while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
-const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
+const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
 if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
 if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
-await sleep(slotDuration(m)*1000);
+await waitUntilStepDeadline(stepStartedAt+slotDuration(m)*1000);
 }
 currentPlaySi=0;
 }
@@ -2113,6 +2123,14 @@ playbackRunId++;playbackState="STOPPED";playbackMode="all";ritorneloCounters={};
 }
 
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+// Mantém cada passo preso a um prazo absoluto; o atraso do navegador não se soma aos passos seguintes.
+async function waitUntilStepDeadline(deadline){
+  while (true) {
+    const remaining = deadline - performance.now();
+    if (remaining <= 1) return;
+    await sleep(Math.min(remaining, 25));
+  }
+}
 
 function renderFullscreenMeasures(activeMi,activeSi){
 if(!activeFullscreenProject)return;
@@ -2136,7 +2154,7 @@ async function handleDemoPlay(){
 if(!activeFullscreenProject)return;
 ensureAudio();
 await audioCtx.resume();
-loadDrumSamples();
+await loadDrumSamples();
 
 if(playbackState==="PLAYING"){
 playbackState="PAUSED";
@@ -2178,6 +2196,7 @@ if(performance.now()>=demoTargetEndAt)break;
 while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
 if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
 if(performance.now()>=demoTargetEndAt)break;
+const stepStartedAt=performance.now();
 const when=audioCtx.currentTime+.035;
 if(metronomeOn)tick(when,si%subdivisionVal===0);
 for(let v=0;v<3;v++){
@@ -2186,7 +2205,7 @@ if(m.slots[idx])playDrumSound(m.slots[idx].root,when);
 }
 activePlayingSlot={mi,si};
 renderFullscreenMeasures(mi,si);
-await sleep(slotDuration(m)*1000);
+await waitUntilStepDeadline(stepStartedAt+slotDuration(m)*1000);
 }
 }
 }
@@ -2403,18 +2422,19 @@ function render(activeMi=-1,activeSi=-1){$('measures').innerHTML=measures.map((m
 if(project.isDrumProject){const n=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){html+='<div class="drum-row"><div class="drum-label">Voz '+(v+1)+'</div><div class="slots">';for(let si=0;si<n;si++){const idx=v*n+si,ch=m.slots?.[idx],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+'">'+esc(label(ch))+'</div>'}html+='</div></div>'}}
 else{html+='<div class="slots">';for(let si=0;si<slotCount(m);si++){const ch=m.slots?.[si],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+'">'+esc(label(ch))+'</div>'}html+='</div>'}return html+'</div>'}).join('')}
 let ctx=null,master=null,buffers={},guitar=null,playing=false,run=0,paused=false,resolvePause=null,metro=project.metronomeOn!==false;
-function ensure(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)();master=ctx.createGain();master.connect(ctx.destination)}master.gain.setTargetAtTime(Number($('volume').value)||1,ctx.currentTime,.01);if(ctx.state==='suspended')ctx.resume()}
+function ensure(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});master=ctx.createGain();master.connect(ctx.destination)}master.gain.setTargetAtTime(Number($('volume').value)||1,ctx.currentTime,.01);if(ctx.state==='suspended')ctx.resume()}
 function update(){ $('volumeValue').textContent=Math.round(Number($('volume').value)*100)+'%';$('metroVolumeValue').textContent=Math.round(Number($('metroVolume').value)*100)+'%';$('metroBtn').textContent='♩ Metrônomo: '+(metro?'ON':'OFF');$('playBtn').textContent=playing&&!paused?'⏸ Pausa':'▶ Tocar';$('meta').textContent='BPM: '+getBpm()+' • '+(project.isDrumProject?'Bateria':'Cordas')}
 function getBpm(){return Math.max(30,Math.min(240,parseInt($('bpm').value)||90))}
 function dur(m){const [,n,d]=getMeter(m.meter);return 60/getBpm()*(4/d)/(m.subdivision||1)}
 function tick(t,accent){if(!metro)return;const vol=Number($('metroVolume').value)||0;if(vol<=0)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=accent?1300:900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime((accent?.055:.035)*vol,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.045);o.connect(g);g.connect(master);o.start(t);o.stop(t+.055)}
-async function decodeAll(){if(project.isDrumProject){for(const k of Object.keys(audioData)){if(!buffers[k]){try{const ab=await (await fetch(audioData[k])).arrayBuffer();buffers[k]=await ctx.decodeAudioData(ab)}catch(e){}}}}else if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){}}}
+async function decodeAll(){if(project.isDrumProject){await Promise.all(Object.keys(audioData).map(async k=>{if(!buffers[k]){try{const r=await fetch(audioData[k]);if(!r.ok)throw Error('Falha ao carregar '+k);buffers[k]=await ctx.decodeAudioData(await r.arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio',k,e)}}}))}else if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){console.warn('Falha ao carregar som de cordas',e)}}}
 function drum(name,t){if(buffers[name]){const s=ctx.createBufferSource();s.buffer=buffers[name];s.connect(master);s.start(t);return}const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=name==='Caixa'?180:120;g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(master);o.start(t);o.stop(t+.13)}
 function noteFreq(n,o=4){const i=NOTES.indexOf(n);const midi=60+i+(o-4)*12;return 440*Math.pow(2,(midi-69)/12)}
 function chordNotes(ch){const ri=NOTES.indexOf(ch.root);if(ri<0)return [];const ints=ch.quality==='minor'?[0,3,7]:ch.quality==='dim'?[0,3,6]:ch.quality==='sus2'?[0,2,7]:[0,4,7];let a=ints.map((x,i)=>{const n=NOTES[(ri+x)%12];const o=3+Math.floor((ri+x)/12)+(i===0?1:0);return[n,o]});if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)a.unshift([ch.bass,3+(bi<ri?1:0)])}return a}
 function chord(ch,t){if(!ch)return;for(const [n,o] of chordNotes(ch)){const f=noteFreq(n,o);if(guitar){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=guitar;s.playbackRate.value=f/82.406889;g.gain.value=.9;s.connect(g);g.connect(master);s.start(t);s.stop(t+Math.min(2.6,guitar.duration/(f/82.406889)+.02))}else{const o1=ctx.createOscillator(),g=ctx.createGain();o1.type='triangle';o1.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+1.2);o1.connect(g);g.connect(master);o1.start(t);o1.stop(t+1.25)}}}
 function waitResume(){return new Promise(r=>resolvePause=r)}
-async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;const ritorneloCounters={};let mi=0;update();while(mi<measures.length&&playing&&run===my){const m=measures[mi],reps=Math.max(1,m.repeats||1),n=project.isDrumProject?getMeter(m.meter)[1]*(m.subdivision||1):m.slots.length;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const t=ctx.currentTime+.03;render(mi,si);if(metronomeSafe()&&si%(m.subdivision||1)===0)tick(t,true);if(project.isDrumProject){const per=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){const ch=m.slots?.[v*per+si];if(ch)drum(ch.root,t)}}else if(m.slots?.[si])chord(m.slots[si],t);await new Promise(r=>setTimeout(r,dur(m)*1000))}}if(!playing||run!==my)break;const target=m.ritornelo;if(target!==null&&target!==undefined&&target>=0&&target<mi){const maxReturns=Math.max(1,m.ritorneloRepeats||1);const used=ritorneloCounters[mi]||0;if(used<maxReturns){ritorneloCounters[mi]=used+1;mi=target;continue;}}mi++;}if(run===my)stop()}
+async function waitUntil(deadline){while(true){const left=deadline-performance.now();if(left<=1)return;await new Promise(r=>setTimeout(r,Math.min(left,25)))}}
+async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;const ritorneloCounters={};let mi=0;update();while(mi<measures.length&&playing&&run===my){const m=measures[mi],reps=Math.max(1,m.repeats||1),n=project.isDrumProject?getMeter(m.meter)[1]*(m.subdivision||1):m.slots.length;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const stepStartedAt=performance.now();const t=ctx.currentTime+.03;render(mi,si);if(metronomeSafe()&&si%(m.subdivision||1)===0)tick(t,true);if(project.isDrumProject){const per=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){const ch=m.slots?.[v*per+si];if(ch)drum(ch.root,t)}}else if(m.slots?.[si])chord(m.slots[si],t);await waitUntil(stepStartedAt+dur(m)*1000)}}if(!playing||run!==my)break;const target=m.ritornelo;if(target!==null&&target!==undefined&&target>=0&&target<mi){const maxReturns=Math.max(1,m.ritorneloRepeats||1);const used=ritorneloCounters[mi]||0;if(used<maxReturns){ritorneloCounters[mi]=used+1;mi=target;continue;}}mi++;}if(run===my)stop()}
 function metronomeSafe(){return metro}
 function stop(){run++;playing=false;paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}render();update()}
 $('playBtn').onclick=play;$('stopBtn').onclick=stop;$('metroBtn').onclick=()=>{metro=!metro;update()};$('volume').oninput=update;$('metroVolume').oninput=update;$('bpm').oninput=update;render();update();
