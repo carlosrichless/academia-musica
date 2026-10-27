@@ -108,6 +108,14 @@ filter: brightness(1.1);
 transform: translateY(-1px);
 }
 
+
+.measure-demo-btn{background:#26364e;color:#eaf1fb;border:1px solid #39b9ef;border-radius:7px;padding:6px 9px;font-size:11px;font-weight:700;white-space:nowrap}
+.measure-demo-btn:hover{background:#344766}
+.measure-demo-status{font-size:10px;color:var(--green);margin-left:5px}.strum-mark{display:block;font-size:12px;font-weight:900;color:var(--cyan);line-height:1}.intensity-legend{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.demo-choice-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:12px;max-height:55vh;overflow:auto}
+.demo-choice{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:#172238;color:#f3f7ff;border:1px solid #40526e;border-radius:9px;padding:11px}
+.demo-choice strong{font-size:12px}.demo-choice small{font-size:10px;color:#9fb0c9}.demo-choice:hover{border-color:#39b9ef;background:#20314a}
+
 .admin-top-btn {
 background: linear-gradient(135deg, #ffd84d, #ff9ba5);
 color: #06121e;
@@ -351,10 +359,17 @@ border:1px solid #7c3b48
 font-size:11px;
 color:var(--muted);
 padding:4px 2px;
-width:100%
+width:auto;
+display:inline-flex;
+align-items:center;
 }
 
 .status strong{color:var(--green)}
+.intensity-legend{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px 12px;flex-wrap:wrap;width:auto;padding:2px 4px;color:var(--muted);font-size:11px;white-space:nowrap}
+.intensity-legend span{display:inline-flex;align-items:center;gap:5px}
+.legend-swatch{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid #64748b}
+.legend-swatch.weak{background:#facc15;border-color:#facc15}
+.legend-swatch.strong{background:#ef4444;border-color:#ef4444}
 
 .music-area{
 margin-top:15px;
@@ -414,11 +429,20 @@ box-shadow:0 0 0 2px rgba(32,215,160,.16)
 }
 
 .measure-top{
-display:flex;
+display:grid;
+grid-template-columns:minmax(52px,auto) minmax(0,1fr) 30px;
 align-items:center;
-justify-content:space-between;
-gap:4px
+gap:6px;
+width:100%;
 }
+.measure-annotation-input{
+min-width:0;
+width:100%;
+margin:0;
+justify-self:stretch;
+}
+.measure-actions{min-width:26px}
+
 
 .measure-title{
 font-size:11px;
@@ -581,6 +605,23 @@ color:#61728c;
 font-size:12px
 }
 
+
+/* Intensidade da nota/acorde de Cordas */
+.slot.intensity-weak,
+.slot.intensity-weak .chord,
+.slot.active-slot.intensity-weak,
+.chord.intensity-weak{
+  background:#fbbf24 !important;color:#111827 !important;
+  border-color:#fbbf24 !important;border-radius:5px;padding:3px 6px;
+}
+.slot.intensity-strong,
+.slot.intensity-strong .chord,
+.slot.active-slot.intensity-strong,
+.chord.intensity-strong{
+  background:#ef4444 !important;color:#111827 !important;
+  border-color:#ef4444 !important;border-radius:5px;padding:3px 6px;
+}
+.slot.intensity-weak .chord-name,.slot.intensity-strong .chord-name,.chord.intensity-weak .chord-name,.chord.intensity-strong .chord-name{color:#111827 !important}
 .slot.filled{
 border-color:#2b8eaa;
 background:#0f2638
@@ -933,12 +974,17 @@ flex-shrink: 0;
 </div>
 <div class="control volume-control">
 <label for="metroVolume">⏱️ Vol Metrônomo</label>
-<input id="metroVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
+<input id="metroVolume" type="range" min="0.0" max="2.5" step="0.05" value="2.0">
 <span id="metroVolumeValue">150%</span>
+</div>
+<div class="control volume-control" id="drumVolumeControl">
+<label for="drumVolume">🥁 Vol Bateria</label>
+<input id="drumVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
+<span id="drumVolumeValue">100%</span>
 </div>
 <button class="btn green" id="saveBtn">💾 Salvar Projeto</button>
 <button class="btn primary" id="saveDeviceBtn">💾 Salvar no Dispositivo</button>
-<div class="status" id="status">Projeto em edição</div>
+<div class="status" id="status">Projeto em edição</div><div class="intensity-legend" aria-label="Legenda de intensidade"><span><i class="legend-swatch weak"></i> Som fraco</span><span><i class="legend-swatch strong"></i> Som forte</span><span>Sem seta: nenhuma (padrão)</span><span>↓ Palhetada para baixo</span><span>↑ Palhetada para cima</span></div>
 </div>
 </section>
 <section class="music-area">
@@ -1011,6 +1057,16 @@ flex-shrink: 0;
 </div>
 </div>
 
+<!-- SELEÇÃO DE DEMO DE BATERIA PARA UM COMPASSO -->
+<div class="overlay" id="measureDemoOverlay">
+  <div class="modal" style="width:min(680px,100%);">
+    <h3 id="measureDemoTitle">Escolher Demo de Bateria</h3>
+    <p id="measureDemoDescription">A lista mostra apenas levadas com a mesma fórmula de compasso.</p>
+    <div id="measureDemoChoices" class="demo-choice-list"></div>
+    <div class="modal-foot"><button class="btn dark" data-close="measureDemoOverlay">Cancelar</button></div>
+  </div>
+</div>
+
 <!-- NOTA -->
 
 <div class="overlay" id="noteOverlay">
@@ -1041,11 +1097,11 @@ Cancelar
 
 <div class="modal">
 
-<h3>Forma do acorde</h3>
+<h3 id="modifierTitle">Forma do acorde</h3>
 
-<p>Escolha a variação e o baixo do acorde.</p>
+<p id="modifierDescription">Escolha a variação e o baixo do acorde.</p>
 
-<div class="mod-grid">
+<div class="mod-grid" id="chordQualityOptions">
 
 <button class="mod-btn" data-mod="major">
 <strong>Maior</strong>
@@ -1069,7 +1125,21 @@ Cancelar
 
 </div>
 
-<div class="bass-row">
+<div class="field" style="margin:12px 0;">
+<label for="strumDirection">Direção da palhetada</label>
+<select id="strumDirection" style="width:100%;min-height:46px;padding:10px;border-radius:8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;font-size:14px;"><option value="none">Nenhuma</option><option value="down">↓ Palhetada para baixo</option><option value="up">↑ Palhetada para cima</option></select>
+</div>
+
+<div class="field" style="margin:12px 0;">
+<label for="chordIntensity">Força do som</label>
+<select id="chordIntensity" style="width:100%;min-height:46px;padding:10px;border-radius:8px;background:#0f172a;color:#f8fafc;border:1px solid #475569;font-size:14px;">
+<option value="weak">Fraco</option>
+<option value="normal">Normal</option>
+<option value="strong">Forte</option>
+</select>
+</div>
+
+<div class="bass-row" id="chordBassOptions">
 
 <label for="bassSelect">
 Baixo / inversão
@@ -1086,6 +1156,8 @@ Baixo / inversão
 <button class="btn danger" id="clearCurrent">
 🗑 Apagar acorde
 </button>
+
+<button class="btn primary" id="applyChord">Aplicar acorde</button>
 
 <button class="btn dark" data-close="modifierOverlay">
 Cancelar
@@ -1244,6 +1316,7 @@ let fullscreenDurationMinutes = 1;
 let demoTargetEndAt = 0;
 let demoPauseStartedAt = 0;
 let editingRitorneloMi = null;
+let editingDemoMeasureMi = null;
 let playbackMode = "all";
 let ritorneloCounters = {};
 
@@ -1273,6 +1346,7 @@ return num * (measure.subdivision || 1);
 
 function chordLabel(ch){
 if(!ch) return "";
+if(ch.repeatPrevious) return "%";
 if(DRUMS.some(d=>d.label===ch.root)){
 const found=DRUMS.find(d=>d.label===ch.root);
 return found ? found.short : ch.root;
@@ -1403,6 +1477,9 @@ editingRitorneloMi=null;
 $("#songName").value="";
 $("#songKey").value=isDrum ? "-" : "";
 $("#bpm").value=90;
+$("#metroVolume").value=2.0;
+$("#drumVolume").value=1.0;
+$("#drumVolumeControl").style.display=isCurrentProjectDrum ? "none" : "";
 metronomeOn=false;
 $("#status").textContent="Novo projeto em edição";
 $("#editorHint").textContent=isDrum ? "Toque em um slot para escolher a peça de bateria." : "Toque em um slot para adicionar/editar o acorde.";
@@ -1428,7 +1505,9 @@ $("#songName").value=project.songName || "";
 $("#songKey").value=project.songKey || (isCurrentProjectDrum ? "-" : "");
 $("#bpm").value=project.bpm || 90;
 $("#volume").value=project.volume ?? 2.0;
-$("#metroVolume").value=project.metroVolume ?? 1.5;
+$("#metroVolume").value=project.metroVolume ?? 2.0;
+$("#drumVolume").value=project.drumVolume ?? 1.0;
+$("#drumVolumeControl").style.display=isCurrentProjectDrum ? "none" : "";
 metronomeOn=!!project.metronomeOn;
 $("#keyFieldContainer").style.display=isCurrentProjectDrum ? "none" : "";
 $("#status").textContent="Projeto em edição";
@@ -1484,6 +1563,7 @@ bpm:getBpm(),
 metronomeOn,
 volume:parseFloat($("#volume").value || "1.0"),
 metroVolume:parseFloat($("#metroVolume").value || "1.0"),
+drumVolume:parseFloat($("#drumVolume").value || "1.0"),
 measures:JSON.parse(JSON.stringify(measures))
 };
 }
@@ -1513,9 +1593,10 @@ el.dataset.mi=mi;
 const slots=Array.from({length:slotCount(m)},(_,si)=>{
 const ch=m.slots[si];
 const isActive=activePlayingSlot.mi===mi && activePlayingSlot.si===si;
-const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");
+const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"")+(ch&&ch.intensity==="weak"?" intensity-weak":"")+(ch&&ch.intensity==="strong"?" intensity-strong":"");
 if(!ch) return `<div class="${slotClass}" data-si="${si}"><span>·</span></div>`;
-return `<div class="${slotClass}" data-si="${si}"><div class="chord" title="Clique para alterar"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div><button class="slot-trash" data-trash="${si}" title="Apagar">×</button></div>`;
+const dir=ch.strumDirection==="up"?"↑":ch.strumDirection==="down"?"↓":"";
+return `<div class="${slotClass}" data-si="${si}"><div class="chord ${ch.intensity==="weak"?"intensity-weak":ch.intensity==="strong"?"intensity-strong":""}" title="Clique para alterar"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div>${dir?`<small class="strum-mark">${dir}</small>`:""}</div><button class="slot-trash" data-trash="${si}" title="Apagar">×</button></div>`;
 }).join("");
 const hasRit=m.ritornelo!==null && m.ritornelo!==undefined;
 const ritClass=hasRit ? "icon-btn ritornelo active" : "icon-btn ritornelo";
@@ -1526,6 +1607,7 @@ el.innerHTML=`
 <input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação (ex: Solo, Refrão)...">
 <div class="measure-actions">
 <button class="icon-btn play" data-play-measure="${mi}" title="Tocar somente este compasso">▶</button>
+<button class="icon-btn duplicate-measure" data-duplicate="${mi}" title="Duplicar para o próximo compasso">⧉</button>
 <button class="icon-btn delete" data-del="${mi}" title="Apagar">🗑</button>
 <button class="${ritClass}" data-rit="${mi}" title="${ritTitle}">↩</button>
 </div>
@@ -1534,12 +1616,15 @@ el.innerHTML=`
 <select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select>
 <div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision}</span><button data-sub-up="${mi}">▶</button></div>
 <div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div>
+<button class="measure-demo-btn" data-measure-demo="${mi}" title="Adicionar uma levada de bateria compatível com ${escapeHtml(m.meter)}">🥁 Demo bateria${m.drumDemo?` <span class="measure-demo-status">✓ ${escapeHtml(m.drumDemo.songName||'Selecionada')}</span>`:''}</button>${m.drumDemo?`<button class="icon-btn delete" data-remove-demo="${mi}" title="Remover a levada de bateria deste compasso">✕ Bateria</button>`:''}
 </div>
 <div class="slots">${slots}</div>
 `;
 measuresEl.appendChild(el);
 });
 bindChordMeasureEvents();
+bindDuplicateMeasureButtons();
+bindMeasureDemoButtons();
 }
 
 function renderDrumEditor(){
@@ -1557,7 +1642,7 @@ for(let s=0;s<totalSlotsPerVoice;s++){
 const realIndex=v*totalSlotsPerVoice+s;
 const ch=m.slots[realIndex];
 const isActive=activePlayingSlot.mi===mi && activePlayingSlot.si===s;
-const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"");
+const slotClass="slot "+(ch?"filled":"empty")+(isActive?" active-slot":"")+(ch&&ch.intensity==="weak"?" intensity-weak":"")+(ch&&ch.intensity==="strong"?" intensity-strong":"");
 if(!ch) voiceSlots+=`<div class="${slotClass}" data-si="${realIndex}"><span>·</span></div>`;
 else voiceSlots+=`<div class="${slotClass}" data-si="${realIndex}"><div class="chord"><div class="chord-name">${escapeHtml(chordLabel(ch))}</div></div><button class="slot-trash" data-trash="${realIndex}">×</button></div>`;
 }
@@ -1567,14 +1652,60 @@ el.innerHTML=`
 <div class="measure-top">
 <div class="measure-title">Comp. ${mi+1}</div>
 <input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
-<div class="measure-actions"><button class="icon-btn play" data-play-measure="${mi}">▶</button><button class="icon-btn delete" data-del="${mi}">🗑</button></div>
+<div class="measure-actions"><button class="icon-btn play" data-play-measure="${mi}">▶</button><button class="icon-btn duplicate-measure" data-duplicate="${mi}" title="Duplicar para o próximo compasso">⧉</button><button class="icon-btn delete" data-del="${mi}">🗑</button></div>
 </div>
-<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div><div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div><button class="icon-btn ritornelo ${m.ritornelo!==null&&m.ritornelo!==undefined?'active':''}" data-rit="${mi}" title="${m.ritornelo!==null&&m.ritornelo!==undefined?`Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats||1} vez(es)`:'Configurar Ritornelo'}">↩</button></div>
+<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div><div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div><button class="measure-demo-btn" data-measure-demo="${mi}" title="Carregar uma levada editável de ${escapeHtml(m.meter)}">🥁 Demo bateria</button>${m.drumDemo?`<button class="icon-btn delete" data-remove-demo="${mi}" title="Remover a levada de bateria deste compasso">✕ Bateria</button>`:''}<button class="icon-btn ritornelo ${m.ritornelo!==null&&m.ritornelo!==undefined?'active':''}" data-rit="${mi}" title="${m.ritornelo!==null&&m.ritornelo!==undefined?`Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats||1} vez(es)`:'Configurar Ritornelo'}">↩</button></div>
 <div class="drum-voices-container">${voiceHtmls.join("")}</div>
 `;
 measuresEl.appendChild(el);
 });
 bindDrumMeasureEvents();
+bindDuplicateMeasureButtons();
+bindMeasureDemoButtons();
+}
+
+
+function bindMeasureDemoButtons(){
+  measuresEl.querySelectorAll("[data-remove-demo]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.dataset.removeDemo);if(measures[mi]){measures[mi].drumDemo=null;measures[mi].drumDemoSource=null;render();}}));
+  measuresEl.querySelectorAll("[data-measure-demo]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openMeasureDemoChooser(Number(btn.dataset.measureDemo));}));
+}
+function openMeasureDemoChooser(mi){
+  if(!measures[mi])return;
+  editingDemoMeasureMi=mi;
+  const meter=measures[mi].meter;
+  const demos=getDemoProjects().filter(p=>p.measures?.[0]?.meter===meter);
+  $("#measureDemoTitle").textContent=(isCurrentProjectDrum?"Carregar Demo de Bateria no Compasso ":"Adicionar Bateria ao Compasso ")+(mi+1);
+  $("#measureDemoDescription").textContent=`Fórmula de compasso: ${meter}. São exibidas somente as levadas compatíveis. ${isCurrentProjectDrum?"A levada escolhida preencherá as vozes deste compasso e poderá ser editada.":"A levada tocará junto com os acordes e será incluída no arquivo salvo no dispositivo."}`;
+  const host=$("#measureDemoChoices");
+  if(!demos.length){host.innerHTML='<p>Nenhuma levada demo disponível para esta fórmula de compasso.</p>';}else{host.innerHTML=demos.map(d=>`<button class="demo-choice" data-choose-measure-demo="${escapeHtml(d.id)}"><strong>${escapeHtml(d.songName)}</strong><small>${escapeHtml(d.measures[0].meter)} · ${d.measures[0].subdivision||1} subdivisão(ões) · ${d.bpm} BPM</small><small>Clique para ${isCurrentProjectDrum?'carregar e editar':'adicionar ao compasso'}</small></button>`).join("");}
+  host.querySelectorAll("[data-choose-measure-demo]").forEach(b=>b.addEventListener("click",()=>applyMeasureDemo(b.dataset.chooseMeasureDemo)));
+  openOverlay("measureDemoOverlay");
+}
+function applyMeasureDemo(demoId){
+  const mi=editingDemoMeasureMi,m=measures[mi];if(!m)return;
+  const demo=getDemoProjects().find(p=>p.id===demoId),pattern=demo?.measures?.[0];if(!demo||!pattern||pattern.meter!==m.meter)return;
+  if(isCurrentProjectDrum){
+    const [,beats]=getMeter(m.meter),sub=pattern.subdivision||1,per=beats*sub;
+    m.subdivision=sub; m.slots=Array.from({length:per*3},(_,i)=>pattern.slots?.[i]?JSON.parse(JSON.stringify(pattern.slots[i])):null);
+    m.drumDemoSource=demo.songName;
+  }else{
+    m.drumDemo={songName:demo.songName,bpm:demo.bpm,meter:pattern.meter,subdivision:pattern.subdivision||1,slots:JSON.parse(JSON.stringify(pattern.slots||[]))};
+  }
+  selectedMeasure=mi;closeOverlay("measureDemoOverlay");render();
+}
+
+function bindDuplicateMeasureButtons(){
+  measuresEl.querySelectorAll("[data-duplicate]").forEach(btn=>btn.addEventListener("click",e=>{
+    e.stopPropagation();
+    const mi=Number(btn.dataset.duplicate);
+    if(!measures[mi]) return;
+    const copy=JSON.parse(JSON.stringify(measures[mi]));
+    copy.ritornelo=null;
+    copy.ritorneloRepeats=1;
+    measures.splice(mi+1,0,copy);
+    selectedMeasure=mi+1;
+    render();
+  }));
 }
 
 function bindChordMeasureEvents(){
@@ -1590,7 +1721,7 @@ measuresEl.querySelectorAll("[data-trash]").forEach(btn=>btn.addEventListener("c
 measuresEl.querySelectorAll("[data-rit]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openRitorneloModal(Number(btn.dataset.rit));}));
 measuresEl.querySelectorAll("[data-meter]").forEach(sel=>sel.addEventListener("change",()=>{
 const mi=Number(sel.dataset.meter), old=measures[mi], count=slotCount({...old,meter:sel.value});
-old.meter=sel.value; old.slots=Array.from({length:count},(_,i)=>old.slots[i]||null); selectedMeasure=mi; render();
+old.meter=sel.value; old.slots=Array.from({length:count},(_,i)=>old.slots[i]||null); if(old.drumDemo && old.drumDemo.meter!==old.meter) old.drumDemo=null; selectedMeasure=mi; render();
 }));
 measuresEl.querySelectorAll("[data-sub-up]").forEach(btn=>btn.addEventListener("click",()=>changeSubdivision(Number(btn.dataset.subUp),1)));
 measuresEl.querySelectorAll("[data-sub-down]").forEach(btn=>btn.addEventListener("click",()=>changeSubdivision(Number(btn.dataset.subDown),-1)));
@@ -1781,20 +1912,45 @@ e.target.value="";
 
 function openNote(mi,si){
 selected={mi,si};
-$("#noteGrid").innerHTML=NOTES.map(n=>`<button class="note-btn" data-note="${n}">${n}</button>`).join("");
-$("#noteGrid").querySelectorAll("[data-note]").forEach(b=>b.addEventListener("click",()=>{
-measures[mi].slots[si]={root:b.dataset.note,quality:"major",bass:""};
-closeOverlay("noteOverlay");render();previewChord(measures[mi].slots[si]);setTimeout(()=>openModifier(mi,si),120);
+$("#noteGrid").innerHTML=NOTES.map(n=>`<button class="note-btn" data-note="${n}">${n}</button>`).join("")+`<button class="note-btn" data-repeat-previous="1" title="Repetir o acorde anterior">%</button>`;
+$("#noteGrid").querySelectorAll("[data-note], [data-repeat-previous]").forEach(b=>b.addEventListener("click",()=>{
+const isRepeat=b.hasAttribute("data-repeat-previous");
+if(isRepeat){
+let previous=null;
+for(let back=si-1;back>=0;back--){
+  const candidate=measures[mi].slots[back];
+  if(candidate && candidate.root && !DRUMS.includes(candidate.root)){previous=candidate;break;}
+}
+if(!previous){alert("Para usar %, coloque primeiro um acorde em algum espaço anterior deste compasso.");return;}
+// % copia exatamente o acorde anterior; só permite escolher a força do som.
+measures[mi].slots[si]={...previous,repeatPrevious:true,intensity:previous.intensity||"normal"};
+}else{
+measures[mi].slots[si]={root:b.dataset.note,quality:"major",bass:"",intensity:"normal",strumDirection:"none"};
+}
+closeOverlay("noteOverlay");render();
+if(isRepeat){openModifier(mi,si);}else{previewChord(measures[mi].slots[si]);setTimeout(()=>openModifier(mi,si),120);}
 }));
 openOverlay("noteOverlay");
 }
 
-function openModifier(mi,si){selected={mi,si};const ch=measures[mi].slots[si];if(!ch)return openNote(mi,si);populateBass(ch);openOverlay("modifierOverlay");}
+function openModifier(mi,si){
+selected={mi,si};const ch=measures[mi].slots[si];if(!ch)return openNote(mi,si);
+const isRepeat=!!ch.repeatPrevious;
+$("#modifierTitle").textContent=isRepeat?"Força do acorde repetido":"Forma do acorde";
+$("#modifierDescription").textContent=isRepeat?"Escolha apenas a força do som. O símbolo % manterá o mesmo acorde anterior.":"Escolha a variação e o baixo do acorde.";
+$("#chordQualityOptions").style.display=isRepeat?"none":"grid";
+$("#chordBassOptions").style.display=isRepeat?"none":"flex";
+populateBass(ch);const intensity=$("#chordIntensity");if(intensity)intensity.value=ch.intensity||"normal";const direction=$("#strumDirection");if(direction)direction.value=ch.strumDirection||"none";
+document.querySelectorAll(".mod-btn").forEach(x=>x.classList.toggle("active",x.dataset.mod===(ch.quality||"major")));
+openOverlay("modifierOverlay");
+}
 function populateBass(ch){const sel=$("#bassSelect"),idx=NOTES.indexOf(ch.root),candidates=[ch.root,NOTES[(idx+2)%12],NOTES[(idx+4)%12],NOTES[(idx+7)%12]];sel.innerHTML='<option value="">Sem baixo específico</option>'+[...new Set(candidates)].map(n=>`<option value="${n}" ${ch.bass===n?"selected":""}>${n}</option>`).join("");}
 
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>closeOverlay(b.dataset.close)));
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
-document.querySelectorAll(".mod-btn").forEach(b=>b.addEventListener("click",()=>{const ch=measures[selected.mi].slots[selected.si];if(!ch)return;ch.quality=b.dataset.mod;ch.bass=$("#bassSelect").value;closeOverlay("modifierOverlay");render();previewChord(ch);}));
+document.querySelectorAll(".mod-btn").forEach(b=>b.addEventListener("click",()=>{const ch=measures[selected.mi]?.slots[selected.si];if(!ch)return;ch.quality=b.dataset.mod;document.querySelectorAll(".mod-btn").forEach(x=>x.classList.toggle("active",x===b));}));
+$("#chordIntensity").addEventListener("change",()=>{const ch=measures[selected.mi]?.slots[selected.si];if(!ch)return;ch.intensity=$("#chordIntensity").value;render();previewChord(ch);});
+$("#applyChord").addEventListener("click",()=>{const ch=measures[selected.mi]?.slots[selected.si];if(!ch)return;if(!ch.repeatPrevious)ch.bass=$("#bassSelect").value;ch.intensity=$("#chordIntensity")?$("#chordIntensity").value:"normal";ch.strumDirection=$("#strumDirection")?$("#strumDirection").value:"none";closeOverlay("modifierOverlay");render();previewChord(ch);});
 $("#bassSelect").addEventListener("change",()=>{const ch=measures[selected.mi]?.slots[selected.si];if(ch)ch.bass=$("#bassSelect").value;});
 $("#clearCurrent").addEventListener("click",()=>{if(measures[selected.mi])measures[selected.mi].slots[selected.si]=null;closeOverlay("modifierOverlay");render();});
 
@@ -1846,6 +2002,9 @@ $("#volumeValue").textContent = Math.round(vol*100)+"%";
 const mVol = parseFloat($("#metroVolume").value || "1.0");
 $("#metroVolume").value = mVol;
 $("#metroVolumeValue").textContent = Math.round(mVol*100)+"%";
+const dVol = parseFloat($("#drumVolume").value || "1.0");
+$("#drumVolume").value = dVol;
+$("#drumVolumeValue").textContent = Math.round(dVol*100)+"%";
 updatePlayButtonLabels();
 }
 
@@ -1859,6 +2018,7 @@ $("#metroToggle").addEventListener("click",()=>{ metronomeOn=!metronomeOn; syncC
 $("#fsMetroToggle").addEventListener("click",()=>{ metronomeOn=!metronomeOn; syncControlsUI(); });
 $("#volume").addEventListener("input",()=>{ syncControlsUI(); updateMasterVolume(); });
 $("#metroVolume").addEventListener("input", syncControlsUI);
+$("#drumVolume").addEventListener("input", syncControlsUI);
 $("#bpm").addEventListener("input",()=>{
 syncControlsUI();
 if(activeFullscreenProject) activeFullscreenProject.bpm=getBpm();
@@ -1937,15 +2097,21 @@ async function loadDrumSamples() {
   finally { drumSamplesLoading = null; }
 }
 
-function playDrumSound(drumType, when = audioCtx.currentTime) {
+function connectDrumEQ(input,output,ctx,when=ctx.currentTime){
+  const points=[{f:350,g:3,q:1.0},{f:800,g:-12,q:1.35},{f:3500,g:3,q:1.0},{f:6000,g:12,q:1.15},{f:8000,g:3,q:1.0},{f:10000,g:3,q:0.8}];
+  let previous=input;for(const p of points){const f=ctx.createBiquadFilter();f.type="peaking";f.frequency.setValueAtTime(p.f,when);f.Q.setValueAtTime(p.q,when);f.gain.setValueAtTime(p.g,when);previous.connect(f);previous=f;}previous.connect(output);
+}
+
+function playDrumSound(drumType, when = audioCtx.currentTime, attachedDemo = false) {
   const ctx = audioCtx;
+  const demoVolume = attachedDemo ? Math.max(0,Math.min(2.5,parseFloat($("#drumVolume")?.value || "1.0"))) : 1.0;
   if (audioBuffers[drumType]) {
     try {
       const source = ctx.createBufferSource();
       source.buffer = audioBuffers[drumType];
       const gainNode = ctx.createGain();
-      gainNode.gain.setValueAtTime(1.0, when);
-      source.connect(gainNode);
+      gainNode.gain.setValueAtTime(demoVolume, when);
+      connectDrumEQ(source,gainNode,ctx,when);
       gainNode.connect(masterGain || ctx.destination);
       source.start(when);
       return;
@@ -1957,7 +2123,7 @@ function playDrumSound(drumType, when = audioCtx.currentTime) {
   gain.connect(masterGain || ctx.destination);
   osc.type = "sine";
   osc.frequency.setValueAtTime(130, when);
-  gain.gain.setValueAtTime(0.8, when);
+  gain.gain.setValueAtTime(0.8*demoVolume, when);
   gain.gain.exponentialRampToValueAtTime(0.001, when + 0.15);
   osc.start(when); osc.stop(when + 0.15);
 }
@@ -1977,7 +2143,7 @@ const osc = audioCtx.createOscillator();
 const g = audioCtx.createGain();
 osc.type="square";
 osc.frequency.value = accent ? 1300 : 900;
-const baseGain = accent ? .055 : .035;
+const baseGain = accent ? .11 : .075;
 g.gain.setValueAtTime(.0001, when);
 g.gain.exponentialRampToValueAtTime(baseGain*metroVol, when+.002);
 g.gain.exponentialRampToValueAtTime(.0001, when+.045);
@@ -2027,18 +2193,62 @@ async function loadGuitarStringE(){
   return guitarStringELoading;
 }
 
-function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0){
+const activeChordVoices=[];
+function fadePreviousChord(when,fadeSeconds=0.035){
+  for(const voice of activeChordVoices){
+    try{
+      voice.gain.gain.cancelScheduledValues(when);
+      const current=voice.gain.gain.value;
+      voice.gain.gain.setValueAtTime(Math.max(0.0001,current),when);
+      voice.gain.gain.linearRampToValueAtTime(0.0001,when+fadeSeconds);
+      voice.source.stop(when+fadeSeconds+0.008);
+    }catch(e){}
+  }
+  activeChordVoices.length=0;
+}
+// Equalizador do violão: curva definida pelos pontos solicitados.
+// Os filtros são em série e a etapa de entrada reduz headroom para evitar clipping com o boost de +12 dB.
+function connectGuitarEQ(input,output,ctx,when=ctx.currentTime){
+  const points=[
+    {f:1000,g:-24,q:2.2},
+    {f:1200,g:-20,q:3.0},
+    {f:1300,g:-18,q:3.0},
+    {f:1500,g:-4,q:1.5},
+    {f:2000,g:-3,q:1.2},
+    {f:5000,g:12,q:1.35},
+    {f:8000,g:12,q:1.35}
+  ];
+  const headroom=ctx.createGain();
+  headroom.gain.setValueAtTime(0.42,when);
+  input.connect(headroom);
+  let previous=headroom;
+  for(const p of points){
+    const eq=ctx.createBiquadFilter();
+    eq.type="peaking";
+    eq.frequency.setValueAtTime(p.f,when);
+    eq.Q.setValueAtTime(p.q,when);
+    eq.gain.setValueAtTime(p.g,when);
+    previous.connect(eq);
+    previous=eq;
+  }
+  previous.connect(output);
+}
+function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0,useGuitarEQ=true){
   const ctx=audioCtx;
   if(guitarStringEBuffer){
     const source=ctx.createBufferSource();
     const gain=ctx.createGain();
     source.buffer=guitarStringEBuffer;
-    source.playbackRate.setValueAtTime(freq/GUITAR_STRING_E_FREQ,when);
-    gain.gain.setValueAtTime(Math.max(.001,velocity),when);
-    source.connect(gain);
+    const rate=Math.max(0.25,freq/GUITAR_STRING_E_FREQ);
+    source.playbackRate.setValueAtTime(rate,when);
+    gain.gain.setValueAtTime(0.0001,when);
+    gain.gain.linearRampToValueAtTime(Math.max(.001,velocity)*0.68,when+0.012);
+    gain.gain.setTargetAtTime(Math.max(.0001,velocity)*0.48,when+0.014,0.18);
+    if(useGuitarEQ) connectGuitarEQ(source,gain,ctx,when); else source.connect(gain);
     gain.connect(masterGain||ctx.destination);
+    activeChordVoices.push({source,gain});
     source.start(when);
-    source.stop(when+Math.min(duration,guitarStringEBuffer.duration/(freq/GUITAR_STRING_E_FREQ))+0.02);
+    source.stop(when+Math.min(duration,guitarStringEBuffer.duration/rate)+0.02);
     return;
   }
   // Reserva apenas para o instante em que a amostra ainda estiver carregando.
@@ -2052,9 +2262,51 @@ function pluck(freq,when=audioCtx.currentTime,duration=2.6,velocity=1.0){
   osc.start(when);osc.stop(when+duration+.05);
 }
 
+function chordIntensityGain(ch){
+  // A intensidade altera somente o volume deste acorde; o sustain anterior permanece natural.
+  if(ch && ch.intensity==="weak") return 0.07;
+  if(ch && ch.intensity==="strong") return 1.22;
+  return 0.95;
+}
+let pickNoiseBuffer=null;
+function getPickNoiseBuffer(){
+  if(pickNoiseBuffer)return pickNoiseBuffer;
+  const ctx=audioCtx, length=Math.max(1,Math.floor(ctx.sampleRate*0.035));
+  pickNoiseBuffer=ctx.createBuffer(1,length,ctx.sampleRate);
+  const data=pickNoiseBuffer.getChannelData(0);
+  for(let i=0;i<length;i++){
+    const fade=1-i/length;
+    data[i]=(Math.random()*2-1)*fade*fade;
+  }
+  return pickNoiseBuffer;
+}
+function playPickClick(when,level=1,index=0,total=3){
+  const ctx=audioCtx;
+  const src=ctx.createBufferSource(), hp=ctx.createBiquadFilter(), peak=ctx.createBiquadFilter(), gain=ctx.createGain();
+  src.buffer=getPickNoiseBuffer();
+  hp.type="highpass";hp.frequency.setValueAtTime(1400,when);hp.Q.value=.55;
+  peak.type="peaking";peak.frequency.setValueAtTime(3200,when);peak.Q.value=.8;peak.gain.setValueAtTime(6,when);
+  // Ruído curto de palheta: destaque do ataque, sem interromper a cauda musical do acorde.
+  const clickGain=(0.035/Math.sqrt(Math.max(1,total)))*level;
+  gain.gain.setValueAtTime(.0001,when);
+  gain.gain.linearRampToValueAtTime(clickGain,when+.0015);
+  gain.gain.exponentialRampToValueAtTime(.0001,when+.032);
+  src.connect(hp);hp.connect(peak);peak.connect(gain);gain.connect(masterGain||ctx.destination);
+  src.start(when);src.stop(when+.036);
+}
 function playChord(ch,when=audioCtx.currentTime){
   if(!ch)return;
-  chordNotes(ch).forEach((n,i)=>pluck(noteFreq(n.note,n.oct),when+i*.018,2.6,.95));
+  const notes=chordNotes(ch);
+  const weak=ch.intensity==="weak";
+  const velocity=chordIntensityGain(ch);
+  // Em acordes fracos, cada corda recebe um pick-click próprio: 3 cordas para tríades,
+  // 4/5 quando há notas adicionais/baixo. Não cortamos o sustain do acorde anterior.
+  const ordered=ch.strumDirection==="up"?[...notes].reverse():notes;
+  ordered.forEach((n,i)=>{
+    const strumAt=when+i*.012;
+    pluck(noteFreq(n.note,n.oct),strumAt,2.6,velocity,!weak);
+    if(weak) playPickClick(strumAt,1,i,ordered.length);
+  });
 }
 
 async function previewChord(ch){
@@ -2065,14 +2317,34 @@ async function previewChord(ch){
 }
 
 function tick(when=audioCtx.currentTime,accent=false){
-const metroVol=parseFloat($("#metroVolume").value||"1.5");if(metroVol<=0)return;const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type="square";osc.frequency.value=accent?1300:900;const baseGain=accent?.055:.035;g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(baseGain*metroVol,when+.002);g.gain.exponentialRampToValueAtTime(.0001,when+.045);osc.connect(g);g.connect(masterGain||audioCtx.destination);osc.start(when);osc.stop(when+.055);
+const metroVol=parseFloat($("#metroVolume").value||"1.5");if(metroVol<=0)return;const osc=audioCtx.createOscillator(),g=audioCtx.createGain();osc.type="square";osc.frequency.value=accent?1300:900;const baseGain=accent?.11:.075;g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(baseGain*metroVol,when+.002);g.gain.exponentialRampToValueAtTime(.0001,when+.045);osc.connect(g);g.connect(masterGain||audioCtx.destination);osc.start(when);osc.stop(when+.055);
 }
 
 function waitForResume(){return new Promise(resolve=>{playbackPromiseResolve=resolve;});}
 
+function targetMeasuresHaveDrumDemo(mode,startMi){
+  const list=activeFullscreenProject?activeFullscreenProject.measures:measures;
+  if(mode==="measure")return !!list[startMi]?.drumDemo;
+  return list.some(m=>m.drumDemo);
+}
+function playbackStepPlan(m,isDrumProject){
+  const chordSlots=getMeter(m.meter)[1]*(m.subdivision||1);
+  const drumSlots=(!isDrumProject&&m.drumDemo)?getMeter(m.drumDemo.meter||m.meter)[1]*(m.drumDemo.subdivision||1):0;
+  const totalSlots=Math.max(chordSlots,drumSlots||0);
+  return {chordSlots,drumSlots,totalSlots,stepMs:slotDuration(m)*1000*chordSlots/totalSlots};
+}
+function playAttachedDrumDemoStep(m,si,totalSlots,when){
+  const demo=m.drumDemo;if(!demo?.slots?.length)return;
+  const per=getMeter(demo.meter||m.meter)[1]*(demo.subdivision||1);
+  const ds=Math.floor(si*per/totalSlots);
+  const previous=si===0?-1:Math.floor((si-1)*per/totalSlots);
+  if(ds===previous)return;
+  for(let v=0;v<3;v++){const ch=demo.slots[v*per+ds];if(ch?.root)playDrumSound(ch.root,when,true);}
+}
+
 async function handlePlayAction(mode,startMi){
 ensureAudio();await audioCtx.resume();
-if(!isCurrentProjectDrum){ try{ await loadGuitarStringE(); }catch(e){} }
+if(!isCurrentProjectDrum){ try{ await loadGuitarStringE(); }catch(e){} if(targetMeasuresHaveDrumDemo(mode,startMi)) await loadDrumSamples(); }
 else { await loadDrumSamples(); }
 if(playbackState==="PLAYING"){playbackState="PAUSED";syncControlsUI();return;}
 if(playbackState==="PAUSED"){playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
@@ -2082,15 +2354,15 @@ if(mode==="measure"){
 if(startMi<0||startMi>=targetMeasures.length){stopPlaybackCompletely();return;}
 const mi=startMi,m=targetMeasures[mi],repetitions=Math.max(1,m.repeats||1);
 const [,beatsNum]=getMeter(m.meter);
-const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
+const plan=playbackStepPlan(m,isCurrentProjectDrum);const playbackSlots=plan.totalSlots;
 for(let rep=0;rep<repetitions;rep++){
 for(let si=0;si<playbackSlots && playbackState!=="STOPPED" && playbackRunId===currentRun;si++){
 while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
 if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
-const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;activePlayingSlot={mi,si};if(activeFullscreenProject)renderFullscreenMeasures(mi,si);else updateActiveSlotDOM(mi,si);
-if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
-if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
-await waitUntilStepDeadline(stepStartedAt+slotDuration(m)*1000);
+const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;const visualSi=Math.floor(si*plan.chordSlots/playbackSlots);activePlayingSlot={mi,si:visualSi};if(activeFullscreenProject)renderFullscreenMeasures(mi,visualSi);else updateActiveSlotDOM(mi,visualSi);
+const previousVisualSi=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(metronomeOn&&visualSi!==previousVisualSi&&(previousVisualSi<0||Math.floor(visualSi/(m.subdivision||1))!==Math.floor(previousVisualSi/(m.subdivision||1))))tick(when,true);
+if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);{const drumSi=Math.floor(si*slotsPerVoice/playbackSlots),previous=si===0?-1:Math.floor((si-1)*slotsPerVoice/playbackSlots);if(drumSi!==previous){for(let v=0;v<3;v++){const idx=v*slotsPerVoice+drumSi;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}}}else{{const chordSi=Math.floor(si*plan.chordSlots/playbackSlots),previous=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(chordSi!==previous&&m.slots[chordSi])playChord(m.slots[chordSi],when);}playAttachedDrumDemoStep(m,si,playbackSlots,when);}
+await waitUntilStepDeadline(stepStartedAt+plan.stepMs);
 }
 }
 if(playbackRunId===currentRun)stopPlaybackCompletely();return;
@@ -2101,13 +2373,13 @@ selectedMeasure=currentPlayMi;const m=targetMeasures[currentPlayMi],repetitions=
 const [,beatsNum]=getMeter(m.meter);
 for(let rep=currentPlayRep;rep<repetitions&&playbackState!=="STOPPED"&&playbackRunId===currentRun;rep++){
 currentPlayRep=rep;const startSi=currentPlaySi||0;
-const playbackSlots=isCurrentProjectDrum ? beatsNum*(m.subdivision||1) : m.slots.length;
+const plan=playbackStepPlan(m,isCurrentProjectDrum);const playbackSlots=plan.totalSlots;
 for(let si=startSi;si<playbackSlots&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
 currentPlaySi=si;while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
 const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
-if(metronomeOn)tick(when,si%(m.subdivision||1)===0);
-if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);for(let v=0;v<3;v++){const idx=v*slotsPerVoice+si;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}else if(m.slots[si])playChord(m.slots[si],when);
-await waitUntilStepDeadline(stepStartedAt+slotDuration(m)*1000);
+if(metronomeOn&&si%(m.subdivision||1)===0)tick(when,true);
+if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);{const drumSi=Math.floor(si*slotsPerVoice/playbackSlots),previous=si===0?-1:Math.floor((si-1)*slotsPerVoice/playbackSlots);if(drumSi!==previous){for(let v=0;v<3;v++){const idx=v*slotsPerVoice+drumSi;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}}}else{{const chordSi=Math.floor(si*plan.chordSlots/playbackSlots),previous=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(chordSi!==previous&&m.slots[chordSi])playChord(m.slots[chordSi],when);}playAttachedDrumDemoStep(m,si,playbackSlots,when);}
+await waitUntilStepDeadline(stepStartedAt+plan.stepMs);
 }
 currentPlaySi=0;
 }
@@ -2198,7 +2470,7 @@ if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
 if(performance.now()>=demoTargetEndAt)break;
 const stepStartedAt=performance.now();
 const when=audioCtx.currentTime+.035;
-if(metronomeOn)tick(when,si%subdivisionVal===0);
+if(metronomeOn&&si%subdivisionVal===0)tick(when,true);
 for(let v=0;v<3;v++){
 const idx=v*slotsPerVoice+si;
 if(m.slots[idx])playDrumSound(m.slots[idx].root,when);
@@ -2240,7 +2512,7 @@ const add=(id,songName,meter,bpm,measure)=>d.push({
   bpm,
   metronomeOn:false,
   volume:1.0,
-  metroVolume:1.0,
+  metroVolume:2.0,
   measures:[measure]
 });
 
@@ -2380,9 +2652,10 @@ body{padding:18px 12px 40px}.wrap{width:min(980px,100%);margin:0 auto}.top{text-
 .controls{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
 .control{display:flex;align-items:center;gap:7px;background:#0f1b30;border:1px solid #34445e;border-radius:9px;padding:7px 9px;font-size:12px}.control label{color:var(--muted);white-space:nowrap}.control input[type=number]{width:70px;background:#0b1426;color:#fff;border:1px solid #40526e;border-radius:6px;padding:5px}.control input[type=range]{width:110px;accent-color:var(--cyan)}
 .btn{border:1px solid #40526e;border-radius:8px;background:#26364e;color:#fff;padding:8px 13px;font-weight:700;cursor:pointer}.btn.primary{background:var(--cyan);color:#06121e;border-color:var(--cyan)}.btn.green{background:var(--green);color:#06121e;border-color:var(--green)}.btn.active{background:var(--yellow);color:#161100;border-color:var(--yellow)}
-.status{text-align:center;color:var(--muted);font-size:11px;min-height:14px;width:100%}
+.intensity-legend{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px 12px;flex-wrap:wrap;width:auto;padding:2px 4px;color:var(--muted);font-size:11px;white-space:nowrap}.intensity-legend span{display:inline-flex;align-items:center;gap:5px}.legend-swatch{display:inline-block;width:12px;height:12px;border-radius:3px;border:1px solid #64748b;background:#172943}.legend-swatch.weak{background:#facc15;border-color:#facc15}.legend-swatch.strong{background:#ef4444;border-color:#ef4444}
+.status{text-align:left;color:var(--muted);font-size:11px;min-height:14px;width:auto;display:inline-flex;align-items:center}
 .project{background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:14px}.project-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.project-head h2{font-size:16px;margin:0;color:#fff}.project-head span{font-size:12px;color:var(--muted)}
-.measure{border:1px solid #40526e;border-radius:10px;padding:9px;margin:8px 0;background:#101b2e;overflow:hidden}.measure.playing{border-color:var(--green);box-shadow:0 0 0 1px rgba(32,215,160,.2)}.measure-top{display:flex;gap:10px;align-items:center;margin-bottom:8px}.measure-title{font-weight:700;font-size:12px;color:var(--cyan);min-width:60px}.annotation{font-size:11px;color:var(--yellow);flex:1;text-align:center}.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(55px,1fr));gap:4px}.slot{min-height:38px;border:1px solid #34445e;border-radius:6px;background:#0c1628;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}.slot.filled{color:#fff;border-color:#48627f;background:#172943}.slot.active-slot{border-color:var(--green);background:#12392f;color:#fff}.drum-row{margin:5px 0}.drum-label{font-size:10px;color:var(--muted);margin-bottom:3px}.drum-row .slots{grid-template-columns:repeat(auto-fit,minmax(42px,1fr))}.footer{text-align:center;color:#71839e;font-size:10px;margin-top:14px}
+.measure{border:1px solid #40526e;border-radius:10px;padding:9px;margin:8px 0;background:#101b2e;overflow:hidden}.measure.playing{border-color:var(--green);box-shadow:0 0 0 1px rgba(32,215,160,.2)}.measure.start-selected{outline:2px solid var(--cyan);outline-offset:1px}.measure-top{display:flex;gap:10px;align-items:center;margin-bottom:8px}.measure-title{font-weight:700;font-size:12px;color:var(--cyan);min-width:60px}.start-here{padding:5px 8px;font-size:10px;white-space:nowrap}.start-here.selected{background:var(--cyan);color:#06121e;border-color:var(--cyan)}.annotation{font-size:11px;color:var(--yellow);flex:1;text-align:center}.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(55px,1fr));gap:4px}.slot{min-height:38px;border:1px solid #34445e;border-radius:6px;background:#0c1628;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}.slot.filled{color:#fff;border-color:#48627f;background:#172943}.slot.intensity-weak,.slot.intensity-weak .chord,.slot.active-slot.intensity-weak{background:#facc15!important;color:#111827!important;border-color:#facc15!important}.slot.intensity-strong,.slot.intensity-strong .chord,.slot.active-slot.intensity-strong{background:#ef4444!important;color:#111827!important;border-color:#ef4444!important}.slot.active-slot{border-color:var(--green)}.drum-row{margin:5px 0}.drum-label{font-size:10px;color:var(--muted);margin-bottom:3px}.drum-row .slots{grid-template-columns:repeat(auto-fit,minmax(42px,1fr))}.footer{text-align:center;color:#71839e;font-size:10px;margin-top:14px}
 @media(max-width:650px){body{padding:10px 7px}.controls{justify-content:stretch}.control{flex:1}.slots{grid-template-columns:repeat(auto-fit,minmax(44px,1fr))}.project-head{display:block}.project-head span{display:block;margin-top:4px}}
 </style>
 </head>
@@ -2392,11 +2665,13 @@ body{padding:18px 12px 40px}.wrap{width:min(980px,100%);margin:0 auto}.top{text-
 <div class="controls">
 <div class="control"><label>BPM</label><input id="bpm" type="number" min="30" max="240" value="${Number(project.bpm)||90}"></div>
 <div class="control"><label>🔊 Vol Geral</label><input id="volume" type="range" min="0" max="2.5" step="0.05" value="${Number.isFinite(Number(project.volume))?Number(project.volume):1}"><span id="volumeValue"></span></div>
-<div class="control"><label>⏱️ Vol Metrônomo</label><input id="metroVolume" type="range" min="0" max="2.5" step="0.05" value="${Number.isFinite(Number(project.metroVolume))?Number(project.metroVolume):1.5}"><span id="metroVolumeValue"></span></div>
+<div class="control"><label>⏱️ Vol Metrônomo</label><input id="metroVolume" type="range" min="0" max="2.5" step="0.05" value="${Number.isFinite(Number(project.metroVolume))?Number(project.metroVolume):2.0}"><span id="metroVolumeValue"></span></div>
+<div class="control" id="drumVolumeControl" style="${project.isDrumProject?'display:none':''}"><label>🥁 Vol Bateria</label><input id="drumVolume" type="range" min="0" max="2.5" step="0.05" value="${Number.isFinite(Number(project.drumVolume))?Number(project.drumVolume):1.0}"><span id="drumVolumeValue"></span></div>
 <button class="btn" id="metroBtn">♩ Metrônomo: ${project.metronomeOn===false?'OFF':'ON'}</button>
 <button class="btn primary" id="playBtn">▶ Tocar</button>
 <button class="btn" id="stopBtn">■ Parar</button>
-<div class="status" id="status">Pronto para executar</div>
+<button class="btn" id="repeatAllBtn" aria-pressed="false">🔁 Repetir: OFF</button>
+<div class="status" id="status">Pronto para executar</div><div class="intensity-legend"><span><i class="legend-swatch weak"></i> Som fraco</span><span><i class="legend-swatch strong"></i> Som forte</span><span>Sem seta: nenhuma (padrão)</span><span>↓ Palhetada para baixo</span><span>↑ Palhetada para cima</span></div>
 </div>
 <div class="project">
 <div class="project-head"><h2>${String(project.songName||'Projeto sem nome').replace(/[&<>"']/g,'_')}</h2><span id="meta"></span></div>
@@ -2415,29 +2690,29 @@ const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const METERS=[['2/4',2,4],['3/4',3,4],['4/4',4,4],['5/4',5,4],['6/4',6,4],['7/4',7,4],['2/8',2,8],['3/8',3,8],['4/8',4,8],['5/8',5,8],['6/8',6,8],['7/8',7,8],['8/8',8,8],['9/8',9,8],['12/8',12,8]];
 const DRUMS=['Bumbo','Caixa','Hi-Hat Fechado','Hi-Hat Aberto','Aro de Caixa','Prato de Ataque'];
 function getMeter(m){return METERS.find(x=>x[0]===m)||['4/4',4,4]}
-function label(ch){if(!ch)return '';if(DRUMS.includes(ch.root)){return ({'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'H/F','Hi-Hat Aberto':'H/A','Aro de Caixa':'A/C','Prato de Ataque':'P/A'})[ch.root]||ch.root}const s=ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':'';return ch.root+s+(ch.bass?'/'+ch.bass:'')}
+function label(ch){if(!ch)return '';if(ch.repeatPrevious)return '%';if(DRUMS.includes(ch.root)){return ({'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'H/F','Hi-Hat Aberto':'H/A','Aro de Caixa':'A/C','Prato de Ataque':'P/A'})[ch.root]||ch.root}const s=ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':'';return ch.root+s+(ch.bass?'/'+ch.bass:'')}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function slotCount(m){return getMeter(m.meter)[1]*(m.subdivision||1)}
-function render(activeMi=-1,activeSi=-1){$('measures').innerHTML=measures.map((m,mi)=>{const rit=(m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<mi)?' ↩('+ (m.ritornelo+1) +')':'';let html='<div class="measure '+(mi===activeMi?'playing':'')+'"><div class="measure-top"><div class="measure-title">Comp. '+(mi+1)+' • '+esc(m.meter||'4/4')+rit+'</div><div class="annotation">'+esc(m.textAnnotation||'')+'</div></div>';
-if(project.isDrumProject){const n=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){html+='<div class="drum-row"><div class="drum-label">Voz '+(v+1)+'</div><div class="slots">';for(let si=0;si<n;si++){const idx=v*n+si,ch=m.slots?.[idx],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+'">'+esc(label(ch))+'</div>'}html+='</div></div>'}}
-else{html+='<div class="slots">';for(let si=0;si<slotCount(m);si++){const ch=m.slots?.[si],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+'">'+esc(label(ch))+'</div>'}html+='</div>'}return html+'</div>'}).join('')}
-let ctx=null,master=null,buffers={},guitar=null,playing=false,run=0,paused=false,resolvePause=null,metro=project.metronomeOn!==false;
+function render(activeMi=-1,activeSi=-1){$('measures').innerHTML=measures.map((m,mi)=>{const rit=(m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<mi)?' ↩('+ (m.ritornelo+1) +')':'';let html='<div class="measure '+(mi===activeMi?'playing ':'')+(mi===selectedStartMeasure?'start-selected':'')+'"><div class="measure-top"><div class="measure-title">Comp. '+(mi+1)+' • '+esc(m.meter||'4/4')+rit+'</div><div class="annotation">'+esc(m.textAnnotation||'')+'</div>'+(m.drumDemo?'<div class="annotation" style="color:var(--green)">🥁 '+esc(m.drumDemo.songName||'Demo bateria')+'</div><button type="button" class="btn" data-remove-demo="'+mi+'">✕ Remover bateria</button>':'')+'<button type="button" class="btn start-here '+(mi===selectedStartMeasure?'selected':'')+'" data-start-measure="'+mi+'" title="Começar a reprodução neste compasso">▶ A partir daqui</button></div>';
+if(project.isDrumProject){const n=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){html+='<div class="drum-row"><div class="drum-label">Voz '+(v+1)+'</div><div class="slots">';for(let si=0;si<n;si++){const idx=v*n+si,ch=m.slots?.[idx],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+(ch&&ch.intensity==='weak'?' intensity-weak':'')+(ch&&ch.intensity==='strong'?' intensity-strong':'')+'">'+esc(label(ch))+(ch&&ch.strumDirection==='up'?' ↑':ch&&ch.strumDirection==='down'?' ↓':'')+'</div>'}html+='</div></div>'}}
+else{html+='<div class="slots">';for(let si=0;si<slotCount(m);si++){const ch=m.slots?.[si],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+(ch&&ch.intensity==='weak'?' intensity-weak':'')+(ch&&ch.intensity==='strong'?' intensity-strong':'')+'">'+esc(label(ch))+(ch&&ch.strumDirection==='up'?' ↑':ch&&ch.strumDirection==='down'?' ↓':'')+'</div>'}html+='</div>'}return html+'</div>'}).join('')}
+let ctx=null,master=null,buffers={},guitar=null,playing=false,run=0,paused=false,resolvePause=null,metro=project.metronomeOn!==false,repeatAll=false,selectedStartMeasure=0;
 function ensure(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});master=ctx.createGain();master.connect(ctx.destination)}master.gain.setTargetAtTime(Number($('volume').value)||1,ctx.currentTime,.01);if(ctx.state==='suspended')ctx.resume()}
-function update(){ $('volumeValue').textContent=Math.round(Number($('volume').value)*100)+'%';$('metroVolumeValue').textContent=Math.round(Number($('metroVolume').value)*100)+'%';$('metroBtn').textContent='♩ Metrônomo: '+(metro?'ON':'OFF');$('playBtn').textContent=playing&&!paused?'⏸ Pausa':'▶ Tocar';$('meta').textContent='BPM: '+getBpm()+' • '+(project.isDrumProject?'Bateria':'Cordas')}
+function update(){ $('volumeValue').textContent=Math.round(Number($('volume').value)*100)+'%';$('metroVolumeValue').textContent=Math.round(Number($('metroVolume').value)*100)+'%';if($('drumVolume'))$('drumVolumeValue').textContent=Math.round(Number($('drumVolume').value)*100)+'%';$('metroBtn').textContent='♩ Metrônomo: '+(metro?'ON':'OFF');$('playBtn').textContent=playing&&!paused?'⏸ Pausa':'▶ Tocar';$('repeatAllBtn').textContent='🔁 Repetir: '+(repeatAll?'ON':'OFF');$('repeatAllBtn').classList.toggle('active',repeatAll);$('repeatAllBtn').setAttribute('aria-pressed',String(repeatAll));$('meta').textContent='BPM: '+getBpm()+' • '+(project.isDrumProject?'Bateria':'Cordas')}
 function getBpm(){return Math.max(30,Math.min(240,parseInt($('bpm').value)||90))}
 function dur(m){const [,n,d]=getMeter(m.meter);return 60/getBpm()*(4/d)/(m.subdivision||1)}
 function tick(t,accent){if(!metro)return;const vol=Number($('metroVolume').value)||0;if(vol<=0)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=accent?1300:900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime((accent?.055:.035)*vol,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.045);o.connect(g);g.connect(master);o.start(t);o.stop(t+.055)}
-async function decodeAll(){if(project.isDrumProject){await Promise.all(Object.keys(audioData).map(async k=>{if(!buffers[k]){try{const r=await fetch(audioData[k]);if(!r.ok)throw Error('Falha ao carregar '+k);buffers[k]=await ctx.decodeAudioData(await r.arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio',k,e)}}}))}else if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){console.warn('Falha ao carregar som de cordas',e)}}}
-function drum(name,t){if(buffers[name]){const s=ctx.createBufferSource();s.buffer=buffers[name];s.connect(master);s.start(t);return}const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=name==='Caixa'?180:120;g.gain.setValueAtTime(.5,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(master);o.start(t);o.stop(t+.13)}
+async function decodeAll(){if(project.isDrumProject){await Promise.all(Object.keys(audioData).map(async k=>{if(!buffers[k]){try{const r=await fetch(audioData[k]);if(!r.ok)throw Error('Falha ao carregar '+k);buffers[k]=await ctx.decodeAudioData(await r.arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio',k,e)}}}))}else{if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){console.warn('Falha ao carregar som de cordas',e)}}if(measures.some(m=>m.drumDemo)){await Promise.all(Object.keys(audioData).filter(k=>k!=='guitar').map(async k=>{if(!buffers[k]){try{buffers[k]=await ctx.decodeAudioData(await(await fetch(audioData[k])).arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio de bateria',k,e)}}}))}}}
+function connectDrumEQ(input,output,t){const pts=[{f:350,g:3,q:1},{f:800,g:-12,q:1.35},{f:3500,g:3,q:1},{f:6000,g:12,q:1.15},{f:8000,g:3,q:1},{f:10000,g:3,q:.8}];let p=input;for(const x of pts){const e=ctx.createBiquadFilter();e.type='peaking';e.frequency.setValueAtTime(x.f,t);e.Q.setValueAtTime(x.q,t);e.gain.setValueAtTime(x.g,t);p.connect(e);p=e}p.connect(output)}function drum(name,t,attachedDemo=false){const vol=attachedDemo&&$('drumVolume')?Math.max(0,Math.min(2.5,Number($('drumVolume').value)||0)):1;if(buffers[name]){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buffers[name];g.gain.setValueAtTime(vol,t);connectDrumEQ(s,g,t);g.connect(master);s.start(t);return}const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=name==='Caixa'?180:120;g.gain.setValueAtTime(.5*vol,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(master);o.start(t);o.stop(t+.13)}
 function noteFreq(n,o=4){const i=NOTES.indexOf(n);const midi=60+i+(o-4)*12;return 440*Math.pow(2,(midi-69)/12)}
 function chordNotes(ch){const ri=NOTES.indexOf(ch.root);if(ri<0)return [];const ints=ch.quality==='minor'?[0,3,7]:ch.quality==='dim'?[0,3,6]:ch.quality==='sus2'?[0,2,7]:[0,4,7];let a=ints.map((x,i)=>{const n=NOTES[(ri+x)%12];const o=3+Math.floor((ri+x)/12)+(i===0?1:0);return[n,o]});if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)a.unshift([ch.bass,3+(bi<ri?1:0)])}return a}
-function chord(ch,t){if(!ch)return;for(const [n,o] of chordNotes(ch)){const f=noteFreq(n,o);if(guitar){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=guitar;s.playbackRate.value=f/82.406889;g.gain.value=.9;s.connect(g);g.connect(master);s.start(t);s.stop(t+Math.min(2.6,guitar.duration/(f/82.406889)+.02))}else{const o1=ctx.createOscillator(),g=ctx.createGain();o1.type='triangle';o1.frequency.value=f;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.16,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+1.2);o1.connect(g);g.connect(master);o1.start(t);o1.stop(t+1.25)}}}
+let offlinePickNoiseBuffer=null;function offlinePickClick(t,level,total){if(!offlinePickNoiseBuffer){const len=Math.max(1,Math.floor(ctx.sampleRate*.035));offlinePickNoiseBuffer=ctx.createBuffer(1,len,ctx.sampleRate);const d=offlinePickNoiseBuffer.getChannelData(0);for(let i=0;i<len;i++){const f=1-i/len;d[i]=(Math.random()*2-1)*f*f}}const s=ctx.createBufferSource(),hp=ctx.createBiquadFilter(),peak=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=offlinePickNoiseBuffer;hp.type='highpass';hp.frequency.setValueAtTime(1400,t);hp.Q.value=.55;peak.type='peaking';peak.frequency.setValueAtTime(3200,t);peak.Q.value=.8;peak.gain.setValueAtTime(6,t);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime((.016/Math.sqrt(Math.max(1,total)))*level,t+.0015);g.gain.exponentialRampToValueAtTime(.0001,t+.032);s.connect(hp);hp.connect(peak);peak.connect(g);g.connect(master);s.start(t);s.stop(t+.036)}function chord(ch,t){if(!ch)return;const notes=chordNotes(ch),weak=ch.intensity==='weak',intensity=weak?.07:ch.intensity==='strong'?1.22:.95,ordered=ch.strumDirection==='up'?[...notes].reverse():notes;ordered.forEach(([n,o],i)=>{const at=t+i*.012,f=noteFreq(n,o),rate=Math.max(.25,f/82.406889);if(guitar){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=guitar;s.playbackRate.setValueAtTime(rate,at);g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(intensity*.68,at+.012);g.gain.setTargetAtTime(Math.max(.0001,intensity*.48),at+.014,.18);if(weak){s.connect(g);}else{const eqPoints=[{f:1000,g:-24,q:2.2},{f:1200,g:-20,q:3},{f:1300,g:-18,q:3},{f:1500,g:-4,q:1.5},{f:2000,g:-3,q:1.2},{f:5000,g:12,q:1.35},{f:8000,g:12,q:1.35}];const head=ctx.createGain();head.gain.setValueAtTime(.42,at);s.connect(head);let prev=head;for(const ep of eqPoints){const e=ctx.createBiquadFilter();e.type='peaking';e.frequency.setValueAtTime(ep.f,at);e.Q.setValueAtTime(ep.q,at);e.gain.setValueAtTime(ep.g,at);prev.connect(e);prev=e}prev.connect(g);}g.connect(master);s.start(at);s.stop(at+Math.min(2.6,guitar.duration/rate+.02))}else{const o1=ctx.createOscillator(),g=ctx.createGain();o1.type='triangle';o1.frequency.value=f;g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.16*(intensity/.9),at+.012);g.gain.exponentialRampToValueAtTime(.0001,at+1.2);o1.connect(g);g.connect(master);o1.start(at);o1.stop(at+1.25)}if(weak)offlinePickClick(at,1,ordered.length)})}
 function waitResume(){return new Promise(r=>resolvePause=r)}
 async function waitUntil(deadline){while(true){const left=deadline-performance.now();if(left<=1)return;await new Promise(r=>setTimeout(r,Math.min(left,25)))}}
-async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;const ritorneloCounters={};let mi=0;update();while(mi<measures.length&&playing&&run===my){const m=measures[mi],reps=Math.max(1,m.repeats||1),n=project.isDrumProject?getMeter(m.meter)[1]*(m.subdivision||1):m.slots.length;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const stepStartedAt=performance.now();const t=ctx.currentTime+.03;render(mi,si);if(metronomeSafe()&&si%(m.subdivision||1)===0)tick(t,true);if(project.isDrumProject){const per=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){const ch=m.slots?.[v*per+si];if(ch)drum(ch.root,t)}}else if(m.slots?.[si])chord(m.slots[si],t);await waitUntil(stepStartedAt+dur(m)*1000)}}if(!playing||run!==my)break;const target=m.ritornelo;if(target!==null&&target!==undefined&&target>=0&&target<mi){const maxReturns=Math.max(1,m.ritorneloRepeats||1);const used=ritorneloCounters[mi]||0;if(used<maxReturns){ritorneloCounters[mi]=used+1;mi=target;continue;}}mi++;}if(run===my)stop()}
+async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;const ritorneloCounters={};let mi=Math.max(0,Math.min(measures.length-1,selectedStartMeasure));update();while(playing&&run===my){while(mi<measures.length&&playing&&run===my){const m=measures[mi],reps=Math.max(1,m.repeats||1),chordSlots=getMeter(m.meter)[1]*(m.subdivision||1),drumSlots=(!project.isDrumProject&&m.drumDemo)?getMeter(m.drumDemo.meter||m.meter)[1]*(m.drumDemo.subdivision||1):0,n=Math.max(chordSlots,drumSlots),stepMs=dur(m)*1000*chordSlots/n;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const stepStartedAt=performance.now();const t=ctx.currentTime+.03;const chordSi=Math.floor(si*chordSlots/n);render(mi,chordSi);const previousChordSi=si===0?-1:Math.floor((si-1)*chordSlots/n);if(metronomeSafe()&&chordSi!==previousChordSi&&(previousChordSi<0||Math.floor(chordSi/(m.subdivision||1))!==Math.floor(previousChordSi/(m.subdivision||1))))tick(t,true);if(project.isDrumProject){const per=chordSlots;{const ds=Math.floor(si*per/n),previous=si===0?-1:Math.floor((si-1)*per/n);if(ds!==previous){for(let v=0;v<3;v++){const ch=m.slots?.[v*per+ds];if(ch)drum(ch.root,t)}}}}else{{const previousChord=si===0?-1:Math.floor((si-1)*chordSlots/n);if(chordSi!==previousChord&&m.slots?.[chordSi])chord(m.slots[chordSi],t)}if(m.drumDemo&&drumSlots){const ds=Math.floor(si*drumSlots/n),previous=si===0?-1:Math.floor((si-1)*drumSlots/n);if(ds!==previous){for(let v=0;v<3;v++){const ch=m.drumDemo.slots?.[v*drumSlots+ds];if(ch)drum(ch.root,t,true)}}}}await waitUntil(stepStartedAt+stepMs)}}if(!playing||run!==my)break;const target=m.ritornelo;if(target!==null&&target!==undefined&&target>=0&&target<mi){const maxReturns=Math.max(1,m.ritorneloRepeats||1);const used=ritorneloCounters[mi]||0;if(used<maxReturns){ritorneloCounters[mi]=used+1;mi=target;continue;}}mi++;}if(!playing||run!==my)break;if(repeatAll){mi=Math.max(0,Math.min(measures.length-1,selectedStartMeasure));for(const k of Object.keys(ritorneloCounters))delete ritorneloCounters[k];}else break;}if(run===my)stop()}
 function metronomeSafe(){return metro}
 function stop(){run++;playing=false;paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}render();update()}
-$('playBtn').onclick=play;$('stopBtn').onclick=stop;$('metroBtn').onclick=()=>{metro=!metro;update()};$('volume').oninput=update;$('metroVolume').oninput=update;$('bpm').oninput=update;render();update();
+$('measures').addEventListener('click',e=>{const rem=e.target.closest('[data-remove-demo]');if(rem){const ix=Number(rem.dataset.removeDemo);if(measures[ix]){measures[ix].drumDemo=null;render();}return;}const b=e.target.closest('[data-start-measure]');if(!b)return;if(playing)stop();selectedStartMeasure=Math.max(0,Math.min(measures.length-1,Number(b.dataset.startMeasure)||0));render();$('status').textContent='A reprodução começará no compasso '+(selectedStartMeasure+1)+'.';});$('playBtn').onclick=play;$('stopBtn').onclick=stop;$('repeatAllBtn').onclick=()=>{repeatAll=!repeatAll;update()};$('metroBtn').onclick=()=>{metro=!metro;update()};$('volume').oninput=update;$('metroVolume').oninput=update;if($('drumVolume'))$('drumVolume').oninput=update;$('bpm').oninput=update;render();update();
 })();
 </${'script'}>
 </body></html>`;
@@ -2457,7 +2732,18 @@ audioData={};
 if(project.isDrumProject){
 const urls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
 for(const [name,url] of Object.entries(urls)) audioData[name]=await urlParaDataUrl(url);
-}else audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
+}else{
+ audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
+ if((project.measures||[]).some(m=>m.drumDemo)){
+  const drumUrls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
+  for(const [name,url] of Object.entries(drumUrls))audioData[name]=await urlParaDataUrl(url);
+ }
+}
+}
+if(!project.isDrumProject && (project.measures||[]).some(m=>m.drumDemo)){
+ audioData=audioData||{};
+ const drumUrls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
+ for(const [name,url] of Object.entries(drumUrls)){if(!audioData[name])audioData[name]=await urlParaDataUrl(url);}
 }
 const html=projetoHtmlIndependente(project,audioData);
 
@@ -2523,3 +2809,5 @@ renderRecentProjects();
 
 </body>
 </html>
+
+  
