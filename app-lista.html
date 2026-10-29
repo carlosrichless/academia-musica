@@ -889,6 +889,7 @@ flex-shrink: 0;
 body:has(#scoreModal.open) .overlay{z-index:150}.score-edit-on .score-staff svg [data-score-slot]{cursor:pointer;pointer-events:all}.score-edit-on .score-measure-head [data-score-action]{cursor:pointer;color:#075ab6;text-decoration:underline}.score-measure{position:relative;cursor:pointer;transition:background .12s}
 .score-measure.score-selected{background:rgba(59,130,246,.13);box-shadow:inset 0 0 0 2px rgba(37,99,235,.28);border-radius:7px}
 .score-measure.score-playing{background:rgba(59,130,246,.20)}
+.score-edit-on .score-staff svg [data-score-slot].score-key-selected{fill:rgba(255,180,35,.28)!important;stroke:#ec8a00!important;stroke-width:2.5!important;stroke-dasharray:4 2;pointer-events:all}
 .score-staff svg [data-score-slot].score-current{fill:rgba(0,112,243,.19);stroke:#0070ef;stroke-width:1.5}
 .score-measure.score-playing .score-measure-head strong{color:#075ab6}
 
@@ -915,6 +916,157 @@ body:has(#scoreModal.open) .overlay{z-index:150}.score-edit-on .score-staff svg 
 .lyrics-editor-card textarea{display:block;width:100%;min-height:150px;resize:vertical;background:#0e182a;color:white;border:1px solid #58769a;border-radius:9px;padding:12px;font:16px Arial;margin:14px 0}
 .lyrics-editor-actions{display:flex;justify-content:flex-end;gap:10px}
 .score-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px;margin-bottom:12px;background:#172238;color:white;border-radius:10px}.score-controls label{font-size:12px}.score-page{background:#fff;color:#172033;border-radius:8px;padding:22px;max-width:1050px;margin:auto}.score-page h2{text-align:center;margin:0 0 8px}.score-page>p{text-align:center;margin:0 0 25px;color:#475569}.score-measure{border-bottom:1px solid #cbd5e1;margin:0 0 15px;padding-bottom:12px;break-inside:avoid}.score-measure-head{display:flex;gap:14px;flex-wrap:wrap;font-size:13px}.score-measure-head span{color:#77550c}.score-staff{display:flex;align-items:center;gap:8px;overflow-x:auto}.score-staff svg{min-width:360px;max-height:135px}.score-voice{min-width:42px;font-size:10px;color:#64748b}@media print{.score-page{padding:0}.score-measure{break-inside:avoid}}
+
+/* Layout responsivo da partitura: pauta inteira, sem rolagem lateral. */
+@media screen and (max-width: 650px) {
+ #scoreModal, #scoreModal .modal-content, #scoreModal .overlay-content {max-width:100%;min-width:0;box-sizing:border-box}
+ #scoreModal .score-page {width:100%;max-width:100%;padding:10px 7px;box-sizing:border-box;overflow:hidden}
+ #scoreModal .score-page h2{font-size:19px;line-height:1.22}
+ #scoreModal .score-page>p{font-size:11px;line-height:1.4;margin-bottom:13px}
+ #scoreModal .score-controls{display:flex;gap:7px;padding:9px;align-items:center}
+ #scoreModal .score-controls label{display:flex;align-items:center;gap:4px;min-width:0;font-size:11px}
+ #scoreModal .score-controls input[type=range]{width:92px;min-width:55px;max-width:32vw}
+ #scoreModal .score-measure{box-sizing:border-box;width:100%;max-width:100%;padding:8px 5px 12px;margin-bottom:10px;overflow:hidden;min-height:0}
+ #scoreModal .score-measure-layout{display:flex;flex-direction:column;gap:4px;min-height:0;width:100%;min-width:0}
+ #scoreModal .score-measure-sidebar{display:block;width:100%;min-width:0}
+ #scoreModal .score-measure-head{display:flex;flex-direction:row;flex-wrap:wrap;gap:5px!important;align-items:center;font-size:11px}
+ #scoreModal .score-measure-head strong{width:100%;font-size:12px}
+ #scoreModal .score-measure-head span{width:100%}
+ #scoreModal .score-edit-control{font-size:11px;padding:5px 7px;max-width:100%;white-space:normal}
+ #scoreModal .score-measure-main{width:100%;min-width:0;min-height:155px;position:relative;overflow:visible}
+ #scoreModal .score-staff{display:flex;align-items:center;width:100%;min-width:0;max-width:100%;overflow:visible;gap:0;margin-top:42px}
+ #scoreModal .score-measure-main .score-staff{margin-top:42px}
+ #scoreModal .score-voice:empty{display:none}
+ #scoreModal .score-voice:not(:empty){min-width:30px;max-width:30px;font-size:9px}
+ #scoreModal .score-staff svg{display:block;min-width:0!important;width:100%!important;max-width:100%;height:auto;max-height:none;flex:1 1 auto;overflow:visible}
+ #scoreModal .score-lyrics{max-width:92%;overflow-wrap:anywhere;font-size:12px}
+}
+
+/* Destaque de foco do teclado no cartão de ritornelo. */
+#ritorneloOverlay.open .modal select:focus,
+#ritorneloOverlay.open .modal button:focus,
+#ritorneloOverlay.open .modal select:focus-visible,
+#ritorneloOverlay.open .modal button:focus-visible {
+  outline: 4px solid #075bff !important;
+  outline-offset: 3px !important;
+  background: #fff0a6 !important;
+  color: #10213c !important;
+  border: 2px solid #075bff !important;
+  box-shadow: 0 0 0 7px rgba(255,210,0,.48), 0 5px 15px rgba(0,0,0,.22) !important;
+  transform: scale(1.025);
+  position: relative;
+  z-index: 3;
+}
+#ritorneloOverlay.open .modal .bass-row:focus-within {
+  background: #e9f2ff;
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 2px #90b8ff;
+}
+#ritorneloOverlay.open .modal select option:checked {
+  background: #ffdc60;
+  color: #101e35;
+}
+
+
+/* Alça de tamanho da letra: arraste o canto inferior direito no modo editor. */
+.score-edit-on .score-lyrics:not(:empty){padding-right:19px!important;padding-bottom:16px!important;box-sizing:border-box}
+
+.score-lyrics-size-badge{display:none;position:absolute;right:0;top:-27px;min-width:49px;padding:3px 7px;border-radius:6px;background:#164fa3;color:white;font:700 12px/1.3 Arial,sans-serif;text-align:center;white-space:nowrap;pointer-events:none;z-index:20;box-shadow:0 2px 6px #0003}
+.score-edit-on .score-lyrics:not(:empty) .score-lyrics-size-badge{display:block}
+.score-lyrics.is-resizing .score-lyrics-size-badge{background:#0c7a43;font-size:14px}
+.score-lyrics-resize{display:none;position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 0 43%,#2077df 44% 53%,transparent 54% 64%,#2077df 65% 75%,transparent 76%);border-bottom:2px solid #2077df;border-right:2px solid #2077df;border-radius:0 0 4px 0;z-index:10}
+.score-edit-on .score-lyrics:not(:empty) .score-lyrics-resize{display:block}
+
+/* Ajustes de dimensoes para celular, inclusive no HTML exportado. */
+@media screen and (max-width:650px){
+ .score-page{width:100%;max-width:100%;box-sizing:border-box;padding:10px 6px;overflow:hidden}
+ .score-measure{width:100%;max-width:100%;box-sizing:border-box;overflow:visible;padding:8px 3px 14px}
+ .score-measure-layout{display:flex!important;flex-direction:column!important;grid-template-columns:none!important;gap:4px!important;min-width:0!important;min-height:0!important}
+ .score-measure-sidebar,.score-measure-main{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box}
+ .score-measure-head{display:flex;flex-wrap:wrap;gap:5px;font-size:11px}
+ .score-measure-main{position:relative;min-height:155px;overflow:visible}
+ .score-staff,.score-measure-main .score-staff{width:100%;min-width:0;max-width:100%;overflow:visible;gap:0;margin-top:56px}
+ .score-staff svg{min-width:0!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;flex:1 1 auto}
+ .score-voice:empty{display:none}
+ .score-voice:not(:empty){min-width:28px;max-width:28px;font-size:9px}
+ .score-lyrics{max-width:min(92%,calc(100vw - 36px))!important;min-width:0!important;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word;line-height:1.25}
+ .score-edit-on .score-lyrics:not(:empty){padding:6px 25px 22px 8px!important;outline:2px dashed #3183e9}
+ .score-lyrics-resize{width:30px!important;height:30px!important;border-width:3px!important}
+ .score-lyrics-size-badge{top:-30px;right:0;font-size:12px}
+ .score-controls{flex-wrap:wrap;gap:6px;padding:8px}
+}
+
+/* CORREÇÃO DEFINITIVA: o flex do modal não pode herdar a largura mínima da pauta. */
+@media screen and (max-width:650px){
+ html,body{max-width:100%;overflow-x:hidden}
+ #scoreModal.fullscreen-overlay{left:0;right:0;top:0;bottom:0;width:100%;max-width:100%;min-width:0;padding:8px 6px 18px;overflow-x:hidden;align-items:stretch}
+ #scoreModal > div:first-child{width:100%;min-width:0;max-width:100%;display:flex!important;flex-wrap:wrap;align-items:center;gap:6px!important;margin-bottom:8px!important}
+ #scoreModal > div:first-child strong{font-size:13px;flex:1 1 125px}
+ #scoreModal #closeScoreBtn{font-size:11px;padding:8px;flex:0 1 auto;white-space:normal}
+ #scoreModal #scoreContent{display:block;flex:0 0 auto;width:100%;max-width:100%;min-width:0;overflow-x:hidden}
+ #scoreModal .score-controls{width:100%;min-width:0;max-width:100%;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:6px;padding:8px 6px}
+ #scoreModal .score-controls > *{min-width:0;max-width:100%;flex-shrink:1}
+ #scoreModal .score-controls button{font-size:11px;padding:8px 7px;white-space:normal}
+ #scoreModal .score-controls label{font-size:10px;flex:1 1 125px;max-width:calc(50% - 3px);white-space:normal}
+ #scoreModal .score-controls input[type=range]{min-width:0;width:100%;max-width:100%;flex:1 1 45px}
+ #scoreModal .score-page{display:block;width:100%;min-width:0;max-width:100%;margin:0;padding:10px 6px;overflow:hidden}
+ #scoreModal .score-page h2{font-size:17px;overflow-wrap:anywhere}
+ #scoreModal .score-measure{width:100%;min-width:0;max-width:100%;overflow:hidden;padding:7px 4px 10px;min-height:0}
+ #scoreModal .score-measure-layout{width:100%;min-width:0;max-width:100%;display:flex;flex-direction:column;gap:3px}
+ #scoreModal .score-measure-sidebar,#scoreModal .score-measure-main{width:100%;min-width:0;max-width:100%;flex:0 1 auto}
+ #scoreModal .score-measure-head{flex-direction:row;flex-wrap:wrap;gap:4px!important}
+ #scoreModal .score-measure-head strong{width:100%;font-size:11px}
+ #scoreModal .score-measure-main{min-height:0!important;padding-top:53px;overflow:hidden}
+ #scoreModal .score-measure-main .score-staff{display:flex;flex-direction:row;align-items:center;gap:0;width:100%;max-width:100%;min-width:0;margin-top:0!important;overflow:hidden}
+ #scoreModal .score-staff .score-voice:empty{display:none}
+ #scoreModal .score-staff .score-voice:not(:empty){flex:0 0 25px;min-width:25px;max-width:25px;font-size:8px}
+ #scoreModal .score-staff svg{display:block;flex:1 1 0;min-width:0!important;max-width:100%!important;width:100%!important;height:auto!important;max-height:none!important;overflow:hidden}
+ #scoreModal .score-lyrics{left:clamp(6px,calc(50% + var(--lyrics-x,0px)),calc(100% - 6px))!important;max-width:calc(100% - 12px)!important;overflow-wrap:anywhere;word-break:normal;white-space:pre-wrap;transform:translateX(-50%);line-height:1.2}
+}
+
+/* Identificação das partes da música: editor e partitura */
+.measure-annotation-input{cursor:pointer!important;user-select:none}
+.music-part-overlay{position:fixed;inset:0;z-index:280;background:rgba(3,9,19,.78);display:none;align-items:center;justify-content:center;padding:14px}
+.music-part-overlay.open{display:flex}
+.music-part-card{width:min(470px,100%);max-height:90dvh;overflow:auto;background:#18253a;border:2px solid #39b9ef;border-radius:15px;color:#fff;padding:17px;box-shadow:0 20px 65px #0008}
+.music-part-card h3{margin:0 0 5px;color:#20d7a0}
+.music-part-card p{margin:0 0 13px;color:#c6d5e9;font-size:12px}
+.music-part-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.music-part-choice{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:11px 9px;text-align:left;border:1px solid #536b8b;border-radius:8px;background:#101e32;color:white;font-size:13px;cursor:pointer}
+.music-part-choice span{font-weight:900;color:#ffd84d}
+.music-part-choice:hover,.music-part-choice:focus-visible{outline:2px solid #39b9ef;background:#29425e}
+.music-part-close{margin-top:13px;width:100%}
+.score-measure-head .score-part-label{display:inline-block!important;flex:0 0 auto;width:auto!important;box-sizing:border-box;border:2px solid #111!important;border-radius:3px;padding:3px 9px!important;margin-left:4cm!important;color:#000!important;background:#fff!important;font:700 13px/1.2 Arial,Helvetica,sans-serif!important;white-space:nowrap;cursor:default}
+.score-measure-head .score-part-label:empty{display:none!important}
+@media(max-width:650px){.score-measure-head .score-part-label{margin-left:clamp(0px,14vw,4cm)!important}}
+
+/* Botão próprio para escolher a parte de cada compasso no Modo Editor. */
+.score-measure-head .score-part-choice-btn{display:none;background:#e5f2ff;color:#103b78;border:1px solid #3386dc;border-radius:7px;padding:7px 10px;font-size:12px;font-weight:700;white-space:normal;text-decoration:none;cursor:pointer}
+.score-edit-on .score-measure-head .score-part-choice-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px}
+.score-edit-on .score-measure-head .score-part-choice-btn:hover,.score-edit-on .score-measure-head .score-part-choice-btn:focus-visible{background:#fff2ad;color:#16213b;outline:2px solid #2679e8;outline-offset:2px}
+@media(max-width:650px){.score-edit-on .score-measure-head .score-part-choice-btn{min-height:38px;margin:3px 0}}
+@media print{.score-measure-head .score-part-choice-btn{display:none!important}}
+
+/* Contagem de preparo, adaptada ao celular. */
+.countin-overlay{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(6,15,30,.66);pointer-events:none}
+.countin-overlay.active{display:flex}
+.countin-card{min-width:min(290px,85vw);padding:26px;text-align:center;border-radius:20px;background:#14233d;color:#fff;box-shadow:0 15px 60px #0008;border:2px solid #36c7ff}
+.countin-card strong{display:block;font-size:clamp(72px,24vw,132px);line-height:1.2;color:#ffd84d}
+.countin-card span{font-size:17px;font-weight:bold}
+
+/* Painel superior do modo partitura: mesmas configuracoes do editor. */
+#scoreModal .score-project-panel{width:100%;max-width:1050px;margin:0 auto 12px;padding:12px;background:#172238;color:#f3f7ff;border:1px solid #34445e;border-radius:10px;box-sizing:border-box}
+#scoreModal .score-project-fields{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:10px;margin-bottom:10px}
+#scoreModal .score-project-fields label{font-size:12px;color:#b8cbe8;display:flex;flex-direction:column;gap:5px;min-width:0}
+#scoreModal .score-project-fields input{width:100%;min-width:0;background:#0e182b;color:#fff;border:1px solid #40526e;border-radius:8px;padding:9px;font:14px Arial;box-sizing:border-box}
+#scoreModal .score-project-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#scoreModal .score-global-drum{display:flex;flex:1 1 460px;min-width:0;flex-wrap:wrap;align-items:center;gap:7px;padding:8px;border:1px solid #64748b;border-radius:8px;font-size:12px}
+#scoreModal .score-global-drum label{display:inline-flex;align-items:center;gap:4px}
+#scoreModal .score-global-drum select{background:#0e182b;color:white;border:1px solid #64748b;border-radius:6px;padding:6px}
+#scoreModal .score-global-drum #scoreGlobalDrumStatus{font-size:11px;overflow-wrap:anywhere}
+#scoreModal .score-top-status{display:flex;flex-wrap:wrap;gap:7px 13px;font-size:11px;color:#c9d6e9;margin-top:9px}
+#scoreModal .score-controls{max-width:1050px;margin:0 auto 10px;box-sizing:border-box}
+@media(max-width:650px){#scoreModal .score-project-panel{padding:8px 6px}#scoreModal .score-project-fields{grid-template-columns:minmax(0,1fr)}#scoreModal .score-project-actions>button{flex:1 1 140px}#scoreModal .score-global-drum{flex:1 1 100%}#scoreModal .score-global-drum button{font-size:11px;padding:7px}#scoreModal .score-top-status{font-size:10px}}
 </style>
 
 
@@ -1013,6 +1165,7 @@ body:has(#scoreModal.open) .overlay{z-index:150}.score-edit-on .score-staff svg 
 <input id="drumVolume" type="range" min="0.0" max="2.5" step="0.05" value="1.0">
 <span id="drumVolumeValue">100%</span>
 </div>
+<div class="control" id="globalDrumControl" style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px solid #668;padding:7px;border-radius:9px"><strong>🥁 Demo bateria (música inteira)</strong><label>Fórmula <select id="globalDrumMeter"></select></label><button type="button" class="btn primary" id="globalDrumChoose">Escolher levada</button><button type="button" class="btn dark" id="globalDrumRemove">Desligar</button><span id="globalDrumStatus" style="font-size:12px"></span></div>
 <button class="btn green" id="saveBtn">💾 Salvar Projeto</button>
 <button class="btn primary" id="saveDeviceBtn">💾 Salvar no Dispositivo</button>
 <div class="status" id="status">Projeto em edição</div><div class="intensity-legend" aria-label="Legenda de intensidade"><span><i class="legend-swatch weak"></i> Som fraco</span><span><i class="legend-swatch strong"></i> Som forte</span><span>Sem seta: nenhuma (padrão)</span><span>↓ Palhetada para baixo</span><span>↑ Palhetada para cima</span></div>
@@ -1031,7 +1184,16 @@ body:has(#scoreModal.open) .overlay{z-index:150}.score-edit-on .score-staff svg 
 </section>
 </main>
 
-<div class="fullscreen-overlay" id="scoreModal" style="background:#e7ebf1;color:#172033"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px"><strong>🎼 Visualização em partitura</strong><button class="btn dark" id="closeScoreBtn">← Voltar ao editor</button></div><div class="score-controls"><button class="btn green" id="scorePlay">▶ Tocar</button><button class="btn dark" id="scoreStop">■ Parar</button><button class="btn dark" id="scoreMetro">♩ Metrônomo: OFF</button><label>BPM <input type="number" id="scoreBpm" min="30" max="240" style="width:65px"></label><label>🔊 Geral <input type="range" id="scoreVolume" min="0" max="2.5" step="0.05"></label><label>⏱️ Metrônomo <input type="range" id="scoreMetroVolume" min="0" max="2.5" step="0.05"></label><label>🥁 Bateria <input type="range" id="scoreDrumVolume" min="0" max="2.5" step="0.05"></label><button class="btn dark" id="scoreEditToggle" type="button">Modo editor desligado</button></div><div id="scoreContent"></div></div>
+<div class="fullscreen-overlay" id="scoreModal" style="background:#e7ebf1;color:#172033"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px"><strong>🎼 Visualização em partitura</strong><button class="btn dark" id="closeScoreBtn">← Voltar ao editor</button></div><div class="score-controls"><button class="btn green" id="scorePlay">▶ Tocar</button><button class="btn dark" id="scoreStop">■ Parar</button><button class="btn dark" id="scoreMetro">♩ Metrônomo: OFF</button><label>BPM <input type="number" id="scoreBpm" min="30" max="240" style="width:65px"></label><label>🔊 Geral <input type="range" id="scoreVolume" min="0" max="2.5" step="0.05"><output id="scoreVolumePercent"></output></label><label>⏱️ Metrônomo <input type="range" id="scoreMetroVolume" min="0" max="2.5" step="0.05"><output id="scoreMetroVolumePercent"></output></label><label>🥁 Bateria <input type="range" id="scoreDrumVolume" min="0" max="2.5" step="0.05"><output id="scoreDrumVolumePercent"></output></label><button class="btn dark" id="scoreEditToggle" type="button">Modo editor desligado</button></div><section class="score-project-panel" aria-label="Configurações da música no modo partitura">
+<div class="score-project-fields">
+<label>Nome da música<input id="scoreSongName" type="text" placeholder="Nome da música"></label>
+<label>Tom da música<input id="scoreSongKey" type="text" placeholder="Tom"></label>
+</div>
+<div class="score-project-actions">
+<div class="score-global-drum" id="scoreGlobalDrumControl"><strong>🥁 Demo bateria (música inteira)</strong><label>Fórmula <select id="scoreGlobalDrumMeter"></select></label><button class="btn primary" type="button" id="scoreGlobalDrumChoose">Escolher levada</button><button class="btn dark" type="button" id="scoreGlobalDrumRemove">Desligar</button><span id="scoreGlobalDrumStatus"></span></div>
+<button class="btn green" id="scoreSaveProject" type="button">💾 Salvar Projeto</button><button class="btn primary" id="scoreSaveDevice" type="button">💾 Salvar no Dispositivo</button>
+</div><span id="scoreSaveStatus" style="display:none" aria-hidden="true"></span>
+</section><div id="scoreContent"></div></div>
 <!-- TELA DE LISTA DE DEMOS (15 PROJETOS) -->
 <div class="fullscreen-overlay" id="demoListModal">
 <div class="fs-header">
@@ -1286,6 +1448,7 @@ Cancelar
 <p>Escreva a letra abaixo. Depois você poderá arrastá-la sobre a partitura, inclusive no celular.</p>
 <textarea id="lyricsEditorText" placeholder="Digite a letra da música..."></textarea>
 <div class="lyrics-editor-actions"><button type="button" class="btn dark" id="lyricsEditorCancel">Cancelar</button><button type="button" class="btn green" id="lyricsEditorSave">Salvar letra</button></div></div></div>
+<div id="musicPartOverlay" class="music-part-overlay" role="dialog" aria-modal="true" aria-labelledby="musicPartTitle"><div class="music-part-card"><h3 id="musicPartTitle">🎼 Parte da música</h3><p>Selecione a parte para este compasso. A abreviação aparecerá no editor e na partitura.</p><div class="music-part-grid"><button type="button" class="music-part-choice" data-music-part=""><strong>Nenhuma parte</strong><span>—</span></button><button type="button" class="music-part-choice" data-music-part="IN"><strong>Introdução</strong><span>IN</span></button><button type="button" class="music-part-choice" data-music-part="V1"><strong>Verso 1</strong><span>V1</span></button><button type="button" class="music-part-choice" data-music-part="V2"><strong>Verso 2</strong><span>V2</span></button><button type="button" class="music-part-choice" data-music-part="V3"><strong>Verso 3</strong><span>V3</span></button><button type="button" class="music-part-choice" data-music-part="PRE"><strong>Pré-Refrão</strong><span>PRE</span></button><button type="button" class="music-part-choice" data-music-part="RF"><strong>Refrão</strong><span>RF</span></button><button type="button" class="music-part-choice" data-music-part="PT"><strong>Ponte</strong><span>PT</span></button><button type="button" class="music-part-choice" data-music-part="IT"><strong>Interlúdio</strong><span>IT</span></button><button type="button" class="music-part-choice" data-music-part="SL"><strong>Solo</strong><span>SL</span></button><button type="button" class="music-part-choice" data-music-part="CD"><strong>Final</strong><span>CD</span></button></div><button type="button" class="btn dark music-part-close" id="musicPartCancel">Cancelar</button></div></div>
 <script>
 const NOTES = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
 const DRUMS = [
@@ -1316,6 +1479,7 @@ const METERS = [
 
 let currentProjectId = null;
 let isCurrentProjectDrum = false;
+let globalDrumByMeter={};
 let isDemoMode = false;
 
 // Modo de edição de arquivo HTML aberto do dispositivo.
@@ -1389,7 +1553,7 @@ if(DRUMS.some(d=>d.label===ch.root)){
 const found=DRUMS.find(d=>d.label===ch.root);
 return found ? found.short : ch.root;
 }
-const suffix=ch.quality==="minor"?"m":ch.quality==="dim"?"°":ch.quality==="sus2"?"sus2":"";
+const suffix=ch.quality==="minor"?"m":ch.quality==="dim"?"°":ch.quality==="sus2"?"sus2":ch.quality==="7"?"7":"";
 return ch.root + suffix + (ch.bass ? "/"+ch.bass : "");
 }
 
@@ -1503,6 +1667,7 @@ arquivoAtualNome="";
 arquivoAtualAudioData=null;
 setEditorSaveMode(false);
 isCurrentProjectDrum=!!isDrum;
+globalDrumByMeter={};
 isDemoMode=false;
 activeFullscreenProject=null;
 currentProjectId="project_"+Date.now()+"_"+Math.random().toString(36).slice(2,8);
@@ -1525,12 +1690,16 @@ $("#keyFieldContainer").style.display=isDrum ? "none" : "";
 switchView("editorView");
 syncControlsUI();
 render();
+refreshGlobalDrumUI();
 }
 
 function openProject(project){
 if(!project || !Array.isArray(project.measures)) return;
 if(playbackState!=="STOPPED") stopPlaybackCompletely();
 isCurrentProjectDrum=!!project.isDrumProject;
+globalDrumByMeter=JSON.parse(JSON.stringify(project.globalDrumByMeter||{}));
+// Migração de projetos antigos: aproveita a primeira levada de cada fórmula.
+if(!project.globalDrumByMeter)for(const mm of project.measures){if(mm.drumDemo&&!globalDrumByMeter[mm.meter])globalDrumByMeter[mm.meter]=mm.drumDemo;}
 isDemoMode=false;
 activeFullscreenProject=null;
 currentProjectId=project.id || ("project_"+Date.now());
@@ -1553,6 +1722,7 @@ $("#editorHint").textContent=isCurrentProjectDrum ? "Toque em um slot para escol
 switchView("editorView");
 syncControlsUI();
 render();
+refreshGlobalDrumUI();
 }
 
 function renderRecentProjects(){
@@ -1592,9 +1762,33 @@ renderList(true,"projectsGridDrum");
 }
 
 
+let musicPartEditingMi=-1;
+function openMusicPartModal(mi){
+ if(!measures[mi])return;
+ musicPartEditingMi=mi;
+ const overlay=document.getElementById('musicPartOverlay');
+ overlay.classList.add('open');
+ const current=measures[mi].textAnnotation||'';
+ const btn=Array.from(overlay.querySelectorAll('[data-music-part]')).find(b=>b.dataset.musicPart===current);
+ (btn||overlay.querySelector('[data-music-part]')).focus();
+}
+function closeMusicPartModal(){document.getElementById('musicPartOverlay').classList.remove('open');musicPartEditingMi=-1;}
+document.getElementById('musicPartOverlay').addEventListener('click',e=>{
+ const btn=e.target.closest('[data-music-part]');
+ if(btn&&musicPartEditingMi>=0&&measures[musicPartEditingMi]){
+  measures[musicPartEditingMi].textAnnotation=btn.dataset.musicPart;
+  closeMusicPartModal();render();
+  if(document.getElementById('scoreModal').classList.contains('open'))refreshScoreAfterEdit();
+ }else if(e.target.id==='musicPartOverlay')closeMusicPartModal();
+});
+document.getElementById('musicPartCancel').addEventListener('click',closeMusicPartModal);
+document.getElementById('musicPartOverlay').addEventListener('keydown',e=>{
+ if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeMusicPartModal();}
+ if(e.key==='Tab'){const a=Array.from(e.currentTarget.querySelectorAll('button'));let i=a.indexOf(document.activeElement);i=(i+(e.shiftKey?-1:1)+a.length)%a.length;e.preventDefault();a[i].focus();}
+});
 function scoreMarkup(project){
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const chord=ch=>{if(!ch)return '';if(ch.repeatPrevious)return '%';return (ch.root||'')+(ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':'')+(ch.bass?'/'+ch.bass:'');};
+ const chord=ch=>{if(!ch)return '';if(ch.repeatPrevious)return '%';return (ch.root||'')+(ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':ch.quality==='7'?'7':'')+(ch.bass?'/'+ch.bass:'');};
  const drums={'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'HF','Hi-Hat Aberto':'HA','Aro de Caixa':'AC','Prato de Ataque':'PA'};
  function svgMeasure(m,voice,isDrum){
   const meter=String(m.meter||'4/4').split('/').map(Number),beats=meter[0]||4,den=meter[1]||4,sub=Math.max(1,Math.round(Number(m.subdivision)||1)),n=beats*sub;
@@ -1617,6 +1811,7 @@ function scoreMarkup(project){
       if(flags)stems.push({x:stemX,i,flags});
     }
     if(ch.strumDirection==='down'||ch.strumDirection==='up')out+='<text x="'+x+'" y="124" font-family="Arial,sans-serif" font-size="18" font-weight="bold" text-anchor="middle">'+(ch.strumDirection==='down'?'⊓':'∨')+'</text>';
+    if(ch.manualAccent)out+='<text x="'+x+'" y="38" font-size="19" font-weight="bold" text-anchor="middle" fill="#222">&gt;</text>';
     if(ch.intensity==='weak'){
       out+='<text x="'+(x-12)+'" y="'+(sy+5)+'" font-family="serif" font-size="26" text-anchor="middle">(</text>';
       out+='<text x="'+(x+12)+'" y="'+(sy+5)+'" font-family="serif" font-size="26" text-anchor="middle">)</text>';
@@ -1647,11 +1842,11 @@ function scoreMarkup(project){
   }else out+='<line x1="'+right+'" y1="53" x2="'+right+'" y2="93" stroke="#111" stroke-width="2"/>';
   return '<div class="score-staff"><div class="score-voice">'+(isDrum?'Voz '+(voice+1):'')+'</div><svg viewBox="0 0 '+width+' 128" width="100%" role="img" aria-label="Slash notation '+esc(m.meter||'4/4')+'">'+out+'</svg></div>';
  }
- return '<div class="score-page"><h2>'+esc(project.songName||'Partitura')+'</h2><p>Tom: '+esc(project.songKey||'-')+' · '+esc(project.bpm||90)+' BPM · Slash notation rítmica</p><p style="font-size:12px">Slash entre parênteses = ataque fraco (nota fantasma) · &gt; = acento relativo (ênfase em relação às notas fantasmas; não é indicação de dinâmica f) · ⊓ = palhetada para baixo · ∨ = palhetada para cima</p>'+(project.measures||[]).map((m,mi)=>{
+ return '<div class="score-page"><h2>'+esc(project.songName||'Partitura')+'</h2><p>Tom: '+esc(project.songKey||'-')+' · '+esc(project.bpm||90)+' BPM · Slash notation rítmica</p><p style="font-size:12px">Slash entre parênteses = ataque fraco (nota fantasma) · &gt; = acento relativo (ênfase em relação às notas fantasmas; não é indicação de dinâmica f) · ⊓ = palhetada para baixo · ∨ = palhetada para cima</p>'+'<p style="font-size:13px;color:#345">🥁 Bateria por fórmula: '+esc(Object.entries(project.globalDrumByMeter||{}).map(([k,v])=>k+' — '+v.songName).join(' · ')||'Desligada')+'</p>'+(project.measures||[]).map((m,mi)=>{
   const repeatStart=(project.measures||[]).some((other,j)=>j>=mi&&Number(other.ritornelo)===mi&&other.ritornelo!==null);
   const notationMeasure={...m,_scoreRepeatStart:repeatStart};
   let rows='';for(let v=0;v<(project.isDrumProject?3:1);v++)rows+=svgMeasure(notationMeasure,v,project.isDrumProject);
-  return '<section class="score-measure" data-score-mi="'+mi+'"><div class="score-measure-layout"><aside class="score-measure-sidebar"><div class="score-measure-head"><strong data-score-action="meter">Compasso '+(mi+1)+' · '+esc(m.meter||'4/4')+'</strong><span data-score-action="annotation">'+esc(m.textAnnotation||'')+'</span><button type="button" class="score-edit-control" data-score-action="ritornelo" title="Configurar ritornelo">↩ Ritornelo</button><button type="button" class="score-edit-control" data-score-action="duplicate">⧉ Duplicar</button><button type="button" class="score-edit-control" data-score-action="drumDemo">🥁 '+(m.drumDemo?'Demo Bateria ✓':'Demo Bateria / Desligado')+'</button><button type="button" class="score-edit-control" data-score-action="lyrics">✎ Letra</button></div></aside><div class="score-measure-main">'+rows+'<div class="score-lyrics" style="left:calc(50% + '+(Number(m.scoreLyricsX)||0)+'px);top:calc(10px + '+(Number(m.scoreLyricsY)||0)+'px)">'+esc(m.scoreLyrics||'')+'</div></div></div></section>';
+  return '<section class="score-measure" data-score-mi="'+mi+'"><div class="score-measure-layout"><aside class="score-measure-sidebar"><div class="score-measure-head"><strong data-score-action="meter">Compasso '+(mi+1)+' · '+esc(m.meter||'4/4')+'</strong><span class="score-part-label" data-score-action="annotation">'+esc(m.textAnnotation||'')+'</span><button type="button" class="score-edit-control score-part-choice-btn" data-score-action="annotation" title="Escolher parte da música deste compasso">🎼 Parte da música</button><button type="button" class="score-edit-control" data-score-action="ritornelo" title="Configurar ritornelo">↩ Ritornelo</button><button type="button" class="score-edit-control" data-score-action="duplicate">⧉ Duplicar</button><button type="button" class="score-edit-control" data-score-action="lyrics">✎ Letra</button></div></aside><div class="score-measure-main">'+rows+'<div class="score-lyrics" style="--lyrics-x:'+(Number(m.scoreLyricsX)||0)+'px;left:calc(50% + '+(Number(m.scoreLyricsX)||0)+'px);top:calc(10px + '+(Number(m.scoreLyricsY)||0)+'px);font-size:'+(Math.max(10,Math.min(48,Number(m.scoreLyricsSize)||14)))+'px">'+esc(m.scoreLyrics||'')+'<span class="score-lyrics-size-badge">'+(Math.max(10,Math.min(48,Number(m.scoreLyricsSize)||14)))+' px</span><span class="score-lyrics-resize" title="Arraste para alterar o tamanho da letra" aria-label="Redimensionar letra"></span></div></div></div></section>';
  }).join('')+'</div>';
 }
 
@@ -1666,6 +1861,7 @@ metronomeOn,
 volume:parseFloat($("#volume").value || "1.0"),
 metroVolume:parseFloat($("#metroVolume").value || "1.0"),
 drumVolume:parseFloat($("#drumVolume").value || "1.0"),
+globalDrumByMeter:JSON.parse(JSON.stringify(globalDrumByMeter)),
 measures:JSON.parse(JSON.stringify(measures))
 };
 }
@@ -1679,6 +1875,7 @@ renderRecentProjects();
 }
 
 function render(){
+refreshGlobalDrumUI();
 if(isCurrentProjectDrum){
 renderDrumEditor();
 return;
@@ -1706,7 +1903,7 @@ const ritTitle=hasRit ? `Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRe
 el.innerHTML=`
 <div class="measure-top">
 <div class="measure-title">Comp. ${mi+1} ${hasRit ? '↩('+(m.ritornelo+1)+')' : ''}</div>
-<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação (ex: Solo, Refrão)...">
+<button type="button" class="measure-annotation-input" data-annotation="${mi}" title="Escolher parte da música">${escapeHtml(m.textAnnotation || "Selecionar parte da música")}</button>
 <div class="measure-actions">
 <button class="icon-btn play" data-play-measure="${mi}" title="Tocar somente este compasso">▶</button>
 <button class="icon-btn duplicate-measure" data-duplicate="${mi}" title="Duplicar para o próximo compasso">⧉</button>
@@ -1718,7 +1915,7 @@ el.innerHTML=`
 <select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select>
 <div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision}</span><button data-sub-up="${mi}">▶</button></div>
 <div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div>
-<button class="measure-demo-btn" data-measure-demo="${mi}" title="Adicionar uma levada de bateria compatível com ${escapeHtml(m.meter)}">🥁 Demo bateria${m.drumDemo?` <span class="measure-demo-status">✓ ${escapeHtml(m.drumDemo.songName||'Selecionada')}</span>`:''}</button>${m.drumDemo?`<button class="icon-btn delete" data-remove-demo="${mi}" title="Remover a levada de bateria deste compasso">✕ Bateria</button>`:''}
+
 </div>
 <div class="slots">${slots}</div>
 `;
@@ -1753,10 +1950,10 @@ voiceHtmls.push(`<div class="drum-voice-row"><span class="drum-voice-label">Voz 
 el.innerHTML=`
 <div class="measure-top">
 <div class="measure-title">Comp. ${mi+1}</div>
-<input type="text" class="measure-annotation-input" data-annotation="${mi}" value="${escapeHtml(m.textAnnotation || '')}" placeholder="Anotação...">
+<button type="button" class="measure-annotation-input" data-annotation="${mi}" title="Escolher parte da música">${escapeHtml(m.textAnnotation || "Selecionar parte da música")}</button>
 <div class="measure-actions"><button class="icon-btn play" data-play-measure="${mi}">▶</button><button class="icon-btn duplicate-measure" data-duplicate="${mi}" title="Duplicar para o próximo compasso">⧉</button><button class="icon-btn delete" data-del="${mi}">🗑</button></div>
 </div>
-<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div><div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div><button class="measure-demo-btn" data-measure-demo="${mi}" title="Carregar uma levada editável de ${escapeHtml(m.meter)}">🥁 Demo bateria</button>${m.drumDemo?`<button class="icon-btn delete" data-remove-demo="${mi}" title="Remover a levada de bateria deste compasso">✕ Bateria</button>`:''}<button class="icon-btn ritornelo ${m.ritornelo!==null&&m.ritornelo!==undefined?'active':''}" data-rit="${mi}" title="${m.ritornelo!==null&&m.ritornelo!==undefined?`Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats||1} vez(es)`:'Configurar Ritornelo'}">↩</button></div>
+<div class="measure-settings"><select class="meter-select" data-meter="${mi}">${buildMeterOptions(m.meter)}</select><div class="subdivision"><button data-sub-down="${mi}">◀</button><span>x${m.subdivision||1}</span><button data-sub-up="${mi}">▶</button></div><div class="repeat-control" title="Repetições deste compasso"><span>🔁</span><button data-repeat-down="${mi}">−</button><strong>${m.repeats || 1}</strong><button data-repeat-up="${mi}">+</button></div><button class="icon-btn ritornelo ${m.ritornelo!==null&&m.ritornelo!==undefined?'active':''}" data-rit="${mi}" title="${m.ritornelo!==null&&m.ritornelo!==undefined?`Retorna para Comp. ${m.ritornelo+1} — ${m.ritorneloRepeats||1} vez(es)`:'Configurar Ritornelo'}">↩</button></div>
 <div class="drum-voices-container">${voiceHtmls.join("")}</div>
 `;
 measuresEl.appendChild(el);
@@ -1767,33 +1964,66 @@ bindMeasureDemoButtons();
 }
 
 
+function copyDrumDemoToNext(mi){
+ const source=measures[mi],target=measures[mi+1];
+ if(!source||!target){alert("Crie o próximo compasso antes de copiar a bateria.");return false;}
+ if(!source.drumDemo && !isCurrentProjectDrum){alert("Este compasso ainda não tem uma levada de bateria para duplicar.");return false;}
+ if(source.meter!==target.meter){alert("Os compassos precisam ter a mesma fórmula de compasso para duplicar a levada.");return false;}
+ if(isCurrentProjectDrum){
+  target.subdivision=source.subdivision;
+  target.slots=JSON.parse(JSON.stringify(source.slots||[]));
+  target.drumDemoSource=source.drumDemoSource||"Levada copiada";
+ }else{
+  if(!source.drumDemo){alert("Escolha primeiro uma Demo Bateria neste compasso para duplicar.");return false;}
+  target.drumDemo=JSON.parse(JSON.stringify(source.drumDemo));
+ }
+ selectedMeasure=mi+1;
+ render();
+ return true;
+}
+function refreshGlobalDrumUI(){
+ const box=$("#globalDrumControl");if(!box)return;
+ box.style.display=isCurrentProjectDrum?"none":"flex";
+ const sel=$("#globalDrumMeter"),old=sel.value||measures[selectedMeasure]?.meter||measures[0]?.meter||"4/4";
+ const meters=[...new Set(measures.map(m=>m.meter))];
+ sel.innerHTML=meters.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join("");
+ sel.value=meters.includes(old)?old:meters[0]||"4/4";
+ const d=globalDrumByMeter[sel.value];
+ $("#globalDrumStatus").textContent=d?"✓ "+d.songName:"Sem levada para "+sel.value;
+ $("#globalDrumRemove").style.display=d?"":"none";
+}
+$("#globalDrumMeter").addEventListener("change",refreshGlobalDrumUI);
+$("#globalDrumChoose").addEventListener("click",()=>openMeasureDemoChooser(Math.max(0,measures.findIndex(m=>m.meter===$("#globalDrumMeter").value))));
+$("#globalDrumRemove").addEventListener("click",()=>{delete globalDrumByMeter[$("#globalDrumMeter").value];refreshGlobalDrumUI();render();});
+function effectiveDrumDemo(m){return globalDrumByMeter[m.meter]||null;}
 function bindMeasureDemoButtons(){
+ measuresEl.querySelectorAll("[data-copy-demo]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();copyDrumDemoToNext(Number(btn.dataset.copyDemo));}));
   measuresEl.querySelectorAll("[data-remove-demo]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.dataset.removeDemo);if(measures[mi]){measures[mi].drumDemo=null;measures[mi].drumDemoSource=null;render();}}));
   measuresEl.querySelectorAll("[data-measure-demo]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();openMeasureDemoChooser(Number(btn.dataset.measureDemo));}));
 }
 function openMeasureDemoChooser(mi){
   if(!measures[mi])return;
   editingDemoMeasureMi=mi;
-  const meter=measures[mi].meter;
+  const meter=isCurrentProjectDrum?measures[mi].meter:($("#globalDrumMeter").value||measures[mi].meter);
   const demos=getDemoProjects().filter(p=>p.measures?.[0]?.meter===meter);
-  $("#measureDemoTitle").textContent=(isCurrentProjectDrum?"Carregar Demo de Bateria no Compasso ":"Adicionar Bateria ao Compasso ")+(mi+1);
-  $("#measureDemoDescription").textContent=`Fórmula de compasso: ${meter}. São exibidas somente as levadas compatíveis. ${isCurrentProjectDrum?"A levada escolhida preencherá as vozes deste compasso e poderá ser editada.":"A levada tocará junto com os acordes e será incluída no arquivo salvo no dispositivo."}`;
+  $("#measureDemoTitle").textContent=isCurrentProjectDrum?"Carregar Demo de Bateria no Compasso "+(mi+1):"Escolher levada para todos os compassos em "+meter;
+  $("#measureDemoDescription").textContent=`Fórmula de compasso: ${meter}. São exibidas somente as levadas compatíveis. ${isCurrentProjectDrum?"A levada escolhida preencherá as vozes deste compasso e poderá ser editada.":"A levada tocará em todos os compassos com esta fórmula e será incluída no arquivo salvo no dispositivo."}`;
   const host=$("#measureDemoChoices");
-  if(!demos.length){host.innerHTML='<p>Nenhuma levada demo disponível para esta fórmula de compasso.</p>';}else{host.innerHTML=demos.map(d=>`<button class="demo-choice" data-choose-measure-demo="${escapeHtml(d.id)}"><strong>${escapeHtml(d.songName)}</strong><small>${escapeHtml(d.measures[0].meter)} · ${d.measures[0].subdivision||1} subdivisão(ões) · ${d.bpm} BPM</small><small>Clique para ${isCurrentProjectDrum?'carregar e editar':'adicionar ao compasso'}</small></button>`).join("");}
+  if(!demos.length){host.innerHTML='<p>Nenhuma levada demo disponível para esta fórmula de compasso.</p>';}else{host.innerHTML=demos.map(d=>`<button class="demo-choice" data-choose-measure-demo="${escapeHtml(d.id)}"><strong>${escapeHtml(d.songName)}</strong><small>${escapeHtml(d.measures[0].meter)} · ${d.measures[0].subdivision||1} subdivisão(ões) · ${d.bpm} BPM</small><small>Clique para ${isCurrentProjectDrum?'carregar e editar':'aplicar à música inteira'}</small></button>`).join("");}
   host.querySelectorAll("[data-choose-measure-demo]").forEach(b=>b.addEventListener("click",()=>applyMeasureDemo(b.dataset.chooseMeasureDemo)));
   openOverlay("measureDemoOverlay");
 }
 function applyMeasureDemo(demoId){
   const mi=editingDemoMeasureMi,m=measures[mi];if(!m)return;
-  const demo=getDemoProjects().find(p=>p.id===demoId),pattern=demo?.measures?.[0];if(!demo||!pattern||pattern.meter!==m.meter)return;
+  const demo=getDemoProjects().find(p=>p.id===demoId),pattern=demo?.measures?.[0];if(!demo||!pattern||pattern.meter!==(isCurrentProjectDrum?m.meter:$("#globalDrumMeter").value))return;
   if(isCurrentProjectDrum){
     const [,beats]=getMeter(m.meter),sub=pattern.subdivision||1,per=beats*sub;
     m.subdivision=sub; m.slots=Array.from({length:per*3},(_,i)=>pattern.slots?.[i]?JSON.parse(JSON.stringify(pattern.slots[i])):null);
     m.drumDemoSource=demo.songName;
   }else{
-    m.drumDemo={songName:demo.songName,bpm:demo.bpm,meter:pattern.meter,subdivision:pattern.subdivision||1,slots:JSON.parse(JSON.stringify(pattern.slots||[]))};
+    globalDrumByMeter[pattern.meter]={songName:demo.songName,bpm:demo.bpm,meter:pattern.meter,subdivision:pattern.subdivision||1,slots:JSON.parse(JSON.stringify(pattern.slots||[]))};
   }
-  selectedMeasure=mi;closeOverlay("measureDemoOverlay");render();
+  selectedMeasure=mi;closeOverlay("measureDemoOverlay");render();refreshGlobalDrumUI();
 }
 
 function bindDuplicateMeasureButtons(){
@@ -1811,9 +2041,7 @@ function bindDuplicateMeasureButtons(){
 }
 
 function bindChordMeasureEvents(){
-measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>input.addEventListener("input",()=>{
-const mi=Number(input.dataset.annotation); if(measures[mi]) measures[mi].textAnnotation=input.value;
-}));
+measuresEl.querySelectorAll(".measure-annotation-input").forEach(btn=>btn.addEventListener("click",()=>openMusicPartModal(Number(btn.dataset.annotation))));
 measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();handlePlayAction("measure",Number(btn.dataset.playMeasure));}));
 measuresEl.querySelectorAll(".slot").forEach(slot=>slot.addEventListener("click",e=>{
 const mi=Number(slot.closest(".measure").dataset.mi), si=Number(slot.dataset.si);
@@ -1838,7 +2066,7 @@ render();
 }
 
 function bindDrumMeasureEvents(){
-measuresEl.querySelectorAll(".measure-annotation-input").forEach(input=>input.addEventListener("input",()=>{const mi=Number(input.dataset.annotation);if(measures[mi]) measures[mi].textAnnotation=input.value;}));
+measuresEl.querySelectorAll(".measure-annotation-input").forEach(btn=>btn.addEventListener("click",()=>openMusicPartModal(Number(btn.dataset.annotation))));
 measuresEl.querySelectorAll("[data-play-measure]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();handlePlayAction("measure",Number(btn.dataset.playMeasure));}));
 measuresEl.querySelectorAll(".slot").forEach(slot=>slot.addEventListener("click",()=>{const mi=Number(slot.closest(".measure").dataset.mi),si=Number(slot.dataset.si);selectedMeasure=mi;selected={mi,si};openDrumModal(mi,si);}));
 measuresEl.querySelectorAll("[data-trash]").forEach(btn=>btn.addEventListener("click",e=>{e.stopPropagation();const mi=Number(btn.closest(".measure").dataset.mi);measures[mi].slots[Number(btn.dataset.trash)]=null;render();}));
@@ -2090,7 +2318,7 @@ $("#playAll").addEventListener("click",()=>handlePlayAction("all",0));
 $("#stopAll").addEventListener("click",()=>stopPlaybackCompletely());
 
 function syncControlsUI(){
-if($("#scorePlay")){ $("#scorePlay").textContent=playbackState==="PLAYING"?"⏸ Pausa":"▶ Tocar";$("#scoreMetro").textContent="♩ Metrônomo: "+(metronomeOn?"ON":"OFF");$("#scoreBpm").value=getBpm();$("#scoreVolume").value=$("#volume").value;$("#scoreMetroVolume").value=$("#metroVolume").value;$("#scoreDrumVolume").value=$("#drumVolume").value;}
+if($("#scorePlay")){ $("#scorePlay").textContent=playbackState==="PLAYING"?"⏸ Pausa":"▶ Tocar";$("#scoreMetro").textContent="♩ Metrônomo: "+(metronomeOn?"ON":"OFF");$("#scoreBpm").value=getBpm();$("#scoreVolume").value=$("#volume").value;$("#scoreMetroVolume").value=$("#metroVolume").value;$("#scoreDrumVolume").value=$("#drumVolume").value;for(const [sid,eid] of [["scoreVolume","volume"],["scoreMetroVolume","metroVolume"],["scoreDrumVolume","drumVolume"]]){const out=document.getElementById(sid+"Percent");if(out)out.textContent=Math.round(Number($("#"+eid).value)*100)+"%";}}
 $("#bpm").value = getBpm();
 $("#fsBpmDisplay").textContent = getBpm()+" BPM";
 if(activeFullscreenProject){
@@ -2213,7 +2441,7 @@ function playDrumSound(drumType, when = audioCtx.currentTime, attachedDemo = fal
       const source = ctx.createBufferSource();
       source.buffer = audioBuffers[drumType];
       const gainNode = ctx.createGain();
-      gainNode.gain.setValueAtTime(demoVolume, when);
+      gainNode.gain.setValueAtTime(0.60 * demoVolume, when);
       connectDrumEQ(source,gainNode,ctx,when);
       gainNode.connect(masterGain || ctx.destination);
       source.start(when);
@@ -2226,7 +2454,7 @@ function playDrumSound(drumType, when = audioCtx.currentTime, attachedDemo = fal
   gain.connect(masterGain || ctx.destination);
   osc.type = "sine";
   osc.frequency.setValueAtTime(130, when);
-  gain.gain.setValueAtTime(0.8*demoVolume, when);
+  gain.gain.setValueAtTime(0.48*demoVolume, when);
   gain.gain.exponentialRampToValueAtTime(0.001, when + 0.15);
   osc.start(when); osc.stop(when + 0.15);
 }
@@ -2259,6 +2487,52 @@ const [,num,den]=getMeter(m.meter);
 return 60/getBpm()*(4/den)/(m.subdivision||1);
 }
 
+// A rolagem manual tem prioridade sobre o seguimento automático da partitura.
+let scoreManualUntil=0;
+let scoreAutoScrollUntil=0;
+const SCORE_MANUAL_HOLD_MS=8000;
+function suspendScoreAutoScroll(){scoreManualUntil=Date.now()+SCORE_MANUAL_HOLD_MS;lastAutoScoreMeasure=-1;}
+let lastAutoScoreMeasure=-1;
+function followScoreMeasure(element){
+ if(!element||Date.now()<scoreManualUntil)return;
+ const mi=Number(element.dataset.scoreMi);
+ if(mi===lastAutoScoreMeasure)return;
+ lastAutoScoreMeasure=mi;
+ const mobile=window.matchMedia('(max-width: 700px)').matches;
+ if(mobile){
+  const container=document.getElementById('scoreModal');
+  if(!container)return;
+  // Posicionar o compasso atual no terço superior da tela, não apenas quando sair da área visível.
+  const containerRect=container.getBoundingClientRect();
+  const rect=element.getBoundingClientRect();
+  const target=container.scrollTop+(rect.top-containerRect.top)-container.clientHeight*0.24;
+  scoreAutoScrollUntil=Date.now()+900;
+  container.scrollTo({top:Math.max(0,target),behavior:'auto'});
+ }else{
+  scoreAutoScrollUntil=Date.now()+900;
+  element.scrollIntoView({block:'nearest',behavior:'smooth'});
+ }
+}
+// Ao retomar o Play, cancelar a pausa de rolagem manual e enquadrar imediatamente o compasso em execução.
+function resumeScoreFollowAtPlayback(){
+ if(!scoreIsVisible())return;
+ scoreManualUntil=0;
+ lastAutoScoreMeasure=-1;
+ const mi=activePlayingSlot?.mi>=0?activePlayingSlot.mi:currentPlayMi;
+ const el=document.querySelector('#scoreContent [data-score-mi="'+mi+'"]');
+ if(el)followScoreMeasure(el);
+}
+function scoreIsVisible(){return !!document.getElementById("scoreModal")?.classList.contains("open");}
+for(const eventName of ["wheel","touchmove","pointerdown"]){
+ document.addEventListener(eventName,event=>{
+  if(!scoreIsVisible() || !event.target.closest("#scoreContent"))return;
+  if(eventName==="pointerdown" && event.pointerType==="touch")return;
+  if(eventName==="pointerdown" && event.target.closest("button,input,select,textarea"))return;
+  suspendScoreAutoScroll();
+ },{passive:true,capture:true});
+}
+// Não confundir a rolagem automática do navegador com um gesto do aluno.
+// Somente wheel/touchstart/pointerdown suspendem o acompanhamento.
 function updateScoreCursor(mi,si){
  const modal=document.getElementById("scoreModal");
  if(!modal || !modal.classList.contains("open"))return;
@@ -2267,7 +2541,7 @@ function updateScoreCursor(mi,si){
   el.classList.toggle("score-playing",active);
   el.classList.toggle("score-selected",Number(el.dataset.scoreMi)===scoreStartMeasure);
   el.querySelectorAll("[data-score-slot]").forEach(slot=>slot.classList.toggle("score-current",active&&Number(slot.dataset.scoreSlot)===si));
-  if(active&&si===0)el.scrollIntoView({block:"nearest",behavior:"smooth"});
+  if(active&&si===0)followScoreMeasure(el);
  });
 }
 function updateActiveSlotDOM(mi,si){
@@ -2284,7 +2558,7 @@ const idx=NOTES.indexOf(note);const midi=60+idx+(octave-4)*12;return 440*Math.po
 
 function chordNotes(ch){
 const rootIdx=NOTES.indexOf(ch.root);if(rootIdx<0)return [];
-const intervals=ch.quality==="minor"?[0,3,7]:ch.quality==="dim"?[0,3,6]:ch.quality==="sus2"?[0,2,7]:[0,4,7];
+const intervals=ch.quality==="minor"?[0,3,7]:ch.quality==="dim"?[0,3,6]:ch.quality==="sus2"?[0,2,7]:ch.quality==="7"?[0,4,7,10]:[0,4,7];
 let arr=intervals.map((x,i)=>{const n=NOTES[(rootIdx+x)%12];const oct=3+Math.floor((rootIdx+x)/12);return {note:n,oct};});
 if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)arr.unshift({note:ch.bass,oct:3+(bi<rootIdx?1:0)});}
 return arr;
@@ -2441,17 +2715,17 @@ function waitForResume(){return new Promise(resolve=>{playbackPromiseResolve=res
 
 function targetMeasuresHaveDrumDemo(mode,startMi){
   const list=activeFullscreenProject?activeFullscreenProject.measures:measures;
-  if(mode==="measure")return !!list[startMi]?.drumDemo;
-  return list.some(m=>m.drumDemo);
+  if(mode==="measure")return !!effectiveDrumDemo(list[startMi]);
+  return list.some(m=>effectiveDrumDemo(m));
 }
 function playbackStepPlan(m,isDrumProject){
   const chordSlots=getMeter(m.meter)[1]*(m.subdivision||1);
-  const drumSlots=(!isDrumProject&&m.drumDemo)?getMeter(m.drumDemo.meter||m.meter)[1]*(m.drumDemo.subdivision||1):0;
+  const drumSlots=(!isDrumProject&&effectiveDrumDemo(m))?getMeter(effectiveDrumDemo(m).meter||m.meter)[1]*(effectiveDrumDemo(m).subdivision||1):0;
   const totalSlots=Math.max(chordSlots,drumSlots||0);
   return {chordSlots,drumSlots,totalSlots,stepMs:slotDuration(m)*1000*chordSlots/totalSlots};
 }
 function playAttachedDrumDemoStep(m,si,totalSlots,when){
-  const demo=m.drumDemo;if(!demo?.slots?.length)return;
+  const demo=effectiveDrumDemo(m);if(!demo?.slots?.length)return;
   const per=getMeter(demo.meter||m.meter)[1]*(demo.subdivision||1);
   const ds=Math.floor(si*per/totalSlots);
   const previous=si===0?-1:Math.floor((si-1)*per/totalSlots);
@@ -2459,14 +2733,44 @@ function playAttachedDrumDemoStep(m,si,totalSlots,when){
   for(let v=0;v<3;v++){const ch=demo.slots[v*per+ds];if(ch?.root)playDrumSound(ch.root,when,true);}
 }
 
+
+// Contagem inicial: um compasso completo na formula musical, sem subdivisoes.
+function showCountInNumber(n,total){
+ let el=document.getElementById('countInOverlay');
+ if(!el){el=document.createElement('div');el.id='countInOverlay';el.className='countin-overlay';el.innerHTML='<div class="countin-card"><span>Preparar • <b class="countin-meter"></b></span><strong class="countin-number"></strong></div>';document.body.appendChild(el);}
+ el.querySelector('.countin-meter').textContent=total+' tempos';
+ el.querySelector('.countin-number').textContent=n;el.classList.add('active');
+}
+function hideCountIn(){document.getElementById('countInOverlay')?.classList.remove('active');}
+async function runCountIn(m,runId){
+ const [,beats,den]=getMeter(m.meter);const bpm=getBpm();
+ const beatMs=60000/bpm*4/den;
+ for(let i=0;i<beats;i++){
+  if(playbackRunId!==runId||playbackState==='STOPPED'){hideCountIn();return false;}
+  while(playbackState==='PAUSED'&&playbackRunId===runId)await waitForResume();
+  if(playbackRunId!==runId||playbackState==='STOPPED'){hideCountIn();return false;}
+  showCountInNumber(i+1,beats);const start=performance.now();
+  tick(audioCtx.currentTime+.015,i===0);
+  while(performance.now()-start<beatMs){
+   if(playbackRunId!==runId||playbackState==='STOPPED'){hideCountIn();return false;}
+   if(playbackState==='PAUSED'){await waitForResume();break;}
+   await sleep(Math.min(25,Math.max(1,beatMs-(performance.now()-start))));
+  }
+ }
+ hideCountIn();return playbackRunId===runId&&playbackState!=='STOPPED';
+}
+
 async function handlePlayAction(mode,startMi){
 ensureAudio();await audioCtx.resume();
 if(!isCurrentProjectDrum){ try{ await loadGuitarStringE(); }catch(e){} if(targetMeasuresHaveDrumDemo(mode,startMi)) await loadDrumSamples(); }
 else { await loadDrumSamples(); }
 if(playbackState==="PLAYING"){playbackState="PAUSED";syncControlsUI();return;}
-if(playbackState==="PAUSED"){playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
+if(playbackState==="PAUSED"){resumeScoreFollowAtPlayback();playbackState="PLAYING";if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}syncControlsUI();return;}
 playbackRunId++;const currentRun=playbackRunId;playbackState="PLAYING";playbackMode=mode;syncControlsUI();
 const targetMeasures=activeFullscreenProject?activeFullscreenProject.measures:measures;ritorneloCounters={};
+const countMeasure=targetMeasures[Math.max(0,Math.min(startMi,targetMeasures.length-1))];
+if(countMeasure && !(await runCountIn(countMeasure,currentRun)))return;
+
 if(mode==="measure"){
 if(startMi<0||startMi>=targetMeasures.length){stopPlaybackCompletely();return;}
 const mi=startMi,m=targetMeasures[mi],repetitions=Math.max(1,m.repeats||1);
@@ -2477,7 +2781,7 @@ for(let si=0;si<playbackSlots && playbackState!=="STOPPED" && playbackRunId===cu
 while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();
 if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
 const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;const visualSi=Math.floor(si*plan.chordSlots/playbackSlots);activePlayingSlot={mi,si:visualSi};if(activeFullscreenProject)renderFullscreenMeasures(mi,visualSi);else updateActiveSlotDOM(mi,visualSi);
-const previousVisualSi=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(metronomeOn&&visualSi!==previousVisualSi&&(previousVisualSi<0||Math.floor(visualSi/(m.subdivision||1))!==Math.floor(previousVisualSi/(m.subdivision||1))))tick(when,true);
+const previousVisualSi=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(metronomeOn&&(si===0||Math.floor(si*beatsNum/playbackSlots)!==Math.floor((si-1)*beatsNum/playbackSlots)))tick(when,si===0);
 if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);{const drumSi=Math.floor(si*slotsPerVoice/playbackSlots),previous=si===0?-1:Math.floor((si-1)*slotsPerVoice/playbackSlots);if(drumSi!==previous){for(let v=0;v<3;v++){const idx=v*slotsPerVoice+drumSi;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}}}else{{const chordSi=Math.floor(si*plan.chordSlots/playbackSlots),previous=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(chordSi!==previous&&m.slots[chordSi])playChord(m.slots[chordSi],when);}playAttachedDrumDemoStep(m,si,playbackSlots,when);}
 await waitUntilStepDeadline(stepStartedAt+plan.stepMs);
 }
@@ -2494,7 +2798,7 @@ const plan=playbackStepPlan(m,isCurrentProjectDrum);const playbackSlots=plan.tot
 for(let si=startSi;si<playbackSlots&&playbackState!=="STOPPED"&&playbackRunId===currentRun;si++){
 currentPlaySi=si;while(playbackState==="PAUSED"&&playbackRunId===currentRun)await waitForResume();if(playbackState==="STOPPED"||playbackRunId!==currentRun)break;
 const stepStartedAt=performance.now();const when=audioCtx.currentTime+.035;activePlayingSlot={mi:currentPlayMi,si};if(activeFullscreenProject)renderFullscreenMeasures(currentPlayMi,si);else updateActiveSlotDOM(currentPlayMi,si);
-if(metronomeOn&&si%(m.subdivision||1)===0)tick(when,true);
+if(metronomeOn&&(si===0||Math.floor(si*beatsNum/playbackSlots)!==Math.floor((si-1)*beatsNum/playbackSlots)))tick(when,si===0);
 if(isCurrentProjectDrum){const [,beatsNum]=getMeter(m.meter),slotsPerVoice=beatsNum*(m.subdivision||1);{const drumSi=Math.floor(si*slotsPerVoice/playbackSlots),previous=si===0?-1:Math.floor((si-1)*slotsPerVoice/playbackSlots);if(drumSi!==previous){for(let v=0;v<3;v++){const idx=v*slotsPerVoice+drumSi;if(m.slots[idx])playDrumSound(m.slots[idx].root,when);}}}}else{{const chordSi=Math.floor(si*plan.chordSlots/playbackSlots),previous=si===0?-1:Math.floor((si-1)*plan.chordSlots/playbackSlots);if(chordSi!==previous&&m.slots[chordSi])playChord(m.slots[chordSi],when);}playAttachedDrumDemoStep(m,si,playbackSlots,when);}
 await waitUntilStepDeadline(stepStartedAt+plan.stepMs);
 }
@@ -2508,6 +2812,7 @@ if(playbackRunId===currentRun)stopPlaybackCompletely();
 }
 
 function stopPlaybackCompletely(){
+hideCountIn();
 playbackRunId++;playbackState="STOPPED";playbackMode="all";ritorneloCounters={};if(playbackPromiseResolve){const resolveFn=playbackPromiseResolve;playbackPromiseResolve=null;resolveFn();}activePlayingSlot={mi:-1,si:-1};updateScoreCursor(-1,-1);currentPlayMi=0;currentPlaySi=0;currentPlayRep=0;syncControlsUI();render();if(activeFullscreenProject)renderFullscreenMeasures(-1,-1);
 }
 
@@ -2587,7 +2892,7 @@ if(playbackState==="STOPPED"||playbackRunId!==currentRun)return;
 if(performance.now()>=demoTargetEndAt)break;
 const stepStartedAt=performance.now();
 const when=audioCtx.currentTime+.035;
-if(metronomeOn&&si%subdivisionVal===0)tick(when,true);
+if(metronomeOn&&si%subdivisionVal===0)tick(when,si===0);
 for(let v=0;v<3;v++){
 const idx=v*slotsPerVoice+si;
 if(m.slots[idx])playDrumSound(m.slots[idx].root,when);
@@ -2804,6 +3109,80 @@ body{padding:18px 12px 40px}.wrap{width:min(980px,100%);margin:0 auto}.top{text-
 .score-controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px;margin-bottom:12px;background:#172238;color:white;border-radius:10px}.score-controls label{font-size:12px}.score-page{background:#fff;color:#172033;border-radius:8px;padding:22px;max-width:1050px;margin:auto}.score-page h2{text-align:center;margin:0 0 8px}.score-page>p{text-align:center;margin:0 0 25px;color:#475569}.score-measure{border-bottom:1px solid #cbd5e1;margin:0 0 15px;padding-bottom:12px;break-inside:avoid}.score-measure-head{display:flex;gap:14px;flex-wrap:wrap;font-size:13px}.score-measure-head span{color:#77550c}.score-staff{display:flex;align-items:center;gap:8px;overflow-x:auto}.score-staff svg{min-width:360px;max-height:135px}.score-voice{min-width:42px;font-size:10px;color:#64748b}@media print{.score-page{padding:0}.score-measure{break-inside:avoid}}
 .footer{text-align:center;color:#71839e;font-size:10px;margin-top:14px}
 @media(max-width:650px){body{padding:10px 7px}.controls{justify-content:stretch}.control{flex:1}.slots{grid-template-columns:repeat(auto-fit,minmax(44px,1fr))}.project-head{display:block}.project-head span{display:block;margin-top:4px}}
+
+/* Layout responsivo da partitura: pauta inteira, sem rolagem lateral. */
+@media screen and (max-width: 650px) {
+ #scoreModal, #scoreModal .modal-content, #scoreModal .overlay-content {max-width:100%;min-width:0;box-sizing:border-box}
+ #scoreModal .score-page {width:100%;max-width:100%;padding:10px 7px;box-sizing:border-box;overflow:hidden}
+ #scoreModal .score-page h2{font-size:19px;line-height:1.22}
+ #scoreModal .score-page>p{font-size:11px;line-height:1.4;margin-bottom:13px}
+ #scoreModal .score-controls{display:flex;gap:7px;padding:9px;align-items:center}
+ #scoreModal .score-controls label{display:flex;align-items:center;gap:4px;min-width:0;font-size:11px}
+ #scoreModal .score-controls input[type=range]{width:92px;min-width:55px;max-width:32vw}
+ #scoreModal .score-measure{box-sizing:border-box;width:100%;max-width:100%;padding:8px 5px 12px;margin-bottom:10px;overflow:hidden;min-height:0}
+ #scoreModal .score-measure-layout{display:flex;flex-direction:column;gap:4px;min-height:0;width:100%;min-width:0}
+ #scoreModal .score-measure-sidebar{display:block;width:100%;min-width:0}
+ #scoreModal .score-measure-head{display:flex;flex-direction:row;flex-wrap:wrap;gap:5px!important;align-items:center;font-size:11px}
+ #scoreModal .score-measure-head strong{width:100%;font-size:12px}
+ #scoreModal .score-measure-head span{width:100%}
+ #scoreModal .score-edit-control{font-size:11px;padding:5px 7px;max-width:100%;white-space:normal}
+ #scoreModal .score-measure-main{width:100%;min-width:0;min-height:155px;position:relative;overflow:visible}
+ #scoreModal .score-staff{display:flex;align-items:center;width:100%;min-width:0;max-width:100%;overflow:visible;gap:0;margin-top:42px}
+ #scoreModal .score-measure-main .score-staff{margin-top:42px}
+ #scoreModal .score-voice:empty{display:none}
+ #scoreModal .score-voice:not(:empty){min-width:30px;max-width:30px;font-size:9px}
+ #scoreModal .score-staff svg{display:block;min-width:0!important;width:100%!important;max-width:100%;height:auto;max-height:none;flex:1 1 auto;overflow:visible}
+ #scoreModal .score-lyrics{max-width:92%;overflow-wrap:anywhere;font-size:12px}
+}
+
+/* Alça de tamanho da letra: arraste o canto inferior direito no modo editor. */
+.score-edit-on .score-lyrics:not(:empty){padding-right:19px!important;padding-bottom:16px!important;box-sizing:border-box}
+
+.score-lyrics-size-badge{display:none;position:absolute;right:0;top:-27px;min-width:49px;padding:3px 7px;border-radius:6px;background:#164fa3;color:white;font:700 12px/1.3 Arial,sans-serif;text-align:center;white-space:nowrap;pointer-events:none;z-index:20;box-shadow:0 2px 6px #0003}
+.score-edit-on .score-lyrics:not(:empty) .score-lyrics-size-badge{display:block}
+.score-lyrics.is-resizing .score-lyrics-size-badge{background:#0c7a43;font-size:14px}
+.score-lyrics-resize{display:none;position:absolute;right:0;bottom:0;width:22px;height:22px;cursor:nwse-resize;touch-action:none;background:linear-gradient(135deg,transparent 0 43%,#2077df 44% 53%,transparent 54% 64%,#2077df 65% 75%,transparent 76%);border-bottom:2px solid #2077df;border-right:2px solid #2077df;border-radius:0 0 4px 0;z-index:10}
+.score-edit-on .score-lyrics:not(:empty) .score-lyrics-resize{display:block}
+
+/* Ajustes de dimensoes para celular, inclusive no HTML exportado. */
+@media screen and (max-width:650px){
+ .score-page{width:100%;max-width:100%;box-sizing:border-box;padding:10px 6px;overflow:hidden}
+ .score-measure{width:100%;max-width:100%;box-sizing:border-box;overflow:visible;padding:8px 3px 14px}
+ .score-measure-layout{display:flex!important;flex-direction:column!important;grid-template-columns:none!important;gap:4px!important;min-width:0!important;min-height:0!important}
+ .score-measure-sidebar,.score-measure-main{width:100%!important;max-width:100%!important;min-width:0!important;box-sizing:border-box}
+ .score-measure-head{display:flex;flex-wrap:wrap;gap:5px;font-size:11px}
+ .score-measure-main{position:relative;min-height:155px;overflow:visible}
+ .score-staff,.score-measure-main .score-staff{width:100%;min-width:0;max-width:100%;overflow:visible;gap:0;margin-top:56px}
+ .score-staff svg{min-width:0!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;flex:1 1 auto}
+ .score-voice:empty{display:none}
+ .score-voice:not(:empty){min-width:28px;max-width:28px;font-size:9px}
+ .score-lyrics{max-width:min(92%,calc(100vw - 36px))!important;min-width:0!important;box-sizing:border-box;overflow-wrap:anywhere;word-break:break-word;line-height:1.25}
+ .score-edit-on .score-lyrics:not(:empty){padding:6px 25px 22px 8px!important;outline:2px dashed #3183e9}
+ .score-lyrics-resize{width:30px!important;height:30px!important;border-width:3px!important}
+ .score-lyrics-size-badge{top:-30px;right:0;font-size:12px}
+ .score-controls{flex-wrap:wrap;gap:6px;padding:8px}
+}
+
+@media screen and (max-width:650px){
+ html,body{width:100%;max-width:100%;overflow-x:hidden}
+ body{padding:9px 6px 24px}
+ .wrap,.project,#offlineScore{width:100%;min-width:0;max-width:100%;overflow-x:hidden}
+ .controls{width:100%;min-width:0;gap:6px;padding:8px 5px;justify-content:flex-start}
+ .controls .control{min-width:0;max-width:100%;flex:1 1 130px;flex-wrap:wrap}
+ .controls input[type=range]{min-width:0;max-width:100%;width:100%}
+ .score-page{display:block;width:100%;min-width:0;max-width:100%;padding:10px 6px;overflow:hidden}
+ .score-page h2{font-size:17px;overflow-wrap:anywhere}
+ .score-measure{width:100%;min-width:0;max-width:100%;overflow:hidden;padding:7px 4px 10px;min-height:0}
+ .score-measure-layout{display:flex!important;flex-direction:column!important;gap:3px!important;width:100%;min-width:0;max-width:100%}
+ .score-measure-sidebar,.score-measure-main{width:100%!important;min-width:0!important;max-width:100%!important}
+ .score-measure-head{display:flex;flex-direction:row;flex-wrap:wrap;gap:4px!important}
+ .score-measure-main{min-height:0!important;padding-top:53px;overflow:hidden!important}
+ .score-measure-main .score-staff{display:flex;align-items:center;gap:0;margin-top:0!important;width:100%;min-width:0;max-width:100%;overflow:hidden}
+ .score-staff .score-voice:empty{display:none}
+ .score-staff .score-voice:not(:empty){flex:0 0 25px;min-width:25px;max-width:25px}
+ .score-staff svg{display:block;flex:1 1 0;min-width:0!important;max-width:100%!important;width:100%!important;height:auto!important;max-height:none!important;overflow:hidden}
+ .score-lyrics{left:clamp(6px,calc(50% + var(--lyrics-x,0px)),calc(100% - 6px))!important;max-width:calc(100% - 12px)!important;overflow-wrap:anywhere;white-space:pre-wrap;transform:translateX(-50%)}
+}
 </style>
 </head>
 <body>
@@ -2838,12 +3217,12 @@ const NOTES=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 const METERS=[['2/4',2,4],['3/4',3,4],['4/4',4,4],['5/4',5,4],['6/4',6,4],['7/4',7,4],['2/8',2,8],['3/8',3,8],['4/8',4,8],['5/8',5,8],['6/8',6,8],['7/8',7,8],['8/8',8,8],['9/8',9,8],['12/8',12,8]];
 const DRUMS=['Bumbo','Caixa','Hi-Hat Fechado','Hi-Hat Aberto','Aro de Caixa','Prato de Ataque'];
 function getMeter(m){return METERS.find(x=>x[0]===m)||['4/4',4,4]}
-function label(ch){if(!ch)return '';if(ch.repeatPrevious)return '%';if(DRUMS.includes(ch.root)){return ({'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'H/F','Hi-Hat Aberto':'H/A','Aro de Caixa':'A/C','Prato de Ataque':'P/A'})[ch.root]||ch.root}const s=ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':'';return ch.root+s+(ch.bass?'/'+ch.bass:'')}
+function label(ch){if(!ch)return '';if(ch.repeatPrevious)return '%';if(DRUMS.includes(ch.root)){return ({'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'H/F','Hi-Hat Aberto':'H/A','Aro de Caixa':'A/C','Prato de Ataque':'P/A'})[ch.root]||ch.root}const s=ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':ch.quality==='7'?'7':'';return ch.root+s+(ch.bass?'/'+ch.bass:'')}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
 function scoreMarkup(project){
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- const chord=ch=>{if(!ch)return '';if(ch.repeatPrevious)return '%';return (ch.root||'')+(ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':'')+(ch.bass?'/'+ch.bass:'');};
+ const chord=ch=>{if(!ch)return '';if(ch.repeatPrevious)return '%';return (ch.root||'')+(ch.quality==='minor'?'m':ch.quality==='dim'?'°':ch.quality==='sus2'?'sus2':ch.quality==='7'?'7':'')+(ch.bass?'/'+ch.bass:'');};
  const drums={'Bumbo':'B','Caixa':'C','Hi-Hat Fechado':'HF','Hi-Hat Aberto':'HA','Aro de Caixa':'AC','Prato de Ataque':'PA'};
  function svgMeasure(m,voice,isDrum){
   const meter=String(m.meter||'4/4').split('/').map(Number),beats=meter[0]||4,den=meter[1]||4,sub=Math.max(1,Math.round(Number(m.subdivision)||1)),n=beats*sub;
@@ -2866,6 +3245,7 @@ function scoreMarkup(project){
       if(flags)stems.push({x:stemX,i,flags});
     }
     if(ch.strumDirection==='down'||ch.strumDirection==='up')out+='<text x="'+x+'" y="124" font-family="Arial,sans-serif" font-size="18" font-weight="bold" text-anchor="middle">'+(ch.strumDirection==='down'?'⊓':'∨')+'</text>';
+    if(ch.manualAccent)out+='<text x="'+x+'" y="38" font-size="19" font-weight="bold" text-anchor="middle" fill="#222">&gt;</text>';
     if(ch.intensity==='weak'){
       out+='<text x="'+(x-12)+'" y="'+(sy+5)+'" font-family="serif" font-size="26" text-anchor="middle">(</text>';
       out+='<text x="'+(x+12)+'" y="'+(sy+5)+'" font-family="serif" font-size="26" text-anchor="middle">)</text>';
@@ -2896,54 +3276,99 @@ function scoreMarkup(project){
   }else out+='<line x1="'+right+'" y1="53" x2="'+right+'" y2="93" stroke="#111" stroke-width="2"/>';
   return '<div class="score-staff"><div class="score-voice">'+(isDrum?'Voz '+(voice+1):'')+'</div><svg viewBox="0 0 '+width+' 128" width="100%" role="img" aria-label="Slash notation '+esc(m.meter||'4/4')+'">'+out+'</svg></div>';
  }
- return '<div class="score-page"><h2>'+esc(project.songName||'Partitura')+'</h2><p>Tom: '+esc(project.songKey||'-')+' · '+esc(project.bpm||90)+' BPM · Slash notation rítmica</p><p style="font-size:12px">Slash entre parênteses = ataque fraco (nota fantasma) · &gt; = acento relativo (ênfase em relação às notas fantasmas; não é indicação de dinâmica f) · ⊓ = palhetada para baixo · ∨ = palhetada para cima</p>'+(project.measures||[]).map((m,mi)=>{
+ return '<div class="score-page"><h2>'+esc(project.songName||'Partitura')+'</h2><p>Tom: '+esc(project.songKey||'-')+' · '+esc(project.bpm||90)+' BPM · Slash notation rítmica</p><p style="font-size:12px">Slash entre parênteses = ataque fraco (nota fantasma) · &gt; = acento relativo (ênfase em relação às notas fantasmas; não é indicação de dinâmica f) · ⊓ = palhetada para baixo · ∨ = palhetada para cima</p>'+'<p style="font-size:13px;color:#345">🥁 Bateria por fórmula: '+esc(Object.entries(project.globalDrumByMeter||{}).map(([k,v])=>k+' — '+v.songName).join(' · ')||'Desligada')+'</p>'+(project.measures||[]).map((m,mi)=>{
   const repeatStart=(project.measures||[]).some((other,j)=>j>=mi&&Number(other.ritornelo)===mi&&other.ritornelo!==null);
   const notationMeasure={...m,_scoreRepeatStart:repeatStart};
   let rows='';for(let v=0;v<(project.isDrumProject?3:1);v++)rows+=svgMeasure(notationMeasure,v,project.isDrumProject);
-  return '<section class="score-measure" data-score-mi="'+mi+'"><div class="score-measure-layout"><aside class="score-measure-sidebar"><div class="score-measure-head"><strong data-score-action="meter">Compasso '+(mi+1)+' · '+esc(m.meter||'4/4')+'</strong><span data-score-action="annotation">'+esc(m.textAnnotation||'')+'</span><button type="button" class="score-edit-control" data-score-action="ritornelo" title="Configurar ritornelo">↩ Ritornelo</button><button type="button" class="score-edit-control" data-score-action="duplicate">⧉ Duplicar</button><button type="button" class="score-edit-control" data-score-action="drumDemo">🥁 '+(m.drumDemo?'Demo Bateria ✓':'Demo Bateria / Desligado')+'</button><button type="button" class="score-edit-control" data-score-action="lyrics">✎ Letra</button></div></aside><div class="score-measure-main">'+rows+'<div class="score-lyrics" style="left:calc(50% + '+(Number(m.scoreLyricsX)||0)+'px);top:calc(10px + '+(Number(m.scoreLyricsY)||0)+'px)">'+esc(m.scoreLyrics||'')+'</div></div></div></section>';
+  return '<section class="score-measure" data-score-mi="'+mi+'"><div class="score-measure-layout"><aside class="score-measure-sidebar"><div class="score-measure-head"><strong data-score-action="meter">Compasso '+(mi+1)+' · '+esc(m.meter||'4/4')+'</strong><span class="score-part-label" data-score-action="annotation">'+esc(m.textAnnotation||'')+'</span><button type="button" class="score-edit-control score-part-choice-btn" data-score-action="annotation" title="Escolher parte da música deste compasso">🎼 Parte da música</button><button type="button" class="score-edit-control" data-score-action="ritornelo" title="Configurar ritornelo">↩ Ritornelo</button><button type="button" class="score-edit-control" data-score-action="duplicate">⧉ Duplicar</button><button type="button" class="score-edit-control" data-score-action="lyrics">✎ Letra</button></div></aside><div class="score-measure-main">'+rows+'<div class="score-lyrics" style="--lyrics-x:'+(Number(m.scoreLyricsX)||0)+'px;left:calc(50% + '+(Number(m.scoreLyricsX)||0)+'px);top:calc(10px + '+(Number(m.scoreLyricsY)||0)+'px);font-size:'+(Math.max(10,Math.min(48,Number(m.scoreLyricsSize)||14)))+'px">'+esc(m.scoreLyrics||'')+'<span class="score-lyrics-size-badge">'+(Math.max(10,Math.min(48,Number(m.scoreLyricsSize)||14)))+' px</span><span class="score-lyrics-resize" title="Arraste para alterar o tamanho da letra" aria-label="Redimensionar letra"></span></div></div></div></section>';
  }).join('')+'</div>';
 }
 
 
 let scoreShowing=false;
+let offlineManualUntil=0;
+let offlineAutoScrollUntil=0;
+function suspendOfflineFollow(){offlineManualUntil=Date.now()+8000;}
+for(const eventName of ['wheel','touchmove','pointerdown']){
+ document.addEventListener(eventName,e=>{
+  if(!scoreShowing || !e.target.closest("#offlineScore"))return;
+  if(eventName==='pointerdown'&&e.pointerType==='touch')return;
+  if(eventName==='pointerdown'&&e.target.closest('button,input,select,textarea'))return;
+  suspendOfflineFollow();
+ },{capture:true,passive:true});
+}
+// Não confundir a rolagem automática do navegador com um gesto do aluno.
+// Somente wheel/touchstart/pointerdown suspendem o acompanhamento.
+let offlinePlayingMeasure=-1;
+function resumeOfflineScoreFollow(){
+ if(!scoreShowing)return;
+ offlineManualUntil=0;
+ const el=$('offlineScore').querySelector('[data-score-mi="'+offlinePlayingMeasure+'"]');
+ if(!el)return;
+ if(window.matchMedia('(max-width: 700px)').matches){
+  window.scrollTo({top:Math.max(0,window.scrollY+el.getBoundingClientRect().top-window.innerHeight*.24),behavior:'auto'});
+ }else el.scrollIntoView({block:'center',behavior:'auto'});
+}
 function updateOfflineScoreCursor(mi=-1,si=-1){
+ if(mi>=0)offlinePlayingMeasure=mi;
  const root=$('offlineScore');if(!root||!scoreShowing)return;
  root.querySelectorAll('[data-score-mi]').forEach(el=>{
   const ix=Number(el.dataset.scoreMi);
   el.classList.toggle('score-selected',ix===selectedStartMeasure);
   el.classList.toggle('score-playing',ix===mi);
   el.querySelectorAll('[data-score-slot]').forEach(slot=>slot.classList.toggle('score-current',ix===mi&&Number(slot.dataset.scoreSlot)===si));
-  if(ix===mi&&si===0)el.scrollIntoView({block:'nearest',behavior:'smooth'});
+  if(ix===mi&&si===0&&Date.now()>=offlineManualUntil){
+   if(window.matchMedia('(max-width: 700px)').matches){
+    const top=window.scrollY+el.getBoundingClientRect().top-window.innerHeight*0.24;
+    offlineAutoScrollUntil=Date.now()+900;
+    window.scrollTo({top:Math.max(0,top),behavior:'auto'});
+   }else{offlineAutoScrollUntil=Date.now()+900;el.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  }
  });
 }
 
-$('scoreToggleBtn').addEventListener('click',()=>{scoreShowing=!scoreShowing;$('measures').style.display=scoreShowing?'none':'';$('offlineScore').style.display=scoreShowing?'block':'none';$('offlineScore').innerHTML=scoreShowing?scoreMarkup(project):'';updateOfflineScoreCursor();$('scoreToggleBtn').textContent=scoreShowing?'← Voltar à visualização normal':'🎼 Ver em modo partitura';});
+$('scoreToggleBtn').addEventListener('click',()=>{offlineManualUntil=0;scoreShowing=!scoreShowing;$('measures').style.display=scoreShowing?'none':'';$('offlineScore').style.display=scoreShowing?'block':'none';$('offlineScore').innerHTML=scoreShowing?scoreMarkup(project):'';updateOfflineScoreCursor();$('scoreToggleBtn').textContent=scoreShowing?'← Voltar à visualização normal':'🎼 Ver em modo partitura';});
 function slotCount(m){return getMeter(m.meter)[1]*(m.subdivision||1)}
-function render(activeMi=-1,activeSi=-1){updateOfflineScoreCursor(activeMi,activeSi);$('measures').innerHTML=measures.map((m,mi)=>{const rit=(m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<mi)?' ↩('+ (m.ritornelo+1) +')':'';let html='<div class="measure '+(mi===activeMi?'playing ':'')+(mi===selectedStartMeasure?'start-selected':'')+'"><div class="measure-top"><div class="measure-title">Comp. '+(mi+1)+' • '+esc(m.meter||'4/4')+rit+'</div><div class="annotation">'+esc(m.textAnnotation||'')+'</div>'+(m.drumDemo?'<div class="annotation" style="color:var(--green)">🥁 '+esc(m.drumDemo.songName||'Demo bateria')+'</div><button type="button" class="btn" data-remove-demo="'+mi+'">✕ Remover bateria</button>':'')+'<button type="button" class="btn start-here '+(mi===selectedStartMeasure?'selected':'')+'" data-start-measure="'+mi+'" title="Começar a reprodução neste compasso">▶ A partir daqui</button></div>';
+function render(activeMi=-1,activeSi=-1){updateOfflineScoreCursor(activeMi,activeSi);$('measures').innerHTML=measures.map((m,mi)=>{const rit=(m.ritornelo!==null&&m.ritornelo!==undefined&&m.ritornelo>=0&&m.ritornelo<mi)?' ↩('+ (m.ritornelo+1) +')':'';let html='<div class="measure '+(mi===activeMi?'playing ':'')+(mi===selectedStartMeasure?'start-selected':'')+'"><div class="measure-top"><div class="measure-title">Comp. '+(mi+1)+' • '+esc(m.meter||'4/4')+rit+'</div><div class="annotation">'+esc(m.textAnnotation||'')+'</div>'+'<button type="button" class="btn start-here '+(mi===selectedStartMeasure?'selected':'')+'" data-start-measure="'+mi+'" title="Começar a reprodução neste compasso">▶ A partir daqui</button></div>';
 if(project.isDrumProject){const n=getMeter(m.meter)[1]*(m.subdivision||1);for(let v=0;v<3;v++){html+='<div class="drum-row"><div class="drum-label">Voz '+(v+1)+'</div><div class="slots">';for(let si=0;si<n;si++){const idx=v*n+si,ch=m.slots?.[idx],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+(ch&&ch.intensity==='weak'?' intensity-weak':'')+(ch&&ch.intensity==='strong'?' intensity-strong':'')+'">'+esc(label(ch))+(ch&&ch.strumDirection==='up'?' ↑':ch&&ch.strumDirection==='down'?' ↓':'')+'</div>'}html+='</div></div>'}}
 else{html+='<div class="slots">';for(let si=0;si<slotCount(m);si++){const ch=m.slots?.[si],a=mi===activeMi&&si===activeSi;html+='<div class="slot '+(ch?'filled':'')+' '+(a?'active-slot':'')+(ch&&ch.intensity==='weak'?' intensity-weak':'')+(ch&&ch.intensity==='strong'?' intensity-strong':'')+'">'+esc(label(ch))+(ch&&ch.strumDirection==='up'?' ↑':ch&&ch.strumDirection==='down'?' ↓':'')+'</div>'}html+='</div>'}return html+'</div>'}).join('')}
 let ctx=null,master=null,buffers={},guitar=null,playing=false,run=0,paused=false,resolvePause=null,metro=project.metronomeOn!==false,repeatAll=false,selectedStartMeasure=0;
+function effectiveOfflineDrum(m){return (project.globalDrumByMeter||{})[m.meter]||(!project.globalDrumByMeter?m.drumDemo:null)||null}
 function ensure(){if(!ctx){ctx=new(window.AudioContext||window.webkitAudioContext)({latencyHint:'interactive'});master=ctx.createGain();master.connect(ctx.destination)}master.gain.setTargetAtTime(Number($('volume').value)||1,ctx.currentTime,.01);if(ctx.state==='suspended')ctx.resume()}
 function update(){ $('volumeValue').textContent=Math.round(Number($('volume').value)*100)+'%';$('metroVolumeValue').textContent=Math.round(Number($('metroVolume').value)*100)+'%';if($('drumVolume'))$('drumVolumeValue').textContent=Math.round(Number($('drumVolume').value)*100)+'%';$('metroBtn').textContent='♩ Metrônomo: '+(metro?'ON':'OFF');$('playBtn').textContent=playing&&!paused?'⏸ Pausa':'▶ Tocar';$('repeatAllBtn').textContent='🔁 Repetir: '+(repeatAll?'ON':'OFF');$('repeatAllBtn').classList.toggle('active',repeatAll);$('repeatAllBtn').setAttribute('aria-pressed',String(repeatAll));$('meta').textContent='BPM: '+getBpm()+' • '+(project.isDrumProject?'Bateria':'Cordas')}
 function getBpm(){return Math.max(30,Math.min(240,parseInt($('bpm').value)||90))}
 function dur(m){const [,n,d]=getMeter(m.meter);return 60/getBpm()*(4/d)/(m.subdivision||1)}
 function tick(t,accent){if(!metro)return;const vol=Number($('metroVolume').value)||0;if(vol<=0)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type='square';o.frequency.value=accent?1300:900;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime((accent?.055:.035)*vol,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.045);o.connect(g);g.connect(master);o.start(t);o.stop(t+.055)}
-async function decodeAll(){if(project.isDrumProject){await Promise.all(Object.keys(audioData).map(async k=>{if(!buffers[k]){try{const r=await fetch(audioData[k]);if(!r.ok)throw Error('Falha ao carregar '+k);buffers[k]=await ctx.decodeAudioData(await r.arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio',k,e)}}}))}else{if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){console.warn('Falha ao carregar som de cordas',e)}}if(measures.some(m=>m.drumDemo)){await Promise.all(Object.keys(audioData).filter(k=>k!=='guitar').map(async k=>{if(!buffers[k]){try{buffers[k]=await ctx.decodeAudioData(await(await fetch(audioData[k])).arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio de bateria',k,e)}}}))}}}
-function connectDrumEQ(input,output,t){const pts=[{f:350,g:3,q:1},{f:800,g:-12,q:1.35},{f:3500,g:3,q:1},{f:6000,g:12,q:1.15},{f:8000,g:3,q:1},{f:10000,g:3,q:.8}];let p=input;for(const x of pts){const e=ctx.createBiquadFilter();e.type='peaking';e.frequency.setValueAtTime(x.f,t);e.Q.setValueAtTime(x.q,t);e.gain.setValueAtTime(x.g,t);p.connect(e);p=e}p.connect(output)}function drum(name,t,attachedDemo=false){const vol=attachedDemo&&$('drumVolume')?Math.max(0,Math.min(2.5,Number($('drumVolume').value)||0)):1;if(buffers[name]){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buffers[name];g.gain.setValueAtTime(vol,t);connectDrumEQ(s,g,t);g.connect(master);s.start(t);return}const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=name==='Caixa'?180:120;g.gain.setValueAtTime(.5*vol,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(master);o.start(t);o.stop(t+.13)}
+async function decodeAll(){if(project.isDrumProject){await Promise.all(Object.keys(audioData).map(async k=>{if(!buffers[k]){try{const r=await fetch(audioData[k]);if(!r.ok)throw Error('Falha ao carregar '+k);buffers[k]=await ctx.decodeAudioData(await r.arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio',k,e)}}}))}else{if(!guitar&&audioData.guitar){try{guitar=await ctx.decodeAudioData(await(await fetch(audioData.guitar)).arrayBuffer())}catch(e){console.warn('Falha ao carregar som de cordas',e)}}if(measures.some(m=>effectiveOfflineDrum(m))){await Promise.all(Object.keys(audioData).filter(k=>k!=='guitar').map(async k=>{if(!buffers[k]){try{buffers[k]=await ctx.decodeAudioData(await(await fetch(audioData[k])).arrayBuffer())}catch(e){console.warn('Falha ao carregar áudio de bateria',k,e)}}}))}}}
+function connectDrumEQ(input,output,t){const pts=[{f:350,g:3,q:1},{f:800,g:-12,q:1.35},{f:3500,g:3,q:1},{f:6000,g:12,q:1.15},{f:8000,g:3,q:1},{f:10000,g:3,q:.8}];let p=input;for(const x of pts){const e=ctx.createBiquadFilter();e.type='peaking';e.frequency.setValueAtTime(x.f,t);e.Q.setValueAtTime(x.q,t);e.gain.setValueAtTime(x.g,t);p.connect(e);p=e}p.connect(output)}function drum(name,t,attachedDemo=false){const vol=attachedDemo&&$('drumVolume')?Math.max(0,Math.min(2.5,Number($('drumVolume').value)||0)):1;if(buffers[name]){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=buffers[name];g.gain.setValueAtTime(0.60*vol,t);connectDrumEQ(s,g,t);g.connect(master);s.start(t);return}const o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=name==='Caixa'?180:120;g.gain.setValueAtTime(.30*vol,t);g.gain.exponentialRampToValueAtTime(.001,t+.12);o.connect(g);g.connect(master);o.start(t);o.stop(t+.13)}
 function noteFreq(n,o=4){const i=NOTES.indexOf(n);const midi=60+i+(o-4)*12;return 440*Math.pow(2,(midi-69)/12)}
-function chordNotes(ch){const ri=NOTES.indexOf(ch.root);if(ri<0)return [];const ints=ch.quality==='minor'?[0,3,7]:ch.quality==='dim'?[0,3,6]:ch.quality==='sus2'?[0,2,7]:[0,4,7];let a=ints.map((x,i)=>{const n=NOTES[(ri+x)%12];const o=3+Math.floor((ri+x)/12);return[n,o]});if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)a.unshift([ch.bass,3+(bi<ri?1:0)])}return a}
+function chordNotes(ch){const ri=NOTES.indexOf(ch.root);if(ri<0)return [];const ints=ch.quality==='minor'?[0,3,7]:ch.quality==='dim'?[0,3,6]:ch.quality==='sus2'?[0,2,7]:ch.quality==='7'?[0,4,7,10]:[0,4,7];let a=ints.map((x,i)=>{const n=NOTES[(ri+x)%12];const o=3+Math.floor((ri+x)/12);return[n,o]});if(ch.bass){const bi=NOTES.indexOf(ch.bass);if(bi>=0)a.unshift([ch.bass,3+(bi<ri?1:0)])}return a}
 let offlinePickNoiseBuffer=null;function offlinePickClick(t,level,total){if(!offlinePickNoiseBuffer){const len=Math.max(1,Math.floor(ctx.sampleRate*.035));offlinePickNoiseBuffer=ctx.createBuffer(1,len,ctx.sampleRate);const d=offlinePickNoiseBuffer.getChannelData(0);for(let i=0;i<len;i++){const f=1-i/len;d[i]=(Math.random()*2-1)*f*f}}const s=ctx.createBufferSource(),hp=ctx.createBiquadFilter(),peak=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=offlinePickNoiseBuffer;hp.type='highpass';hp.frequency.setValueAtTime(1400,t);hp.Q.value=.55;peak.type='peaking';peak.frequency.setValueAtTime(3200,t);peak.Q.value=.8;peak.gain.setValueAtTime(6,t);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime((.016/Math.sqrt(Math.max(1,total)))*level,t+.0015);g.gain.exponentialRampToValueAtTime(.0001,t+.032);s.connect(hp);hp.connect(peak);peak.connect(g);g.connect(master);s.start(t);s.stop(t+.036)}function chord(ch,t){if(!ch)return;const notes=chordNotes(ch),weak=ch.intensity==='weak',intensity=weak?.07:ch.intensity==='strong'?1.22:.95,ordered=ch.strumDirection==='up'?[...notes].reverse():notes;ordered.forEach(([n,o],i)=>{const at=t+i*.012,f=noteFreq(n,o),rate=Math.max(.25,(f/82.406889)*Math.pow(2,4/12));if(guitar){const s=ctx.createBufferSource(),g=ctx.createGain();s.buffer=guitar;s.playbackRate.setValueAtTime(rate,at);g.gain.setValueAtTime(.0001,at);g.gain.linearRampToValueAtTime(intensity*.68,at+.012);g.gain.setTargetAtTime(Math.max(.0001,intensity*.48),at+.014,.18);if(weak){s.connect(g);}else{const eqPoints=[{f:1000,g:-24,q:2.2},{f:1200,g:-20,q:3},{f:1300,g:-18,q:3},{f:1500,g:-4,q:1.5},{f:2000,g:-3,q:1.2},{f:5000,g:12,q:1.35},{f:8000,g:12,q:1.35}];const head=ctx.createGain();head.gain.setValueAtTime(.42,at);s.connect(head);let prev=head;for(const ep of eqPoints){const e=ctx.createBiquadFilter();e.type='peaking';e.frequency.setValueAtTime(ep.f,at);e.Q.setValueAtTime(ep.q,at);e.gain.setValueAtTime(ep.g,at);prev.connect(e);prev=e}prev.connect(g);}g.connect(master);s.start(at);s.stop(at+Math.min(2.6,guitar.duration/rate+.02))}else{const o1=ctx.createOscillator(),g=ctx.createGain();o1.type='triangle';o1.frequency.value=f;g.gain.setValueAtTime(.0001,at);g.gain.exponentialRampToValueAtTime(.16*(intensity/.9),at+.012);g.gain.exponentialRampToValueAtTime(.0001,at+1.2);o1.connect(g);g.connect(master);o1.start(at);o1.stop(at+1.25)}if(weak)offlinePickClick(at,1,ordered.length)})}
 function waitResume(){return new Promise(r=>resolvePause=r)}
 async function waitUntil(deadline){while(true){const left=deadline-performance.now();if(left<=1)return;await new Promise(r=>setTimeout(r,Math.min(left,25)))}}
-async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;const ritorneloCounters={};let mi=Math.max(0,Math.min(measures.length-1,selectedStartMeasure));update();while(playing&&run===my){while(mi<measures.length&&playing&&run===my){const m=measures[mi],reps=Math.max(1,m.repeats||1),chordSlots=getMeter(m.meter)[1]*(m.subdivision||1),drumSlots=(!project.isDrumProject&&m.drumDemo)?getMeter(m.drumDemo.meter||m.meter)[1]*(m.drumDemo.subdivision||1):0,n=Math.max(chordSlots,drumSlots),stepMs=dur(m)*1000*chordSlots/n;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const stepStartedAt=performance.now();const t=ctx.currentTime+.03;const chordSi=Math.floor(si*chordSlots/n);render(mi,chordSi);const previousChordSi=si===0?-1:Math.floor((si-1)*chordSlots/n);if(metronomeSafe()&&chordSi!==previousChordSi&&(previousChordSi<0||Math.floor(chordSi/(m.subdivision||1))!==Math.floor(previousChordSi/(m.subdivision||1))))tick(t,true);if(project.isDrumProject){const per=chordSlots;{const ds=Math.floor(si*per/n),previous=si===0?-1:Math.floor((si-1)*per/n);if(ds!==previous){for(let v=0;v<3;v++){const ch=m.slots?.[v*per+ds];if(ch)drum(ch.root,t)}}}}else{{const previousChord=si===0?-1:Math.floor((si-1)*chordSlots/n);if(chordSi!==previousChord&&m.slots?.[chordSi])chord(m.slots[chordSi],t)}if(m.drumDemo&&drumSlots){const ds=Math.floor(si*drumSlots/n),previous=si===0?-1:Math.floor((si-1)*drumSlots/n);if(ds!==previous){for(let v=0;v<3;v++){const ch=m.drumDemo.slots?.[v*drumSlots+ds];if(ch)drum(ch.root,t,true)}}}}await waitUntil(stepStartedAt+stepMs)}}if(!playing||run!==my)break;const target=m.ritornelo;if(target!==null&&target!==undefined&&target>=0&&target<=mi){const maxReturns=Math.max(1,m.ritorneloRepeats||1);const used=ritorneloCounters[mi]||0;if(used<maxReturns){ritorneloCounters[mi]=used+1;mi=target;continue;}}mi++;}if(!playing||run!==my)break;if(repeatAll){mi=Math.max(0,Math.min(measures.length-1,selectedStartMeasure));for(const k of Object.keys(ritorneloCounters))delete ritorneloCounters[k];}else break;}if(run===my)stop()}
+
+function offlineCountInView(n,beats){let el=document.getElementById('offlineCountIn');if(!el){el=document.createElement('div');el.id='offlineCountIn';el.style.cssText='position:fixed;inset:0;z-index:99999;background:#071226ad;display:flex;align-items:center;justify-content:center;pointer-events:none';el.innerHTML='<div style="padding:24px 50px;text-align:center;background:#14233d;border:2px solid #36c7ff;border-radius:20px;color:white"><div>Preparar • <span id="offlineCountBeats"></span> tempos</div><strong id="offlineCountNumber" style="font-size:100px;color:#ffd84d"></strong></div>';document.body.appendChild(el);}el.style.display='flex';document.getElementById('offlineCountBeats').textContent=beats;document.getElementById('offlineCountNumber').textContent=n;}
+function offlineCountInHide(){const el=document.getElementById('offlineCountIn');if(el)el.style.display='none';}
+async function offlineCountIn(m,id){const meter=getMeter(m.meter),beats=meter[1],den=meter[2],ms=60000/getBpm()*4/den;for(let i=0;i<beats;i++){if(run!==id||!playing){offlineCountInHide();return false;}while(paused&&playing&&run===id)await waitResume();if(run!==id||!playing){offlineCountInHide();return false;}offlineCountInView(i+1,beats);const start=performance.now();tick(ctx.currentTime+.02,i===0);await waitUntil(start+ms);}offlineCountInHide();return playing&&run===id;}
+async function play(){ensure();await ctx.resume();await decodeAll();if(playing&&!paused){paused=true;update();return}if(paused){resumeOfflineScoreFollow();paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}update();return}playing=true;paused=false;const my=++run;const ritorneloCounters={};let mi=Math.max(0,Math.min(measures.length-1,selectedStartMeasure));update();if(measures[mi]&&!(await offlineCountIn(measures[mi],my)))return;while(playing&&run===my){while(mi<measures.length&&playing&&run===my){const m=measures[mi],reps=Math.max(1,m.repeats||1),chordSlots=getMeter(m.meter)[1]*(m.subdivision||1),drumSlots=(!project.isDrumProject&&effectiveOfflineDrum(m))?getMeter(effectiveOfflineDrum(m).meter||m.meter)[1]*(effectiveOfflineDrum(m).subdivision||1):0,n=Math.max(chordSlots,drumSlots),stepMs=dur(m)*1000*chordSlots/n;for(let rep=0;rep<reps&&playing&&run===my;rep++){for(let si=0;si<n&&playing&&run===my;si++){while(paused&&playing&&run===my)await waitResume();if(!playing||run!==my)break;const stepStartedAt=performance.now();const t=ctx.currentTime+.03;const chordSi=Math.floor(si*chordSlots/n);render(mi,chordSi);const previousChordSi=si===0?-1:Math.floor((si-1)*chordSlots/n);if(metronomeSafe()&&(si===0||Math.floor(si*getMeter(m.meter)[1]/n)!==Math.floor((si-1)*getMeter(m.meter)[1]/n)))tick(t,si===0);if(project.isDrumProject){const per=chordSlots;{const ds=Math.floor(si*per/n),previous=si===0?-1:Math.floor((si-1)*per/n);if(ds!==previous){for(let v=0;v<3;v++){const ch=m.slots?.[v*per+ds];if(ch)drum(ch.root,t)}}}}else{{const previousChord=si===0?-1:Math.floor((si-1)*chordSlots/n);if(chordSi!==previousChord&&m.slots?.[chordSi])chord(m.slots[chordSi],t)}if(effectiveOfflineDrum(m)&&drumSlots){const ds=Math.floor(si*drumSlots/n),previous=si===0?-1:Math.floor((si-1)*drumSlots/n);if(ds!==previous){for(let v=0;v<3;v++){const ch=effectiveOfflineDrum(m).slots?.[v*drumSlots+ds];if(ch)drum(ch.root,t,true)}}}}await waitUntil(stepStartedAt+stepMs)}}if(!playing||run!==my)break;const target=m.ritornelo;if(target!==null&&target!==undefined&&target>=0&&target<=mi){const maxReturns=Math.max(1,m.ritorneloRepeats||1);const used=ritorneloCounters[mi]||0;if(used<maxReturns){ritorneloCounters[mi]=used+1;mi=target;continue;}}mi++;}if(!playing||run!==my)break;if(repeatAll){mi=Math.max(0,Math.min(measures.length-1,selectedStartMeasure));for(const k of Object.keys(ritorneloCounters))delete ritorneloCounters[k];}else break;}if(run===my)stop()}
 function metronomeSafe(){return metro}
-function stop(){run++;playing=false;paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}render();update()}
+function stop(){offlineCountInHide();run++;playing=false;paused=false;if(resolvePause){const r=resolvePause;resolvePause=null;r()}render();update()}
 $('offlineScore').addEventListener('click',e=>{const section=e.target.closest('[data-score-mi]');if(!section)return;if(playing)stop();selectedStartMeasure=Number(section.dataset.scoreMi);updateOfflineScoreCursor();$('status').textContent='A reprodução começará no compasso '+(selectedStartMeasure+1)+'.';});
 $('measures').addEventListener('click',e=>{const rem=e.target.closest('[data-remove-demo]');if(rem){const ix=Number(rem.dataset.removeDemo);if(measures[ix]){measures[ix].drumDemo=null;render();}return;}const b=e.target.closest('[data-start-measure]');if(!b)return;if(playing)stop();selectedStartMeasure=Math.max(0,Math.min(measures.length-1,Number(b.dataset.startMeasure)||0));render();$('status').textContent='A reprodução começará no compasso '+(selectedStartMeasure+1)+'.';});document.addEventListener('keydown',e=>{
  if(e.repeat||e.ctrlKey||e.altKey||e.metaKey)return;
  const t=e.target;
  if(t&&(t.isContentEditable||t.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')))return;
- if(e.code==='Space'){e.preventDefault();play();}
+ if((e.code==='ArrowUp'||e.code==='ArrowDown')&&scoreShowing){
+  e.preventDefault();
+  suspendOfflineFollow();
+  selectedStartMeasure=Math.max(0,Math.min(measures.length-1,selectedStartMeasure+(e.code==='ArrowDown'?1:-1)));
+  updateOfflineScoreCursor();
+  const section=$('offlineScore').querySelector('[data-score-mi="'+selectedStartMeasure+'"]');
+  if(section)section.scrollIntoView({behavior:'smooth',block:'center'});
+  $('status').textContent='A reprodução começará no compasso '+(selectedStartMeasure+1)+'.';
+  return;
+ }
+ if(e.code==='Space'){e.preventDefault();if(!playing)offlineManualUntil=0;play();}
  else if(e.code==='KeyP'){e.preventDefault();stop();}
 });
 $('playBtn').onclick=play;$('stopBtn').onclick=stop;$('repeatAllBtn').onclick=()=>{repeatAll=!repeatAll;update()};$('metroBtn').onclick=()=>{metro=!metro;update()};$('volume').oninput=update;$('metroVolume').oninput=update;if($('drumVolume'))$('drumVolume').oninput=update;$('bpm').oninput=update;render();update();
@@ -2968,13 +3393,13 @@ const urls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-met
 for(const [name,url] of Object.entries(urls)) audioData[name]=await urlParaDataUrl(url);
 }else{
  audioData.guitar=await urlParaDataUrl("https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/corda%20E.wav");
- if((project.measures||[]).some(m=>m.drumDemo)){
+ if((Object.keys(project.globalDrumByMeter||{}).length>0 || (project.measures||[]).some(m=>m.drumDemo))){
   const drumUrls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
   for(const [name,url] of Object.entries(drumUrls))audioData[name]=await urlParaDataUrl(url);
  }
 }
 }
-if(!project.isDrumProject && (project.measures||[]).some(m=>m.drumDemo)){
+if(!project.isDrumProject && (Object.keys(project.globalDrumByMeter||{}).length>0 || (project.measures||[]).some(m=>m.drumDemo))){
  audioData=audioData||{};
  const drumUrls={"Bumbo":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/bumbo.mp3","Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/caixa.mp3","Hi-Hat Fechado":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20hat%20fechado.mp3","Hi-Hat Aberto":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/hi%20tat%20aberto.mp3","Aro de Caixa":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/aro.mp3","Prato de Ataque":"https://raw.githubusercontent.com/carlosrichless/imagem-metronomo/main/ataque.mp3"};
  for(const [name,url] of Object.entries(drumUrls)){if(!audioData[name])audioData[name]=await urlParaDataUrl(url);}
@@ -3021,14 +3446,35 @@ alert("Não foi possível salvar este arquivo. O navegador não concedeu permiss
 }
 
 let scoreEditorEnabled=false;
+let scoreKeySelection=null;
+let scoreBassPending=false;
+function paintScoreKeySelection(){
+ const root=document.getElementById("scoreContent");if(!root)return;
+ root.querySelectorAll("[data-score-slot].score-key-selected").forEach(el=>el.classList.remove("score-key-selected"));
+ if(!scoreEditorEnabled||!scoreKeySelection)return;
+ const {mi,si}=scoreKeySelection;
+ const section=root.querySelector(`[data-score-mi="${mi}"]`);if(!section)return;
+ const n=slotCount(measures[mi]);
+ const voice=Math.floor(si/n),slot=si%n;
+ const el=section.querySelector(`[data-score-slot="${slot}"][data-score-voice="${voice}"]`);
+ if(el)el.classList.add("score-key-selected");
+}
+function selectScoreKeySlot(mi,si,scroll=false){
+ if(!measures[mi])return;
+ scoreKeySelection={mi,si};selected={mi,si};scoreBassPending=false;
+ paintScoreKeySelection();
+ if(scroll){const el=document.querySelector(`#scoreContent [data-score-mi="${mi}"]`);if(el){suspendScoreAutoScroll();el.scrollIntoView({block:"nearest",behavior:"smooth"});}}
+}
+
 function refreshScoreAfterEdit(){
  const root=$("#scoreContent");
  root.innerHTML=scoreMarkup(projectFromEditor());
  root.classList.toggle("score-edit-on",scoreEditorEnabled);
  updateScoreCursor(-1,-1);
+ paintScoreKeySelection();
 }
 function resetScoreEditor(){
- scoreEditorEnabled=false;
+ scoreEditorEnabled=false;scoreKeySelection=null;scoreBassPending=false;
  $("#scoreEditToggle").textContent="Modo editor desligado";
  refreshScoreAfterEdit();
 }
@@ -3036,21 +3482,23 @@ $("#scoreEditToggle").addEventListener("click",()=>{
  scoreEditorEnabled=!scoreEditorEnabled;
  $("#scoreEditToggle").textContent=scoreEditorEnabled?"Modo editor ligado":"Modo editor desligado";
  $("#scoreContent").classList.toggle("score-edit-on",scoreEditorEnabled);
+ paintScoreKeySelection();
 });
 $("#viewScoreBtn").addEventListener("click",()=>{$("#scoreModal").classList.add("open");resetScoreEditor();});
 $("#scoreContent").addEventListener("click",e=>{
  if(e.target.closest(".score-lyrics"))return;
  const section=e.target.closest("[data-score-mi]");if(!section)return;
  const mi=Number(section.dataset.scoreMi),m=measures[mi];
+ // Clicar fora de uma nota desmarca a selecao especifica.
+ if(!e.target.closest("svg")){scoreKeySelection=null;scoreBassPending=false;paintScoreKeySelection();}
  if(scoreEditorEnabled){
   const action=e.target.closest("[data-score-action]");
   if(action){
    const type=action.dataset.scoreAction;
    if(type==="duplicate"){measures.splice(mi+1,0,JSON.parse(JSON.stringify(m)));for(const item of measures){if(item.ritornelo!=null&&item!==m&&Number(item.ritornelo)>mi)item.ritornelo++;}}
-   else if(type==="drumDemo"){editingDemoMeasureMi=mi; if(m.drumDemo){if(confirm("Remover a demo de bateria deste compasso?"))delete m.drumDemo;}else openMeasureDemoChooser(mi);}
    else if(type==="lyrics"){lyricsEditingMeasure=mi;$("#lyricsEditorText").value=m.scoreLyrics||"";$("#lyricsEditorModal").classList.add("open");$("#lyricsEditorText").focus();return;}
    else if(type==="ritornelo"){editingRitorneloMi=mi;openRitorneloModal(mi);return;}
-   else if(type==="annotation"){const v=prompt("Anotação do compasso:",m.textAnnotation||"");if(v!==null)m.textAnnotation=v;}
+   else if(type==="annotation"){openMusicPartModal(mi);return;}
    else if(type==="meter"){const v=prompt("Fórmula de compasso (ex.: 4/4):",m.meter);if(v&&METERS.some(a=>a[0]===v)){m.meter=v;m.slots.length=Math.max(m.slots.length,slotCount(m));}else if(v!==null)alert("Fórmula não disponível.");}
    render();refreshScoreAfterEdit();return;
   }
@@ -3062,6 +3510,7 @@ $("#scoreContent").addEventListener("click",e=>{
    const si=Math.max(0,Math.min(n-1,Math.floor((local.x-44)/step)));
    const voice=Number(svg.querySelector("[data-score-voice]")?.dataset.scoreVoice||0);
    const index=voice*n+si;
+   selectScoreKeySlot(mi,index);
    if(isCurrentProjectDrum){selected={mi,si:index};openDrumModal(mi,index);}
    else if(m.slots[index])openModifier(mi,index);else openNote(mi,index);
    return;
@@ -3080,6 +3529,14 @@ $("#lyricsEditorSave").addEventListener("click",()=>{
  }
  closeLyricsEditor();
 });
+// No editor de letras, Enter salva; Shift+Enter insere uma nova linha.
+// Mantém a edição de texto independente dos atalhos da partitura.
+document.getElementById('lyricsEditorText').addEventListener('keydown',function(e){
+ if(e.key!=='Enter'||e.isComposing)return;
+ if(e.shiftKey)return; // quebra de linha normal no textarea
+ e.preventDefault();e.stopPropagation();
+ document.getElementById('lyricsEditorSave').click();
+});
 let draggingScoreLyrics=null;
 function editScoreLyrics(mi){
  if(!scoreEditorEnabled||!measures[mi])return;
@@ -3094,7 +3551,8 @@ $("#scoreContent").addEventListener("pointerdown",e=>{
  if(!el)return;
  const section=el.closest("[data-score-mi]");if(!section)return;
  const mi=Number(section.dataset.scoreMi),m=measures[mi];
- draggingScoreLyrics={el,mi,startX:e.clientX,startY:e.clientY,offsetX:Number(m.scoreLyricsX)||0,offsetY:Number(m.scoreLyricsY)||0,moved:false};
+ draggingScoreLyrics={el,mi,startX:e.clientX,startY:e.clientY,offsetX:Number(m.scoreLyricsX)||0,offsetY:Number(m.scoreLyricsY)||0,originalSize:Math.max(10,Math.min(48,Number(m.scoreLyricsSize)||14)),resizing:!!e.target.closest(".score-lyrics-resize"),moved:false};
+ if(draggingScoreLyrics.resizing)el.classList.add("is-resizing");
  el.setPointerCapture(e.pointerId);e.preventDefault();
 });
 $("#scoreContent").addEventListener("pointermove",e=>{
@@ -3102,6 +3560,7 @@ $("#scoreContent").addEventListener("pointermove",e=>{
  const dx=e.clientX-d.startX,dy=e.clientY-d.startY;
  if(Math.hypot(dx,dy)>5)d.moved=true;
  if(!d.moved)return;
+ if(d.resizing){d.finalSize=Math.max(10,Math.min(48,Math.round(d.originalSize+(dx+dy)*0.16)));d.el.style.fontSize=d.finalSize+"px";const badge=d.el.querySelector(".score-lyrics-size-badge");if(badge)badge.textContent=d.finalSize+" px";return;}
  const parent=d.el.parentElement;
  const limit=Math.max(0,parent.clientWidth/2-d.el.offsetWidth/2);
  const x=Math.max(-limit,Math.min(limit,d.offsetX+dx));
@@ -3113,9 +3572,10 @@ $("#scoreContent").addEventListener("pointermove",e=>{
 function finishLyricsDrag(){
  const d=draggingScoreLyrics;if(!d)return;
  draggingScoreLyrics=null;
- if(!d.moved){editScoreLyrics(d.mi);return;}
- measures[d.mi].scoreLyricsX=d.finalX;
- measures[d.mi].scoreLyricsY=d.finalY;
+ d.el.classList.remove("is-resizing");
+ if(!d.moved){if(!d.resizing)editScoreLyrics(d.mi);return;}
+ if(d.resizing){measures[d.mi].scoreLyricsSize=d.finalSize||d.originalSize;}else{measures[d.mi].scoreLyricsX=d.finalX;
+ measures[d.mi].scoreLyricsY=d.finalY;}
  if(typeof scheduleAutosave==="function")scheduleAutosave();
 }
 $("#scoreContent").addEventListener("pointerup",finishLyricsDrag);
@@ -3123,6 +3583,200 @@ $("#scoreContent").addEventListener("pointercancel",()=>{draggingScoreLyrics=nul
 const oldScoreRender=render;
 render=function(){oldScoreRender();if($("#scoreModal").classList.contains("open"))refreshScoreAfterEdit();};
 $("#closeScoreBtn").addEventListener("click",()=>$("#scoreModal").classList.remove("open"));
+// Foco exclusivo do cartão de ritornelo para edição sem mouse.
+(function configurarFocoRitornelo(){
+ const overlay=document.getElementById('ritorneloOverlay');
+ if(!overlay)return;
+ overlay.setAttribute('role','dialog');
+ overlay.setAttribute('aria-modal','true');
+ overlay.setAttribute('aria-label','Configurar Ritornelo');
+ let previousFocus=null;
+ const focusables=()=>Array.from(overlay.querySelectorAll('select,button,[tabindex]:not([tabindex="-1"])'))
+  .filter(el=>!el.disabled&&el.getClientRects().length>0);
+ const observer=new MutationObserver(()=>{
+  if(overlay.classList.contains('open')){
+   previousFocus=previousFocus||document.activeElement;
+   document.getElementById('ritorneloSelect')?.focus();
+  }else if(previousFocus){
+   const restore=previousFocus;previousFocus=null;
+   if(restore.isConnected)restore.focus({preventScroll:true});
+  }
+ });
+ observer.observe(overlay,{attributes:true,attributeFilter:['class']});
+ // Captura antes dos atalhos globais da partitura: setas pertencem ao select.
+ document.addEventListener('keydown',function(e){
+  if(!overlay.classList.contains('open'))return;
+  if(e.key==='Tab'){
+   const items=focusables();if(!items.length){e.preventDefault();e.stopImmediatePropagation();return;}
+   let i=items.indexOf(document.activeElement);
+   if(i<0)i=e.shiftKey?0:-1;
+   const next=e.shiftKey?(i<=0?items.length-1:i-1):(i>=items.length-1?0:i+1);
+   e.preventDefault();items[next].focus();
+  }else if(e.key==='Escape'){
+   e.preventDefault();document.querySelector('#ritorneloOverlay [data-close="ritorneloOverlay"]')?.click();
+  }else if(!overlay.contains(document.activeElement)){
+   document.getElementById('ritorneloSelect')?.focus();
+  }
+  e.stopImmediatePropagation();
+ },true);
+ // Impede que cliques ou foco acidental escapem do cartão enquanto aberto.
+ document.addEventListener('focusin',function(e){
+  if(overlay.classList.contains('open')&&!overlay.contains(e.target)){
+   (focusables()[0]||overlay).focus();
+  }
+ },true);
+})();
+// Esc fecha o cartão flutuante mais recente, sem fechar a partitura ao fundo.
+document.addEventListener('keydown',function(e){
+ if(e.key!=='Escape')return;
+ const lyrics=document.getElementById('lyricsEditorModal');
+ if(lyrics?.classList.contains('open')){
+  e.preventDefault();e.stopImmediatePropagation();
+  lyrics.classList.remove('open');return;
+ }
+ const overlays=Array.from(document.querySelectorAll('.overlay.open'));
+ const overlay=overlays[overlays.length-1];
+ if(overlay){
+  e.preventDefault();e.stopImmediatePropagation();
+  const cancel=overlay.querySelector('[data-close]');
+  if(cancel)cancel.click();else overlay.classList.remove('open');
+  return;
+ }
+ const demo=document.getElementById('demoListModal');
+ if(demo?.classList.contains('open')){
+  e.preventDefault();e.stopImmediatePropagation();demo.classList.remove('open');return;
+ }
+},true);
+// Atalhos de edição da partitura — somente computador com teclado.
+// A seleção permanece após cancelar ou aplicar o modal.
+document.addEventListener('keydown',function scoreDesktopShortcuts(e){
+ if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches)return;
+ if(!scoreEditorEnabled||!document.getElementById('scoreModal')?.classList.contains('open'))return;
+ if(e.ctrlKey||e.altKey||e.metaKey)return;
+ const target=e.target;
+ if(target&&(target.isContentEditable||target.closest('input,textarea,select,[contenteditable="true"],[role="textbox"]')))return;
+ if(document.querySelector('.overlay.open')||document.getElementById('lyricsEditorModal')?.classList.contains('open'))return;
+ if(!scoreKeySelection)return;
+ let {mi,si}=scoreKeySelection;
+ const m=measures[mi];if(!m)return;
+ const code=e.code;
+ if((code==='ArrowRight'||code==='ArrowLeft')&&!e.shiftKey){
+  e.preventDefault();e.stopImmediatePropagation();
+  const dir=code==='ArrowRight'?1:-1;
+  let next=si+dir,idx=mi;
+  if(next>=slotCount(m)){idx++;next=0;}
+  if(next<0){idx--;next=measures[idx]?slotCount(measures[idx])-1:0;}
+  if(measures[idx])selectScoreKeySlot(idx,next,true);
+  return;
+ }
+ if(e.shiftKey&&(code==='ArrowRight'||code==='ArrowLeft')){
+  e.preventDefault();e.stopImmediatePropagation();
+  const before=m.subdivision||1;
+  changeSubdivision(mi,code==='ArrowRight'?1:-1);
+  const after=m.subdivision||1;
+  if(before!==after)selectScoreKeySlot(mi,Math.min(slotCount(m)-1,Math.floor(si*after/before)),false);
+  return;
+ }
+ // Shift+S: transfere somente as palhetadas do compasso anterior
+ // para os acordes já existentes no compasso selecionado.
+ if(e.shiftKey&&code==='KeyS'){
+  e.preventDefault();e.stopImmediatePropagation();
+  const anterior=measures[mi-1];
+  if(!anterior){return;}
+  const quantidade=Math.min(slotCount(anterior),slotCount(m));
+  for(let i=0;i<quantidade;i++){
+   const origem=anterior.slots?.[i];
+   const destino=m.slots?.[i];
+   if(destino){destino.strumDirection=origem?.strumDirection||'none';}
+  }
+  render();refreshScoreAfterEdit();
+  // Após Shift+S, avançar ao tempo 1 do próximo compasso existente.
+  if(measures[mi+1])selectScoreKeySlot(mi+1,0,true);
+  else selectScoreKeySlot(mi,si,false);
+  if(typeof scheduleAutosave==='function')scheduleAutosave();
+  return;
+ }
+ if(e.shiftKey&&code==='KeyD'){
+  e.preventDefault();e.stopImmediatePropagation();
+  const copy=JSON.parse(JSON.stringify(m));
+  copy.ritornelo=null;copy.ritorneloRepeats=1;
+  measures.splice(mi+1,0,copy);
+  selectedMeasure=mi+1;
+  render();selectScoreKeySlot(mi+1,0,true);
+  return;
+ }
+ if(code==='Delete'&&!e.shiftKey){
+  e.preventDefault();e.stopImmediatePropagation();
+  m.slots[si]=null;scoreBassPending=false;
+  render();paintScoreKeySelection();return;
+ }
+ if(!e.shiftKey&&code==='KeyR'){
+  e.preventDefault();e.stopImmediatePropagation();
+  editingRitorneloMi=mi;openRitorneloModal(mi);return;
+ }
+ if(e.shiftKey&&code==='KeyT'){
+  e.preventDefault();e.stopImmediatePropagation();
+  lyricsEditingMeasure=mi;document.getElementById('lyricsEditorText').value=m.scoreLyrics||'';
+  document.getElementById('lyricsEditorModal').classList.add('open');
+  document.getElementById('lyricsEditorText').focus();return;
+ }
+ // Permite pontuação mesmo quando o teclado exige Shift para digitar ';'.
+ if(e.shiftKey&&![';',':'].includes(e.key))return;
+ const letters={KeyA:'A',KeyB:'B',KeyC:'C',KeyD:'D',KeyE:'E',KeyF:'F',KeyG:'G'};
+ const root=letters[code];
+ // Em ABNT2 a tecla que produz ';' pode ter code='Slash'.
+ // Priorizar o caractere digitado evita confundir palhetada com baixo (/).
+ const typed=e.key;
+ const isUp=typed===';'||typed===':'||(code==='Semicolon'&&typed!=='/');
+ const isSlash=!isUp&&(typed==='/'||(code==='Slash'&&typed!=='\\'&&typed!==';'));
+ const isRepeat=typed==='%'||(code==='Digit5'&&e.shiftKey);
+ const isDown=typed===','||(code==='Comma'&&!e.shiftKey);
+ const isAccent=typed==='.'||(code==='Period'&&!e.shiftKey);
+ const isMinor=code==='KeyM';
+ if(!root&&!isSlash&&!isRepeat&&!isDown&&!isUp&&!isAccent&&!isMinor)return;
+ e.preventDefault();e.stopImmediatePropagation();
+ if(isSlash){if(m.slots[si])scoreBassPending=true;return;}
+ if(root){
+  if(scoreBassPending&&m.slots[si]&&!m.slots[si].repeatPrevious){m.slots[si].bass=root;scoreBassPending=false;}
+  else {
+   const old=m.slots[si];
+   // Repetir a mesma letra percorre maior, menor, sétima, diminuto e baixos.
+   if(old&&old.root===root&&!old.repeatPrevious){
+    const cycle=['major','minor','7','dim'];
+    const bassNotes=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'].filter(note=>note!==root);
+    if(old.bass){const pos=bassNotes.indexOf(old.bass);if(pos>=0&&pos<bassNotes.length-1)old.bass=bassNotes[pos+1];else {old.bass='';old.quality='major';}}
+    else {const pos=cycle.indexOf(old.quality);if(pos>=0&&pos<cycle.length-1)old.quality=cycle[pos+1];else {old.quality='major';old.bass=bassNotes[0];}}
+   }else m.slots[si]={root,quality:'major',bass:'',intensity:old?.intensity||'normal',strumDirection:old?.strumDirection||'none'};
+   scoreBassPending=false;
+  }
+ }else if(isRepeat){
+  let prev=null;for(let i=si-1;i>=0;i--){const ch=m.slots[i];if(ch&&!ch.repeatPrevious&&ch.root){prev=ch;break;}}
+  if(prev)m.slots[si]={...JSON.parse(JSON.stringify(prev)),repeatPrevious:true};
+ }else if(m.slots[si]){
+  if(isMinor){m.slots[si].quality='minor';m.slots[si].repeatPrevious=false;}
+  if(isDown)m.slots[si].strumDirection=m.slots[si].strumDirection==='down'?'none':'down';
+  if(isUp)m.slots[si].strumDirection=m.slots[si].strumDirection==='up'?'none':'up';
+  if(isAccent)m.slots[si].manualAccent=!m.slots[si].manualAccent;
+ }
+ render();refreshScoreAfterEdit();paintScoreKeySelection();
+});
+// Navegação pela partitura: setas para cima e para baixo selecionam compassos.
+document.addEventListener("keydown",event=>{
+ if(event.code!=="ArrowUp"&&event.code!=="ArrowDown")return;
+ if(event.ctrlKey||event.altKey||event.metaKey)return;
+ const modal=document.getElementById("scoreModal");
+ if(!modal||!modal.classList.contains("open"))return;
+ const t=event.target;
+ if(t&&(t.isContentEditable||t.closest('input, textarea, select, [contenteditable="true"], [role="textbox"]')))return;
+ event.preventDefault();
+ const total=measures.length;
+ if(!total)return;
+ suspendScoreAutoScroll();
+ scoreStartMeasure=Math.max(0,Math.min(total-1,scoreStartMeasure+(event.code==="ArrowDown"?1:-1)));
+ updateScoreCursor(-1,-1);
+ const selected=modal.querySelector('[data-score-mi="'+scoreStartMeasure+'"]');
+ if(selected)selected.scrollIntoView({behavior:"smooth",block:"center"});
+});
 // Atalhos globais: Espaço = Tocar/Pausar; P = Parar.
 document.addEventListener("keydown",event=>{
  if(event.repeat||event.ctrlKey||event.altKey||event.metaKey)return;
@@ -3132,15 +3786,57 @@ document.addEventListener("keydown",event=>{
  if(!document.getElementById("editorView")||document.getElementById("editorView").getClientRects().length===0)return;
  event.preventDefault();
  if(event.code==="Space"){
+  if(playbackState==="PAUSED")resumeScoreFollowAtPlayback();
+  else if(playbackState==="STOPPED"){scoreManualUntil=0;lastAutoScoreMeasure=-1;}
   const score=document.getElementById("scoreModal");
   handlePlayAction("all",score&&score.classList.contains("open")?scoreStartMeasure:0);
  }else stopPlaybackCompletely();
 });
-$("#scorePlay").addEventListener("click",()=>handlePlayAction("all",scoreStartMeasure));
+$("#scorePlay").addEventListener("click",()=>{scoreManualUntil=0;lastAutoScoreMeasure=-1;handlePlayAction("all",scoreStartMeasure);});
 $("#scoreStop").addEventListener("click",stopPlaybackCompletely);
 $("#scoreMetro").addEventListener("click",()=>{$("#metroToggle").click();});
 $("#scoreBpm").addEventListener("change",e=>{$("#bpm").value=e.target.value;$("#bpm").dispatchEvent(new Event("input"));});
 for(const [scoreId,editorId] of [["scoreVolume","volume"],["scoreMetroVolume","metroVolume"],["scoreDrumVolume","drumVolume"]])$("#"+scoreId).addEventListener("input",e=>{$("#"+editorId).value=e.target.value;$("#"+editorId).dispatchEvent(new Event("input"));});
+
+// Os controles do topo da partitura espelham os controles originais do editor.
+function syncScoreProjectPanel(){
+ const panel=document.getElementById('scoreGlobalDrumControl');if(!panel)return;
+ const song=document.getElementById('scoreSongName'),key=document.getElementById('scoreSongKey');
+ if(document.activeElement!==song)song.value=document.getElementById('songName').value;
+ if(document.activeElement!==key)key.value=document.getElementById('songKey').value;
+ const source=document.getElementById('globalDrumMeter'),dest=document.getElementById('scoreGlobalDrumMeter');
+ const value=source.value;
+ dest.innerHTML=source.innerHTML;dest.value=value;
+ const active=!!globalDrumByMeter[value];
+ panel.style.display=isCurrentProjectDrum?'none':'flex';
+ document.getElementById('scoreGlobalDrumStatus').textContent=document.getElementById('globalDrumStatus').textContent;
+ document.getElementById('scoreGlobalDrumRemove').style.display=active?'':'none';
+ document.getElementById('scoreSaveStatus').textContent=document.getElementById('status').textContent;
+}
+for(const [sid,eid] of [['scoreSongName','songName'],['scoreSongKey','songKey']]){
+ document.getElementById(sid).addEventListener('input',e=>{
+  const original=document.getElementById(eid);original.value=e.target.value;
+  original.dispatchEvent(new Event('input',{bubbles:true}));
+ });
+}
+document.getElementById('scoreGlobalDrumMeter').addEventListener('change',e=>{
+ document.getElementById('globalDrumMeter').value=e.target.value;
+ refreshGlobalDrumUI();syncScoreProjectPanel();
+});
+document.getElementById('scoreGlobalDrumChoose').addEventListener('click',()=>{
+ document.getElementById('globalDrumChoose').click();
+});
+document.getElementById('scoreGlobalDrumRemove').addEventListener('click',()=>{
+ document.getElementById('globalDrumRemove').click();syncScoreProjectPanel();
+});
+document.getElementById('scoreSaveProject').addEventListener('click',()=>document.getElementById('saveBtn').click());
+document.getElementById('scoreSaveDevice').addEventListener('click',()=>document.getElementById('saveDeviceBtn').click());
+const originalRefreshGlobalDrumUI=refreshGlobalDrumUI;
+refreshGlobalDrumUI=function(){originalRefreshGlobalDrumUI();syncScoreProjectPanel();};
+const originalSyncControlsUI=syncControlsUI;
+syncControlsUI=function(){originalSyncControlsUI();if(document.getElementById('scoreModal').classList.contains('open'))syncScoreProjectPanel();};
+document.getElementById('viewScoreBtn').addEventListener('click',()=>{syncScoreProjectPanel();syncControlsUI();});
+
 $("#saveDeviceBtn").addEventListener("click",saveProjectToDevice);
 
 $("#saveBtn").addEventListener("click",async()=>{
